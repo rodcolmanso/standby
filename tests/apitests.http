@@ -1,0 +1,10 @@
+GET http://localhost:8888/.netlify/functions/eventconfig
+
+###
+http://localhost:8888 
+
+###
+GET http://localhost:8888/.netlify/functions/shooters?eventID=1&divisionID=1
+
+###
+GET http://localhost:8888/.netlify/functions/records?eventID=1&shooterID=1&divisionID=1
