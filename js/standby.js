@@ -50,10 +50,12 @@ $("#imgInp").change(function(){
 //$("#selectDivision".change());
 
 $("#offcanvasRight").on("hide.bs.offcanvas", function () {
+
+    alert(`entrou`);
    
         if(modalChanged){
             console.log(`Got changed canvas`);
-            fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+            fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
             .then(r=>r.json())
             .then(data=>{
                 spinner.style.visibility = 'visible'//'visible'; //'hidden'
