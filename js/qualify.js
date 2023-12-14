@@ -15,13 +15,13 @@ let timeRecords;
 let modalChanged;
 
 
-const promiseOfEventConfig = fetch("http://localhost:8888/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
     .then(r=>r.json())
     .then(data => {
     return data;
 });
 
-const promiseOfPlayers = fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
     .then(r=>r.json())
     .then(data => {
     return data;
@@ -793,7 +793,7 @@ function addTimeRecord(){
     let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties};
 
 
-    fetch('http://localhost:8888/.netlify/functions/time-records', {
+    fetch('/.netlify/functions/time-records', {
         method: "POST",
         body: JSON.stringify(newRecord),
         headers: {"Content-type": "application/json; charset=UTF-8"}
@@ -838,7 +838,7 @@ function buildTimeTable(idShooter,idDivision){
     
     document.getElementById('timeTable').innerHTML="";
     
-    fetch(`http://localhost:8888/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}`)
+    fetch(`/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}`)
         .then(r=>r.json())
         .then(records=>{
 
@@ -896,7 +896,7 @@ function deleteTime(idTimeRecord, idShooter, idDivision){
         return 0;
     }else if(confirm('Are you sure you want to remove this time record?')) {
 
-        fetch(`http://localhost:8888/.netlify/functions/time-records?timeRecordId=${idTimeRecord}`, {
+        fetch(`/.netlify/functions/time-records?timeRecordId=${idTimeRecord}`, {
             method: "DELETE",
             // body: JSON.stringify(newRecord),
             headers: {"Content-type": "application/json; charset=UTF-8"}
