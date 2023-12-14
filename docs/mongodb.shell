@@ -348,3 +348,9 @@ db.shooters_divisions.aggregate([
 
 //db.shooters.updateMany({}, {$set:{eventId:['6578ad76e53c8b23971032c4']}});
 
+
+db.time_records.aggregate([
+    {$match:{shooterId: "6578d331e53c8b23971032c5", divisionId: "6578a6dae53c8b23971032c1"}}
+    ,{"$project":{"shooterId":1, "divisionId":1, "datetime":1, "sTime":1, "penalties":1, "score":{"$add":["$sTime","$penalties"]}}}
+    ,{$sort:{score:1}}
+  ]);
