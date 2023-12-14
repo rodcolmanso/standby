@@ -1,115 +1,50 @@
 
-const cPistolDivision= 1;
-const cRevolverDivision= 2;
-const cFreeforceDivision=3;
+const cPistolDivision= '6578a6dae53c8b23971032c1';
+const cRevolverDivision= '6578a94ae53c8b23971032c3';
+const cFreeforceDivision='6578a6dae53c8b23971032c2';
 
-const cAdvance= 0;
-const cOverall= 1;
+const cOverall= 0;
+const cAdvance= 1;
 const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
-
-// var eventConfig= 
-//     {'id':123
-//     ,'name':'1o. TPM Aldea da Serra'
-//     ,'date':'10/12/2024'
-//     ,'divisions':[{'id':cPistolDivision, 'name':'Pistol', 'categories':{'overall':true,'ladies':false,'advance':true,'optics':false,'seniors':false},'advanceLimit':{'passingScore':5,'topBestOf':-1}}
-//                  ,{'id':cRevolverDivision, 'name':'Revolver', 'categories':{'overall':true,'ladies':true,'advance':true,'optics':true,'seniors':true},'advanceLimit':{'passingScore':5,'topBestOf':-1}}
-//                  ,{'id':cFreeforceDivision, 'name':'Free-Force', 'categories':{'overall':true,'ladies':true,'advance':false,'optics':false,'seniors':false},'advanceLimit':{'passingScore':4,'topBestOf':-1}}
-//                 ]
-// };
    
 let eventConfig;
-let playersArray2;
+let playersArray;
 let timeRecords;
+let modalChanged;
 
 
-const promiseOfEventConfig = fetch("http://localhost:8888/.netlify/functions/eventconfig")
+const promiseOfEventConfig = fetch("http://localhost:8888/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+    .then(r=>r.json())
+    .then(data => {
+    return data;
+});
+
+const promiseOfPlayers = fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
     .then(r=>r.json())
     .then(data => {
     return data;
 });
 
 window.onload = async () => {
-    eventConfig = await promiseOfEventConfig;
-    // this code will run after 1 seconds
-    setTimeout(function() {
-    //spinner= document.getElementById('spinner');
-    spinner.style.visibility = 'hidden'//'visible'; //'hidden'
-    buildDivisions(eventConfig.divisions);
-  }, 1000);
-  document.getElementById('divTAdvance').style.display='none';
+    document.getElementById('divTAdvance').style.display='none';
     document.getElementById('divTOverall').style.display= 'none';
     document.getElementById('divTLadies').style.display='none';
     document.getElementById('divTOptics').style.display='none';
     document.getElementById('divTSeniors').style.display='none';
+
+    eventConfig = await promiseOfEventConfig;
+    playersArray= await promiseOfPlayers;
+    
+    spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+    
+    buildDivisions(eventConfig.divisions);
+    modalChanged=false;
+
 };
-
-playersArray2= [{'id':1,'name':'Jonathan','email':'jonathan@email.com','category':cOverall, 'registered':[
-                                                {'division':cPistolDivision,'gun':'Glock 22','optics':true,'score':3.43,'tries':2 }
-                                                ,{'division':cRevolverDivision,'gun':'RT 692','optics':false,'score':4.43,'tries':2 }
-                                                ]}
-                   ,{'id':2,'name':'Pietro','email':'','category':cSeniors, 'registered':[
-                                                {'division':cPistolDivision,'gun':'Glock 19','optics':true,'score':3.54,'tries':1 }
-                                                ,{'division':cRevolverDivision,'gun':'S&W 33','optics':false,'score':3.54,'tries':1 }
-                                                ,{'division':cFreeforceDivision,'gun':'T4','optics':true,'score':3.54,'tries':1 }
-                                                ]}
-                  ,{'id':3,'name':'Herrera Andrade','email':'','category':cSeniors, 'registered':[
-                                                {'division':cPistolDivision,'gun':'G2C 9','optics':false,'score':3.76,'tries':3 }
-                                                ,{'division':cRevolverDivision,'gun':'Rossi Imperador','optics':false,'score':3.76,'tries':3 }
-                                                ,{'division':cFreeforceDivision,'gun':'Nylon 66','optics':true,'score':3.76,'tries':3 }
-                                                ]}
-                  ,{'id':4,'name':'Mary','email':'','category':cLadies, 'registered':[
-                                                {'division':cPistolDivision,'gun':'TX22','optics':true,'score':3.93,'tries':4 }
-                                                ,{'division':cRevolverDivision,'gun':'RT66','optics':false,'score':3.93,'tries':4 }
-                                                ,{'division':cFreeforceDivision,'gun':'Delta 22','optics':true,'score':3.93,'tries':4 }
-                                                ]}
-                  ,{'id':5,'name':'Petra Fagundes','email':'','category':cLadies, 'registered':[                                
-                                                {'division':cPistolDivision,'gun':'Glock 19','optics':true,'score':4.54,'tries':4 }
-                                                ,{'division':cRevolverDivision,'gun':'Coult Phyton','optics':true,'score':4.54,'tries':4 }
-                                                ,{'division':cFreeforceDivision,'gun':'Thyphon 12','optics':true,'score':4.54,'tries':4 }
-                            ]}
-                  ,{'id':6,'name':'Fanny','email':'','category':cLadies, 'registered':[              
-                                                {'division':cPistolDivision,'gun':'G2C 9','optics':false,'score':5.76,'tries':2 }
-                                                ,{'division':cRevolverDivision,'gun':'RT92','optics':false,'score':5.76,'tries':2 }
-                                                ,{'division':cFreeforceDivision,'gun':'AR 12','optics':true,'score':5.76,'tries':2 }
-                                                ]}
-                 ,{'id':7,'name':'Augusto','email':'','category':cOverall, 'registered':[
-                                                {'division':cPistolDivision,'gun':'G2C 9','optics':false,'score':5.77,'tries':19 }
-                                                ,{'division':cRevolverDivision,'gun':'Colt Pacemaker','optics':false,'score':5.77,'tries':19 }
-                                                ,{'division':cFreeforceDivision,'gun':'CBC Military','optics':true,'score':5.77,'tries':19 }
-                                                ]}
-                 ,{'id':8,'name':'Bia','email':'','category':cLadies, 'registered':[
-                                                {'division':cPistolDivision,'gun':'TS9','optics':true,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'Rossi 38','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cFreeforceDivision,'gun':'Brigade BMF-9','optics':true,'score':999,'tries':0 }
-                                                ]}
-                ,{'id':9,'name':'Tereza','email':'','category':cLadies, 'registered':[
-                                                {'division':cPistolDivision,'gun':'PT59','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'Rossi 38','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cFreeforceDivision,'gun':'Fire Eagle 9','optics':true,'score':999,'tries':0 }
-                                                ]}
-                ,{'id':10,'name':'Nazaret','email':'','category':cLadies, 'registered':[                                
-                                                {'division':cPistolDivision,'gun':'Glock 22','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'Coult Phyton','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cFreeforceDivision,'gun':'CBC Military','optics':true,'score':999,'tries':0 }
-                                                ]}
-                ,{'id':11,'name':'Bruno','email':'','category':cOverall, 'registered':[
-                                                {'division':cPistolDivision,'gun':'TS9','optics':true,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'RT Hunter','optics':true,'score':999,'tries':0 }
-                                                ,{'division':cFreeforceDivision,'gun':'Colt M16','optics':true,'score':999,'tries':0 }
-                                                ]}
-                ,{'id':12,'name':'Fernando','email':'','category':cSeniors, 'registered':[                                
-                                                {'division':cPistolDivision,'gun':'PT59','optics':true,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'RT 66','optics':false,'score':999,'tries':0 }
-                                                ]}
-                ,{'id':13,'name':'Matarazzo','email':'','category':cOverall, 'registered':[
-                                                {'division':cPistolDivision,'gun':'Glock 22','optics':false,'score':999,'tries':0 }
-                                                ,{'division':cRevolverDivision,'gun':'S&W 32','optics':false,'score':999,'tries':0 }
-                                                ]}
-                ];
-
-                iId=1;
+  
+iId=1;
                 timeRecords= [{'id':iId++,'shooterId':1                  ,'division':1                 , 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
                                  ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
                                  ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
@@ -220,8 +155,10 @@ function getRandomDateTime() {
 
 
 function changeDivision(selectDivision){
-    buildPlayersTables(transformRegistrer(playersArray2), eventConfig, selectDivision.value);
+    buildPlayersTables(transformRegistrer(playersArray), eventConfig, selectDivision.value);
+    
     buildCategory2(eventConfig, selectDivision.value);
+    
     if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
         document.getElementById('btnAddShooter').disabled = true;
     }else{
@@ -231,20 +168,29 @@ function changeDivision(selectDivision){
 
 
 function transformRegistrer(players){
-    let registers = [];;
+    let registers = [];
     let rP= [];
     let aRow= '';
     for(i=0;i<players.length;i++){
         for(j=0;j<players[i].registered.length;j++){
-            aRow= {'division':players[i].registered[j].division,'category':players[i].category,'name':players[i].name,'id':players[i].id,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries };
+            if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
+                players[i].registered[j].score=999;
+                players[i].registered[j].tries=0;
+            }
+            aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries };
             rP.push(aRow);  
         }
     }
 
+    rP= rP.sort((a, b) => {
+        if (a.score < b.score) {
+          return -1;
+        }
+      });
     return rP;
 }
 
-function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
+function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
     var row= "";
     spinner.style.visibility = 'visible'//'visible'; //'hidden'
@@ -256,11 +202,12 @@ function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
 
     let divisionIndex=-1;
     for(let i=0; i< eventConfig.divisions.length; i++){
-        if(selectDivision==eventConfig.divisions[i].id){
+        if(selectDivision===eventConfig.divisions[i]._id){
             divisionIndex=i;
             i= eventConfig.divisions.length;
         }
     }
+    
     let actualAdvCount=0;
     let actualOverallCount=0;
     let actualLadiesCount=0;
@@ -273,12 +220,10 @@ function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
     let sScore;
     let sTries;
 
-    fetch("http://localhost:8888/.netlify/functions/shooters?eventID=1&divisionID="+selectDivision)
-        .then(r=>r.json() )
-        .then(aPlayers=>{
-        
-            for(let i=0; i< aPlayers.length; i++){
-
+        for(let i=0; i< aPlayers.length; i++){
+            
+            if(aPlayers[i].division == selectDivision){
+                
                 if(aPlayers[i].category==cLadies){
                     
                     if(eventConfig.divisions[divisionIndex].categories.ladies){
@@ -305,7 +250,6 @@ function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
                     }
                 }
 
-                
                 if(aPlayers[i].category==cSeniors){
                     if(eventConfig.divisions[divisionIndex].categories.seniors){
                         table= document.getElementById('tableSeniors');
@@ -345,18 +289,24 @@ function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
                         table= document.getElementById('tableOverall')
                         actualOverallCount++;
                         position=actualOverallCount;
-
                     }
                 }
 
-                if(aPlayers[i].score>100) sScore='NA';
+                if(aPlayers[i].score===undefined || aPlayers[i].score===null || aPlayers[i].score>100){ 
+                    // aPlayers[i].score='NA';
+                    sScore='NA';
+                }
                 else sScore= ''+aPlayers[i].score;
 
-                if(aPlayers[i].tries<1)sTries='';
+                if(aPlayers[i].tries===undefined||aPlayers[i].tries===null||aPlayers[i].tries<1){  
+                    // aPlayers[i].tries=0;
+                    sTries='';
+                }
                 else if(aPlayers[i].tries==1)sTries='|';
                 else if(aPlayers[i].tries==2)sTries='||';
                 else if(aPlayers[i].tries==3)sTries='|||';
                 else sTries='|||+';
+
         //data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop"
                 row= `<tr>
                     <td class="align-middle">${position}</td>
@@ -373,14 +323,13 @@ function buildPlayersTables(aPlayersx, eventConfig, selectDivision){
                     </td>
                 </tr>`;
                 table.innerHTML+= row;
+                // console.log(`row[${i}]=${row}`);
 
             }
-            
+        }
+            // console.log(`BEFORE UNHIDDE SPINNER`);
             spinner.style.visibility = 'hidden'//'visible'; //'hidden'
-                
-        })
-    
-    
+                //)
 }
 
 
@@ -546,7 +495,7 @@ function buildCategory2(eConfig, selectDivision){
 
      let divisionIndex=-1;
      for(let i=0; i< eConfig.divisions.length; i++){
-         if(selectDivision==eConfig.divisions[i].id){
+         if(selectDivision==eConfig.divisions[i]._id){
              divisionIndex=i;
              i= eConfig.divisions.length;
          }
@@ -608,11 +557,11 @@ function buildDivisions(eventDivisions){
     while (selectDivisions.options.length > 0)
         selectDivisions.remove(0);
 
-    let newOption = new Option('<<Select a Division>>',-1);
+    let newOption = new Option('<<Select a Division>>','-1');
     selectDivisions.add(newOption,undefined);
 
     for(i=0;i<eventDivisions.length;i++){
-        newOption = new Option(eventDivisions[i].name,eventDivisions[i].id);
+        newOption = new Option(eventDivisions[i].name,eventDivisions[i]._id);
         selectDivisions.add(newOption,undefined);
 
     }
@@ -640,16 +589,16 @@ function clearShooterModal(){
         modalRow= `
         <tr>
             <th scope="row">
-                <input type="checkbox" class="btn-check" id="btnCheckDivision${eventConfig.divisions[k].id}" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnCheckDivision${eventConfig.divisions[k].id}">${eventConfig.divisions[k].name}</label><br>
+                <input type="checkbox" class="btn-check" id="btnCheckDivision${eventConfig.divisions[k]._id}" autocomplete="off">
+                <label class="btn btn-outline-primary" for="btnCheckDivision${eventConfig.divisions[k]._id}">${eventConfig.divisions[k].name}</label><br>
             </th>
                 <td>
-                    <input class="form-control form-control-sm" id="gunName${eventConfig.divisions[k].id}" type="text" maxlength="10"
-                        onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k].id}').checked=true" placeholder="" aria-label=".form-control-sm example">
+                    <input class="form-control form-control-sm" id="gunName${eventConfig.divisions[k]._id}" type="text" maxlength="10"
+                        onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" placeholder="" aria-label=".form-control-sm example">
                 </td>
                 <td>
                     <div class="form-check form-switch">
-                        <input class="form-check-input" onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k].id}').checked=true" type="checkbox" role="switch" id="optic${eventConfig.divisions[k].id}">
+                        <input class="form-check-input" onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" type="checkbox" role="switch" id="optic${eventConfig.divisions[k]._id}">
                     </div>
                 </td>
         </tr>`;
@@ -659,29 +608,29 @@ function clearShooterModal(){
 
 function editShooter(idShooter){
 
-    clearShooterModal();
+    //clearShooterModal();
 
     //populate modal registered
-    for(i=0;i< playersArray2.length;i++){
+    for(i=0;i< playersArray.length;i++){
 
-        if(idShooter== playersArray2[i].id){
-            for(j=0;j< playersArray2[i].registered.length;j++){
+        if(idShooter== playersArray[i].shooterId){
+            for(j=0;j< playersArray[i].registered.length;j++){
 
             
                 //&& selectDivision==playersArray2[i].registered[j].division
                 
 
-                document.getElementById('modalShooterId').value= playersArray2[i].id;
-                document.getElementById('modalName').value= playersArray2[i].name;
-                document.getElementById('modalEmail').value= playersArray2[i].email;
-                document.getElementById('modalOption'+playersArray2[i].category).checked=true;
+                document.getElementById('modalShooterId').value= playersArray[i].shooterId;
+                document.getElementById('modalName').value= playersArray[i].name;
+                document.getElementById('modalEmail').value= playersArray[i].email;
+                document.getElementById('modalOption'+playersArray[i].category).checked=true;
 
-                document.getElementById('btnCheckDivision'+playersArray2[i].registered[j].division).checked=true;
-                document.getElementById('gunName'+playersArray2[i].registered[j].division).value= playersArray2[i].registered[j].gun;
-                if(playersArray2[i].registered[j].optics)
-                     document.getElementById('optic'+playersArray2[i].registered[j].division).checked= true;
+                document.getElementById('btnCheckDivision'+playersArray[i].registered[j].divisionId).checked=true;
+                document.getElementById('gunName'+playersArray[i].registered[j].divisionId).value= playersArray[i].registered[j].gun;
+                if(playersArray[i].registered[j].optics)
+                     document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= true;
                 else
-                    document.getElementById('optic'+playersArray2[i].registered[j].division).checked= false;
+                    document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= false;
 
             }
         }
@@ -696,14 +645,16 @@ function uuidv4() {
 //////////------------UPDATES-----------------------
 function addUpdateShooter(){
 
+    
     let idShooter= document.getElementById('modalShooterId').value;
+    console.log(`entro update shooter. idShooter=${idShooter}`);
     let aRegistered=[];
         
         for(let i=0; i<eventConfig.divisions.length;i++){
-            if(document.getElementById('btnCheckDivision'+eventConfig.divisions[i].id).checked){
-                aRegistered.push({'division':eventConfig.divisions[i].id
-                                 ,'gun':document.getElementById('gunName'+eventConfig.divisions[i].id).value
-                                 ,'optics':document.getElementById('optic'+eventConfig.divisions[i].id).checked
+            if(document.getElementById('btnCheckDivision'+eventConfig.divisions[i]._id).checked){
+                aRegistered.push({'division':eventConfig.divisions[i]._id
+                                 ,'gun':document.getElementById('gunName'+eventConfig.divisions[i]._id).value
+                                 ,'optics':document.getElementById('optic'+eventConfig.divisions[i]._id).checked
                                  ,'score':9999,'tries':0 });
             }
         }
@@ -712,10 +663,10 @@ function addUpdateShooter(){
 
         document.getElementById('modalName').value= document.getElementById('modalName').value.trim();
         let idDublicated= null;
-        for(let i=0; i<playersArray2.length;i++){
-            if(playersArray2[i].name.toUpperCase()===document.getElementById('modalName').value.toUpperCase()
-            && idShooter!= playersArray2[i].id){
-                idDublicated=  playersArray2[i].id;
+        for(let i=0; i<playersArray.length;i++){
+            if(playersArray[i].name.toUpperCase()===document.getElementById('modalName').value.toUpperCase()
+            && idShooter!= playersArray[i].id){
+                idDublicated=  playersArray[i].id;
             }
         }
 
@@ -753,25 +704,25 @@ function addUpdateShooter(){
                             ,'category':categ
                             ,'registered':aRegistered};     
 
-                playersArray2.push(jShooter);
+                playersArray.push(jShooter);
                 alert(document.getElementById('modalName').value+' joined the event!');
 
             }else{
                 //update
 
-                for(i=0;i<playersArray2.length;i++){
-                    if(idShooter==playersArray2[i].id){
-                        playersArray2[i].name=document.getElementById('modalName').value;
-                        playersArray2[i].email=document.getElementById('modalEmail').value;
-                        playersArray2[i].category= categ;
-                        playersArray2[i].registered= aRegistered;
-                    alert('Shooter '+ playersArray2[i].name+' has been updated!');
+                for(i=0;i<playersArray.length;i++){
+                    if(idShooter==playersArray[i].id){
+                        playersArray[i].name=document.getElementById('modalName').value;
+                        playersArray[i].email=document.getElementById('modalEmail').value;
+                        playersArray[i].category= categ;
+                        playersArray[i].registered= aRegistered;
+                    alert('Shooter '+ playersArray[i].name+' has been updated!');
                     }
 
                 }
             }
             scoreCal();
-            buildPlayersTables(transformRegistrer(playersArray2), eventConfig, document.getElementById('selectDivision').value);
+            buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
     
 }
     
@@ -782,15 +733,15 @@ function deleteShooter(){
         return 0;
     }else if(confirm('Are you sure you want to remove this shoothe?')) {
 
-        for(i=0;i<playersArray2.length;i++){
-            if(idShooter==playersArray2[i].id){
-                playersArray2.splice(i, 1);
+        for(i=0;i<playersArray.length;i++){
+            if(idShooter==playersArray[i].id){
+                playersArray.splice(i, 1);
             }
 
         }
        
         scoreCal();
-        buildPlayersTables(transformRegistrer(playersArray2), eventConfig, document.getElementById('selectDivision').value);
+        buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
         document.getElementById('modalShooterId').value=null;
     }
     
@@ -799,7 +750,7 @@ function deleteShooter(){
 function getDivision(eventDivisions, divisionID){
 
     for(let i=0; i<eventDivisions.length;i++){
-        if(eventDivisions[i].id == divisionID){
+        if(eventDivisions[i]._id == divisionID){
             return eventDivisions[i];
         }
     }
@@ -831,24 +782,53 @@ function addTimeRecord(){
     let idShooter= document.getElementById('timeRecordShooterId').value;
     let idDivision= document.getElementById('timeRecordDivision').value;
     let vTime= Number(document.getElementById('timeRecordTime').value);
+    document.getElementById('timeRecordTime').value="";
     let vPenalties= Number(document.getElementById('timeRecordPenalty').value);
+    document.getElementById('timeRecordPenalty').value="";
     if(vPenalties===null || vPenalties==='') vPenalties=0
     let vScore= Math.round(((vTime + vPenalties) + Number.EPSILON) * 100) / 100;
 
-    console.log(`idShooter=${idShooter}, idDivision= ${idDivision}, vTime= ${vTime}, vPenalties=${ vPenalties}, vScore= ${vScore}`);
+
+    
+    let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties};
+
+
+    fetch('http://localhost:8888/.netlify/functions/time-records', {
+        method: "POST",
+        body: JSON.stringify(newRecord),
+        headers: {"Content-type": "application/json; charset=UTF-8"}
+        })
+        .then(response => response.json()) 
+        .then(json => {
+            modalChanged=true;
+            let bestScore= document.getElementById('timeBestScore').innerText;
+
+            console.log(`document.getElementById('timeBestScore').innerText; ${bestScore}`);
+
+            if(bestScore=='NA' || Number(bestScore) >vScore){
+                document.getElementById('timeBestScore').innerText=vScore;
+                console.log(`Apply new score ${vScore}`);
+            }else console.log(`Not applied new score ${vScore}`);
+            
+            buildTimeTable(idShooter,idDivision);
+            console.log(json);
+        })
+        // .then({
+        
+        //     fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+        //     .then(r=>r.json())
+        //     .then(data => {
+        //         playersArray=data;
+        //         buildPlayersTables(transformRegistrer(playersArray), eventConfig, idDivision);
+        //     })
+        // })
+        .catch(err => console.log(err));
+
+    //timeRecords.push(newRecord);
+
     
     
-    let newRecord={'id':uuidv4(),'shooterId':idShooter,'division':idDivision, 'datetime':new Date()
-        ,'sTime': vTime
-        ,'penalties': vPenalties
-        ,'score':vScore};
-
-    console.log(`newRecord.score= ${newRecord.score}`)
-    timeRecords.push(newRecord);
-
-    buildPlayersTables(transformRegistrer(playersArray2), eventConfig, idDivision);
-    buildTimeTable(idShooter,idDivision);
-    document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
+    //document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
                 
 }
 
@@ -856,8 +836,9 @@ function addTimeRecord(){
 
 function buildTimeTable(idShooter,idDivision){
     
+    document.getElementById('timeTable').innerHTML="";
     
-    fetch(`http://localhost:8888/.netlify/functions/records?eventID=${eventConfig.id}&shooterID=${idShooter}&divisionID=${idDivision}`)
+    fetch(`http://localhost:8888/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}`)
         .then(r=>r.json())
         .then(records=>{
 
@@ -879,7 +860,7 @@ function buildTimeTable(idShooter,idDivision){
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
                     <td class="text-end">${records[i].sTime}</td>
                     <td class="text-end">${records[i].penalties}</td>
-                    <td><button onClick="deleteTime('${records[i].id}', ${idShooter}, ${idDivision})" type="button" class="btn btn-danger btn-circle btn-xl">-</button>
+                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}')" type="button" class="btn btn-danger btn-circle btn-xl">-</button>
                     </td>
                 </tr>`;
                 
@@ -909,23 +890,40 @@ function getBestScoreAndTries(idShooter, idDivision){
 
 function deleteTime(idTimeRecord, idShooter, idDivision){
 
+    console.log(`idTimeRecord= ${idTimeRecord}`);
+
     if(idTimeRecord===null ||idTimeRecord==''){
         return 0;
     }else if(confirm('Are you sure you want to remove this time record?')) {
 
-        for(i=0;i<timeRecords.length;i++){
-            if(idTimeRecord==timeRecords[i].id){
-                timeRecords.splice(i, 1);
+        fetch(`http://localhost:8888/.netlify/functions/time-records?timeRecordId=${idTimeRecord}`, {
+            method: "DELETE",
+            // body: JSON.stringify(newRecord),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            // .then(response => response.json()) 
+            .then(r => {
+                modalChanged=true;
+                document.getElementById('timeBestScore').innerText='';
+        
+                buildTimeTable(idShooter,idDivision);
+                console.log(r);
+            })
+
+
+        // for(i=0;i<timeRecords.length;i++){
+        //     if(idTimeRecord==timeRecords[i].id){
+        //         timeRecords.splice(i, 1);
                 
 
-                scoreCal();
-                buildPlayersTables(transformRegistrer(playersArray2), eventConfig, document.getElementById('selectDivision').value);
-                buildTimeTable(idShooter,idDivision);
-                document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
-                return 0;
-            }
+        //         scoreCal();
+        //         buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
+        //         buildTimeTable(idShooter,idDivision);
+        //         document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
+        //         return 0;
+        //     }
 
-        }
+        // }
         
     }
 
@@ -947,20 +945,20 @@ function scoreCal(){
       });
 
 
-    for(let i=0;i<playersArray2.length;i++){
+    for(let i=0;i<playersArray.length;i++){
 
         
-        for(let j=0; j < playersArray2[i].registered.length;j++){
+        for(let j=0; j < playersArray[i].registered.length;j++){
 
-            playersArray2[i].registered[j].score=999;
-            playersArray2[i].registered[j].tries=0;
+            playersArray[i].registered[j].score=999;
+            playersArray[i].registered[j].tries=0;
 
             for(k=0;k<timeRecords.length;k++){
 
-                if(playersArray2[i].id==timeRecords[k].shooterId && playersArray2[i].registered[j].division ==timeRecords[k].division){
-                    playersArray2[i].registered[j].tries++;
-                    if(timeRecords[k].score<playersArray2[i].registered[j].score){
-                        playersArray2[i].registered[j].score=timeRecords[k].score;
+                if(playersArray[i].id==timeRecords[k].shooterId && playersArray[i].registered[j].division ==timeRecords[k].division){
+                    playersArray[i].registered[j].tries++;
+                    if(timeRecords[k].score<playersArray[i].registered[j].score){
+                        playersArray[i].registered[j].score=timeRecords[k].score;
                     }
                 }
 

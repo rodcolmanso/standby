@@ -23,7 +23,7 @@ function readURL(input) {
     });
 
 
-    $('#remove').click(function(){
+$('#remove').click(function(){
           $('#imgInp').val('');
           $(this).hide();
           $('#blah').hide('slow');
@@ -45,4 +45,24 @@ function readPath(input) {
 
 $("#imgInp").change(function(){
   readPath(this);
+});
+
+//$("#selectDivision".change());
+
+$("#offcanvasRight").on("hide.bs.offcanvas", function () {
+   
+        if(modalChanged){
+            console.log(`Got changed canvas`);
+            fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+            .then(r=>r.json())
+            .then(data=>{
+                spinner.style.visibility = 'visible'//'visible'; //'hidden'
+                playersArray= data;
+                modalChanged=false;
+                changeDivision(document.getElementById("selectDivision"));
+                spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+                console.log(`Changed canvas done`);
+            })
+        }   
+    
 });
