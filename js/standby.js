@@ -49,19 +49,31 @@ $("#imgInp").change(function(){
 
 //$("#selectDivision".change());
 
-$("#offcanvasRight").on("hide.bs.offcanvas", function () {
-   
-        if(modalChanged){
-            fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+function updateShootersList(){
+    fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
             .then(r=>r.json())
             .then(data=>{
                 spinner.style.visibility = 'visible'//'visible'; //'hidden'
                 playersArray= data;
-                modalChanged=false;
+                
                 changeDivision(document.getElementById("selectDivision"));
                 spinner.style.visibility = 'hidden'//'visible'; //'hidden'
                 console.log(`Changed canvas done`);
-            })
+            });
+}
+
+$("#offcanvasRight").on("hide.bs.offcanvas", function () {
+   
+        if(modalChanged){
+            updateShootersList();
+            modalChanged=false; 
         }   
-    
+});
+
+$("#exampleModal").on("hide.bs.modal", function () {
+   
+    if(modalChanged){
+        updateShootersList();
+        modalChanged=false; 
+    }   
 });

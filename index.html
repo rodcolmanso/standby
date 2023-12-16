@@ -240,8 +240,9 @@
   </svg>
 
   <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#"></a>
-
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#"><i class="bi bi-trophy"></i></a>
+    <div class="text-center"><span class="text-center" id="eventTitle">2ª Etapa de TPM CT Aldeia</span></div>
+    <div></div>
     <ul class="navbar-nav flex-row d-md-none">
       <li class="nav-item text-nowrap">
         <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch"
@@ -260,7 +261,6 @@
         </button>
       </li>
     </ul>
-
     <div id="navbarSearch" class="navbar-search w-100 collapse">
       <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
     </div>
@@ -272,7 +272,7 @@
         <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel">
           <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">Plinking Day</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
               aria-label="Close"></button>
           </div>
@@ -522,9 +522,12 @@
                   <!--...-->
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary" >Save changes</button>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" onClick="deleteShooter()">Delete</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" value="Close">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Close</button>
+                  <button type="submit" class="btn btn-primary" value="Save changes">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Save changes</button>
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" value="Delete" onClick="deleteShooter()">
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Delete</button>
                 </div>
               </div>  
             </div>
@@ -576,24 +579,25 @@
                 </div>
                 <div class="row g-2">
                   <form class="row g-3 needs-validation" action="javascript:addTimeRecord()">
-                    <div class="w-50 col-md form-floating">
+                    <div class="w-40 col-sm form-floating form-control-sm">
 
                       <input type="hidden" id="timeRecordShooterId" >
                       <input type="hidden" id="timeRecordDivision" >
 
-                      <input type="number" step="0.01" min="0.1" max="100" required class="form-control" id="timeRecordTime" placeholder="0" value="0">
+                      <input type="number" step="0.001" min="0.1" max="100" required class="form-control" id="timeRecordTime" placeholder="0" value="0">
                       <label for="timeRecordTime">Time</label>
 
                     </div>
-                    <div class="w-25 col-md form-floating">
+                    <div class="w-30 col-sm form-floating form-control-sm">
 
                       <input type="number" min="0" max="9" class="form-control" id="timeRecordPenalty" placeholder="0" value="0">
-                      <label for="timeRecordPenalty">Fouls</label>
+                      <label for="timeRecordPenalty">Penalty</label>
                     </div>
 
 
-                    <div class=" w-auto col-6 col-sm-4" style="width:fit-content; display:flex;align-items:center;">
-                      <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="w-auto col-sm" style="width:fit-content; display:flex;align-items:center;">
+                      <button type="submit" class="btn btn-primary" value="Save">
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Save</button>
                     </div>
 
                   </form>
@@ -607,106 +611,18 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">When</th>
-                    <th class="text-end" scope="col">Time</th>
-                    <th class="text-end" scope="col">Penalty</th>
+                    <th scope="col" class="w-25">When</th>
+                    <th class="text-end w-25" scope="col">Time</th>
+                    <th class="text-end w-25" scope="col" id="penalty">Penalty</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody class="table-group-divider" id="timeTable">
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">6</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">7</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">8</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">8</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">10</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">11</th>
-                    <td>11:42</td>
-                    <td>6,34</td>
-                    <td>1</td>
-                    <td><button type="button" class="btn btn-danger btn-circle btn-xl">-</button>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
             <div class="container text-center">
-              <h1><button type="button" class="btn btn-primary" data-bs-dismiss="offcanvas">Close</button></h1>
+              <h1><button type="button" class="btn btn-secondary" id="bt_close_time" data-bs-dismiss="offcanvas" value="Close">Close</button></h1>
             </div>
           </div>
         </div>
@@ -764,11 +680,11 @@
                   <table class="table table-striped table-hover" >
                     <thead>
                       <tr>
-                        <th style="width:1%" scope="col">#</th>
-                        <th style="width: 40%" scope="col">Shooter</th>
-                        <th scope="col">Gun</th>
-                        <th scope="col">Score</th>
-                        <th colspan="2" scope="col">Tries</th>
+                        <th scope="col">#</th>
+                        <th class="w-40" scope="col">Shooter</th>
+                        <th class="w-20 d-none d-sm-table-cell" scope="col">Gun</th>
+                        <th class="text-end" scope="col">Score</th>
+                        <th class="text-center" colspan="2" scope="col">Tries</th>
                         <!--<th class="text-end" scope="col">Tries</th>-->
                       </tr>
                     </thead>
@@ -786,11 +702,11 @@
                   <table class="table table-striped table-hover" >
                     <thead>
                       <tr>
-                        <th style="width:1%" scope="col">#</th>
-                        <th style="width: 40%" scope="col">Shooter</th>
-                        <th style="width: 20%" scope="col">Gun</th>
-                        <th scope="col">Score</th>
-                        <th colspan="2" scope="col">Tries</th>
+                        <th scope="col">#</th>
+                        <th class="w-40" scope="col">Shooter</th>
+                        <th class="w-20 d-none d-sm-table-cell" scope="col">Gun</th>
+                        <th class="text-end" scope="col">Score</th>
+                        <th class="text-center" colspan="2" scope="col">Tries</th>
                       </tr>
                     </thead>
                     <tbody id="tableOverall">
@@ -806,11 +722,11 @@
                   <table class="table table-striped table-hover" > <!-- table-sm-->
                     <thead>
                       <tr>
-                        <th style="width: 1%" scope="col">#</th>
-                        <th style="width: 40%" scope="col">Shooter</th>
-                        <th style="width: 20%" scope="col">Gun</th>
-                        <th scope="col">Score</th>
-                        <th colspan="2" scope="col">Tries</th>
+                        <th scope="col">#</th>
+                        <th class="w-40" scope="col">Shooter</th>
+                        <th class="w-20 d-none d-sm-table-cell" scope="col">Gun</th>
+                        <th class="text-end" scope="col">Score</th>
+                        <th class="text-center" colspan="2" scope="col">Tries</th>
                       </tr>
                     </thead>
                     <tbody id="tableLadies">
@@ -826,11 +742,11 @@
                   <table class="table table-striped table-hover" > <!-- table-sm-->
                     <thead>
                       <tr>
-                        <th style="width: 1%" scope="col">#</th>
-                        <th style="width: 40%" scope="col">Shooter</th>
-                        <th style="width: 20%" scope="col">Gun</th>
-                        <th scope="col">Score</th>
-                        <th colspan="2" scope="col">Tries</th>
+                        <th scope="col">#</th>
+                        <th class="w-40" scope="col">Shooter</th>
+                        <th class="w-20 d-none d-sm-table-cell" scope="col">Gun</th>
+                        <th class="text-end" scope="col">Score</th>
+                        <th class="text-center" colspan="2" scope="col">Tries</th>
                       </tr>
                     </thead>
                     <tbody id="tableOptics">
@@ -846,11 +762,11 @@
                   <table class="table table-striped table-hover" > <!-- table-sm-->
                     <thead>
                       <tr>
-                        <th style="width: 1%" scope="col">#</th>
-                        <th style="width: 40%" scope="col">Shooter</th>
-                        <th style="width: 20%" scope="col">Gun</th>
-                        <th scope="col">Score</th>
-                        <th colspan="2" scope="col">Tries</th>
+                        <th scope="col">#</th>
+                        <th class="w-40" scope="col">Shooter</th>
+                        <th class="w-20 d-none d-sm-table-cell" scope="col">Gun</th>
+                        <th class="text-end" scope="col">Score</th>
+                        <th class="text-center" colspan="2" scope="col">Tries</th>
                       </tr>
                     </thead>
                     <tbody id="tableSeniors">
@@ -862,8 +778,8 @@
             <p>
               <div class="container text-center">
                 <button id="btnAddShooter" type="button" class="btn btn-primary btn-block w-75 btn-lg" disabled
-                  data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="clearShooterModal()">
-                  Add shooter
+                  data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="clearShooterModal()" value="Add shooter">
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Add shooter
                 </button>
               </div>
               

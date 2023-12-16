@@ -354,3 +354,27 @@ db.time_records.aggregate([
     ,{"$project":{"shooterId":1, "divisionId":1, "datetime":1, "sTime":1, "penalties":1, "score":{"$add":["$sTime","$penalties"]}}}
     ,{$sort:{score:1}}
   ]);
+
+  db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1}, { "unique": true } );
+
+
+
+  db.shooters_divisions.insertOne({"shooterId": '6578d331e53c8b23971032cb',
+    "divisionId": '6578a6dae53c8b23971032c2',
+    "gun": 'NEW REC TESTE',
+    "optics": true});
+
+
+
+    db.shooters.updateOne({ "_id" : ObjectId("6578d331e53c8b23971032d0") }
+                                                 ,{ $set: { 
+                                                   "name" : 'Fernandex'
+                                                   ,"email": 'ema@el.c' 
+                                                   ,"category": 0 
+                                                   ,"eventId": ['6578ad76e53c8b23971032c4']
+                                                  }
+                                                 });
+
+
+
+db.shooters.createIndex( {"name":1, "eventId":1}, { "unique": true } );

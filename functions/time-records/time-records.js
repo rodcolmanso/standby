@@ -68,6 +68,7 @@ const handler = async (event, context)=>{
     }
 
   } catch (error) {
+    console.log(`error: ${error.toString()}`);
     return {statusCode: 500,
     body: error.toString()};
   }

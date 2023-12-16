@@ -61,3 +61,34 @@
 #selectCenter {
   text-align: center;
 }
+
+.w-20 {
+  width: 20%;
+}
+
+.w-10 {
+  width: 10%
+}
+
+.w-40 {
+  width: 40%;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+table {
+  table-layout:fixed;/* will switch the table-layout algorythm */
+}
+
+#penalty {
+  text-decoration: none;
+  /* color: #B19BD9; */
+  overflow-wrap: break-word;
+  font-size: 12px;
+}
+/* 
+.table-condensed{
+  font-size: 12px;
+} */

@@ -33,103 +33,20 @@ window.onload = async () => {
     document.getElementById('divTLadies').style.display='none';
     document.getElementById('divTOptics').style.display='none';
     document.getElementById('divTSeniors').style.display='none';
+    // document.getElementById('EventTitle').innerHTML =``;
+    applySpinners(true);
 
     eventConfig = await promiseOfEventConfig;
     playersArray= await promiseOfPlayers;
-    
+    document.getElementById('eventTitle').innerHTML= eventConfig.name;
     spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
     buildDivisions(eventConfig.divisions);
     modalChanged=false;
+    applySpinners(false);
 
 };
   
-iId=1;
-                timeRecords= [{'id':iId++,'shooterId':1                  ,'division':1                 , 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ,{'id':iId++,'shooterId':getRandomInt(1, 13),'division':getRandomInt(1, 4), 'datetime':getRandomDateTime(),'sTime':getRandomFloat(1.5, 12, 2),'penalties': getRandomInt(0, 3),'score':0}
-                                 ];
-
 //    scoreCal();
   //  buildDivisions(eventConfig.divisions);
  //   buildCategory2(eventConfig,eventConfig.divisions[0].id);
@@ -219,6 +136,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     let table;
     let sScore;
     let sTries;
+    let trophy;
 
         for(let i=0; i< aPlayers.length; i++){
             
@@ -300,24 +218,30 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
 
                 if(aPlayers[i].tries===undefined||aPlayers[i].tries===null||aPlayers[i].tries<1){  
                     // aPlayers[i].tries=0;
-                    sTries='';
+                    sTries=''; 
+                    aPlayers[i].tries=0;                   
                 }
                 else if(aPlayers[i].tries==1)sTries='|';
                 else if(aPlayers[i].tries==2)sTries='||';
-                else if(aPlayers[i].tries==3)sTries='|||';
-                else sTries='|||+';
+                // else if(aPlayers[i].tries==3)sTries='|||';
+                else sTries='+||';
+
+                if(position<2&&aPlayers[i].tries>0)
+                    trophy=`<i class="bi bi-trophy"></i>`;
+                else
+                    trophy=``;
 
         //data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop"
                 row= `<tr>
                     <td class="align-middle">${position}</td>
                     <td class="align-middle">
                     <a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
-                        ${aPlayers[i].name}
-                        </a>
+                     ${aPlayers[i].name}
+                        </a>&nbsp;&nbsp;&nbsp;${trophy} 
                     </td>
-                    <td class="align-middle">${aPlayers[i].gun}</td>
-                    <td class="align-middle">${sScore}</td>
-                    <td class="align-middle">${sTries}</td>
+                    <td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>
+                    <td class="align-middle text-end">${sScore}</td>
+                    <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
                         <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i></button>
                     </td>
@@ -332,148 +256,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 //)
 }
 
-
-function buildPlayersTablesSave(aPlayers, eventConfig, selectDivision){
-    scoreCal();
-    aPlayers= aPlayers.sort((a, b) => {
-        if (a.score < b.score) {
-          return -1;
-        }
-      });
-    var row= "";
-    
-    document.getElementById('tableAdvance').innerHTML= row;
-    document.getElementById('tableOverall').innerHTML= row;
-    document.getElementById('tableLadies').innerHTML= row;
-    document.getElementById('tableOptics').innerHTML= row;
-    document.getElementById('tableSeniors').innerHTML= row;
-
-    //find division`s propreties
-    //let selectDivision= document.getElementById('selectDivision').value;
-    
-    let divisionIndex=-1;
-    for(let i=0; i< eventConfig.divisions.length; i++){
-        if(selectDivision==eventConfig.divisions[i].id){
-            divisionIndex=i;
-            i= eventConfig.divisions.length;
-        }
-    }
-    let actualAdvCount=0;
-    let actualOverallCount=0;
-    let actualLadiesCount=0;
-    let actualOpticsCount=0;
-    let actualSeniorsCount=0;
-    let position=0;
-
-
-    let table;
-    let sScore;
-    let sTries;
-    
-    for(let i=0; i< aPlayers.length; i++){
-
-        if(aPlayers[i].division == selectDivision){
-
-            if(aPlayers[i].category==cLadies){
-                
-                if(eventConfig.divisions[divisionIndex].categories.ladies){
-                    
-                    table= document.getElementById('tableLadies');
-                    actualLadiesCount++;
-                    position= actualLadiesCount;
-                }else if(eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
-                    table= document.getElementById('tableOptics');
-                    actualOpticsCount++;
-                    position= actualOpticsCount;
-                }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                         ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                          actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
-                     table= document.getElementById('tableAdvance');
-                     actualAdvCount++;
-                     position=actualAdvCount;
-
-                }else{
-                    table= document.getElementById('tableOverall')
-                    actualOverallCount++;
-                    position=actualOverallCount;
-
-                }
-            }
-
-            
-            if(aPlayers[i].category==cSeniors){
-                if(eventConfig.divisions[divisionIndex].categories.seniors){
-                    table= document.getElementById('tableSeniors');
-                    actualSeniorsCount++;
-                    position= actualSeniorsCount;
-                }else if(eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
-                    table= document.getElementById('tableOptics');
-                    actualOpticsCount++;
-                    position= actualOpticsCount;
-                }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                         ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                          actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
-                     table= document.getElementById('tableAdvance');
-                     actualAdvCount++;
-                     position= actualAdvCount;
-                }else{
-                    table= document.getElementById('tableOverall')
-                    actualOverallCount++;
-                    position=actualOverallCount;
-
-                }
-            }
-
-            if(aPlayers[i].category==cOverall){
-                if(eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
-                    table= document.getElementById('tableOptics');
-                    actualOpticsCount++
-                    position= actualOpticsCount;
-                }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                         ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                          actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
-                     table= document.getElementById('tableAdvance');
-                     actualAdvCount++;
-                     position= actualAdvCount;
-
-                }else{
-                    table= document.getElementById('tableOverall')
-                    actualOverallCount++;
-                    position=actualOverallCount;
-
-                }
-            }
-
-            if(aPlayers[i].score>100) sScore='NA';
-            else sScore= ''+aPlayers[i].score;
-
-            if(aPlayers[i].tries<1)sTries='';
-            else if(aPlayers[i].tries==1)sTries='|';
-            else if(aPlayers[i].tries==2)sTries='||';
-            else if(aPlayers[i].tries==3)sTries='|||';
-            else sTries='|||+';
-    //data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop"
-            row= `<tr>
-                <td class="align-middle">${position}</td>
-                <td class="align-middle">
-                <a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
-                    ${aPlayers[i].name}
-                    </a>
-                </td>
-                <td class="align-middle">${aPlayers[i].gun}</td>
-                <td class="align-middle">${sScore}</td>
-                <td class="align-middle">${sTries}</td>
-                <td class="align-middle">
-                    <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i></button>
-                </td>
-             </tr>`;
-            table.innerHTML+= row;
-
-        }
-    }
-    
-
-}
 function buildCategory2(eConfig, selectDivision){
 
     document.getElementById('divTAdvance').style.display='none';
@@ -652,7 +434,7 @@ function addUpdateShooter(){
         
         for(let i=0; i<eventConfig.divisions.length;i++){
             if(document.getElementById('btnCheckDivision'+eventConfig.divisions[i]._id).checked){
-                aRegistered.push({'division':eventConfig.divisions[i]._id
+                aRegistered.push({'divisionId':eventConfig.divisions[i]._id
                                  ,'gun':document.getElementById('gunName'+eventConfig.divisions[i]._id).value
                                  ,'optics':document.getElementById('optic'+eventConfig.divisions[i]._id).checked
                                  ,'score':9999,'tries':0 });
@@ -665,8 +447,8 @@ function addUpdateShooter(){
         let idDublicated= null;
         for(let i=0; i<playersArray.length;i++){
             if(playersArray[i].name.toUpperCase()===document.getElementById('modalName').value.toUpperCase()
-            && idShooter!= playersArray[i].id){
-                idDublicated=  playersArray[i].id;
+            && idShooter!= playersArray[i].shooterId){
+                idDublicated=  playersArray[i].shooterId;
             }
         }
 
@@ -691,38 +473,56 @@ function addUpdateShooter(){
             if(document.getElementById('modalOption'+cSeniors).checked)
                 categ= cSeniors;
             
-        
-            if(idShooter===null || idShooter==''){
-                //new user
-
-                idShooter= uuidv4();
-                document.getElementById('modalShooterId').value= idShooter;
-
-                let jShooter= {'id':idShooter
+            document.getElementById('modalShooterId').value= idShooter;
+                aEvt= [];
+                aEvt.push(eventConfig._id); 
+                let jShooter= {'shooterId':idShooter
                             ,'name':document.getElementById('modalName').value
                             ,'email':document.getElementById('modalEmail').value
-                            ,'category':categ
+                            ,'category': categ
+                            ,'eventId': aEvt
                             ,'registered':aRegistered};     
 
-                playersArray.push(jShooter);
-                alert(document.getElementById('modalName').value+' joined the event!');
+            //    playersArray.push(jShooter);
+            applySpinners(true);
+            fetch('/.netlify/functions/shooters_divisions', {
+                    method: "PATCH",
+                    body: JSON.stringify(jShooter),
+                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    })
+                    .then(response => response.json()) 
+                    .then(json => {
+                        console.log(`Shooter added/updated= ${json.toString}`);
+                
+                        if(idShooter===null || idShooter==''){
+                            alert(document.getElementById('modalName').value+' joined the event! shooterid: '+json.shooterId);
+                            document.getElementById('modalShooterId').value= json.shooterId;
 
-            }else{
-                //update
+                        }else{
+                            alert(document.getElementById('modalName').value+' updated');
+                        }
+                        modalChanged=true;
+                    })
+                    .catch(err => console.log(`Error adding, updating shooter: ${err}`))
+                    .finally(()=> applySpinners(false));
+                
+            // {
+            // }else{
+            //     //update
 
-                for(i=0;i<playersArray.length;i++){
-                    if(idShooter==playersArray[i].id){
-                        playersArray[i].name=document.getElementById('modalName').value;
-                        playersArray[i].email=document.getElementById('modalEmail').value;
-                        playersArray[i].category= categ;
-                        playersArray[i].registered= aRegistered;
-                    alert('Shooter '+ playersArray[i].name+' has been updated!');
-                    }
+            //     for(i=0;i<playersArray.length;i++){
+            //         if(idShooter==playersArray[i].shooterId){
+            //             playersArray[i].name=document.getElementById('modalName').value;
+            //             playersArray[i].email=document.getElementById('modalEmail').value;
+            //             playersArray[i].category= categ;
+            //             playersArray[i].registered= aRegistered;
+            //         alert('Shooter '+ playersArray[i].name+' has been updated!');
+            //         }
 
-                }
-            }
-            scoreCal();
-            buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
+            //     }
+            // }
+            
+            //buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
     
 }
     
@@ -733,16 +533,43 @@ function deleteShooter(){
         return 0;
     }else if(confirm('Are you sure you want to remove this shoothe?')) {
 
-        for(i=0;i<playersArray.length;i++){
-            if(idShooter==playersArray[i].id){
-                playersArray.splice(i, 1);
-            }
+        let jShooter= {shooterId:''};
+        jShooter.shooterId= idShooter;
+        applySpinners(true);
+        fetch('/.netlify/functions/shooters_divisions', {
+            method: "DELETE",
+            body: JSON.stringify(jShooter),
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+                console.log(`Shooter deleted. akas: [divisions_deleted: ${json.divisions_deletedCount}, shooters_deleted:${json.shooter_deletedCount}]`);
+        
+                if(json.shooter_deletedCount>0){
+                    alert(`Shooter deleted! akas: [divisions_deleted: ${json.divisions_deletedCount}, shooters_deleted:${json.shooter_deletedCount}] `);
+                    document.getElementById('modalShooterId').value= "";
 
-        }
+                }else{
+                    alert(`No users seems to have been deleted.`);
+                }
+                modalChanged=true;
+                updateShootersList();
+
+            })
+            .catch(err => console.log(`Error deleting shooter, updating shooter: ${err}`))
+            .finally(()=> applySpinners(false));
+        
+
+        // for(i=0;i<playersArray.length;i++){
+        //     if(idShooter==playersArray[i].id){
+        //         playersArray.splice(i, 1);
+        //     }
+
+        // }
        
-        scoreCal();
-        buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
-        document.getElementById('modalShooterId').value=null;
+        //scoreCal();
+        //buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
+       // document.getElementById('modalShooterId').value='';
     }
     
 }
@@ -792,7 +619,7 @@ function addTimeRecord(){
     
     let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties};
 
-
+    applySpinners(true);
     fetch('/.netlify/functions/time-records', {
         method: "POST",
         body: JSON.stringify(newRecord),
@@ -822,7 +649,8 @@ function addTimeRecord(){
         //         buildPlayersTables(transformRegistrer(playersArray), eventConfig, idDivision);
         //     })
         // })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
+        .finally(()=> applySpinners(false));
 
     //timeRecords.push(newRecord);
 
@@ -838,6 +666,7 @@ function buildTimeTable(idShooter,idDivision){
     
     document.getElementById('timeTable').innerHTML="";
     
+    applySpinners(true);
     fetch(`/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}`)
         .then(r=>r.json())
         .then(records=>{
@@ -860,14 +689,16 @@ function buildTimeTable(idShooter,idDivision){
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
                     <td class="text-end">${records[i].sTime}</td>
                     <td class="text-end">${records[i].penalties}</td>
-                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}')" type="button" class="btn btn-danger btn-circle btn-xl">-</button>
+                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
                     </td>
                 </tr>`;
                 
                 document.getElementById('timeTable').innerHTML=row;
             }
 
-        } );
+        } )
+        .catch(err => console.log(`Error building time: ${err}`))
+        .finally(()=> applySpinners(false));
     
     
 }
@@ -896,6 +727,7 @@ function deleteTime(idTimeRecord, idShooter, idDivision){
         return 0;
     }else if(confirm('Are you sure you want to remove this time record?')) {
 
+        applySpinners(true);
         fetch(`/.netlify/functions/time-records?timeRecordId=${idTimeRecord}`, {
             method: "DELETE",
             // body: JSON.stringify(newRecord),
@@ -909,22 +741,8 @@ function deleteTime(idTimeRecord, idShooter, idDivision){
                 buildTimeTable(idShooter,idDivision);
                 console.log(r);
             })
-
-
-        // for(i=0;i<timeRecords.length;i++){
-        //     if(idTimeRecord==timeRecords[i].id){
-        //         timeRecords.splice(i, 1);
-                
-
-        //         scoreCal();
-        //         buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
-        //         buildTimeTable(idShooter,idDivision);
-        //         document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
-        //         return 0;
-        //     }
-
-        // }
-        
+            .catch(err => console.log(`Error deleting time: ${err}`))
+            .finally(()=> applySpinners(false));
     }
 
 
@@ -967,4 +785,35 @@ function scoreCal(){
         }        
     }
 
+}
+
+function applySpinners(onoff){
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        btn.disabled=onoff;
+        document.getElementById('selectDivision').disabled=onoff;
+
+        if(btn.getAttribute('class').includes("btn-danger")
+            ||btn.getAttribute('class').includes("btn-secondary")
+            ||btn.getAttribute('class').includes("btn-primary")) {
+
+            if(onoff)
+                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+            else
+                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
+        }
+
+        // spans= btn.querySelectorAll("span");
+        // [].forEach.call(spans,span=>{
+        
+        //     if(span.getAttribute('class').includes("spinner")){
+        //         if(onoff)
+        //             span.style.visibility = 'visible'//'visible'; //'hidden'
+        //         else
+        //             span.style.visibility = 'hidden'//'visible'; //'hidden'
+        //         }
+        //     }
+        // );
+    });
 }
