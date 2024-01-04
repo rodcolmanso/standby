@@ -16,36 +16,479 @@ let timeRecords;
 let modalChanged;
 let language="pt-br"
 
+// let matches=[[]];
 
-const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:""};
 
-const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+let shooters=[];
+let id=0;
+
+shooters.push({id:id++,name:"Rodrigo ", victories: 0, defeats:0, gun:"PT57S"});
+shooters.push({id:id++,name:"Priscla ", victories: 0, defeats:0, gun:"TX 22"});
+
+shooters.push({id:id++,name:"Bia ", victories: 0, defeats:0, gun:"Chiappa 22"});
+shooters.push({id:id++,name:"Lucca ", victories: 0, defeats:0, gun:"Colt 1911"});
+
+shooters.push({id:id++,name:"Fauna ", victories: 0, defeats:0, gun:"Glock 19"});
+shooters.push({id:id++,name:"Flora ", victories: 0, defeats:0, gun:"Massada"});
+
+shooters.push({id:id++,name:"Ludovick ", victories: 0, defeats:0, gun:"G3 Toro"});
+shooters.push({id:id++,name:"Satoshi ", victories: 0, defeats:0, gun:"Chiappa 22"});
+
+// shooters.push({id:id++,name:"Aloe ", victories: 0, defeats:0, gun:"Gerico"});
+// shooters.push({id:id++,name:"Vera ", victories: 0, defeats:0, gun:"CZ"});
+
+// shooters.push({id:id++,name:"Micky ", victories: 0, defeats:0, gun:"Beretta"});
+// shooters.push({id:id++,name:"Molly ", victories: 0, defeats:0, gun:"TS9"});
+
+// shooters.push({id:id++,name:"Pedro ", victories: 0, defeats:0, gun:"G2C"});
+// shooters.push({id:id++,name:"Paulo ", victories: 0, defeats:0, gun:"Bersa 380"});
+
+// shooters.push({id:id++,name:"João ", victories: 0, defeats:0, gun:"S&W 9"});
+// shooters.push({id:id++,name:"Maria ", victories: 0, defeats:0, gun:"Imbel Chodó"});
+
+// shooters.push({id:id++,name:"Xitãozinho ", victories: 0, defeats:0, gun:"G3C"});
+// shooters.push({id:id++,name:"Xororó ", victories: 0, defeats:0, gun:"Tangfolio 380"});
+
+// shooters.push({id:id++,name:"Vitor ", victories: 0, defeats:0, gun:"Tissas .40"});
+// shooters.push({id:id++,name:"Matheus ", victories: 0, defeats:0, gun:"PTN"});
+
+// shooters.push({id:id++,name:"Ariely ", victories: 0, defeats:0, gun:"1911"});
+// shooters.push({id:id++,name:"Bernadeth ", victories: 0, defeats:0, gun:"Glock 22"});
+
+// shooters.push({id:id++,name:"Joana ", victories: 0, defeats:0, gun:"PT58"});
+// shooters.push({id:id++,name:"Marcia ", victories: 0, defeats:0, gun:"Beretta 92F"});
+
+// shooters.push({id:id++,name:"Norra ", victories: 0, defeats:0, gun:"CZ Shadow"});
+// shooters.push({id:id++,name:"Franklin ", victories: 0, defeats:0, gun:"TS9"});
+
+let mainMatches=[];
+let recapMatches=[];
+    
+function buildMatches(){
+    let levelMatches=[];
+
+
+    //NIVEL 0: Caso exista partiipantes <>4,8,16,32, 64, etc, deve existir uma rodada preliminhar
+    let poten=2;
+    let preKOs0=0;
+    let hasPreKOs=0;
+
+    while(shooters.length>=poten){
+        poten=poten*2;
+    }
+    let preKO=shooters.length*2-poten;
+
+    for(let i= 0; i< preKO; i++){
+        levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+        i++;
+    }
+    if(levelMatches.length>0){
+        mainMatches.push(levelMatches);
+        levelMatches=[];
+        hasPreKOs=1;    
+    }
+
+    //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
+    // cria o primeiro nível de partidas (root) quando não houver preliminares
+    levelMatches=[];
+    if(mainMatches.length>0){ // preliminares
+
+        for(let i=0;i<mainMatches[0].length;i++){
+
+            if(preKO<shooters.length){
+                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[preKO], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
+                preKO++;
+            }else{
+                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][i+1].id });
+                i++;
+            }
+        }
+    }
+    for(let i=preKO; i< shooters.length;i++){
+        levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+        i++;
+    }
+    mainMatches.push(levelMatches);
+
+    // NIVEL 2: partidas de vitoriosos até a final
+    //    pula a rodada preliminar
+    for(let l=(preKO>0?1:0) ; l<mainMatches.length; l++){
+        levelMatches=[];
+        hasMatches=false;
+        for(let i=0; i<mainMatches[l].length-1; i++){
+
+            levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
+            i++;
+            hasMatches=true;
+
+        }
+        if(hasMatches) mainMatches.push(levelMatches);
+    }
+
+
+    // 3. NIVEL RECAP: partidas de derrotados do main match
+    // 3.1 root level
+
+    rootRecapShooters=[];
+    for(let i=0; i<mainMatches[0].length;i++){
+        rootRecapShooters.push({id:mainMatches[0][i].id , shooter:mainMatches[0][i].d});
+    }
+    if(hasPreKOs>0){
+        for(let i=0; i<mainMatches[1].length;i++){
+            rootRecapShooters.push({id:mainMatches[1][i].id ,shooter:mainMatches[1][i].d});
+        }
+    }
+
+    poten=2;
+    preKOs0=0;
+    while(rootRecapShooters.length>=poten){
+        poten=poten*2;
+    }
+    preKO=rootRecapShooters.length*2-poten;
+    levelMatches=[];
+    for(let i= 0; i< preKO; i++){
+        levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
+        i++;
+    }
+    if(levelMatches.length>0){
+        recapMatches.push(levelMatches);
+        levelMatches=[];
+    }
+
+    levelMatches=[];
+    if(recapMatches.length>0){ // preliminares
+
+        for(let i=0;i<recapMatches[0].length;i++){
+
+            if(preKO<rootRecapShooters.length){
+                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:rootRecapShooters[preKO].shooter, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:rootRecapShooters[preKO].id });
+                preKO++;
+            }else{
+                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][i+1].id });
+                i++;
+            }
+        }
+    }
+    for(let i=preKO; i< rootRecapShooters.length;i++){
+        levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
+        i++;
+    }
+    recapMatches.push(levelMatches);
+
+    ////resolvendo os niveis seguintes
+
+    for(let l=1+hasPreKOs;l<mainMatches.length;l++){
+        levelMatches=[];
+        for(let i=0;i<recapMatches[recapMatches.length-1].length;i++){
+            even= mainMatches[l].length===recapMatches[recapMatches.length-1].length;
+            if(even){
+                //intercala com jogos principais
+                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:mainMatches[l][i].d, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:mainMatches[l][i].id });
+            }else{
+            //jogos só de repesqueiros
+                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
+                i++;
+                // l--;
+            }
+        }
+        if(!even){
+            l--;
+        }
+        recapMatches.push(levelMatches);
+    }
+
+    // 4. Super final com o ganhador do Main Matches com o campeao do Recap
+    levelMatches=[];
+    levelMatches.push({id:"r."+(mainMatches.length)+"."+levelMatches.length, shooterA:mainMatches[mainMatches.length-1][0].v
+                    , shooterB:recapMatches[recapMatches.length-1][0].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[mainMatches.length-1][0].id, parentB:recapMatches[recapMatches.length-1][0].id });
+
+    //  mainMatches.push(levelMatches);
+
+
+    console.log(`========MAIN============`);
+    //  ========
+    for(let l=0; l<mainMatches.length;l++){
+
+        console.log(`========Level ${l}============`);
+        for(let i=0; i<mainMatches[l].length;i++){
+
+            console.log(`[Jogo ${i}, id=${mainMatches[l][i].id}]: ${mainMatches[l][i].shooterA.name} vs ${mainMatches[l][i].shooterB.name}`);
+
+        }
+        console.log(`==============================`);
+    }
+
+
+    console.log(`=========================`);
+    console.log(`========RECAP============`);
+
+    for(let l=0; l<recapMatches.length;l++){
+
+        console.log(`========Level ${l}============`);
+        for(let i=0; i<recapMatches[l].length;i++){
+
+            console.log(`[Jogo ${i}, id=${recapMatches[l][i].id}]: ${recapMatches[l][i].shooterA.name} vs ${recapMatches[l][i].shooterB.name}`);
+
+        }
+        console.log(`==============================`);
+    }
+
+}
+
+function updateAllMatches(){
+    
+    let idM=[];
+    for(let l=0;l<mainMatches.length;l++){
+        for(let i=0 ; i<mainMatches[l].length;i++){
+            if(mainMatches[l][i].parentA!=="root"){
+                idM= mainMatches[l][i].parentA.split('.');
+                if(idM[0]==="m")
+                    mainMatches[l][i].shooterA= mainMatches[idM[1]][idM[2]].v;
+                else
+                    mainMatches[l][i].shooterA= recapMatches[idM[1]][idM[2]].v;
+            }
+
+            if(mainMatches[l][i].parentB!=="root"){
+                idM= mainMatches[l][i].parentB.split('.');
+                if(idM[0]==="m")
+                    mainMatches[l][i].shooterB= mainMatches[idM[1]][idM[2]].v;
+                else
+                    mainMatches[l][i].shooterB= recapMatches[idM[1]][idM[2]].v;
+            }
+
+        }
+    }
+
+    for(let l=0;l<recapMatches.length;l++){
+        for(let i=0 ; i<recapMatches[l].length;i++){
+            if(recapMatches[l][i].parentA!=="root"){
+                idM= recapMatches[l][i].parentA.split('.');
+                if(idM[0]==="m")
+                    recapMatches[l][i].shooterA= mainMatches[idM[1]][idM[2]].d;
+                else
+                    recapMatches[l][i].shooterA= recapMatches[idM[1]][idM[2]].v;
+            }
+
+            if(recapMatches[l][i].parentB!=="root"){
+                idM= recapMatches[l][i].parentB.split('.');
+                if(idM[0]==="m")
+                    recapMatches[l][i].shooterB= mainMatches[idM[1]][idM[2]].d;
+                else
+                    recapMatches[l][i].shooterB= recapMatches[idM[1]][idM[2]].v;
+            }
+
+        }
+    }
+
+    addMainMatches(false);
+}
+
+function updateMatch(matchId, parentA, parentB, v){
+    // alert('No updateMatch. matchId='+matchId);
+    let idM= matchId.split('.');
+
+    if(idM[0]==="m"){
+       mainMatches[idM[1]][idM[2]].v= ""+mainMatches[idM[1]][idM[2]].shooterA.id===v ? mainMatches[idM[1]][idM[2]].shooterA : mainMatches[idM[1]][idM[2]].shooterB;
+       mainMatches[idM[1]][idM[2]].d= ""+mainMatches[idM[1]][idM[2]].shooterA.id===v ? mainMatches[idM[1]][idM[2]].shooterB : mainMatches[idM[1]][idM[2]].shooterA;
+    }else{
+       recapMatches[idM[1]][idM[2]].v= ""+recapMatches[idM[1]][idM[2]].shooterA.id===v ? recapMatches[idM[1]][idM[2]].shooterA : recapMatches[idM[1]][idM[2]].shooterB;
+       recapMatches[idM[1]][idM[2]].d= ""+recapMatches[idM[1]][idM[2]].shooterA.id===v ? recapMatches[idM[1]][idM[2]].shooterB : recapMatches[idM[1]][idM[2]].shooterA;
+    }
+
+    updateAllMatches();
+
+}
+
+function addLevels(){
+    let overallLevels= document.getElementById('overallLevels');
+
+    let levels="";
+
+    let count= mainMatches.length;
+    let col_matches= "col-matches";
+    "col-matches-final-1"
+    for(let i=0;i<count;i++){
+        if(i+1===count){
+            col_matches= "col-matches-final-1"
+        };
+    levels+= `<div id="overallLevelM${i}" class="col-5 ${col_matches}">
+            </div>
+            <div class="col-5 col-matches-rule" id="overallRuleLevelM${i}">
+                
+            </div>`;
+    }
+    overallLevels.innerHTML=levels;
+
+    levels="";
+    count= recapMatches.length;
+    col_matches= "col-matches-final-2"
+    for(let i=count-1;i>=0;i--){
+        levels+= `<div id="overallLevelR${i}" class="col-5 ${col_matches}">
+                </div>
+                <div class="col-5 col-matches-rule" id="overallRuleLevelM${i}">
+                </div>`;
+        col_matches= "col-matches";
+        }
+        overallLevels.innerHTML+=levels;
+}
+
+function addMainMatches(has4Plays){
+
+    let overallLevel;
+    let matches="";
+
+    let divRule="";
+    for(let l=0;l<mainMatches.length;l++){
+
+        for(let i=0;i<mainMatches[l].length;i++){
+
+            checkedA= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterA.id?"checked":"";
+            checkedB= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterB.id?"checked":"";
+            matches+= `
+            <div class="card mb-3 card-block">
+                <div class="row g-0">
+                    <div class="col-md-4 small-avatar-pic" >
+                        <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </div>
+                    <div class="col-md-6 col-card-match">
+                        <div class="card-header-2" >
+                        <h10 class="card-title text-truncate">${mainMatches[l][i].shooterA.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][i].shooterA.gun}</small></p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center col-card-check">
+                        <div class="form-check">
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="flexRadioMatch${mainMatches[l][i].id}" id="flexRadioMatch${mainMatches[l][i].id}" value="${mainMatches[l][i].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[l][i].id}', '${mainMatches[l][i].parentA}', '${mainMatches[l][i].parentB}', this.value)" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="card mb-3 card-block">
+                <div class="row g-0">
+                    <div class="col-md-4 small-avatar-pic" >
+                        <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </div>
+                    <div class="col-md-6 col-card-match">
+                        <div class="card-header-2" >
+                        <h10 class="card-title text-truncate">${mainMatches[l][i].shooterB.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][i].shooterB.gun}</small></p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center col-card-check">
+                        <div class="form-check">
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="flexRadioMatch${mainMatches[l][i].id}" id="flexRadioMatch${mainMatches[l][i].id}" value="${mainMatches[l][i].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[l][i].id}', '${mainMatches[l][i].parentA}', '${mainMatches[l][i].parentB}', this.value)" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--fim Partida-->
+            <p class="ps-8"></p>
+            <p class="ps-8"></p>`;
+
+            
+        } 
+        document.getElementById('overallLevelM'+l).innerHTML= matches;
+        matches="";
+
+        divRule=`<p class="ps-50"></p>
+        <div class="d-flex align-items-center" style="height: 136px;">
+            <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
+        </div>
+        <p class="ps-50"></p>
+        <p class="ps-50"></p>
+        <div class="d-flex align-items-center" style="height: 136px;">
+            <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
+        </div>`;
+
+        // document.getElementById('overallRuleLevelM'+l).innerHTML= divRule;
+    }
+
+    for(let l=recapMatches.length-1;l>=0;l--){
+
+        for(let i=0;i<recapMatches[l].length;i++){
+            checkedA= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterA.id?"checked":"";
+            checkedB= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterB.id?"checked":"";
+            matches+= `
+            <div class="card mb-3 card-block">
+                <div class="row g-0">
+                    <div class="col-md-4 small-avatar-pic" >
+                        <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </div>
+                    <div class="col-md-6 col-card-match">
+                        <div class="card-header-2" >
+                        <h10 class="card-title text-truncate">${recapMatches[l][i].shooterA.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary">${recapMatches[l][i].shooterA.gun}</small></p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center col-card-check">
+                        <div class="form-check">
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="flexRadioMatch${recapMatches[l][i].id}" id="flexRadioMatch${recapMatches[l][i].id}" value="${recapMatches[l][i].shooterA.id}"  onClick="javascript:updateMatch('${recapMatches[l][i].id}', '${recapMatches[l][i].parentA}', '${recapMatches[l][i].parentB}', this.value)" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!---->
+            <div class="card mb-3 card-block">
+                <div class="row g-0">
+                    <div class="col-md-4 small-avatar-pic" >
+                        <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </div>
+                    <div class="col-md-6 col-card-match">
+                        <div class="card-header-2" >
+                        <h10 class="card-title text-truncate">${recapMatches[l][i].shooterB.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary">${recapMatches[l][i].shooterB.gun}</small></p>
+                        </div>
+                    </div>
+                    <div class="row align-items-center col-card-check">
+                        <div class="form-check">
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="flexRadioMatch${recapMatches[l][i].id}" id="flexRadioMatch${recapMatches[l][i].id}" value="${recapMatches[l][i].shooterB.id}"  onClick="javascript:updateMatch('${recapMatches[l][i].id}', '${recapMatches[l][i].parentA}', '${recapMatches[l][i].parentB}', this.value)" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--fim Partida-->
+            <p class="ps-8"></p>
+            <p class="ps-8"></p>`;
+        } 
+        document.getElementById('overallLevelR'+l).innerHTML= matches;
+        matches="";
+    }
+
+}
+
+// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+//     .then(r=>r.json())
+//     .then(data => {
+//     return data;
+// });
+
+// const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+//     .then(r=>r.json())
+//     .then(data => {
+//     return data;
+// });
 
 window.onload = async () => {
-    document.getElementById('divTAdvance').style.display='none';
-    document.getElementById('divTOverall').style.display= 'none';
-    document.getElementById('divTLadies').style.display='none';
-    document.getElementById('divTOptics').style.display='none';
-    document.getElementById('divTSeniors').style.display='none';
-    // document.getElementById('EventTitle').innerHTML =``;
-    applySpinners(true);
+    buildMatches();
+    addLevels();
+    addMainMatches();
+    // document.getElementById('divTAdvance').style.display='none';
+    // document.getElementById('divTOverall').style.display= 'none';
+    // document.getElementById('divTLadies').style.display='none';
+    // document.getElementById('divTOptics').style.display='none';
+    // document.getElementById('divTSeniors').style.display='none';
+    // applySpinners(true);
 
-    eventConfig = await promiseOfEventConfig;
-    playersArray= await promiseOfPlayers;
-    document.getElementById('eventTitle').innerHTML= eventConfig.name;
-    spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+    // eventConfig = await promiseOfEventConfig;
+    // playersArray= await promiseOfPlayers;
+    // document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    // spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
-    buildDivisions(eventConfig.divisions);
-    modalChanged=false;
-    applySpinners(false);
+    // buildDivisions(eventConfig.divisions);
+    // modalChanged=false;
+    // applySpinners(false);
 
 };
   
@@ -802,3 +1245,4 @@ function applySpinners(onoff){
         // );
     });
 }
+
