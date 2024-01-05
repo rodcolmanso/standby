@@ -118,7 +118,7 @@ h1{
 	height: 50px;
   max-height:50px !important;
   margin-bottom: 0 !important;
-  width: 230px !important;
+  width: 200px !important;
   
 	/* background-color: #fff;
 	border: none;
@@ -144,7 +144,7 @@ h1{
 }
 
 .col-card-match{
-  width: 145px !important;
+  width: 115px !important;
 }
 
 .col-card-check{
@@ -153,7 +153,7 @@ h1{
 
 .col-matches{
   /* style="width: 300px; padding: 14px;" */
-  width: 250px !important;
+  width: 220px !important;
   padding: 14px !important;
   height: auto !important;
   /* background-color: burlywood; */
@@ -161,7 +161,7 @@ h1{
 
 .col-matches-final-2{
   /* style="width: 300px; padding: 14px;" */
-  width: 250px !important;
+  width: 220px !important;
   padding: 14px !important;
   height: 130px !important;
   /* background-color: burlywood; */
@@ -170,7 +170,7 @@ h1{
 
 .col-matches-final-1{
   /* style="width: 300px; padding: 14px;" */
-  width: 250px !important;
+  width: 220px !important;
   padding: 14px !important;
   height: 130px !important;
   /* background-color: burlywood; */
