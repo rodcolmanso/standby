@@ -57,12 +57,15 @@ const handler = async (event, context)=>{
                                     }
                                  }
                                  ,{
-                                    $project:{ "score":{"$add":["$sTime","$penalties"]}},
+                                    $project:{ "score":{"$add":["$sTime","$penalties"]}
+                                              ,datetime:1
+                                  },
                                 }
                                 ,{$group:
                                     { _id:["$shooterId","$divisionId"],
                                        tries:{$count:{}},
-                                        score:{$min:"$score"}
+                                        score:{$min:"$score"},
+                                        datetime:{$min:"$datetime"}
                                     }
                                 }
                                 ],

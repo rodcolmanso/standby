@@ -95,14 +95,19 @@ function transformRegistrer(players){
             if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
                 players[i].registered[j].score=999;
                 players[i].registered[j].tries=0;
+                players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
             }
-            aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries };
+
+            score_idx= zeroPad((""+(players[i].registered[j].score*100)),7);
+            sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
+            console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
+            aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
             rP.push(aRow);  
         }
     }
 
     rP= rP.sort((a, b) => {
-        if (a.score < b.score) {
+        if (a.sort_idx < b.sort_idx) {
           return -1;
         }
       });
@@ -645,7 +650,7 @@ function addTimeRecord(){
                 
 }
 
-
+const zeroPad = (num, places) => String(num).padStart(places, '0');
 
 function buildTimeTable(idShooter,idDivision){
     
@@ -659,8 +664,6 @@ function buildTimeTable(idShooter,idDivision){
             let row='';
 
             let ord=1;
-            const zeroPad = (num, places) => String(num).padStart(places, '0');
-
             let dt; 
             for(let i=0; i< records.length ; i++){
                 
@@ -789,16 +792,16 @@ function applySpinners(onoff){
                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
         }
 
-        // spans= btn.querySelectorAll("span");
-        // [].forEach.call(spans,span=>{
+        spans= btn.querySelectorAll("span");
+        [].forEach.call(spans,span=>{
         
-        //     if(span.getAttribute('class').includes("spinner")){
-        //         if(onoff)
-        //             span.style.visibility = 'visible'//'visible'; //'hidden'
-        //         else
-        //             span.style.visibility = 'hidden'//'visible'; //'hidden'
-        //         }
-        //     }
-        // );
+            if(span.getAttribute('class').includes("spinner")){
+                if(onoff)
+                    span.style.visibility = 'visible'//'visible'; //'hidden'
+                else
+                    span.style.visibility = 'hidden'//'visible'; //'hidden'
+                }
+            }
+        );
     });
 }

@@ -254,7 +254,8 @@ db.shooters.aggregate([
                         ,{$group:
                             { _id:["$shooterId","$divisionId"],
                                tries:{$count:{}},
-                                score:{$min:"$score"}
+                                score:{$min:"$score"},
+                                fistTry:{$min:"$datetime"}
                             }
                         }
                         ],
@@ -267,7 +268,7 @@ db.shooters.aggregate([
         }
     }            
     ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0, "registered.time_records":0}}
-]).sort({"registered.score":1});
+]).sort({"registered.score":1, "registered.tries":1, "registered.fistTry":1});
 
 ///////////-------------
 db.shooters_divisions.aggregate([
@@ -378,3 +379,9 @@ db.time_records.aggregate([
 
 
 db.shooters.createIndex( {"name":1, "eventId":1}, { "unique": true } );
+
+
+
+
+///
+db.divisions.aggregate([{$match:{eventId:"6578ad76e53c8b23971032c4"}}])

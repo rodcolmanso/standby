@@ -241,7 +241,7 @@
 
   <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#"><i class="bi bi-trophy"></i></a>
-    <div class="text-center"><span class="text-center" id="eventTitle">2ª Etapa de TPM CT Aldeia</span></div>
+    <div class="text-center"><span class="text-center" id="eventTitle">9ª Etapa de TPM CT XXXXXXXX</span></div>
     <div></div>
     <ul class="navbar-nav flex-row d-md-none">
       <li class="nav-item text-nowrap">
@@ -279,7 +279,7 @@
           <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="#">
+                <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="/">
                   <svg class="bi">
                     <use xlink:href="#house-fill" />
                   </svg>
@@ -287,7 +287,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link d-flex align-items-center gap-2 active" href="#">
+                <a class="nav-link d-flex align-items-center gap-2 active" href="/matches.html">
                   <svg class="bi">
                     <use xlink:href="#file-earmark" />
                   </svg>
@@ -299,7 +299,7 @@
                   <svg class="bi">
                     <use xlink:href="#cart" />
                   </svg>
-                  Products
+                  Eventos
                 </a>
               </li>
               <li class="nav-item">
@@ -307,7 +307,7 @@
                   <svg class="bi">
                     <use xlink:href="#people" />
                   </svg>
-                  Customers
+                  Atiradores
                 </a>
               </li>
               <li class="nav-item">
@@ -415,9 +415,7 @@
           <option valsue="2">Revolver</option>
           <option value="3">Freeforce</option>
         </select>
-
         <div>
-          
           <!--NAV-->
           <p></p>
           <div class="accordion" id="accordionExample">
@@ -430,7 +428,15 @@
               </h2>
               <div id="collapseAdvance" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                  <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                  <div id="scrollspyHeadingAdvance" class="table-responsive small">
+                    <div class="container-fluid">
+                      <div id="advanceLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                        <div class="col-5 col-matches"> <!------Nivel-->
+                        </div>
+                      </div>
+                      <!-------------->
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -442,371 +448,19 @@
               </h2>
               <div id="collapseOverall" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-          
-            
-                  <!-- <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
-                    data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0"> -->
-
-                    <!-- <div id="divTAdvance" >
-                      <h5>Avançados</h5>
-                      <p>
-                        <div id="scrollspyHeadingAdvance" class="table-responsive small">
-                        
-                        </div>
-                      </p>
-                    </div> -->
-                    <!-- <h5>Sport</h5> -->
                     <div id="scrollspyHeadingOverall" class="table-responsive small">
                       <div class="container-fluid">
-                        
                         <div id="overallLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                          
                           <div class="col-5 col-matches"> <!------Nivel-->
-                        
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Rodman Col</h10>
-                                    <p class="card-text"><small class="text-body-secondary">Chiappa 22</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch1" id="flexRadioMatch1">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Pris Manso</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TX22</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch1" id="flexRadioMatch1">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-                            <p class="ps-8"></p>
-                            <p class="ps-8"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic">
-                                  <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Bia</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch2" id="flexRadioMatch2">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0" >
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Lucca da Rocha Manso</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch2" id="flexRadioMatch2">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-                            <!--fim Partida-->
-                            <p class="ps-8"></p>
-                            <p class="ps-8"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Bia</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch3" id="flexRadioMatch3">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Lucca</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch3" id="flexRadioMatch3">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-                            <!--fim Partida-->
-                            <p class="ps-8"></p>
-                            <p class="ps-8"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Margho</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch4" id="flexRadioMatch4">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Waldemar</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch4" id="flexRadioMatch4">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-                          </div>
-                          <div class="col-5 col-matches-rule">
-                            <p class="ps-50"></p>
-                            <div class="d-flex align-items-center" style="height: 136px;">
-                              <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
-                            </div>
-                            <p class="ps-50"></p>
-                            <p class="ps-50"></p>
-                            <div class="d-flex align-items-center" style="height: 136px;">
-                              <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
-                            </div>
-                          </div>
-
-                          <div class="col-5 col-matches">
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Maria</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch21" id="flexRadioMatch21">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">João</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch21" id="flexRadioMatch21">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-
-
-                            <p class="ps-8"></p>
-                            <p class="ps-8"></p>
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Maria</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch22" id="flexRadioMatch22">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">João</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch22" id="flexRadioMatch22">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
-                          </div>
-                          <div class="col-5 col-matches-rule">
-                            <p class="ps-50"></p>
-                            <p class="ps-50"></p>
-                            
-                            <div class="d-flex align-items-center" style="height: 248px;">
-                              <div class="vr">
-                                <p class="ps-50"></p>
-                                <p class="ps-50"></p>
-                                <p class="ps-8"></p>
-                                <p class="ps-8"></p>
-                                <p class="ps-2">-</p></div>
-                            </div>
-
-                          </div>
-                          <div class="col-5 col-matches">
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <p class="ps-8"></p>
-                            <p class="ps-50"></p>
-                            <!--partida-->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">Maria</h10>
-                                    <p class="card-text"><small class="text-body-secondary">G2C</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch31" id="flexRadioMatch31">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!---->
-                            <div class="card mb-3 card-block">
-                              <div class="row g-0">
-                                <div class="col-md-4 small-avatar-pic" >
-                                  <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                                </div>
-                                <div class="col-md-6 col-card-match">
-                                  <div class="card-header-2" >
-                                    <h10 class="card-title text-truncate">João</h10>
-                                    <p class="card-text"><small class="text-body-secondary">TS9</small></p>
-                                  </div>
-                                </div>
-                                <div class="row align-items-center col-card-check">
-                                  <div class="form-check">
-                                    <input class="form-check-input big-checkbox" type="radio" name="flexRadioMatch31" id="flexRadioMatch31">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--fim Partida-->
                           </div>
                         </div>
-
                         <!-------------->
                       </div>
                     </div>
                 </div>
               </div>
             </div>
-
-            <!----------------------->
-            <!-- <div id="divTOverall" >
-              <p>
-              </p>
-            </div> -->
-            
-            <div class="accordion-item">
+            <div class="accordion-item" id="liLadies" >
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLadies" aria-expanded="false" aria-controls="collapseLadies">
                   Damas
@@ -814,18 +468,19 @@
               </h2>
               <div id="collapseLadies" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                  <div id="divTLadies" >
-                    <h5>Damas</h5>
-                    <p>
-                      <div id="scrollspyHeadingLadies" class="table-responsive small" >
-                        
+                  <div id="scrollspyHeadingLadies" class="table-responsive small">
+                    <div class="container-fluid">
+                      <div id="ladiesLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                        <div class="col-5 col-matches"> <!------Nivel-->
+                        </div>
                       </div>
-                    </p>
+                      <!-------------->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="accordion-item">
+            <div class="accordion-item" id="liOptics" >
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOptics" aria-expanded="false" aria-controls="collapseOptics">
                   Optrônicas
@@ -833,18 +488,19 @@
               </h2>
               <div id="collapseOptics" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                  <div id="divTOptics" >
-                    <h5>Optrônicas</h5>
-                    <p>
-                      <div id="scrollspyHeadingOptics" class="table-responsive small" >
-                        
+                  <div id="scrollspyHeadingOptics" class="table-responsive small">
+                    <div class="container-fluid">
+                      <div id="opticsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                        <div class="col-5 col-matches"> <!------Nivel-->
+                        </div>
                       </div>
-                    </p>
+                      <!-------------->
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="accordion-item">
+            <div class="accordion-item" id="liSeniors" >
               <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeniors" aria-expanded="false" aria-controls="collapseSeniors">
                   Seniors
@@ -852,17 +508,22 @@
               </h2>
               <div id="collapseSeniors" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                  <div id="divTSeniors">
-                    <h5>Seniors</h5>
-                    <p>
-                      <div id="scrollspyHeadingSeniors" class="table-responsive small" >
-                        
+                  <div id="scrollspyHeadingSeniors" class="table-responsive small">
+                    <div class="container-fluid">
+                      <div id="seniorsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                        <div class="col-5 col-matches"> <!------Nivel-->
+                        </div>
                       </div>
-                    </p>
+                      <!-------------->
+                    </div>
                   </div>
+                </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div  id="spinner" class="spinner-border float-center" role="status" >
+            <span class="visually-hidden">Carregando...</span>
           </div>
         </div>
       
