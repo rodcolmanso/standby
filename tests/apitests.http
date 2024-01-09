@@ -2,6 +2,10 @@
 PUT http://localhost:8888/.netlify/functions/build_matches?eventId=6578ad76e53c8b23971032c4&divisionId=6578a6dae53c8b23971032c1
 
 ###
+PUT http://localhost:8888/.netlify/functions/build_matches?eventId=6578ad76e53c8b23971032c4&divisionId=6578a6dae53c8b23971032c2
+
+
+###
 DELETE  http://localhost:8888/.netlify/functions/time-records?timeRecordId=657a8a8bddc6eed7f0384521
 
 ###

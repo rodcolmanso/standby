@@ -600,7 +600,7 @@ function buildDivisions(eventDivisions){
     while (selectDivisions.options.length > 0)
         selectDivisions.remove(0);
 
-    let newOption = new Option('<<Selecione um Divisão>>','');
+    let newOption = new Option('<<selecione>>','');
     // selectDivisions.add(newOption,undefined);
 
     for(i=0;i<eventDivisions.length;i++){

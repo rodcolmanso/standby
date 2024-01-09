@@ -346,7 +346,7 @@ function buildDivisions(eventDivisions){
     while (selectDivisions.options.length > 0)
         selectDivisions.remove(0);
 
-    let newOption = new Option('<<Selecione um Divisão>>','-1');
+    let newOption = new Option('<<selecione>>','-1');
     selectDivisions.add(newOption,undefined);
 
     for(i=0;i<eventDivisions.length;i++){
@@ -392,12 +392,17 @@ function clearShooterModal(){
                 </td>
         </tr>`;
         document.getElementById('modalShooterDivisions').innerHTML+=modalRow;
+
+        document.getElementById('btnCheckDivision'+eventConfig.divisions[k]._id).checked=false;
+        document.getElementById('gunName'+eventConfig.divisions[k]._id).value="";
+        document.getElementById('optic'+eventConfig.divisions[k]._id).checked=false;
+
     }
 }
 
 function editShooter(idShooter){
 
-    //clearShooterModal();
+    clearShooterModal();
 
     //populate modal registered
     for(i=0;i< playersArray.length;i++){
