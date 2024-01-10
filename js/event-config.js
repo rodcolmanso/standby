@@ -146,7 +146,7 @@ function buildDivisionTable(eventConfig){
 
         row=`<tr>
         <th scope="row">${i+1}</th>
-        <td><input type="text" aria-label="indexAdvance" class="form-control" id="${eventConfig.divisions[i]._id}DivisionName" value="${eventConfig.divisions[i].name}"></td>
+        <td><input type="text" aria-label="indexAdvance" class="form-control form-control-sm" id="${eventConfig.divisions[i]._id}DivisionName" value="${eventConfig.divisions[i].name}"></td>
         <td  class="text-start">
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" ${ladiesChk} id="${eventConfig.divisions[i]._id}Check${cLadies}">
@@ -166,12 +166,12 @@ function buildDivisionTable(eventConfig){
           </div>
         </td>
         <td>
-          <div class="input-group">
+          <div class="">
             <select class="form-select form-select-sm" aria-label=".form-select-sm example"  style="display:${advFields}" id="${eventConfig.divisions[i]._id}SelectAdvance">
-              <option value="1" ${advanceSelectPassingScore}>Por tempo menor que:</option>
-              <option value="2" ${advanceSelectBestOf}>Por número de atiradores até:</option>
+              <option value="1" ${advanceSelectPassingScore}>Tempo menor que:</option>
+              <option value="2" ${advanceSelectBestOf}>Atiradores até:</option>
             </select>
-            <input type="text" aria-label="indexAdvance" class="form-control" id="${eventConfig.divisions[i]._id}IndexAdvance" style="display:${advFields}" value="${limit_val}">
+            <input type="text" aria-label="indexAdvance" class="form-control form-control-sm" id="${eventConfig.divisions[i]._id}IndexAdvance" style="display:${advFields}" value="${limit_val}">
           </div>
         </td>
         <td class="text-end">

@@ -301,7 +301,7 @@ const matchShootersCategories = (players, divisions)=>{
 
               if(divisions[c].categories.advance &&
                   ((players[i].score<100&&players[i].score<=divisions[c].advanceLimit.passingScore) ||
-                  divPosition< divisions[c].advanceLimit.topBestOf )){
+                  divPosition<= divisions[c].advanceLimit.topBestOf )){
                     // console.log(`matchShootersCategories.  SETO DE ${players[i].category} PARA players[${i}].category=cAdvance [${cAdvance}]`);
                     players[i].category= cAdvance;
               }
@@ -345,143 +345,133 @@ const handler = async (event, context)=>{
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cDivisions= database.collection(process.env.MONGODB_COLLECTION_DIVISIONS);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
-    const cShooters_Divisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS_DIVISIONS);
-
+    const cKos= database.collection(process.env.MONGODB_COLLECTION_KOS);
+    
     let shootersAux=[];
     
     switch (event.httpMethod){
-      case 'PUT':
-        const p_eventId= event.queryStringParameters.eventId.toString();
-        const p_divisionId= event.queryStringParameters.divisionId.toString();
+      // case 'PUT':
+      //   const p_eventId= event.queryStringParameters.eventId.toString();
+      //   const p_divisionId= event.queryStringParameters.divisionId.toString();
   
+        
+        case 'GET': // update kos of a division
+        // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
+        let p_eventId= event.queryStringParameters.eventId.toString();
+        let p_divisionId= event.queryStringParameters.divisionId.toString();
+        
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-          const o_id = new ObjectId(p_divisionId);
-          const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
-          // console.log('After division. division.lenght=' +division.length);
-          
-          const shootersDivx= await shootersDiv(cShooters, p_eventId);
-          // console.log('After shootersDivx. shootersDivx.lenght=' +shootersDivx.length);
-          let players= flatPlayesDivisions(shootersDivx, 1);
-          players= matchShootersCategories(players, division);  
+console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
+          const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
 
-          let ladyDoubleKOsKOs=[];
-          if(division[0].categories.ladies){
-            shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
-              if (a.sort_idx > b.sort_idx) {
-              return -1;
-              }
-          });
-            ladyDoubleKOsKOs= buildMatches(shootersAux);
-          }
-          let seniorDoubleKOsKOs=[];
+          console.log
+        
+          if(division_matches.length>0){
+            return{
+              statusCode: 200
+              ,body: JSON.stringify(division_matches[0])
+            }
+          }else{
+            const o_id = new ObjectId(p_divisionId);
+            const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
+            // console.log('After division. division.lenght=' +division.length);
+            
+            const shootersDivx= await shootersDiv(cShooters, p_eventId);
+            // console.log('After shootersDivx. shootersDivx.lenght=' +shootersDivx.length);
+            let players= flatPlayesDivisions(shootersDivx, 1);
+            players= matchShootersCategories(players, division);  
 
-          if(division[0].categories.seniors){
-            shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
-            // seniorDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
-              if (a.sort_idx > b.sort_idx) {
-              return -1;
-              }
+            let ladyDoubleKOsKOs=[];
+            if(division[0].categories.ladies){
+              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
+                if (a.sort_idx > b.sort_idx) {
+                return -1;
+                }
             });
-            seniorDoubleKOsKOs= buildMatches(shootersAux);
+              ladyDoubleKOsKOs= buildMatches(shootersAux);
+            }
+            let seniorDoubleKOsKOs=[];
+
+            if(division[0].categories.seniors){
+              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
+              // seniorDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
+                if (a.sort_idx > b.sort_idx) {
+                return -1;
+                }
+              });
+              seniorDoubleKOsKOs= buildMatches(shootersAux);
+            }
+
+            let opticDoubleKOsKOs=[];
+            if(division[0].categories.optics){
+              // console.log(`DIVISAOOO OPTICS!!!!!!!`);
+              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
+              // opticDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
+                if (a.sort_idx > b.sort_idx) {
+                return -1;
+                }
+              });
+              shootersAux
+              opticDoubleKOsKOs= buildMatches(shootersAux);
+            }
+
+            let overallDoubleKOsKOs=[];
+            if(division[0].categories.overall){
+              // console.log(`DIVISAOOO OVERALL!!!!!!!`);
+              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
+              // overallDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
+                if (a.sort_idx > b.sort_idx) {
+                return -1;
+                }
+              });
+              overallDoubleKOsKOs= buildMatches(shootersAux);
+            }
+
+            let advancedDoubleKOsKOs=[];
+            if(division[0].categories.advance){
+              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
+              // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
+                if (a.sort_idx > b.sort_idx) {
+                return -1;
+                }
+              });
+              advancedDoubleKOsKOs= buildMatches(shootersAux);
+            }
+
+            return  {
+              statusCode: 201,
+              body: JSON.stringify({"ladyDoubleKOs":ladyDoubleKOsKOs
+                                  ,"seniorDoubleKOs":seniorDoubleKOsKOs
+                                  ,"opticDoubleKOs":opticDoubleKOsKOs
+                                  ,"overallDoubleKOs":overallDoubleKOsKOs
+                                  ,"advancedDoubleKOs":advancedDoubleKOsKOs
+                                })
+            };
           }
-
-          let opticDoubleKOsKOs=[];
-          if(division[0].categories.optics){
-            // console.log(`DIVISAOOO OPTICS!!!!!!!`);
-            shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
-            // opticDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
-              if (a.sort_idx > b.sort_idx) {
-              return -1;
-              }
-            });
-            shootersAux
-            opticDoubleKOsKOs= buildMatches(shootersAux);
-          }
-
-          let overallDoubleKOsKOs=[];
-          if(division[0].categories.overall){
-            // console.log(`DIVISAOOO OVERALL!!!!!!!`);
-            shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
-            // overallDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
-              if (a.sort_idx > b.sort_idx) {
-              return -1;
-              }
-            });
-            overallDoubleKOsKOs= buildMatches(shootersAux);
-           }
-
-          let advancedDoubleKOsKOs=[];
-          if(division[0].categories.advance){
-            shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
-            // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
-              if (a.sort_idx > b.sort_idx) {
-              return -1;
-              }
-            });
-            advancedDoubleKOsKOs= buildMatches(shootersAux);
-          }
-
-          return  {
-            statusCode: 201,
-            body: JSON.stringify({"ladyDoubleKOs":ladyDoubleKOsKOs
-                                ,"seniorDoubleKOs":seniorDoubleKOsKOs
-                                ,"opticDoubleKOs":opticDoubleKOsKOs
-                                ,"overallDoubleKOs":overallDoubleKOsKOs
-                                ,"advancedDoubleKOs":advancedDoubleKOsKOs
-                              })
-          };
 
         }else{ //list all
-            //TODO: 
-        }
+          //TODO: 
+      }
 
-      case 'PATCH': // associates divisions with a shooter
+      case 'PATCH': // update kos of a division
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
-        let shooter= JSON.parse(event.body);
-        let registered= shooter.registered;
-        let shooterId=shooter.shooterId;
-        delete shooter.registered;
-        delete shooter.shooterId;
-  
-        if(shooterId===null||shooterId===""||shooterId===0){ // new shooter
-
-  
-          new_record= await cShooters.insertOne(shooter);
-
-          shooter.shooterId= new_record.insertedId.toString();
-          shooterId= new_record.insertedId.toString();
-
-          //TODO: index unique key shooter
-        }else{
-            new_record= await cShooters.updateOne({ _id : new ObjectId(shooterId) }
-                                                 ,{ $set: { 
-                                                   name : shooter.name
-                                                   ,email: shooter.email 
-                                                   ,category: shooter.category 
-                                                   ,eventId: shooter.eventId 
+        console.log('Entrou no PATCH dos KOs');
+        let matchesBody= JSON.parse(event.body);
+    
+        new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
+                                          ,divisionId: matchesBody.divisionId}
+                                        ,{ $set: { 
+                                                  eventId: matchesBody.eventId
+                                                  ,divisionId: matchesBody.divisionId
+                                                  ,ladyDoubleKOs: matchesBody.ladyDoubleKOs
+                                                  ,seniorDoubleKOs: matchesBody.seniorDoubleKOs
+                                                  ,opticDoubleKOs: matchesBody.opticDoubleKOs
+                                                  ,overallDoubleKOs: matchesBody.overallDoubleKOs
+                                                  ,advancedDoubleKOs: matchesBody.advancedDoubleKOs
                                                   }
-                                                 });
-          new_record.shooterId= new_record;
-          
-        }
-
-        let shooter_division= {};
-        let shooters_divisions= [];
-
-        for(let i=0 ;i< registered.length;i++){
-          shooter_division= {};
-          shooter_division.shooterId=shooterId;
-          shooter_division.divisionId= registered[i].divisionId;
-          shooter_division.gun= registered[i].gun;
-          shooter_division.optics= registered[i].optics;
-          shooters_divisions.push(shooter_division);
-        }
-        await cShooters_Divisions.deleteMany({"shooterId":shooterId});
-
-        new_record= await cShooters_Divisions.insertMany(shooters_divisions);
-        new_record.shooterId= shooterId;;
-
+                                          }
+                                          ,{ upsert: true });
         return  { 
           statusCode: 201,  
           body: JSON.stringify(new_record)
@@ -489,37 +479,23 @@ const handler = async (event, context)=>{
 
       case 'DELETE':
 
-      const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
-
-        let body= JSON.parse(event.body);
-        let delShooterId= body.shooterId;
-
-        let r_delete_divisions= await cShooters_Divisions.deleteMany({shooterId: delShooterId});
-        console.log(`Deleto divisões: r_delete_divisions.toString() ${r_delete_divisions.toString()}`);
-
-        let r_delete_shooter= await cShooters.deleteOne({_id: new ObjectId(delShooterId)});
-        console.log(`Deleto atirador! r_delete_shooter.toString(): ${r_delete_shooter.toString()}`);
-
-         await cTime_Records.deleteMany({shooterId: delShooterId});
-
-        r_delete_shooter.shooter_acknowledged= r_delete_shooter.acknowledged;
-        r_delete_shooter.shooter_deletedCount= r_delete_shooter.deletedCount;
-
-        r_delete_shooter.divisions_acknowledged= r_delete_divisions.acknowledged;
-        r_delete_shooter.divisions_deletedCount= r_delete_divisions.deletedCount;
-
-        delete r_delete_shooter.acknowledged;
-        delete r_delete_shooter.deletedCount;
+      console.log('Entrou no DELETE dos KOs');
+        let eventId= event.queryStringParameters.eventId.toString();
+        let divisionId= event.queryStringParameters.divisionId.toString();
         
+        // console.log(`consultando eventId=${eventId}, divisionId:=${divisionId}`);
 
-        console.log(`r_delete_shooter.divisions_deletedCount: ${r_delete_shooter.divisions_deletedCount}`);
-        console.log(`r_delete_shooter.shooter_deletedCount: ${r_delete_shooter.shooter_deletedCount}`);
+        if(eventId!==null&&divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
+
+          r_delete_shooter= await cKos.deleteMany({ eventId: eventId 
+                                          ,divisionId: divisionId});
 
 
-        return  { 
-          statusCode: 200,  
-          body: JSON.stringify(r_delete_shooter)
-        };
+          return  { 
+            statusCode: 201,  
+            body: JSON.stringify(r_delete_shooter)
+          };
+      }
 
       default:
         return  {
