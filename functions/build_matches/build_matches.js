@@ -67,7 +67,13 @@ const shootersDiv = async(cShooters, p_eventId)=>{
 }
 
 const buildMatches = (shooters)=>{
-  // function buildMatches(shooters){
+  
+  console.log(`------------------------------------------------`);
+    for(let i=0; i<shooters.length;i++){
+      console.log(`|       shooters[${i}]= ${shooters[i].name}`);
+    }
+    console.log(`------------------------------------------------`);
+
     let mainMatches=[];
     let recapMatches=[];
     let levelMatches=[];
@@ -98,20 +104,31 @@ const buildMatches = (shooters)=>{
     levelMatches=[];
     if(mainMatches.length>0){ // preliminares
 
-        for(let i=0;i<mainMatches[0].length;i++){
+      let backCount=0;
+
+        for(let i=0;i<mainMatches[0].length-backCount;i++){
 
             if(preKO<shooters.length){
                 levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[preKO], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
                 preKO++;
             }else{
-                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][i+1].id });
-                i++;
+              console.log('Vai dar pau aqui NIVEL 1A?');
+              levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][mainMatches[0].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][mainMatches[0].length-i-1].id });  
+              backCount++;
+              console.log('NÃO deu pau aqui NIVEL 1A?');
+              //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][i+1].id });
+              //SAVE  i++;
             }
         }
     }
-    for(let i=preKO; i< shooters.length;i++){
-        levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
-        i++;
+    let backCount=0;
+    for(let i=preKO; i< shooters.length-backCount;i++){
+      console.log('Vai dar pau aqui NIVEL 1B?');
+      levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[shooters.length-(1+backCount)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+      backCount++;
+      console.log('NÃO deu pau aqui NIVEL 1B?');
+        //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+        //SAVE i++;
     }
     mainMatches.push(levelMatches);
 
@@ -120,10 +137,14 @@ const buildMatches = (shooters)=>{
     for(let l=(preKO>0?1:0) ; l<mainMatches.length; l++){
         levelMatches=[];
         hasMatches=false;
-        for(let i=0; i<mainMatches[l].length-1; i++){
-
-            levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
-            i++;
+        let backCount=0;
+        for(let i=0; i<mainMatches[l].length-1-backCount; i++){
+          console.log('Vai dar pau aqui NIVEL 2?');
+          levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });  
+          backCount++;
+          console.log('NÃO deu pau aqui NIVEL 2?');
+          //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
+          //SAVE   i++;
             hasMatches=true;
 
         }
@@ -154,9 +175,14 @@ const buildMatches = (shooters)=>{
     // console.log('Antes do primeiro .shooter.');
     // console.log('mainMatches.length= '+mainMatches.length);
     // console.log('rootRecapShooters.lenght= '+rootRecapShooters.length);
+    backCount=0;
     for(let i= 0; i< preKO; i++){
-        levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
-        i++;
+      console.log('Vai dar pau aqui RECAP 3.1?');
+      //levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });
+      levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
+      i++;
+      console.log('NÃO deu pau aqui RECAP 3.1?');
+        
     }
     if(levelMatches.length>0){
         recapMatches.push(levelMatches);
@@ -166,20 +192,30 @@ const buildMatches = (shooters)=>{
     levelMatches=[];
     if(recapMatches.length>0){ // preliminares
 
-        for(let i=0;i<recapMatches[0].length;i++){
+        let backCount=0;
+        for(let i=0;i<recapMatches[0].length-backCount;i++){
 
             if(preKO<rootRecapShooters.length){
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:rootRecapShooters[preKO].shooter, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:rootRecapShooters[preKO].id });
                 preKO++;
             }else{
-                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][i+1].id });
-                i++;
+              console.log('Vai dar pau aqui RECAP 3.2?');
+              levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][recapMatches[0].length-(1+backCount)].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][recapMatches[0].length-(1+backCount)].id });
+              backCount++;
+              console.log('NÃO deu pau aqui RECAP 3.2?');
+                //SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][i+1].id });
+                //SAVE i++;
             }
         }
     }
-    for(let i=preKO; i< rootRecapShooters.length;i++){
-        levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
-        i++;
+    backCount=0;
+    for(let i=preKO; i< rootRecapShooters.length-backCount;i++){
+      console.log('Vai dar pau aqui RECAP 3.3?');
+      levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters.length-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });  
+      backCount++;
+      console.log('NÃO deu pau aqui RECAP 3.3?');
+      //SAVE? levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
+        //SAVE? i++;
     }
     recapMatches.push(levelMatches);
 
@@ -187,16 +223,21 @@ const buildMatches = (shooters)=>{
 
     for(let l=1+hasPreKOs;l<mainMatches.length;l++){
         levelMatches=[];
-        for(let i=0;i<recapMatches[recapMatches.length-1].length;i++){
+        let backCount=0;
+        for(let i=0;i<recapMatches[recapMatches.length-1].length-backCount;i++){
             even= mainMatches[l].length===recapMatches[recapMatches.length-1].length;
             if(even){
                 //intercala com jogos principais
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:mainMatches[l][i].d, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:mainMatches[l][i].id });
             }else{
             //jogos só de repesqueiros
-                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
-                i++;
+            console.log('Vai dar pau aqui RECAP 3.4?');
+            levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].id });
+            backCount++;
+                //SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
+                //SAVE i++;
                 // l--;
+                console.log('Vai dar pau aqui RECAP 3.4');
             }
         }
         if(!even){
@@ -221,13 +262,16 @@ const flatPlayesDivisions = (players, sort)=>{
   for(i=0;i<players.length;i++){
       for(j=0;j<players[i].registered.length;j++){
           if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
+              console.log(`*******players[${i}].name=${players[i].name} | players[${i}].registered[${j}].score=999;`);
               players[i].registered[j].score=999;
               players[i].registered[j].tries=0;
-              players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
+              players[i].registered[j].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";
           }
 
-          score_idx= zeroPad((""+(players[i].registered[j].score*100)),7);
+          score_idx= zeroPad((""+(Math.round(players[i].registered[j].score*100))),7);
+
           sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
+          
           aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
           rP.push(aRow);  
       }
@@ -273,10 +317,9 @@ const matchShootersCategories = (players, divisions)=>{
         // console.log(`matchShootersCategories| players[${i}].name:${players[i].name}, players[${i}].category:${players[i].category}, players[${i}].division===divisions[${c}]._id.toString()= ${players[i].division}===${divisions[c]._id.toString()}`);
           if(players[i].division===divisions[c]._id.toString()){
 
-
-
               players[i].division_name= divisions[c].name;
-              players[i].qualify_position= ++divPosition;
+              divPosition++;
+              players[i].qualify_position= divPosition;
               // console.log(`matchShootersCategories. SETO players[i].division_name [${players[i].division_name}]`);
               // console.log(`matchShootersCategories. SETO players[i].qualify_position [${players[i].qualify_position}]`);
 
@@ -285,25 +328,19 @@ const matchShootersCategories = (players, divisions)=>{
                 // console.log('matchShootersCategories.  !divisions[c].categories.optics='+!divisions[c].categories.optics);                
                   players[i].category= cOptics;
                   // console.log(`matchShootersCategories.  SETO PARA cOptics!!! ${players[i].name}`);
-              }
-
-              
-              if( players[i].category===cLadies && !divisions[c].categories.ladies){
-                players[i].category= cOverall;
+              }else if( players[i].category===cLadies && divisions[c].categories.ladies){
+                players[i].category= cLadies;
                 // console.log(`matchShootersCategories. SETO cLadies PARA players[${i}].category=cOverall [${cOverall}]`);
-              }
-
-              
-              if( players[i].category===cSeniors && !divisions[c].categories.seniors){
-                players[i].category= cOverall;
+              }else if( players[i].category===cSeniors && divisions[c].categories.seniors){
+                players[i].category= cSeniors;
                 // console.log(`matchShootersCategories.  SETO DE cSeniors PARA players[${i}].category=cOverall [${cOverall}]`);
-              }
-
-              if(divisions[c].categories.advance &&
-                  ((players[i].score<100&&players[i].score<=divisions[c].advanceLimit.passingScore) ||
+              }else if(divisions[c].categories.advance &&
+                  ((players[i].score<100&&players[i].score<divisions[c].advanceLimit.passingScore) ||
                   divPosition<= divisions[c].advanceLimit.topBestOf )){
                     // console.log(`matchShootersCategories.  SETO DE ${players[i].category} PARA players[${i}].category=cAdvance [${cAdvance}]`);
                     players[i].category= cAdvance;
+              }else{
+                players[i].category= cOverall;
               }
           }
       }

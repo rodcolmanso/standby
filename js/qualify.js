@@ -98,10 +98,13 @@ function transformRegistrer(players){
                 players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
             }
 
-            score_idx= zeroPad((""+(players[i].registered[j].score*100)),7);
+            score_idx= zeroPad((""+(Math.round(players[i].registered[j].score*100))),7);
+
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
             console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
+            
             aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
+            
             rP.push(aRow);  
         }
     }
@@ -161,8 +164,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         actualOpticsCount++;
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                            ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
+                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position=actualAdvCount;
@@ -185,8 +188,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         actualOpticsCount++;
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                            ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
+                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position= actualAdvCount;
@@ -204,8 +207,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         actualOpticsCount++
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
-                            ((aPlayers[i].score<100&&aPlayers[i].score<=eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
+                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position= actualAdvCount;
@@ -379,7 +382,7 @@ function clearShooterModal(){
         <tr>
             <th scope="row">
                 <input type="checkbox" class="btn-check" id="btnCheckDivision${eventConfig.divisions[k]._id}" autocomplete="off">
-                <label class="btn btn-outline-primary" for="btnCheckDivision${eventConfig.divisions[k]._id}">${eventConfig.divisions[k].name}</label><br>
+                <label class="btn btn-outline-warning" for="btnCheckDivision${eventConfig.divisions[k]._id}">${eventConfig.divisions[k].name}</label><br>
             </th>
                 <td>
                     <input class="form-control form-control-sm" id="gunName${eventConfig.divisions[k]._id}" type="text" maxlength="10"
@@ -512,6 +515,8 @@ function addUpdateShooter(){
 
                         }else{
                             alert(document.getElementById('modalName').value+' atualizado');
+                            // let sd= selectDivision= document.getElementById('selectDivision').value;
+                            // buildPlayersTables(transformRegistrer(playersArray), eventConfig, sd);
                         }
                         modalChanged=true;
                     })
@@ -789,6 +794,7 @@ function applySpinners(onoff){
 
         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
             ||btn.getAttribute('class').includes("btn-secondary")
+            ||btn.getAttribute('class').includes("btn-success")
             ||btn.getAttribute('class').includes("btn-primary"))) {
 
             if(onoff)
@@ -810,3 +816,34 @@ function applySpinners(onoff){
         );
     });
 }
+
+//$("#selectDivision".change());
+
+function updateShootersList(){
+    fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+            .then(r=>r.json())
+            .then(data=>{
+                spinner.style.visibility = 'visible'//'visible'; //'hidden'
+                playersArray= data;
+                
+                changeDivision(document.getElementById("selectDivision"));
+                spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+                console.log(`Changed canvas done`);
+            });
+}
+
+$("#offcanvasRight").on("hide.bs.offcanvas", function () {
+   
+        if(modalChanged){
+            updateShootersList();
+            modalChanged=false; 
+        }   
+});
+
+$("#exampleModal").on("hide.bs.modal", function () {
+   
+    if(modalChanged){
+        updateShootersList();
+        modalChanged=false; 
+    }   
+});
