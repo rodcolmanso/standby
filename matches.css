@@ -231,6 +231,9 @@ h1{
   height: 50px;
 }
 
+.navbar-nav-scroll{
+  height: 100% !important;
+}
 
 .text-small {
   font-size: 70% !important;

@@ -169,9 +169,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
     for(let l=0;l<mainMatches.length;l++){
 
         for(let i=0;i<mainMatches[l].length;i++){
-
             checkedA= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterA.id?"checked":"";
             checkedB= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterB.id?"checked":"";
+    
             matches+= `
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -190,8 +190,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         </div>
                     </div>
                 </div>
-            </div>
-            <!---->
+            </div>`;
+        
+            matches+= `<!---->
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
@@ -213,7 +214,6 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <!--fim Partida-->
             <p class="ps-8"></p>
             <p class="ps-8"></p>`;
-
             
         } 
         document.getElementById(categ+'LevelM'+l).innerHTML= matches;
@@ -230,6 +230,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
         </div>`;
 
+        
         // document.getElementById('overallRuleLevelM'+l).innerHTML= divRule;
     }
 
@@ -286,7 +287,13 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
 }
 
-const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+
+const event_id = params.event_id;
+
+// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
     .then(r=>r.json())
     .then(data => {
     return data;
@@ -388,33 +395,34 @@ function changeDivision(selectDivision){
             
             if(KOs.advancedDoubleKOs !==null && KOs.advancedDoubleKOs.length>0 &&  KOs.advancedDoubleKOs[0]!==null && KOs.advancedDoubleKOs[0].length>0){
                 addLevels(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
-
+                
                 addMainMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
+                
 
                 document.getElementById('liAdvance').style.display= '';
             }
-
+            
             if(KOs.overallDoubleKOs !==null && KOs.overallDoubleKOs.length>0 && KOs.overallDoubleKOs[0]!==null && KOs.overallDoubleKOs[0].length>0){
                 addLevels(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
                 addMainMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
 
                 document.getElementById('liOverall').style.display= '';
             }
-
+            
             if(KOs.opticDoubleKOs !==null && KOs.opticDoubleKOs.length>0 && KOs.opticDoubleKOs !=="" && KOs.opticDoubleKOs[0]!==undefined && KOs.opticDoubleKOs[0].length>0){
                 addLevels(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
                 addMainMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
 
                 document.getElementById('liOptics').style.display= '';
             }
-
+            
             if(KOs.seniorDoubleKOs !==null && KOs.seniorDoubleKOs.length>0 && KOs.seniorDoubleKOs[0]!==undefined && KOs.seniorDoubleKOs[0].length>0){
                 addLevels(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
             addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
 
                 document.getElementById('liSeniors').style.display= '';        
             }
-
+            
             if(KOs.ladyDoubleKOs !==null && KOs.ladyDoubleKOs.length>0 && KOs.ladyDoubleKOs[0]!==undefined && KOs.ladyDoubleKOs[0].length>0){
                 addLevels(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1],'ladies');
                 addMainMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
@@ -427,6 +435,14 @@ function changeDivision(selectDivision){
     
 };
 
+function hrefQualify(){
+    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+}
+
+function hrefMatches(){
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+}
+
 window.onload = async () => {
     
     document.getElementById('liAdvance').style.display='none';
@@ -436,7 +452,8 @@ window.onload = async () => {
     document.getElementById('liSeniors').style.display='none';
     applySpinners(true);
     eventConfig = await promiseOfEventConfig;
-    document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    // document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
     changeDivision(selectDivision);
     applySpinners(false);
@@ -523,4 +540,3 @@ function applySpinners(onoff){
         rdo.disabled=onoff;
     });
 }
-

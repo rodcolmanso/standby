@@ -14,7 +14,7 @@ const cSeniors= 5;
 
 const shootersDiv = async(cShooters, p_eventId)=>{
   return await cShooters.aggregate([
-      {$match:{eventId: "6578ad76e53c8b23971032c4"}} //"6578ad76e53c8b23971032c4"  p_eventId
+      {$match:{eventId: p_eventId}} //"6578ad76e53c8b23971032c4"  p_eventId
       ,{ "$addFields": { "shooterId": { "$toString": "$_id" }}},
       {$lookup:
           {

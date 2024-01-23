@@ -24,13 +24,15 @@ content-type: application/json
 GET http://localhost:8888/.netlify/functions/time-records?shooterId=6578d331e53c8b23971032c5&divisionId=6578a6dae53c8b23971032c1
 
 ###
+GET http://localhost:8888/.netlify/functions/events
+
+###
 
 GET https://tpmonline.netlify.app/.netlify/functions/time-records?shooterId=6578d331e53c8b23971032c5&divisionId=6578a6dae53c8b23971032c1
 
 
 ###
-GET http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4
-
+GET http://localhost:8888/.netlify/functions/shooters_divisions?eventId=65adcf12c90395b92fb7e7b8
 
 
 ####>>>>>>> abd5c50f5e922207c4aaf32b8c11e5e167d03d5d
@@ -41,6 +43,9 @@ GET http://localhost:8888/.netlify/functions/divisions
 
 ###
 GET http://localhost:8888/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4
+
+###
+GET http://localhost:8888/.netlify/functions/eventconfig?eventId=65adcf12c90395b92fb7e7b8
 
 ###
 http://localhost:8888 

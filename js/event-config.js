@@ -11,11 +11,20 @@ function advanceClick(div_adv_check){
     //     document.getElementById(''+div_adv_check.value+'IndexAdvance').disabled= (!div_adv_check.checked);
 }
 
-const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+
+const event_id = params.event_id;
+let promiseOfEventConfig=null;
+//6578ad76e53c8b23971032c4
+if(event_id!=='0'){
+    console.log(`event_id= ${event_id}`);
+    promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
+        .then(r=>r.json())
+        .then(data => {
+        return data;
+    });
+}
 
 const cOverall= 0;
 const cAdvance= 1;
@@ -25,13 +34,29 @@ const cSeniors= 5;
    
 let eventConfig;
 
+function hrefQualify(){
+    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+}
+
+function hrefMatches(){
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+}
+
 window.onload = async () => {
     
     applySpinners(true);
-    eventConfig = await promiseOfEventConfig;
-    document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    if(event_id!=='0'){
+        eventConfig = await promiseOfEventConfig;
+    }else{
+        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"/img/shooters_lineup.jpg","local":"","note":"","divisions":[]};
+    }
+    
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`
     document.getElementById('event-name').value= eventConfig.name;
-    document.getElementById('event-date').value= eventConfig.date;
+    document.getElementById('event-date').value= eventConfig.date.slice(0,16);
+    document.getElementById('event-local').value= eventConfig.local;
+    document.getElementById('event-img').value= eventConfig.img;
+    document.getElementById('event-note').value= eventConfig.note;
 
 
     buildDivisionTable(eventConfig);
@@ -44,6 +69,14 @@ function updateEventConfig(){
 
     eventConfig.name= document.getElementById('event-name').value;    
     eventConfig.date= document.getElementById('event-date').value;
+    eventConfig.local= document.getElementById('event-local').value;
+    eventConfig.note= document.getElementById('event-note').value;
+    eventConfig.img= document.getElementById('event-img').value;
+
+    if(eventConfig.name.replace(/\s/g, '')===''||eventConfig.date===''||eventConfig.divisions.length<1){
+        alert('Informe o nome, data e divisão do evento!')
+        return 0;
+    }
 
     for(let i=0; i<eventConfig.divisions.length;i++){
         if(eventConfig.divisions[i].delete===undefined ||!eventConfig.divisions[i].delete){
@@ -67,7 +100,6 @@ function updateEventConfig(){
     }
     // buildDivisionTable(eventConfig);
 
-    alert('Submetando a alteração');
     applySpinners(true);
             fetch('/.netlify/functions/eventconfig?eventId='+eventConfig._id, {
                     method: "PATCH",
@@ -76,18 +108,12 @@ function updateEventConfig(){
                     })
                     .then(response => response.json()) 
                     .then(json => {
-                        console.log(`Evento alterado com sucesso= ${json.toString}`);
-                
-                        // if(idShooter===null || idShooter==''){
-                        //     alert(document.getElementById('modalName').value+' se juntou ao evento!');
-                        //     document.getElementById('modalShooterId').value= json.shooterId;
-
-                        // }else{
-                        //     alert(document.getElementById('modalName').value+' atualizado');
-                        // }
-                        // modalChanged=true;
-                        alert('Evento alterado com sucesso!');
-                        location.reload(true);
+                        console.log(`json= ${json}`);
+                        console.log(`eventConfig._id= ${eventConfig._id}`);
+                        eventConfig._id=json.insertedId;
+                        console.log(`[json.upsertedId] eventConfig._id= ${eventConfig._id}`);
+                        window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
+                        // location.reload(true);
                     })
                     .catch(err => console.log(`Error adding, updating eventConfig: ${err}`))
                     .finally(()=> applySpinners(false));

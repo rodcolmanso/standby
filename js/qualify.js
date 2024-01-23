@@ -16,18 +16,32 @@ let timeRecords;
 let modalChanged;
 let language="pt-br"
 
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
 
-const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+const event_id = params.event_id;
+
+// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
     .then(r=>r.json())
     .then(data => {
     return data;
 });
 
-const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+// const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId="+event_id)
     .then(r=>r.json())
     .then(data => {
     return data;
 });
+
+function hrefQualify(){
+    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+}
+
+function hrefMatches(){
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+}
 
 window.onload = async () => {
     document.getElementById('divTAdvance').style.display='none';
@@ -40,7 +54,8 @@ window.onload = async () => {
 
     eventConfig = await promiseOfEventConfig;
     playersArray= await promiseOfPlayers;
-    document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    // document.getElementById('eventTitle').innerHTML= eventConfig.name;
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
     buildDivisions(eventConfig.divisions);
@@ -165,7 +180,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position=actualAdvCount;
@@ -189,7 +204,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position= actualAdvCount;
@@ -208,7 +223,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         position= actualOpticsCount;
                     }else if(eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<100&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
-                            actualAdvCount<= eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
+                            actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
                         actualAdvCount++;
                         position= actualAdvCount;
@@ -593,6 +608,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore){
     document.getElementById('timeRecordShooterId').value= idShooter;
     document.getElementById('timeRecordDivision').value= selectedDivision;
 
+    document.getElementById('offcanvasRightLabel').innerText= 'Tempos de '+nameShooter;
     document.getElementById('timeShooterName').innerText= nameShooter;
     document.getElementById('timeShooterGun').innerText= gunShooter;
     document.getElementById('timeBestScore').innerText= bestScore;    
@@ -820,7 +836,8 @@ function applySpinners(onoff){
 //$("#selectDivision".change());
 
 function updateShootersList(){
-    fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+    // fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
+    fetch("/.netlify/functions/shooters_divisions?eventId="+event_id)
             .then(r=>r.json())
             .then(data=>{
                 spinner.style.visibility = 'visible'//'visible'; //'hidden'

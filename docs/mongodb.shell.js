@@ -15,6 +15,8 @@ db.events.insertMany(data);
 
 db.divisions.updateMany({eventId:0}, {$set:{eventId:'6578ad76e53c8b23971032c4'}});
 
+db.events.updateOne({_id:0}, {$set:{eventId:'6578ad76e53c8b23971032c4'}});
+
 
 db.divisions.find({eventId:'6578ad76e53c8b23971032c4'}).sort({order:1})
 
@@ -385,3 +387,18 @@ db.shooters.createIndex( {"name":1, "eventId":1}, { "unique": true } );
 
 ///
 db.divisions.aggregate([{$match:{eventId:"6578ad76e53c8b23971032c4"}}])
+
+
+db.events.updateOne({ "_id" : ObjectId("6578ad76e53c8b23971032c4") }
+                    ,{ $set: { 
+                    "local" : 'CT Aldeia'
+                    ,"img": '/img/shooters_lineup.jpg' 
+                    }
+                    });
+
+
+
+////Insert Event //6578ad76e53c8b23971032c4
+data= [{'name':'2º Campeonado Regional de TPM - CT Marília', 'local': 'CT Mariilia','date': new Date('2024-02-12'),'img':'/img/shooters_lineup.jpg'}
+     ,{'name':'1º Nacional de TPM - CT Pinda', 'local': 'CT Pinda','date': new Date('2024-03-20'),'img':'/img/shooters_lineup.jpg'}];
+db.events.insertMany(data);
