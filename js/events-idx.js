@@ -7,14 +7,23 @@ function advanceClick(div_adv_check){
         document.getElementById(''+div_adv_check.value+'SelectAdvance').style.display = '';
         document.getElementById(''+div_adv_check.value+'IndexAdvance').style.display = '';
     }
-    // document.getElementById(''+div_adv_check.value+'SelectAdvance').disabled= (!div_adv_check.checked);
-    //     document.getElementById(''+div_adv_check.value+'IndexAdvance').disabled= (!div_adv_check.checked);
 }
 
 const promiseOfEvents = fetch("/.netlify/functions/events")
     .then(r=>r.json())
     .then(data => {
     return data;
+});
+
+    // location.reload(true);
+netlifyIdentity.on('login', user => {
+    buildEventsTable(events);
+    console.log('login', user);
+});
+
+netlifyIdentity.on('logout', () => {
+    buildEventsTable(events);
+    console.log('Logged out');
 });
 
 const cOverall= 0;
@@ -66,6 +75,14 @@ function buildEventsTable(events){
     
     document.getElementById('events-table').innerHTML='';
     
+    const user = netlifyIdentity.currentUser();
+
+    // console.log(`user= ${user.user_metadata.full_name}`);
+    let readOnly=`class="dropdown-item disabled" aria-disabled="true"`;
+    if(user){
+        readOnly=`class="dropdown-item"`;
+    }
+    
     
     for(let i=0;i<events.length;i++ ){
         
@@ -73,6 +90,7 @@ function buildEventsTable(events){
         //     eventConfig.divisions[i].delete=false;
 
         //<i class="bi bi-bullseye"></i>
+        
         row=`<div class="col">
         <div class="card h-100">
           <a data-toggle="modal" data-target="#exampleModal" href="./event-config.html?event_id=${events[i]._id}" >
@@ -88,7 +106,7 @@ function buildEventsTable(events){
                         <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
                         <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Partidas</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-pencil-square"></i> Editar</a></li>
-                        <li><a class="dropdown-item" href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
+                        <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
                     </ul>
                 </div>
               </div>
@@ -105,7 +123,7 @@ function buildEventsTable(events){
 
     let newEvent= `<div class="col">
                         <div class="card h-100">
-                        <a data-toggle="modal" data-target="#exampleModal" href="./event-config.html?event_id=0" ><img src="/img/shooters_lineupNovo.png" class="card-img-top" alt="..."></a>
+                        <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()" ><img src="/img/shooters_lineupNovo.png" class="card-img-top" alt="..."></a>
                         <div class="card-body">
                             <h5 class="card-title"><i>Novo Evento</i></h5>
                             <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
@@ -117,6 +135,14 @@ function buildEventsTable(events){
                     </div>`;
     document.getElementById('events-table').innerHTML+= newEvent;
 
+}
+
+function newEvent(){
+    if(netlifyIdentity.currentUser()){
+        window.location.href = window.location="/event-config.html?event_id=0";
+    }else{
+        netlifyIdentity.open();
+    }
 }
 
 function deleteDivision(_idIndex){

@@ -57,21 +57,47 @@ window.onload = async () => {
     document.getElementById('event-local').value= eventConfig.local;
     document.getElementById('event-img').value= eventConfig.img;
     document.getElementById('event-note').value= eventConfig.note;
-
+    document.getElementById('event-owners').value= eventConfig.owners.join("; ");
 
     buildDivisionTable(eventConfig);
     applySpinners(false);
-    
+    const user= netlifyIdentity.currentUser();
+    let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
+    if(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+        disableInputs(true);
+    }
     
 }
 
+    // location.reload(true);
+    netlifyIdentity.on('login', user => {
+
+        let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
+        if(eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
+            disableInputs(false);
+        }
+        console.log('login', user);
+    });
+    
+    netlifyIdentity.on('logout', () => {
+        disableInputs(true);
+        console.log('Logged out');
+    });
+    
+
 function updateEventConfig(){
+
+    const user= netlifyIdentity.currentUser();
+    if(!user){
+        return 0;
+    }
 
     eventConfig.name= document.getElementById('event-name').value;    
     eventConfig.date= document.getElementById('event-date').value;
     eventConfig.local= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
     eventConfig.img= document.getElementById('event-img').value;
+    eventConfig.owners= document.getElementById('event-owners').value.toLowerCase().replace(/\s/g, '').split(";");
 
     if(eventConfig.name.replace(/\s/g, '')===''||eventConfig.date===''||eventConfig.divisions.length<1){
         alert('Informe o nome, data e divisão do evento!')
@@ -104,7 +130,10 @@ function updateEventConfig(){
             fetch('/.netlify/functions/eventconfig?eventId='+eventConfig._id, {
                     method: "PATCH",
                     body: JSON.stringify(eventConfig),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                       ,"Authorization":`Bearer ${user.token.access_token}`
+                    }
                     })
                     .then(response => response.json()) 
                     .then(json => {
@@ -269,4 +298,29 @@ function applySpinners(onoff){
             }
                     );
     });
+}
+
+function disableInputs(onOff){
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        if(["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id'))<0)
+             btn.disabled=onOff;        
+                    });
+
+    let _input = document.querySelectorAll("input");
+    [].forEach.call(_input,btn=>{
+        btn.disabled=onOff;        
+        });
+
+    let _select = document.querySelectorAll("select");
+    [].forEach.call(_select,btn=>{
+        btn.disabled=onOff;        
+        });
+
+    let _textarea = document.querySelectorAll("textarea");
+    [].forEach.call(_textarea,btn=>{
+        btn.disabled=onOff;        
+        });
+
 }

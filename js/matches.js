@@ -432,7 +432,7 @@ function changeDivision(selectDivision){
         } )
         .catch(err => console.log(`Error bringing knokouts: ${err}`))
         .finally(()=> applySpinners(false));
-    
+    disableInputs();
 };
 
 function hrefQualify(){
@@ -533,6 +533,35 @@ function applySpinners(onoff){
             else
                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
         }
+    });
+
+    let _radio = document.querySelectorAll('input[type="radio"]');
+    [].forEach.call(_radio,rdo=>{
+        rdo.disabled=onoff;
+    });
+    disableInputs();
+}
+
+function disableInputs(){
+
+    onoff=false;
+    const user= netlifyIdentity.currentUser();
+    let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
+    
+    if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+        onoff= true;
+    }
+
+    // document.getElementById('selectDivision').disabled=onoff;
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+    
+    if((["btn-close","btn-secondary","btn btn-secondary","accordion-button","collapsed","accordion-button collapsed"].indexOf(btn.getAttribute('class'))<0)&&
+        (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
+        btn.disabled=onoff;
+    }
+    
     });
 
     let _radio = document.querySelectorAll('input[type="radio"]');

@@ -7,6 +7,11 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 const handler = async (event, context)=>{
+  // const rawNetlifyContext = context.clientContext.custom.netlify;
+  // const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+  // const { identity, user } = JSON.parse(netlifyContext);
+  const user= context.clientContext.user;
+
   try {
 
     const p_eventId= event.queryStringParameters.eventId.toString();
@@ -23,20 +28,15 @@ const handler = async (event, context)=>{
     switch (event.httpMethod){
       case 'PATCH':
 
-      console.log('Entrou no patch');
+        console.log('Entrou no patch');
+        console.log('user='+user);
+        console.log('user.emal='+user.email);
+        console.log('user.app_metadata.roles[0]='+user.app_metadata.roles[0]);
         let event_config= JSON.parse(event.body);
-        // let divisions= shooter.registered;
-        // let event_id=event_config._id;
-        // delete shooter.registered;
-        // delete shooter.shooterId;
-
-
-        console.log('_id:'+ event_config._id);
-        console.log('o_id:'+ o_id);
+      
+        let isAdmin= !(user.app_metadata.roles.indexOf("admin")<0);
+        console.log('isAdmin='+isAdmin);
         
-        console.log('new name:'+ event_config.name);
-        
-
         let updatedEvent=null;
         if(o_id===null){
            updatedEvent= await cEvents.insertOne({  
@@ -45,20 +45,34 @@ const handler = async (event, context)=>{
               ,local: event_config.local
               ,img: event_config.img
               ,note: event_config.note
+              ,owners:event_config.owners
             });
         }else{
           try{
-           updatedEvent= await cEvents.updateOne({ _id : o_id }
+            let filter={ "_id" : o_id};
+            if(!isAdmin){
+              filter.owners=user.email;
+              event_config.owners.push(user.email);
+              event_config.owners = [...new Set(event_config.owners)];
+            }
+
+              updatedEvent= await cEvents.updateOne(
+                                                //{ _id : o_id, owners: user.email }
+                                                  filter
                                                   ,{ $set: { 
                                                     name : event_config.name
                                                     ,date: event_config.date
                                                     ,local: event_config.local
                                                     ,img: event_config.img
                                                     ,note: event_config.note
+                                                    ,owners: event_config.owners
                                                     }
                                                   }
                                                   // ,{ upsert: true }
                                                   );
+            
+              
+
               } catch (e) {
                 // print(e);
                 console.log('ERROR updating Event'+e);

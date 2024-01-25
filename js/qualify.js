@@ -61,14 +61,10 @@ window.onload = async () => {
     buildDivisions(eventConfig.divisions);
     modalChanged=false;
     applySpinners(false);
+    disableInputs();
 
 };
   
-//    scoreCal();
-  //  buildDivisions(eventConfig.divisions);
- //   buildCategory2(eventConfig,eventConfig.divisions[0].id);
-//    buildPlayersTables(transformRegistrer(playersArray2), eventConfig, eventConfig.divisions[0].id);
-
 function getRandomFloat(min, max, decimals) {
     const str = (Math.random() * (max - min) + min).toFixed(decimals);
     
@@ -98,6 +94,7 @@ function changeDivision(selectDivision){
     }else{
         document.getElementById('btnAddShooter').disabled = false;
     }
+    disableInputs();
 };
 
 
@@ -831,9 +828,35 @@ function applySpinners(onoff){
             }
         );
     });
+    
 }
 
-//$("#selectDivision".change());
+function disableInputs(){
+    onoff=false;
+
+    const user= netlifyIdentity.currentUser();
+    let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
+    if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+        onoff= true;
+    }
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        
+        
+        if((["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
+            (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
+            btn.disabled=onoff;
+        }
+        //document.getElementById('selectDivision').disabled=onoff;
+
+    });
+
+    let _input = document.querySelectorAll("input");
+    [].forEach.call(_input,btn=>{
+        btn.disabled=onOff;        
+        });
+}
 
 function updateShootersList(){
     // fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")

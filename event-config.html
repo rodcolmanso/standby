@@ -10,6 +10,7 @@
   <meta name="author" content="Rodman">
   <meta name="generator" content="Pris">
   <title>T.P.M.</title>
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
 
@@ -240,9 +241,9 @@
   </svg>
 
   <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="/"><i class="bi bi-trophy"></i></a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="/">TPM</a><!--<i class="bi bi-trophy"></i>-->
     <div class="d-inline-block d-flex justify-content-between">
-        <div id="eventTitle">-</div>
+        <div class="d-inline-block d-flex" id="eventTitle">-</div>
     </div>
     <div></div>
     <ul class="navbar-nav flex-row d-md-none">
@@ -265,6 +266,14 @@
     </ul>
     <div id="navbarSearch" class="navbar-search w-100 collapse">
       <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
+    </div>
+    <div class="btn-group dropstart">
+      <button type="button" name="loginAvatar" id="loginAvatar" class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <img class="small-profile-avatar-pic rounded-circle" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">   
+      </button>
+      <ul class="dropdown-menu dropdown-menu-dark">
+        <div class="dropdown-item" data-netlify-identity-menu>  <a class="dropdown-item" href="/matches.html"></a></div>
+      </ul>
     </div>
   </header>
 
@@ -428,9 +437,9 @@
           <h1 class="h2">Evento</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="hrefQualify()"><i class="bi bi-stopwatch"></i> C. Relógio</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" onclick="hrefMatches()"><i class="bi bi-play-circle"></i> Partidas</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="bt_clock" onclick="hrefQualify()"><i class="bi bi-stopwatch"></i> C. Relógio</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="bt_matches" onclick="hrefMatches()"><i class="bi bi-play-circle"></i> Partidas</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="bt_share" >Share</button>
             </div>
           </div>
         </div>
@@ -479,6 +488,11 @@
               </div>
             </div>
           </div>
+          <p></p>
+          <div class="input-group mb-3">
+            <span id="basic-addon_owners" class="input-group-text" id="basic-addon1">Admins (emails separados por ;)</span>
+            <input id="event-owners" type="text" class="form-control" placeholder="user@email.com" value="" aria-label="" aria-describedby="basic-addon_owners">
+          </div>    
           <p></p>
           <div class="text-end">
             <!-- <div  id="spinner" class="spinner-border" role="status">

@@ -143,6 +143,11 @@ h1{
   max-width: 48px !important;
 }
 
+.small-profile-avatar-pic{
+  height:35px !important;
+  max-width: 35px !important;
+}
+
 .col-card-match{
   width: 115px !important;
 }

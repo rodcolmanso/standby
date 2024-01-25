@@ -74,6 +74,10 @@
   width: 40%;
 }
 
+.w-50 {
+  width: 50%;
+}
+
 .w-30 {
   width: 30%;
 }
@@ -87,4 +91,20 @@ table {
   /* color: #B19BD9; */
   overflow-wrap: break-word;
   font-size: 12px;
+}
+
+.offcanvas-avatar-pic{
+  height:120px !important;
+  max-width: 120px !important;
+}
+
+.modal-avatar-pic{
+  height:150px !important;
+  max-width: 150px !important;
+}
+
+
+.small-profile-avatar-pic{
+  height:35px !important;
+  max-width: 35px !important;
 }
