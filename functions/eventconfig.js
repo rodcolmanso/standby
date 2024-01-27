@@ -37,7 +37,17 @@ const handler = async (event, context)=>{
         let isAdmin= (user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
         console.log('isAdmin='+isAdmin);
         
+
+
         let updatedEvent=null;
+        if(!isAdmin){
+          console.log('Nao eh adm 0');
+          // filter.owners=user.email;
+          event_config.owners.push(user.email);
+          console.log('Nao eh adm 1');
+          event_config.owners = [...new Set(event_config.owners)];
+          console.log('event_config.owners'+event_config.owners);
+        }
         if(o_id===null){
            updatedEvent= await cEvents.insertOne({  
               name : event_config.name
@@ -51,9 +61,11 @@ const handler = async (event, context)=>{
           try{
             let filter={ "_id" : o_id};
             if(!isAdmin){
+              console.log('Nao eh adm');
               filter.owners=user.email;
               event_config.owners.push(user.email);
               event_config.owners = [...new Set(event_config.owners)];
+              console.log('event_config.owners'+event_config.owners);
             }
 
               updatedEvent= await cEvents.updateOne(

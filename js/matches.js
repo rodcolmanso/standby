@@ -605,7 +605,7 @@ function disableInputs(){
 
     onoff=false;
     const user= netlifyIdentity.currentUser();
-    let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
     
     if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
         onoff= true;
