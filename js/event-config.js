@@ -67,8 +67,8 @@ window.onload = async () => {
     buildDivisionTable(eventConfig);
     applySpinners(false);
     const user= netlifyIdentity.currentUser();
-    let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
-    if(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+    let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+    if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
         disableInputs(true);
     }
     
@@ -77,8 +77,8 @@ window.onload = async () => {
     // location.reload(true);
     netlifyIdentity.on('login', user => {
 
-        let isAdmin= (user&&!(user.app_metadata.roles.indexOf("admin")<0));
-        if(eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
+        let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
+        if(event_id!==0&&event_id!=="0"&&eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
             disableInputs(false);
         }
         console.log('login', user);
@@ -146,6 +146,7 @@ function updateEventConfig(){
                         console.log(`eventConfig._id= ${eventConfig._id}`);
                         eventConfig._id=json.insertedId;
                         console.log(`[json.upsertedId] eventConfig._id= ${eventConfig._id}`);
+                        alert(`Torneio ${eventConfig.name} criado com sucesso!`);
                         window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
                         // location.reload(true);
                     })

@@ -31,10 +31,10 @@ const handler = async (event, context)=>{
         console.log('Entrou no patch');
         console.log('user='+user);
         console.log('user.emal='+user.email);
-        console.log('user.app_metadata.roles[0]='+user.app_metadata.roles[0]);
+        // console.log('user.app_metadata.roles[0]='+user.app_metadata.roles[0]);
         let event_config= JSON.parse(event.body);
       
-        let isAdmin= !(user.app_metadata.roles.indexOf("admin")<0);
+        let isAdmin= (user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
         console.log('isAdmin='+isAdmin);
         
         let updatedEvent=null;
