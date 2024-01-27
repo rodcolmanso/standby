@@ -34,10 +34,22 @@ const cSeniors= 5;
    
 let events;
 
+function hrefQualify(){
+    console.log('hrefQualify()');
+}
+
+function hrefMatches(){
+    console.log('hrefMatches()');
+}
+
 window.onload = async () => {
     
     // applySpinners(true);
     document.getElementById('nav-events').classList.add('active');
+
+    // document.getElementById('nav-matches').disabled=true;
+    // document.getElementById('nav-qualify').disabled=true;
+
     events = await promiseOfEvents;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
     // document.getElementById('event-name').value= eventConfig.name;
@@ -89,6 +101,20 @@ function buildEventsTable(events){
     }
     
     
+    let newEvent= `<div class="col">
+                        <div class="card h-100">
+                        <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()" ><img src="/img/shooters_lineupNovo.png" class="card-img-top" alt="..."></a>
+                        <div class="card-body">
+                            <h5 class="card-title"><i>Novo Evento</i></h5>
+                            <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-body-secondary"></small>
+                        </div>
+                        </div>
+                    </div>`;
+    document.getElementById('events-table').innerHTML+= newEvent;
+
     for(let i=0;i<events.length;i++ ){
         
         // if(eventConfig.divisions[i].delete===undefined)
@@ -125,20 +151,6 @@ function buildEventsTable(events){
           `;
        document.getElementById('events-table').innerHTML+= row;
     }
-
-    let newEvent= `<div class="col">
-                        <div class="card h-100">
-                        <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()" ><img src="/img/shooters_lineupNovo.png" class="card-img-top" alt="..."></a>
-                        <div class="card-body">
-                            <h5 class="card-title"><i>Novo Evento</i></h5>
-                            <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-body-secondary"></small>
-                        </div>
-                        </div>
-                    </div>`;
-    document.getElementById('events-table').innerHTML+= newEvent;
 
 }
 

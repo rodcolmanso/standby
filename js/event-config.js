@@ -35,11 +35,13 @@ const cSeniors= 5;
 let eventConfig;
 
 function hrefQualify(){
-    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+    if(eventConfig._id!=0)
+        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
 }
 
 function hrefMatches(){
-    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+    if(eventConfig._id!=0)
+        window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
 
 window.onload = async () => {
@@ -58,7 +60,9 @@ window.onload = async () => {
     document.getElementById('event-local').value= eventConfig.local;
     document.getElementById('event-img').value= eventConfig.img;
     document.getElementById('event-note').value= eventConfig.note;
-    document.getElementById('event-owners').value= eventConfig.owners.join("; ");
+
+    if(eventConfig.owners!==undefined)
+        document.getElementById('event-owners').value= eventConfig.owners.join("; ");
 
     buildDivisionTable(eventConfig);
     applySpinners(false);
