@@ -37,6 +37,7 @@ let events;
 window.onload = async () => {
     
     // applySpinners(true);
+    document.getElementById('nav-events').classList.add('active');
     events = await promiseOfEvents;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
     // document.getElementById('event-name').value= eventConfig.name;
@@ -71,6 +72,10 @@ function exlcuir(id, name){
 
 
 function buildEventsTable(events){
+    if(events===undefined){
+        return 0;
+    }
+
     let row= ``;
     
     document.getElementById('events-table').innerHTML='';

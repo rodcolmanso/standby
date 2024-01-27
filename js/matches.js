@@ -136,7 +136,7 @@ function addLevels(mainMatches, recapMatches, categ){
 
     let count= mainMatches.length;
     let col_matches= "col-matches";
-    "col-matches-final-1"
+    // "col-matches-final-1"
     for(let i=0;i<count;i++){
         if(i+1===count){
             col_matches= "col-matches-final-1"
@@ -166,14 +166,42 @@ function addMainMatches(mainMatches, recapMatches, categ){
     
     let matches="";
 
+    let levelSpace= [];
+    let space=["",""];
+    
+    //finding out if has preliminares or not
+    let has4plays= 1;
+    if(mainMatches.length>0 && mainMatches[0].length>0&&mainMatches[1].length>0&&
+        mainMatches[0].length/mainMatches[1].length!==2 &&
+        (mainMatches[0].length!==4&&mainMatches[0].length!==8&&mainMatches[0].length!==16&&mainMatches[0].length!==32&&mainMatches[0].length!==64)
+        ){
+        has4plays=2;
+        }
+
     for(let l=0;l<mainMatches.length;l++){
 
         for(let i=0;i<mainMatches[l].length;i++){
             checkedA= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterA.id?"checked":"";
             checkedB= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterB.id?"checked":"";
-    
-            matches+= `
-            <div class="card mb-3 card-block">
+            
+            space=["",""];
+            
+            let s="";
+            if(l>=has4plays){
+                s= `
+                    <div class="ps-8">
+                    </div>`;
+                for(let k=0;k<=(l-has4plays)*2;k++){
+                    s+= `
+                    <div class="ps-50">
+                    </div>`;
+                }
+                space[0]=s;
+            }
+            
+
+            matches+= s+`
+            <div class="card mb-3 card-block ">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
                         <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
@@ -192,6 +220,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 </div>
             </div>`;
         
+            let iB=i;
+
             matches+= `<!---->
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -200,13 +230,13 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate">${mainMatches[l][i].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][i].shooterB.gun}</small></p>
+                        <h10 class="card-title text-truncate">${mainMatches[l][iB].shooterB.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][iB].shooterB.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
                         <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[l][i].id}" value="${mainMatches[l][i].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[l][i].id}', this.value, '${categ}')" >
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[l][iB].id}" value="${mainMatches[l][iB].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[l][iB].id}', this.value, '${categ}')" >
                         </div>
                     </div>
                 </div>
@@ -214,10 +244,26 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <!--fim Partida-->
             <p class="ps-8"></p>
             <p class="ps-8"></p>`;
+
+            
+            s="";
+            if(l>=has4plays){
+                s+= `
+                    <div class="ps-8">
+                    </div>`;
+                for(let k=0;k<=(l-has4plays)*(2+(l-has4plays));k++){
+                    s+= `
+                    <div class="ps-50">
+                    </div>`;
+                }
+                matches+=s;
+                space[1]=s;
+                levelSpace.push(space);
+            }
+            
             
         } 
         document.getElementById(categ+'LevelM'+l).innerHTML= matches;
-
         matches="";
 
         divRule=`<p class="ps-50"></p>
@@ -233,12 +279,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
         
         // document.getElementById('overallRuleLevelM'+l).innerHTML= divRule;
     }
-
+    // levelSpace.push(space);
+    let ls=0;
     for(let l=recapMatches.length-1;l>=0;l--){
 
         for(let i=0;i<recapMatches[l].length;i++){
             checkedA= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterA.id?"checked":"";
             checkedB= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterB.id?"checked":"";
+            
+            // ls++;
+            // if(levelSpace.length-ls>=0){
+                // matches+= levelSpace[levelSpace.length-ls][0];
+                // console.log(`levelSpace[${levelSpace.length-ls}][0]=${levelSpace[levelSpace.length-ls][0]}`)
+            // }
             matches+= `
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -280,6 +333,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <!--fim Partida-->
             <p class="ps-8"></p>
             <p class="ps-8"></p>`;
+            // if(levelSpace.length-ls>=0){
+                // matches+= levelSpace[levelSpace.length-ls][1];
+            // }
         } 
         document.getElementById(categ+'LevelR'+l).innerHTML= matches;
         matches="";
@@ -445,11 +501,14 @@ function hrefMatches(){
 
 window.onload = async () => {
     
+    document.getElementById('btn-reset').style.display='';
+    document.getElementById('nav-matches').classList.add('active');
     document.getElementById('liAdvance').style.display='none';
     document.getElementById('liOverall').style.display= 'none';
     document.getElementById('liLadies').style.display='none';
     document.getElementById('liOptics').style.display='none';
     document.getElementById('liSeniors').style.display='none';
+    
     applySpinners(true);
     eventConfig = await promiseOfEventConfig;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
@@ -558,7 +617,9 @@ function disableInputs(){
     [].forEach.call(_button,btn=>{
     
     if((["btn-close","btn-secondary","btn btn-secondary","accordion-button","collapsed","accordion-button collapsed"].indexOf(btn.getAttribute('class'))<0)&&
-        (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
+    (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+    (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+    (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
         btn.disabled=onoff;
     }
     

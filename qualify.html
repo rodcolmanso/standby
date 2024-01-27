@@ -3,6 +3,8 @@
 
 <head>
   <script src="assets/js/color-modes.js"></script>
+  <script src="js/components/header.js" type="text/javascript" defer></script>
+  <script src="js/components/select-division.js" type="text/javascript" defer></script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,13 +13,7 @@
   <meta name="generator" content="Pris">
   <title>T.P.M.</title>
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
-
-
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
-
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -34,6 +30,10 @@
         font-size: 3.5rem;
       }
     }
+
+    /* @media screen and (min-width: 768px) {
+    body { padding-top: 100px; }
+} */
 
     .b-example-divider {
       width: 100%;
@@ -103,11 +103,11 @@
   <!-- Custom styles for this template -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Custom styles for this template -->
-  <link href="dashboard.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
 </head>
 
 <body>
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <!-- <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="check2" viewBox="0 0 16 16">
       <path
         d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
@@ -125,58 +125,10 @@
       <path
         d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
     </symbol>
-  </svg>
+  </svg> -->
 
-  <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
-      aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
-      <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
-        <use href="#circle-half"></use>
-      </svg>
-      <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
-          aria-pressed="false">
-          <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-            <use href="#sun-fill"></use>
-          </svg>
-          Light
-          <svg class="bi ms-auto d-none" width="1em" height="1em">
-            <use href="#check2"></use>
-          </svg>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
-          aria-pressed="false">
-          <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-            <use href="#moon-stars-fill"></use>
-          </svg>
-          Dark
-          <svg class="bi ms-auto d-none" width="1em" height="1em">
-            <use href="#check2"></use>
-          </svg>
-        </button>
-      </li>
-      <li>
-        <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
-          aria-pressed="true">
-          <svg class="bi me-2 opacity-50 theme-icon" width="1em" height="1em">
-            <use href="#circle-half"></use>
-          </svg>
-          Auto
-          <svg class="bi ms-auto d-none" width="1em" height="1em">
-            <use href="#check2"></use>
-          </svg>
-        </button>
-      </li>
-    </ul>
-  </div>
-
-
-  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  
+  <!-- <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
     <symbol id="calendar3" viewBox="0 0 16 16">
       <path
         d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z" />
@@ -238,10 +190,11 @@
       <path
         d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
     </symbol>
-  </svg>
+  </svg> -->
 
-  <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" style="font-size: 10px" href="/">TPM</a><!--<i class="bi bi-trophy"></i>-->
+  <!--<i class="bi bi-trophy"></i>-->
+  <!--<header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" style="font-size: 10px" href="/">TPM</a>
     <div class="text-center"><span class="text-center" style="font-size: 11px" id="eventTitle"></span></div>
     <ul class="navbar-nav flex-row d-md-none">
       <li class="nav-item text-nowrap">
@@ -272,11 +225,11 @@
     <div id="navbarSearch" class="navbar-search w-100 collapse">
       <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
     </div>
-  </header>
+  </header>-->
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+  <!-- <div class="container-fluid">
+    <div class="row"> -->
+      <!--<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
         <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel">
           <div class="offcanvas-header">
@@ -387,150 +340,137 @@
             </ul>
           </div>
         </div>
-      </div>
-
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div
-          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">Contra o Relógio</h1>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-              <!--<button type="button" class="btn btn-sm btn-outline-secondary" onclick="hrefQualify()"><i class="bi bi-stopwatch"></i> C. Relógio</button>-->
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="bt_matches" onclick="hrefMatches()"><i class="bi bi-play-circle"></i> Partidas</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary" id="bt_share">Share</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <form class="row g-3 needs-validation" action="javascript:addUpdateShooter()">
-            <div class="modal-dialog modal-dialog-scrollable">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="exampleModalLabel">Atirador</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <!--...-->
-                  <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" id="blahx"
-                          class="img-fluid rounded-start modal-avatar-pic" alt="...">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body">
-                          <p class="card-title">
-                          <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
-                            <label for="modalName">Nome</label>
-                          </div>
-                          </p>
-                          <p class="card-text">
-                          <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="modalEmail" placeholder="name@example.com" >
-                            <label for="modalEmail">E-mail</label>
-                          </div>
-                          </p>
+      </div>-->
+      <header-component></header-component>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form class="row g-3 needs-validation" action="javascript:addUpdateShooter()">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Atirador</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!--...-->
+                <div class="card mb-3" style="max-width: 540px;">
+                  <div class="row g-0">
+                    <div class="col-md-4">
+                      <img src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" id="blahx"
+                        class="img-fluid rounded-start modal-avatar-pic" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <p class="card-title">
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
+                          <label for="modalName">Nome</label>
                         </div>
+                        </p>
+                        <p class="card-text">
+                        <div class="form-floating mb-3">
+                          <input type="email" class="form-control" id="modalEmail" placeholder="name@example.com" >
+                          <label for="modalEmail">E-mail</label>
+                        </div>
+                        </p>
                       </div>
-                      <div class="container">
+                    </div>
+                    <div class="container">
 
-                        <div class="row text-center">
-                          <div class="col">
-                            <input type="hidden" name="modalShooterId" value="" id="modalShooterId">
-                            
-                            <input type="radio" class="btn-check" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
-                            <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
+                      <div class="row text-center">
+                        <div class="col">
+                          <input type="hidden" name="modalShooterId" value="" id="modalShooterId">
+                          
+                          <input type="radio" class="btn-check" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
+                          <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
 
-                            <input type="radio" class="btn-check" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
-                            <label class="btn btn-outline-info" for="modalOption0">Sport</label>
+                          <input type="radio" class="btn-check" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
+                          <label class="btn btn-outline-info" for="modalOption0">Sport</label>
 
-                            <input type="radio" class="btn-check" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
-                            <label class="btn btn-outline-success" for="modalOption5">Senior</label>
-                          </div>
-
+                          <input type="radio" class="btn-check" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
+                          <label class="btn btn-outline-success" for="modalOption5">Senior</label>
                         </div>
 
-                        <div class="row">
-                          <div class="col">
-                            <table class="table align-middle table-sm">
-                              <thead>
-                                <tr>
-                                  <th scope="col" class="w-50">Divisões</th>
-                                  <th scope="col">Armas</th>
-                                  <th scope="col" class="w-20">Optic?</th>
-                                </tr>
-                              </thead>
-                              <tbody class="table-group-divider" id="modalShooterDivisions">
-                                <tr>
-                                  <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Pistol"
-                                      autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="btn-check-Pistol">Pistol</label><br>
-                                  </th>
-                                  <td><input class="form-control form-control-sm" type="text" placeholder=""
-                                      aria-label=".form-control-sm example">
-                                  </td>
-                                  <td>
-                                    <div class="form-check form-switch">
-                                      <input class="form-check-input" type="checkbox" role="switch" id="pistolOptic">
-                                    </div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Revolver"
-                                      autocomplete="off">
-                                    <label class="btn btn-outline-primary" for="btn-check-Revolver">Revolver</label><br>
-                                  </th>
-                                  <td><input class="form-control form-control-sm" type="text" placeholder=""
-                                      aria-label=".form-control-sm example">
-                                  </td>
-                                  <td>
-                                    <div class="form-check form-switch">
-                                      <input class="form-check-input" type="checkbox" role="switch" id="revolverOptic">
-                                    </div>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Free-Force"
-                                      autocomplete="off">
-                                    <label class="btn btn-outline-primary"
-                                      for="btn-check-Free-Force">Free-Force</label><br>
-                                  </th>
-                                  <td><input class="form-control form-control-sm" type="text" placeholder=""
-                                      aria-label=".form-control-sm example">
-                                  </td>
-                                  <td>
-                                    <div class="form-check form-switch">
-                                      <input class="form-check-input" type="checkbox" role="switch" id="freeforceOptic">
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col">
+                          <table class="table align-middle table-sm">
+                            <thead>
+                              <tr>
+                                <th scope="col" class="w-50">Divisões</th>
+                                <th scope="col">Armas</th>
+                                <th scope="col" class="w-20">Optic?</th>
+                              </tr>
+                            </thead>
+                            <tbody class="table-group-divider" id="modalShooterDivisions">
+                              <tr>
+                                <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Pistol"
+                                    autocomplete="off">
+                                  <label class="btn btn-outline-primary" for="btn-check-Pistol">Pistol</label><br>
+                                </th>
+                                <td><input class="form-control form-control-sm" type="text" placeholder=""
+                                    aria-label=".form-control-sm example">
+                                </td>
+                                <td>
+                                  <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="pistolOptic">
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Revolver"
+                                    autocomplete="off">
+                                  <label class="btn btn-outline-primary" for="btn-check-Revolver">Revolver</label><br>
+                                </th>
+                                <td><input class="form-control form-control-sm" type="text" placeholder=""
+                                    aria-label=".form-control-sm example">
+                                </td>
+                                <td>
+                                  <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="revolverOptic">
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row"><input type="checkbox" class="btn-check" id="btn-check-Free-Force"
+                                    autocomplete="off">
+                                  <label class="btn btn-outline-primary"
+                                    for="btn-check-Free-Force">Free-Force</label><br>
+                                </th>
+                                <td><input class="form-control form-control-sm" type="text" placeholder=""
+                                    aria-label=".form-control-sm example">
+                                </td>
+                                <td>
+                                  <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="freeforceOptic">
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <!--...-->
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" value="Fechar">
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
-                  <button type="submit" class="btn btn-success" value="Salvar"><!--data-bs-dismiss="modal" -->
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" value="Remover" onClick="deleteShooter()">
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Remover</button>
-                </div>
-              </div>  
-            </div>
-          </form>
-        </div>
-        <!--end modal-->
+                <!--...-->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" value="Fechar">
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
+                <button type="submit" class="btn btn-success" value="Salvar"><!--data-bs-dismiss="modal" -->
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" value="Remover" onClick="deleteShooter()">
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Remover</button>
+              </div>
+            </div>  
+          </div>
+        </form>
+      </div>
+      <!--end modal-->
 
-
+      <!--Offcanvas timetrack-->
         <div class="offcanvas offcanvas-end" data-bs-backdrop="static" tabindex="-1" id="offcanvasRight"
           aria-labelledby="offcanvasRightLabel">
           <div class="offcanvas-header">
@@ -621,14 +561,23 @@
             </div>
           </div>
         </div>
+      <!--End offcanvas timetrack-->
 
-        <!-- ----- -->
-        <select class="form-select form-select-lg align-middle" aria-label="Large select example" id="selectDivision" onchange="javascript:changeDivision(this)">
-          <option value="0">[Select Division]</option>
-          <option value="1">Pistol</option>
-          <option valsue="2">Revolver</option>
-          <option value="3">Freeforce</option>
-        </select>
+      <main class="px-md-4">
+        <div class="justify-content-between"><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
+          <division-component></division-component>
+      </div>
+      <p>
+        <div class="">
+          <!-- <button id="btnAddShooter" type="button" class="btn btn-success btn-block w-100 btn-sm" disabled
+            data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="clearShooterModal()" value="Incluir Atirador">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Incluir Atirador
+          </button> -->
+        </div>
+        
+      </p>
+
+        
 
         <div>
           
@@ -665,7 +614,7 @@
             </nav>
           
             
-          <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px -40%"
+          <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px +1%"
             data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
 
             <div id="divTAdvance" >
@@ -769,26 +718,14 @@
                   </table>
                 </div>
               </p>
+              <p>&nbsp;</p>
             </div>
-            <p>
-              <div class="container text-center">
-                <button id="btnAddShooter" type="button" class="btn btn-primary btn-block w-75 btn-lg" disabled
-                  data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="clearShooterModal()" value="Incluir Atirador">
-                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Incluir Atirador
-                </button>
-              </div>
-              
-            </p>
           </div>
         </div>
 
-
-
-
-
       </main>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
 

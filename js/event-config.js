@@ -51,7 +51,8 @@ window.onload = async () => {
         eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"/img/shooters_lineup.jpg","local":"","note":"","divisions":[]};
     }
     
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`
+    document.getElementById('nav-events').classList.add('active');
+    // document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`
     document.getElementById('event-name').value= eventConfig.name;
     document.getElementById('event-date').value= eventConfig.date.slice(0,16);
     document.getElementById('event-local').value= eventConfig.local;
@@ -230,7 +231,7 @@ function buildDivisionTable(eventConfig){
           </div>
         </td>
         <td class="text-end">
-          <button onClick="deleteDivision('${eventConfig.divisions[i]._id}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
+          <button onClick="deleteDivision('${eventConfig.divisions[i]._id}')" type="button" class="btn btn-danger rounded-circle" value="-">-</button>
         </td>
       </tr>`;
 
@@ -304,7 +305,9 @@ function disableInputs(onOff){
 
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{
-        if(["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id'))<0)
+        if((["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+            (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+            (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id'))<0))
              btn.disabled=onOff;        
                     });
 

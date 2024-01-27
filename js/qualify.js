@@ -44,6 +44,9 @@ function hrefMatches(){
 }
 
 window.onload = async () => {
+
+    document.getElementById('btnAddShooter').style.display='';
+    document.getElementById('nav-qualify').classList.add('active');
     document.getElementById('divTAdvance').style.display='none';
     document.getElementById('divTOverall').style.display= 'none';
     document.getElementById('divTLadies').style.display='none';
@@ -843,9 +846,11 @@ function disableInputs(){
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{
         
-        
         if((["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
-            (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
+        (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
+        (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+        (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+        (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
             btn.disabled=onoff;
         }
         //document.getElementById('selectDivision').disabled=onoff;
@@ -854,7 +859,7 @@ function disableInputs(){
 
     let _input = document.querySelectorAll("input");
     [].forEach.call(_input,btn=>{
-        btn.disabled=onOff;        
+        btn.disabled=onoff;        
         });
 }
 

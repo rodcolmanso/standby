@@ -138,14 +138,17 @@ const buildMatches = (shooters)=>{
         levelMatches=[];
         hasMatches=false;
         let backCount=0;
-        for(let i=0; i<mainMatches[l].length-1-backCount; i++){
-          console.log('Vai dar pau aqui NIVEL 2?');
-          levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });  
+        // for(let i=0; i<mainMatches[l].length-1-backCount; i++){
+          console.log('Lenght NIVEL_2?='+mainMatches[l].length);
+        for(let i=0; i<mainMatches[l].length&&mainMatches[l].length>1; i=i+2){
+          console.log('Vai dar pau aqui NIVEL 2? i='+i);
+          // levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });  
           backCount++;
-          console.log('NÃO deu pau aqui NIVEL 2?');
-          //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
-          //SAVE   i++;
+          
+          levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
+          // i++;
             hasMatches=true;
+            console.log('NÃO deu pau aqui NIVEL 2?');
 
         }
         if(hasMatches) mainMatches.push(levelMatches);
@@ -232,10 +235,10 @@ const buildMatches = (shooters)=>{
             }else{
             //jogos só de repesqueiros
             console.log('Vai dar pau aqui RECAP 3.4?');
-            levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].id });
+            //SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].id });
             backCount++;
-                //SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
-                //SAVE i++;
+                levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
+                i++;
                 // l--;
                 console.log('Vai dar pau aqui RECAP 3.4');
             }
