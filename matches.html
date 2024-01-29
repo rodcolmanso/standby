@@ -119,114 +119,67 @@
         <div class="justify-content-between"><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
             <division-component></division-component>
         </div>
-        <div data-bs-spy="scroll" data-bs-target="#accordionExample" data-bs-root-margin="0px 0px +1%"
-            data-bs-smooth-scroll="true" class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
-          <!--NAV-->
-          <p></p>
-          <div class="accordion" id="accordionExample">
-            
-            <div class="accordion-item" id="liAdvance">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAdvance" aria-expanded="false" aria-controls="collapseAdvance">
-                  Avançado
-                </button>
-              </h2>
-              <div id="collapseAdvance" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div id="scrollspyHeadingAdvance" class="table-responsive small">
-                    <div class="container-fluid">
-                      <div id="advanceLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                        <div class="col-5 col-matches"> <!------Nivel-->
-                        </div>
-                      </div>
-                      <!-------------->
-                    </div>
+        <div class="tab-content scrollspy-example" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px +1%"
+        data-bs-smooth-scroll="true" tabindex="0" id="nav-tabContent">
+        
+          <div class="tab-pane fade" id="nav-liAdvance" role="tabpanel" aria-labelledby="liAdvance" tabindex="0">
+            <div id="scrollspyHeadingAdvance" class="table-responsive small">
+              <div class="container-fluid">
+                <div id="advanceLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                  <div class="col-5 col-matches"> <!------Nivel-->
                   </div>
                 </div>
-              </div>
-            </div>
-            <div class="accordion-item" id="liOverall" >
-              <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOverall" aria-expanded="true" aria-controls="collapseOverall">
-                  Sport
-                </button>
-              </h2>
-              <div id="collapseOverall" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                    <div id="scrollspyHeadingOverall" class="table-responsive small">
-                      <div class="container-fluid">
-                        <div id="overallLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                          <div class="col-5 col-matches"> <!------Nivel-->
-                          </div>
-                        </div>
-                        <!-------------->
-                      </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item" id="liLadies" >
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLadies" aria-expanded="false" aria-controls="collapseLadies">
-                  Damas
-                </button>
-              </h2>
-              <div id="collapseLadies" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div id="scrollspyHeadingLadies" class="table-responsive small">
-                    <div class="container-fluid">
-                      <div id="ladiesLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                        <div class="col-5 col-matches"> <!------Nivel-->
-                        </div>
-                      </div>
-                      <!-------------->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item" id="liOptics" >
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOptics" aria-expanded="false" aria-controls="collapseOptics">
-                  Optrônicas
-                </button>
-              </h2>
-              <div id="collapseOptics" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div id="scrollspyHeadingOptics" class="table-responsive small">
-                    <div class="container-fluid">
-                      <div id="opticsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                        <div class="col-5 col-matches"> <!------Nivel-->
-                        </div>
-                      </div>
-                      <!-------------->
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="accordion-item" id="liSeniors" >
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeniors" aria-expanded="false" aria-controls="collapseSeniors">
-                  Seniors
-                </button>
-              </h2>
-              <div id="collapseSeniors" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                <div class="accordion-body">
-                  <div id="scrollspyHeadingSeniors" class="table-responsive small">
-                    <div class="container-fluid">
-                      <div id="seniorsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
-                        <div class="col-5 col-matches"> <!------Nivel-->
-                        </div>
-                      </div>
-                      <!-------------->
-                    </div>
-                  </div>
-                </div>
-                </div>
+                <!-------------->
               </div>
             </div>
           </div>
+          <div class="tab-pane fade show active" id="nav-liOverall" role="tabpanel" aria-labelledby="liOverall" tabindex="0">
+            <div id="scrollspyHeadingOverall" class="table-responsive small">
+              <div class="container-fluid">
+                <div id="overallLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                  <div class="col-5 col-matches"> <!------Nivel-->
+                  </div>
+                </div>
+                <!-------------->
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="nav-liLadies" role="tabpanel" aria-labelledby="liLadies" tabindex="0">
+            <div id="scrollspyHeadingLadies" class="table-responsive small">
+              <div class="container-fluid">
+                <div id="ladiesLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                  <div class="col-5 col-matches"> <!------Nivel-->
+                  </div>
+                </div>
+                <!-------------->
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="nav-liOptics" role="tabpanel" aria-labelledby="liOptics" tabindex="0">
+            <div id="scrollspyHeadingOptics" class="table-responsive small">
+              <div class="container-fluid">
+                <div id="opticsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                  <div class="col-5 col-matches"> <!------Nivel-->
+                  </div>
+                </div>
+                <!-------------->
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="nav-liSeniors" role="tabpanel" aria-labelledby="liSeniors" tabindex="0">
+            <div id="scrollspyHeadingSeniors" class="table-responsive small">
+              <div class="container-fluid">
+                <div id="seniorsLevelsX" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                  <div class="col-5 col-matches"> <!------Nivel-->
+                  </div>
+                </div>
+                <!-------------->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
           <div  id="spinner" class="spinner-border float-center" role="status" >
             <span class="visually-hidden">Carregando...</span>
           </div>

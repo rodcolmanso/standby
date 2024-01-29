@@ -29,22 +29,23 @@ class Header extends HTMLElement {
       <header class="navbar navbar-expand-lg bd-navbar " >
   <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap " aria-label="Main navigation">
     <div class="bd-navbar-toggle">
-    </div>
-  <div class="d-flex">
-              <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-          <img class="small-profile-avatar-pic rounded-circle" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">   
-        </button>
-        <ul class="dropdown-menu">
-          <div class="dropdown-item" data-netlify-identity-menu></div>
-        </ul>
-     
+      
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi" fill="currentColor" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M2.5 11.5A.5.5 0 0 1 3 11h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+        </svg>
 
-      <button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
-        <i class="bi bi-three-dots"></i>
+        <span class="d-none fs-6 pe-1">Browse</span>
       </button>
     </div>
-
-    <div class="offcanvas-lg offcanvas-end flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true">
+    
+    <div class="d-flex">
+      <h6 class="text-small" id="eventTitle"></h6>
+      <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
+      <hr class="d-lg-none my-2 text-white-50">
+    </div>
+    
+    <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true">
       <div class="offcanvas-header px-4 pb-0">
         <h5 class="offcanvas-title text-white" id="bdNavbarOffcanvasLabel">T.P.M. Online</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
@@ -120,6 +121,12 @@ class Header extends HTMLElement {
         </ul>
       </div>
     </div>
+    <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+          <img class="small-profile-avatar-pic rounded-circle" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">   
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <div class="dropdown-item" data-netlify-identity-menu></div>
+        </ul>
   </nav>
 </header>
       `;

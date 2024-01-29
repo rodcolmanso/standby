@@ -47,9 +47,16 @@
   padding: .75rem 1rem;
 }
 
+.h7{
+  /* color: #111111; */
+  font-size: 8px !important;
+  /* text-transform: uppercase; */
+}
+
 .scrollspy-example {
   position: relative;
-  height: 600px;
+  height: auto;
+  max-height: 100vh;
   overflow: scroll;
 }
 
@@ -126,9 +133,10 @@ table {
 } */
 
 
-/* .scrolling-wrapper{
+.scrolling-wrapper{
 	overflow-x: auto;
-} */
+  height: auto !important;
+}
 
 /* body{
 	background-color: black;
@@ -150,7 +158,7 @@ h1{
 	height: 50px;
   max-height:50px !important;
   margin-bottom: 0 !important;
-  width: 200px !important;
+  width: 190px !important;
   
 	/* background-color: #fff;
 	border: none;
@@ -181,7 +189,7 @@ h1{
 }
 
 .col-card-match{
-  width: 115px !important;
+  width: 105px !important;
 }
 
 .col-card-check{
@@ -190,15 +198,15 @@ h1{
 
 .col-matches{
   /* style="width: 300px; padding: 14px;" */
-  width: 220px !important;
-  padding: 14px !important;
+  width: 200px !important;
+  padding: 5px !important;
   height: auto !important;
   /* background-color: burlywood; */
 }
 
 .col-matches-final-2{
   /* style="width: 300px; padding: 14px;" */
-  width: 220px !important;
+  width: 210px !important;
   /* padding: 14px !important;
   height: 10px !important; */
   /* background-color: burlywood; */
@@ -208,7 +216,7 @@ h1{
 .col-matches-final-1{
   /* style="width: 300px; padding: 14px;" */
   
-   width: 220px !important;
+   width: 210px !important;
   /*padding: 14px !important;
   height: 10px !important; */
   

@@ -36,6 +36,10 @@
  * Navbar
  */
 
+ .text-small {
+  font-size: 70% !important;
+}
+
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
@@ -49,7 +53,8 @@
 
 .scrollspy-example {
   position: relative;
-  height: 600px;
+  height: auto;
+  max-height: 100vh;
   overflow: scroll;
 }
 

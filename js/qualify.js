@@ -47,11 +47,11 @@ window.onload = async () => {
 
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
-    document.getElementById('divTAdvance').style.display='none';
-    document.getElementById('divTOverall').style.display= 'none';
-    document.getElementById('divTLadies').style.display='none';
-    document.getElementById('divTOptics').style.display='none';
-    document.getElementById('divTSeniors').style.display='none';
+    // document.getElementById('divTAdvance').style.display='none';
+    // document.getElementById('divTOverall').style.display= 'none';
+    // document.getElementById('divTLadies').style.display='none';
+    // document.getElementById('divTOptics').style.display='none';
+    // document.getElementById('divTSeniors').style.display='none';
     // document.getElementById('EventTitle').innerHTML =``;
     applySpinners(true);
 
@@ -63,8 +63,12 @@ window.onload = async () => {
     
     buildDivisions(eventConfig.divisions);
     modalChanged=false;
+    const selectDivisions= document.getElementById('selectDivision');
+    changeDivision(selectDivision);
     applySpinners(false);
     disableInputs();
+
+
 
 };
   
@@ -88,9 +92,10 @@ function getRandomDateTime() {
 
 
 function changeDivision(selectDivision){
-    buildPlayersTables(transformRegistrer(playersArray), eventConfig, selectDivision.value);
     
+    buildPlayersTables(transformRegistrer(playersArray), eventConfig, selectDivision.value);
     buildCategory2(eventConfig, selectDivision.value);
+    
     
     if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
         document.getElementById('btnAddShooter').disabled = true;
@@ -283,75 +288,68 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
 
 function buildCategory2(eConfig, selectDivision){
 
-    document.getElementById('divTAdvance').style.display='none';
-    document.getElementById('divTOverall').style.display= 'none';
-    document.getElementById('divTLadies').style.display='none';
-    document.getElementById('divTOptics').style.display='none';
-    document.getElementById('divTSeniors').style.display='none';
-
-    document.getElementById('liAdvance').style.display='none';
-    document.getElementById('liOverall').style.display= 'none';
-    document.getElementById('liLadies').style.display='none';
-    document.getElementById('liOptics').style.display='none';
-    document.getElementById('liSeniors').style.display='none';
     
-    document.getElementById('liDropdown').style.display='none';
-    document.getElementById('dLiOptics').style.display='none';
-    document.getElementById('dLiSeniors').style.display='none';
+    document.getElementById('liAdvance').style.display='none';
+    // document.getElementById('liAdvance').classList.remove('active');
+    // document.getElementById('liAdvance').ariaSelected= false;
+
+    // document.getElementById('liOverall').style.display= 'none';
+    // document.getElementById('liOverall').classList.remove('active');
+    // document.getElementById('liOverall').ariaSelected= false;
+
+    document.getElementById('liLadies').style.display='none';
+    // document.getElementById('liLadies').classList.remove('active');
+    // document.getElementById('liLadies').ariaSelected= false;
+
+    document.getElementById('liOptics').style.display='none';
+    // document.getElementById('liOptics').classList.remove('active');
+    // document.getElementById('liOptics').ariaSelected= false;
+
+    document.getElementById('liSeniors').style.display='none';
+    // document.getElementById('liSeniors').classList.remove('active');
+    // document.getElementById('liSeniors').ariaSelected= false;
+    
+    // document.getElementById('liOverall').classList.add('active');
+    // document.getElementById('liOverall').ariaSelected= true;
+
+    const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
+    bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
 
 
      let divisionIndex=-1;
      for(let i=0; i< eConfig.divisions.length; i++){
          if(selectDivision==eConfig.divisions[i]._id){
              divisionIndex=i;
-             i= eConfig.divisions.length;
+            //  i= eConfig.divisions.length;
          }
      }
 
      if(divisionIndex>-1){
         const categories= eConfig.divisions[divisionIndex].categories;
-        var i=0;
-        var nav='';
-
+        
         if(categories.advance){
-            document.getElementById('divTAdvance').style.display='';
+
             document.getElementById('liAdvance').style.display='';
-            i++;
+            
         }
         
-        if(categories.overall){
-            document.getElementById('divTOverall').style.display='';
-            document.getElementById('liOverall').style.display='';
-            i++;
-        }
+        // if(categories.overall){
+        //     document.getElementById('liOverall').style.display='';
+       
+        // }
         if(categories.ladies){
-            document.getElementById('divTLadies').style.display='';
             document.getElementById('liLadies').style.display='';
-            i++;
+            
         }
         if(categories.optics){
-            document.getElementById('divTOptics').style.display='';
-            if(i<3){
-                document.getElementById('liOptics').style.display='';
-            }else{
-                
-                document.getElementById('liDropdown').style.display='';
-                document.getElementById('dLiOptics').style.display='';    
-                
-            }
-            i++;
+            
+            document.getElementById('liOptics').style.display='';
         }
 
         if(categories.seniors){
-            document.getElementById('divTSeniors').style.display='';
-            if(i<3){
-                document.getElementById('liSeniors').style.display='';
-            }else{
-                document.getElementById('liDropdown').style.display='';
-                document.getElementById('dLiSeniors').style.display='';    
-            }
-
-            i++
+            
+            document.getElementById('liSeniors').style.display='';
+            
         }
             
     }           
@@ -365,7 +363,7 @@ function buildDivisions(eventDivisions){
         selectDivisions.remove(0);
 
     let newOption = new Option('<<selecione>>','-1');
-    selectDivisions.add(newOption,undefined);
+    //selectDivisions.add(newOption,undefined);
 
     for(i=0;i<eventDivisions.length;i++){
         newOption = new Option(eventDivisions[i].name,eventDivisions[i]._id);
@@ -525,15 +523,18 @@ function addUpdateShooter(){
                         console.log(`Shooter added/updated= ${json.toString}`);
                 
                         if(idShooter===null || idShooter==''){
-                            alert(document.getElementById('modalName').value+' se juntou ao evento!');
+                            // alert(document.getElementById('modalName').value+' se juntou ao evento!');
                             document.getElementById('modalShooterId').value= json.shooterId;
 
                         }else{
-                            alert(document.getElementById('modalName').value+' atualizado');
+                            // alert(document.getElementById('modalName').value+' atualizado');
                             // let sd= selectDivision= document.getElementById('selectDivision').value;
                             // buildPlayersTables(transformRegistrer(playersArray), eventConfig, sd);
                         }
                         modalChanged=true;
+                        updateShootersList();
+                        console.log(`document.getElementById('modalClose').value=`+document.getElementById('modalClose').value);
+                        document.getElementById('modalClose').click();
                     })
                     .catch(err => console.log(`Error adding, updating shooter: ${err}`))
                     .finally(()=> applySpinners(false));

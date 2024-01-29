@@ -147,7 +147,10 @@ function addLevels(mainMatches, recapMatches, categ){
                 
             </div>`;
     }
+
+    console.log('Erro aqui 1? categ='+categ+'Levels');
     div_levels.innerHTML=levels;
+    console.log('Não erro aqui 1')
 
     levels="";
     count= recapMatches.length;
@@ -159,7 +162,9 @@ function addLevels(mainMatches, recapMatches, categ){
                 </div>`;
         col_matches= "col-matches";
         }
+        console.log('Erro aqui 2?');
         div_levels.innerHTML+=levels;
+        console.log('Nao Erro aqui 2');
 }
 
 function addMainMatches(mainMatches, recapMatches, categ){
@@ -206,10 +211,10 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                         <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
-                    <div class="col-md-6 col-card-match">
+                    <div class="col-md-6 col-card-match ">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${mainMatches[l][i].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][i].shooterA.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[l][i].shooterA.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -231,7 +236,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${mainMatches[l][iB].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary">${mainMatches[l][iB].shooterB.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[l][iB].shooterB.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -263,7 +268,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
             
         } 
+        console.log('Erro aqui 3?');
         document.getElementById(categ+'LevelM'+l).innerHTML= matches;
+        console.log('Nao Erro aqui 2.');
         matches="";
 
         divRule=`<p class="ps-50"></p>
@@ -287,11 +294,11 @@ function addMainMatches(mainMatches, recapMatches, categ){
             checkedA= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterA.id?"checked":"";
             checkedB= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterB.id?"checked":"";
             
-            // ls++;
-            // if(levelSpace.length-ls>=0){
-                // matches+= levelSpace[levelSpace.length-ls][0];
-                // console.log(`levelSpace[${levelSpace.length-ls}][0]=${levelSpace[levelSpace.length-ls][0]}`)
-            // }
+            ls++;
+            if(levelSpace.length-ls>=0){
+                matches+= levelSpace[levelSpace.length-ls][0];
+                console.log(`levelSpace[${levelSpace.length-ls}][0]=${levelSpace[levelSpace.length-ls][0]}`)
+            }
             matches+= `
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -301,7 +308,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${recapMatches[l][i].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary">${recapMatches[l][i].shooterA.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[l][i].shooterA.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -320,7 +327,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${recapMatches[l][i].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary">${recapMatches[l][i].shooterB.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[l][i].shooterB.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -333,11 +340,13 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <!--fim Partida-->
             <p class="ps-8"></p>
             <p class="ps-8"></p>`;
-            // if(levelSpace.length-ls>=0){
-                // matches+= levelSpace[levelSpace.length-ls][1];
-            // }
+            if(levelSpace.length-ls>=0){
+                matches+= levelSpace[levelSpace.length-ls][1];
+            }
         } 
+        console.log('Erro aqui X?');
         document.getElementById(categ+'LevelR'+l).innerHTML= matches;
+        console.log('Nao Erro aqui X');
         matches="";
     }
 
@@ -433,10 +442,12 @@ function changeDivision(selectDivision){
 
     applySpinners(true);
     document.getElementById('liAdvance').style.display='none';
-    document.getElementById('liOverall').style.display= 'none';
+    // document.getElementById('liOverall').style.display= 'none';
     document.getElementById('liLadies').style.display='none';
     document.getElementById('liOptics').style.display='none';
     document.getElementById('liSeniors').style.display='none';
+    const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
+    bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
     
     const idDivision= selectDivision.value;
     // selectDivision.disabled=true;
@@ -630,3 +641,8 @@ function disableInputs(){
         rdo.disabled=onoff;
     });
 }
+
+history.pushState(null, null, location.href);
+window.onpopstate = function(event) {
+    history.go(1);
+};
