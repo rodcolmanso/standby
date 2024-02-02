@@ -47,20 +47,38 @@ function hrefMatches(){
 window.onload = async () => {
     
     applySpinners(true);
-    if(event_id!=='0'){
+    if(event_id!==null&&event_id!==undefined&&event_id!==0 && event_id!=='0'){
         eventConfig = await promiseOfEventConfig;
     }else{
-        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"/img/shooters_lineup.jpg","local":"","note":"","divisions":[]};
+        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"/img/shooters_lineup.jpg","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
     }
-    
+    eventConfig.imgChanged=false;
+
     document.getElementById('nav-events').classList.add('active');
-    // document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`
+
+    if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
+        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    }else{
+        document.getElementById('eventTitle').innerHTML= `Novo evento`;
+    }
     document.getElementById('event-name').value= eventConfig.name;
     document.getElementById('event-date').value= eventConfig.date.slice(0,16);
     document.getElementById('event-local').value= eventConfig.local;
-    document.getElementById('event-img').value= eventConfig.img;
+    // document.getElementById('event-img').value= eventConfig.img;
+    
+    // document.getElementById('event-img')
+        document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/'+eventConfig._id;
+        
+
+    
     document.getElementById('event-note').value= eventConfig.note;
 
+    document.getElementById('event-address').value= eventConfig.address;
+    document.getElementById('event-city').value= eventConfig.city;
+    document.getElementById('event-state').value= eventConfig.state;
+    document.getElementById('event-public').checked= eventConfig.public;
+
+    //document.getElementById('
     if(eventConfig.owners!==undefined)
         document.getElementById('event-owners').value= eventConfig.owners.join("; ");
 
@@ -101,8 +119,13 @@ function updateEventConfig(){
     eventConfig.date= document.getElementById('event-date').value;
     eventConfig.local= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
-    eventConfig.img= document.getElementById('event-img').value;
+    // eventConfig.img= document.getElementById('event-img').value;
     eventConfig.owners= document.getElementById('event-owners').value.toLowerCase().replace(/\s/g, '').split(";");
+
+    eventConfig.address= document.getElementById('event-address').value;
+    eventConfig.city= document.getElementById('event-city').value;
+    eventConfig.state= document.getElementById('event-state').value;
+    eventConfig.public= document.getElementById('event-public').checked;
 
     if(eventConfig.name.replace(/\s/g, '')===''||eventConfig.date===''||eventConfig.divisions.length<1){
         alert('Informe o nome, data e divisão do evento!')
@@ -118,7 +141,6 @@ function updateEventConfig(){
             eventConfig.divisions[i].categories.optics= document.getElementById(eventConfig.divisions[i]._id+'Check'+cOptics).checked;
             eventConfig.divisions[i].categories.advance= document.getElementById(eventConfig.divisions[i]._id+'Check'+cAdvance).checked;
             
-
             if(""+document.getElementById(eventConfig.divisions[i]._id+'SelectAdvance').value==="1"){
                 eventConfig.divisions[i].advanceLimit.passingScore= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;
                 eventConfig.divisions[i].advanceLimit.topBestOf= -1;
@@ -331,4 +353,21 @@ function disableInputs(onOff){
         btn.disabled=onOff;        
         });
 
+}
+
+function displaySelectedImage(event, elementId) {
+    const selectedImage = document.getElementById(elementId);
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            selectedImage.src = e.target.result;
+            eventConfig.img= selectedImage.src;
+            eventConfig.imgChanged=true;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
 }

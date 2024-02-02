@@ -1,6 +1,15 @@
 const {MongoClient} = require ("mongodb");
 require('dotenv').config();
 
+// import {v2 as cloudinary} from 'cloudinary';
+const cloudinary = require ("cloudinary").v2;
+          
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
@@ -36,8 +45,6 @@ const handler = async (event, context)=>{
       
         let isAdmin= (user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
         console.log('isAdmin='+isAdmin);
-        
-
 
         let updatedEvent=null;
         if(!isAdmin){
@@ -48,14 +55,21 @@ const handler = async (event, context)=>{
           event_config.owners = [...new Set(event_config.owners)];
           console.log('event_config.owners'+event_config.owners);
         }
+        
         if(o_id===null){
            updatedEvent= await cEvents.insertOne({  
               name : event_config.name
               ,date: event_config.date
               ,local: event_config.local
-              ,img: event_config.img
+              ,img: ''
               ,note: event_config.note
               ,owners:event_config.owners
+
+              ,address: event_config.address
+              ,city: event_config.city
+              ,state: event_config.state
+              ,public: event_config.public
+
             });
         }else{
           try{
@@ -75,9 +89,14 @@ const handler = async (event, context)=>{
                                                     name : event_config.name
                                                     ,date: event_config.date
                                                     ,local: event_config.local
-                                                    ,img: event_config.img
+                                                    ,img: ''
                                                     ,note: event_config.note
                                                     ,owners: event_config.owners
+
+                                                    ,address: event_config.address
+                                                    ,city: event_config.city
+                                                    ,state: event_config.state
+                                                    ,public: event_config.public
                                                     }
                                                   }
                                                   // ,{ upsert: true }
@@ -90,6 +109,7 @@ const handler = async (event, context)=>{
                 console.log('ERROR updating Event'+e);
               }
         }
+
         console.log('0 Atualizou evento:'+ event_config.name);
         console.log('updatedEvent.insertedId:'+ updatedEvent.insertedId);
         if(updatedEvent.insertedId!==null&&updatedEvent.insertedId!==undefined){
@@ -97,6 +117,17 @@ const handler = async (event, context)=>{
           event_config._id= updatedEvent.insertedId.toString();
         }else{
           updatedEvent.insertedId= event_config._id;
+        }
+
+        console.log('event_config.imgChanged='+event_config.imgChanged);
+        if(event_config.imgChanged){
+          console.log('Uploading img to cloudinary. img='+event_config.img);
+          
+          cloudinary.uploader.upload(event_config.img,
+              { public_id: event_config._id }, 
+              function(error, result) {
+                // console.log(result);
+              });
         }
 
         updatedEvent.divisions=[];

@@ -111,99 +111,161 @@
   <header-component></header-component>
   
   <!-- Modal -->
-<div class="modal fade" id="divisionModal" tabindex="-1" aria-labelledby="divisionModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="divisionModalLabel">Nova Divisão</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="input-group mb-3">
-          <span class="input-group-text" id="basic-addon1">Nome da divisão</span>
-          <input id="new-division-name" type="text" class="form-control" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
+  <div class="modal fade" id="divisionModal" tabindex="-1" aria-labelledby="divisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="divisionModalLabel">Nova Divisão</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="addDivision()" data-bs-dismiss="modal">Incluir</button>
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Nome da divisão</span>
+            <input id="new-division-name" type="text" class="form-control" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="addDivision()" data-bs-dismiss="modal">Incluir</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!--Modal End-->
-
-      <main class="px-md-4">
-        
-        <!-- ----- -->
-          <!--NAV-->
-          <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Nome</span>
-            <input id="event-name" type="text" class="form-control" placeholder="Nome do evento" value="" aria-label="Username" aria-describedby="basic-addon1">
-          </div>
-          <div class="input-group mb-3">
-            <span id="basic-addon_local" class="input-group-text" id="basic-addon1">Onde</span>
-            <input id="event-local" type="text" class="form-control" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
-          </div>
-          <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1" >Quando</span>
-              <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date" >
-          </div>
-          <input type="hidden" id="event-img" value="/img/shooters_lineup.jpg">
-          <div class="input-group">
-            <span class="input-group-text">Anotações</span>
-            <textarea id="event-note" class="form-control" aria-label="With textarea"></textarea>
-          </div>
-          <p></p>
-          <div class="card">
-            <h5 class="card-header">Divisões</h5>
-            <div class="card-body">
-              <table class="table table-hover align-middle text-small" >
-                <thead>
-                  <tr>
-                    <th class="w-1" scope="col">#</th>
-                    <th class="w-40" class="item-align-middle text-start" scope="col">Nome</th>
-                    <th class="w-25 text-start" scope="col">Categorias</th>
-                    <th class="w-30" scope="col">Índice do Avançado</th>
-                    <th class=" item-align-middle" scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody id="division-table">
-                </tbody>
-              </table>
-              <div class="text-center">
-                <button type="button" class="btn btn-info rounded-circle"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
-              </div>
+  <!--Modal End-->
+  <main class="px-md-4">
+    <div class="tab-content scrollspy-example" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px +1%"
+    data-bs-smooth-scroll="true" tabindex="0" id="nav-tabContent">
+    <form class="row g-3">
+    
+      <div  class="form-floating mb-3 col-md-12 d-flex justify-content-center">
+        <!-- <div class="d-flex justify-content-center"> -->
+            <div class="btn">
+              <label for="event-img">
+                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/dpsdortdqn7tsqugrrbm'" src="..."
+                  class="img-fluid" alt="example placeholder" />
+                  </label>
+                <input type="file" class="form-control d-none" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
             </div>
-          </div>
-          <p></p>
-          <div class="input-group mb-3">
-            <span id="basic-addon_owners" class="input-group-text" id="basic-addon1">Admins</span>
-            <input id="event-owners" type="text" class="form-control" placeholder="admin1@email.com; admin2@mail.co " value="" aria-label="" aria-describedby="basic-addon_owners">
-          </div>    
-          <p></p>
-          <div class="text-end">
-            <!-- <div  id="spinner" class="spinner-border" role="status">
-              <span class="visually-hidden">Carregando...</span>
-            </div> -->
-            <button type="button" class="btn btn-secondary" value="Cancelar" onclick="location.reload(true)"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Cancelar</button>
-            <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
-          </div>
-          <p></p>
-          <p></p>
+        <!-- </div> -->
+      </div>
+    
+      <div class="form-floating mb-3 col-md-8">
+        <input type="text" class="form-control" id="event-name">
+        <label for="event-name" >Nome</label>
+      </div>
+      
+      <div class="form-floating mb-3 col-md-4">
+        <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date" >
+        <label for="event-date" >Quando</label>
+      </div>
+      
+      <div class="form-floating mb-3 col-md-4">
+        <input id="event-local" type="text" class="form-control" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
+        <label for="event-local" >Clube</label>
+      </div>
+      <div class="form-floating col-md-8">
+        <input type="text" class="form-control" id="event-address" >
+        <label for="event-address">Endereço</label>
+      </div>
+      <div class="form-floating col-md-6">
+        <input type="text" class="form-control" id="event-city">
+        <label for="event--ity">Cidade</label>
+      </div>
+      <div class="form-floating col-md-3">
+          <select class="form-select" id="event-state" aria-label="Floating label select example">
+          <option selected>...</option>
+          <option value="AP">Amapá</option>
+          <option value="AM">Amazonas</option>
+          <option value="BA">Bahia</option>
+          <option value="CE">Ceará</option>
+          <option value="DF">Distrito Federal</option>
+          <option value="ES">Espírito Santo</option>
+          <option value="GO">Goiás</option>
+          <option value="MA">Maranhão</option>
+          <option value="MT">Mato Grosso</option>
+          <option value="MS">Mato Grosso do Sul</option>
+          <option value="MG">Minas Gerais</option>
+          <option value="PA">Pará</option>
+          <option value="PB">Paraíba</option>
+          <option value="PR">Paraná</option>
+          <option value="PE">Pernambuco</option>
+          <option value="PI">Piauí</option>
+          <option value="RJ">Rio de Janeiro</option>
+          <option value="RN">Rio Grande do Norte</option>
+          <option value="RS">Rio Grande do Sul</option>
+          <option value="RO">Rondônia</option>
+          <option value="RR">Roraima</option>
+          <option value="SC">Santa Catarina</option>
+          <option value="SP">São Paulo</option>
+          <option value="SE">Sergipe</option>
+          <option value="TO">Tocantins</option>
+        </select>
+        <label for="event-state">Estado</label>
+      </div>
+      <div class="col-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="event-public" checked>
+          <label class="form-check-label" for="event-public">
+            Público
+          </label>
         </div>
-      </main>
+      </div>
+      
+      <div class="form-floating col-md-8">
+        <textarea class="form-control" id="event-note"></textarea>
+        <label for="event-note">Observações</label>
+      </div>  
+      
+    </form>
+
+
+    
+      
+      <p></p>
+      <div class="card">
+        <h5 class="card-header">Divisões</h5>
+        <div class="card-body">
+          <table class="table table-hover align-middle text-small" >
+            <thead>
+              <tr>
+                <th class="w-1" scope="col">#</th>
+                <th class="w-40" class="item-align-middle text-start" scope="col">Nome</th>
+                <th class="w-25 text-start" scope="col">Categorias</th>
+                <th class="w-30" scope="col">Índice do Avançado</th>
+                <th class=" item-align-middle" scope="col"></th>
+              </tr>
+            </thead>
+            <tbody id="division-table">
+            </tbody>
+          </table>
+          <div class="text-center">
+            <button type="button" class="btn btn-info btn-sm rounded-circle"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+          </div>
+        </div>
+      </div>
+      <p></p>
+      <div class="form-floating col-md-12">
+        <input type="text" class="form-control" id="event-owners">
+        <label for="event-owners">Adminstradores</label>
+      </div> 
+      <p></p>
+      <div class="text-end">
+        <!-- <div  id="spinner" class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div> -->
+        <button type="button" class="btn btn-secondary" value="Cancelar" onclick="location.reload(true)"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Cancelar</button>
+        <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+      </div>
+      <p>&nbsp;</p>
+      <p>&nbsp;</p>
     </div>
-  </div>
+  </main>
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
     integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
     crossorigin="anonymous"></script>
-  <script src="./js/event-config.js"></script>
+  <script src="./js/event-config.js" ></script>
   <!-- <script src="./js/matches.js"></script> -->
-
 </body>
-
 </html>

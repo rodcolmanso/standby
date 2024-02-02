@@ -46,7 +46,7 @@ window.onload = async () => {
     
     // applySpinners(true);
     document.getElementById('nav-events').classList.add('active');
-
+    
     // document.getElementById('nav-matches').disabled=true;
     // document.getElementById('nav-qualify').disabled=true;
 
@@ -103,7 +103,8 @@ function buildEventsTable(events){
     
     let newEvent= `<div class="col">
                         <div class="card h-100">
-                        <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()" ><img src="/img/shooters_lineupNovo.png" class="card-img-top" alt="..."></a>
+                        <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()">
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineupNovo" class="card-img-top" alt="... onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineup_gen'""></a>
                         <div class="card-body">
                             <h5 class="card-title"><i>Novo Evento</i></h5>
                             <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
@@ -125,7 +126,7 @@ function buildEventsTable(events){
         row=`<div class="col">
         <div class="card h-100">
           <a data-toggle="modal" data-target="#exampleModal" href="./event-config.html?event_id=${events[i]._id}" >
-            <img src="${events[i].img}" class="card-img-top" alt="...">
+            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/${events[i]._id}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineup_gen'"></a>
             </a>
             <div class="card-body" >
               <div class="d-inline-block d-flex justify-content-between">
