@@ -79,7 +79,7 @@ const buildMatches = (shooters)=>{
     let levelMatches=[];
     let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:""};
 
-    //NIVEL 0: Caso exista partiipantes <>4,8,16,32, 64, etc, deve existir uma rodada preliminhar
+    //NIVEL 0: Caso exista participantes <>4,8,16,32, 64, etc, deve existir uma rodada preliminhar
     let poten=2;
     let preKOs0=0;
     let hasPreKOs=0;
@@ -89,8 +89,11 @@ const buildMatches = (shooters)=>{
     }
     let preKO=shooters.length*2-poten;
 
+console.log(`=========preKO 1: ${preKO}=========`)
+
     for(let i= 0; i< preKO; i++){
-        levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+     levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+     // levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[preKO-(i+1)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
         i++;
     }
     if(levelMatches.length>0){
@@ -102,31 +105,36 @@ const buildMatches = (shooters)=>{
     //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
     // cria o primeiro nível de partidas (root) quando não houver preliminares
     levelMatches=[];
+    
+    let savePreKO=0;
+    let backCount2=0;
+
     if(mainMatches.length>0){ // preliminares
-
       let backCount=0;
-
         for(let i=0;i<mainMatches[0].length-backCount;i++){
-
             if(preKO<shooters.length){
-                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[preKO], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
+              //2022-04-12 levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[preKO], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
+                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[shooters.length-(i+1)], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
                 preKO++;
+                backCount2++;
             }else{
-              console.log('Vai dar pau aqui NIVEL 1A?');
+//              console.log('Vai dar pau aqui NIVEL 1A?');
               levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][mainMatches[0].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][mainMatches[0].length-i-1].id });  
               backCount++;
-              console.log('NÃO deu pau aqui NIVEL 1A?');
+//              console.log('NÃO deu pau aqui NIVEL 1A?');
               //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][i+1].id });
               //SAVE  i++;
             }
         }
     }
+
     let backCount=0;
-    for(let i=preKO; i< shooters.length-backCount;i++){
-      console.log('Vai dar pau aqui NIVEL 1B?');
-      levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[shooters.length-(1+backCount)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+    console.log(`=========preKO 2: ${preKO}=========`)
+    for(let i=preKO-backCount2; i< shooters.length-backCount-backCount2;i++){
+//      console.log('Vai dar pau aqui NIVEL 1B?');
+      levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[shooters.length-backCount2-(1+backCount)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
       backCount++;
-      console.log('NÃO deu pau aqui NIVEL 1B?');
+//      console.log('NÃO deu pau aqui NIVEL 1B?');
         //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
         //SAVE i++;
     }
@@ -139,16 +147,16 @@ const buildMatches = (shooters)=>{
         hasMatches=false;
         let backCount=0;
         // for(let i=0; i<mainMatches[l].length-1-backCount; i++){
-          console.log('Lenght NIVEL_2?='+mainMatches[l].length);
+  //        console.log('Lenght NIVEL_2?='+mainMatches[l].length);
         for(let i=0; i<mainMatches[l].length&&mainMatches[l].length>1; i=i+2){
-          console.log('Vai dar pau aqui NIVEL 2? i='+i);
+ //         console.log('Vai dar pau aqui NIVEL 2? i='+i);
           // levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });  
           backCount++;
           
           levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
           // i++;
             hasMatches=true;
-            console.log('NÃO deu pau aqui NIVEL 2?');
+// console.log('NÃO deu pau aqui NIVEL 2?');
 
         }
         if(hasMatches) mainMatches.push(levelMatches);
@@ -180,11 +188,11 @@ const buildMatches = (shooters)=>{
     // console.log('rootRecapShooters.lenght= '+rootRecapShooters.length);
     backCount=0;
     for(let i= 0; i< preKO; i++){
-      console.log('Vai dar pau aqui RECAP 3.1?');
+// console.log('Vai dar pau aqui RECAP 3.1?');
       //levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });
       levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
       i++;
-      console.log('NÃO deu pau aqui RECAP 3.1?');
+// console.log('NÃO deu pau aqui RECAP 3.1?');
         
     }
     if(levelMatches.length>0){
@@ -204,28 +212,28 @@ const buildMatches = (shooters)=>{
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:rootRecapShooters[preKO].shooter, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:rootRecapShooters[preKO].id });
                 preKO++;
             }else{
-              console.log('Vai dar pau aqui RECAP 3.2?');
+//              console.log('Vai dar pau aqui RECAP 3.2?');
               // SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][recapMatches[0].length-(1+backCount)].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][recapMatches[0].length-(1+backCount)].id });
               backCount++;
               if(recapMatches[0][i+1]!==null && recapMatches[0][i+1]!== undefined){
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][i+1].id });
               }
               i++;
-              console.log('NÃO deu pau aqui RECAP 3.2?');
+    // console.log('NÃO deu pau aqui RECAP 3.2?');
             }
         }
     }
     backCount=0;
     // for(let i=preKO; i< rootRecapShooters.length-backCount;i++){
     for(let i=preKO; i< rootRecapShooters.length;i++){
-      console.log('Vai dar pau aqui RECAP 3.3?');
+// console.log('Vai dar pau aqui RECAP 3.3?');
       // SAVE?  levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters.length-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });  
       backCount++;
       if(rootRecapShooters[i+1]!==null && rootRecapShooters[i+1]!== undefined){
         levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
       }
       i++;
-      console.log('NÃO deu pau aqui RECAP 3.3?');
+ //     console.log('NÃO deu pau aqui RECAP 3.3?');
     }
     recapMatches.push(levelMatches);
 
@@ -242,7 +250,7 @@ const buildMatches = (shooters)=>{
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:mainMatches[l][i].d, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:mainMatches[l][i].id });
             }else{
             //jogos só de repesqueiros
-            console.log('Vai dar pau aqui RECAP 3.4?');
+      //      console.log('Vai dar pau aqui RECAP 3.4?');
             // SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].id });
             backCount++;
             if (recapMatches[recapMatches.length-1][i+1]!==null && recapMatches[recapMatches.length-1][i+1]!== undefined){
@@ -252,7 +260,7 @@ const buildMatches = (shooters)=>{
             }//else break;
             
             // l--;
-                console.log('Não deu pau no RECAP 3.4');
+//                console.log('Não deu pau no RECAP 3.4');
             }
         }
         if(!even){

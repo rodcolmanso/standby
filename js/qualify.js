@@ -847,10 +847,13 @@ function disableInputs(){
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{
         
-        if((["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
+        if(
+        (["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
+        (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
         (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
         (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
         (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+
         (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
             btn.disabled=onoff;
         }

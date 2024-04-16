@@ -87,7 +87,7 @@ const handler = async (event, context)=>{
                                                   filter
                                                   ,{ $set: { 
                                                     name : event_config.name
-                                                    ,date: event_config.date
+                                                    ,date: new Date(event_config.date)
                                                     ,local: event_config.local
                                                     ,img: ''
                                                     ,note: event_config.note

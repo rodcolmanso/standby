@@ -50,7 +50,7 @@ window.onload = async () => {
     if(event_id!==null&&event_id!==undefined&&event_id!==0 && event_id!=='0'){
         eventConfig = await promiseOfEventConfig;
     }else{
-        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"/img/shooters_lineup.jpg","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
+        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
     }
     eventConfig.imgChanged=false;
 
@@ -68,8 +68,6 @@ window.onload = async () => {
     
     // document.getElementById('event-img')
         document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/'+eventConfig._id;
-        
-
     
     document.getElementById('event-note').value= eventConfig.note;
 
@@ -116,7 +114,7 @@ function updateEventConfig(){
     }
 
     eventConfig.name= document.getElementById('event-name').value;    
-    eventConfig.date= document.getElementById('event-date').value;
+    eventConfig.date= new Date(document.getElementById('event-date').value);
     eventConfig.local= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
     // eventConfig.img= document.getElementById('event-img').value;
@@ -228,8 +226,15 @@ function buildDivisionTable(eventConfig){
         }
 
         row=`<tr>
-        <th scope="row">${i+1}</th>
-        <td><input type="text" aria-label="indexAdvance" class="form-control form-control-sm" id="${eventConfig.divisions[i]._id}DivisionName" value="${eventConfig.divisions[i].name}"></td>
+        <!--<td scope="row">${i+1}</td>-->
+        <td>
+            <input type="text" aria-label="indexAdvance" class="form-control form-control-sm" id="${eventConfig.divisions[i]._id}DivisionName" value="${eventConfig.divisions[i].name}">
+<!--            <input type="checkbox" class="btn-check" id="btn-check-outlined_${eventConfig.divisions[i]._id}" autocomplete="off">
+            <label class="btn btn-outline-success" for="btn-check-outlined_${eventConfig.divisions[i]._id}">Inscrever-se</label><br>
+            <input type="checkbox" class="btn-check" id="btn-check-outlined_2_${eventConfig.divisions[i]._id}" autocomplete="off">
+            <label class="btn btn-outline-success" for="btn-check-outlined_2_${eventConfig.divisions[i]._id}">Inscrever-se</label><br>
+-->
+        </td>
         <td  class="text-start">
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" ${ladiesChk} id="${eventConfig.divisions[i]._id}Check${cLadies}">
@@ -334,14 +339,17 @@ function disableInputs(onOff){
     [].forEach.call(_button,btn=>{
         if((["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
             (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
-            (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id'))<0))
+            (["bt_clock","bt_matches","loginAvatar","bt_share","btn-check-outlined","btn-check-outlined_2"].indexOf(btn.getAttribute('id'))<0)
+            )
              btn.disabled=onOff;        
                     });
 
     let _input = document.querySelectorAll("input");
     [].forEach.call(_input,btn=>{
-        btn.disabled=onOff;        
-        });
+        if(["btn-check","btn-check btn-sm"].indexOf(btn.getAttribute('class'))<0){
+            btn.disabled=onOff;
+        }   
+    });
 
     let _select = document.querySelectorAll("select");
     [].forEach.call(_select,btn=>{
