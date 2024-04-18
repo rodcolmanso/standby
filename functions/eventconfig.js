@@ -60,6 +60,7 @@ const handler = async (event, context)=>{
            updatedEvent= await cEvents.insertOne({  
               name : event_config.name
               ,date: event_config.date
+              ,dateDuel: (event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel)
               ,local: event_config.local
               ,img: ''
               ,note: event_config.note
@@ -81,6 +82,10 @@ const handler = async (event, context)=>{
               event_config.owners = [...new Set(event_config.owners)];
               console.log('event_config.owners'+event_config.owners);
             }
+            
+            if(event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''){
+              event_config.dateDuel= event_config.date;
+            }
 
               updatedEvent= await cEvents.updateOne(
                                                 //{ _id : o_id, owners: user.email }
@@ -88,6 +93,9 @@ const handler = async (event, context)=>{
                                                   ,{ $set: { 
                                                     name : event_config.name
                                                     ,date: new Date(event_config.date)
+                                                    ,dateDuel: new Date(event_config.dateDuel)
+                                                    // ,date: event_config.date
+                                                    // ,dateDuel: event_config.dateDuel
                                                     ,local: event_config.local
                                                     ,img: ''
                                                     ,note: event_config.note
@@ -189,6 +197,10 @@ const handler = async (event, context)=>{
       console.log('Entrou no GET do eventConfig');
 
         const events= await cEvents.find({_id:o_id}).toArray();
+
+        if(events[0].dateDuel===null||events[0].dateDuel===undefined||events[0].dateDuel===''){
+          events[0].dateDuel= events[0].date;
+        }
         
         const divisions= await cDivisions.find({eventId:p_eventId}).sort({order:1}).toArray();
 

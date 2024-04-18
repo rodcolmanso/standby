@@ -141,7 +141,7 @@
         <!-- <div class="d-flex justify-content-center"> -->
             <div class="btn">
               <label for="event-img">
-                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/dpsdortdqn7tsqugrrbm'" src="..."
+                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400,w_400/defaults/tmpyellow'" src="..."
                   class="img-fluid" alt="example placeholder" />
                   </label>
                 <input type="file" class="form-control d-none" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
@@ -149,14 +149,18 @@
         <!-- </div> -->
       </div>
     
-      <div class="form-floating mb-3 col-md-8">
+      <div class="form-floating mb-3 col-md-6">
         <input type="text" class="form-control" id="event-name">
         <label for="event-name" >Título</label>
       </div>
       
-      <div class="form-floating mb-3 col-md-4">
+      <div class="form-floating mb-3 col-md-3">
         <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date" >
-        <label for="event-date" >Quando</label>
+        <label for="event-date" >Contra o Relógio em:</label>
+      </div>
+      <div class="form-floating mb-3 col-md-3">
+        <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date-duel" >
+        <label for="event-date" >Duelos em:</label>
       </div>
       
       <div class="form-floating mb-3 col-md-4">

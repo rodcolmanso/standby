@@ -50,7 +50,7 @@ window.onload = async () => {
     if(event_id!==null&&event_id!==undefined&&event_id!==0 && event_id!=='0'){
         eventConfig = await promiseOfEventConfig;
     }else{
-        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
+        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString() ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
     }
     eventConfig.imgChanged=false;
 
@@ -61,13 +61,25 @@ window.onload = async () => {
     }else{
         document.getElementById('eventTitle').innerHTML= `Novo evento`;
     }
-    document.getElementById('event-name').value= eventConfig.name;
-    document.getElementById('event-date').value= eventConfig.date.slice(0,16);
-    document.getElementById('event-local').value= eventConfig.local;
-    // document.getElementById('event-img').value= eventConfig.img;
     
-    // document.getElementById('event-img')
-        document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/'+eventConfig._id;
+    document.getElementById('event-name').value= eventConfig.name;
+    if(eventConfig.dateDuel===null||eventConfig.dateDuel===undefined||eventConfig.dateDuel===''){
+        eventConfig.dateDuel=eventConfig.date;
+    }
+
+    var utc = new Date();
+    var offset = utc.getTimezoneOffset();
+
+    eventConfig.date= new Date((new Date(eventConfig.date)).getTime() - (offset * 60000) );
+    eventConfig.dateDuel= new Date((new Date(eventConfig.dateDuel)).getTime() - (offset * 60000) );
+
+    
+    document.getElementById('event-date').value= eventConfig.date.toISOString().slice(0,16);
+    document.getElementById('event-date-duel').value= eventConfig.dateDuel.toISOString().slice(0,16);
+
+    document.getElementById('event-local').value= eventConfig.local;
+    
+    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400,w_400/'+eventConfig._id;
     
     document.getElementById('event-note').value= eventConfig.note;
 
@@ -115,6 +127,7 @@ function updateEventConfig(){
 
     eventConfig.name= document.getElementById('event-name').value;    
     eventConfig.date= new Date(document.getElementById('event-date').value);
+    eventConfig.dateDuel= new Date(document.getElementById('event-date-duel').value);
     eventConfig.local= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
     // eventConfig.img= document.getElementById('event-img').value;

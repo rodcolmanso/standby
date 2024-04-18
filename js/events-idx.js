@@ -9,11 +9,7 @@ function advanceClick(div_adv_check){
     }
 }
 
-const promiseOfEvents = fetch("/.netlify/functions/events")
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+let queryParam="";
 
     // location.reload(true);
 netlifyIdentity.on('login', user => {
@@ -42,26 +38,94 @@ function hrefMatches(){
     console.log('hrefMatches()');
 }
 
+const promiseOfEvents = fetch("/.netlify/functions/events")
+    .then(r=>r.json())
+    .then(data => {
+    return data;
+});
+
+
+netlifyIdentity.on('login', user => {
+
+    // location.reload(true);
+
+});
+
+netlifyIdentity.on('logout', () => {
+
+    location.reload(true);
+
+});
+
+let user;
+let isAdmin=false;
 window.onload = async () => {
     
+    user= netlifyIdentity.currentUser();
+    if(user===null || user===undefined || user.token.access_token===null || user.token.access_token===undefined){
+        user= {token:{access_token:""},email:'pris.rocha@gmail.com'};
+
+    } else isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+    // if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
+    //     disableInputs(true);
+    // }
+
     // applySpinners(true);
     document.getElementById('nav-events').classList.add('active');
     
-    // document.getElementById('nav-matches').disabled=true;
-    // document.getElementById('nav-qualify').disabled=true;
+    document.getElementById('nav-matches').style.display='none';
+    document.getElementById('nav-qualify').style.display='none';
 
-    events = await promiseOfEvents;
+    // events = await promiseOfEvents;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
     // document.getElementById('event-name').value= eventConfig.name;
     // document.getElementById('event-date').value= eventConfig.date;
 
+    const dDate= new Date();
+    dDate.setDate(0);
+    dDate.setDate(1);
+    document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 
-    buildEventsTable(events);
+    //buildEventsTable(events);
+    search();
+
     // applySpinners(false);
-    
-    
+
 }
 
+function search() {
+    //some stuff...
+    applySpinners(true);
+
+    
+    let queryDate= document.getElementById('date').value.split('-');
+    let sQuery='?p=0';
+
+    if(queryDate.length>0){
+        // sQuery= sQuery+'&date_from='+queryDate[0].substring(6,10)+'-'+queryDate[0].substring(3,5)+'-'+queryDate[0].substring(0,2);
+        const d=new Date(queryDate[0]);
+        sQuery= sQuery+'&date_from='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    }
+    if(queryDate.length>1){
+        const d=new Date(queryDate[1]);
+        sQuery= sQuery+'&date_to='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    }
+    
+    fetch("/.netlify/functions/events"+sQuery,
+        {method: "GET"
+        ,headers: {
+            "Content-type": "application/json; charset=UTF-8"
+           ,"Authorization":`Bearer ${user.token.access_token}`
+        }}
+       ).then(r=>r.json())
+        .then(data => {
+        // return data;
+        buildEventsTable(data);
+        })
+        .finally( applySpinners(false))
+    ;
+    //some other stuff...
+};   
 
 function exlcuir(id, name){
     if(confirm('Tem certeza que deseja escluir o evento '+name+'?')){
@@ -79,9 +143,7 @@ function exlcuir(id, name){
             .catch(err => console.log(`Error deleting event: ${err}`))
             .finally(()=> applySpinners(false));
         }
-
 }
-
 
 function buildEventsTable(events){
     if(events===undefined){
@@ -100,11 +162,10 @@ function buildEventsTable(events){
         readOnly=`class="dropdown-item"`;
     }
     
-    
     let newEvent= `<div class="col">
                         <div class="card h-100">
                         <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()">
-                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineupNovo" class="card-img-top" alt="... onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineup_gen'""></a>
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/b_white,c_pad,h_210,w_280/shooters_lineupNovo" class="card-img-top" alt="... onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/shooters_lineup_gen'""></a>
                         <div class="card-body">
                             <h5 class="card-title"><i>Novo Evento</i></h5>
                             <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
@@ -126,7 +187,7 @@ function buildEventsTable(events){
         row=`<div class="col">
         <div class="card h-100">
           <a data-toggle="modal" data-target="#exampleModal" href="./event-config.html?event_id=${events[i]._id}" >
-            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/${events[i]._id}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/f_auto,q_auto:good/shooters_lineup_gen'"></a>
+            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/${events[i]._id}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
             </a>
             <div class="card-body" >
               <div class="d-inline-block d-flex justify-content-between">
