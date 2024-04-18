@@ -1,15 +1,10 @@
 const {MongoClient} = require ("mongodb");
+
 require('dotenv').config();
 
 const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
-
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-}
 
 // Docs on event and context https://docs.netlify.com/functions/build/#code-your-function-2
 const handler = async (event, context) => {
@@ -18,7 +13,7 @@ const handler = async (event, context) => {
   let user= context.clientContext.user;
 
   if(user===null || user===undefined){
-    user= {email:uuidv4()};
+    user= {email:(Math.random()*1000000).toString()};
   }
 
   console.log(`user.email: ${user.email}`);
