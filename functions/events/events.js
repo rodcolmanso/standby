@@ -24,6 +24,7 @@ const handler = async (event, context) => {
     
     switch (event.httpMethod){
       case 'GET':
+        console.log('entrou no GET');
         // const subject = event.queryStringParameters.name || 'World'
         // const p_eventId= event.queryStringParameters.eventId.toString();
         
@@ -115,28 +116,30 @@ const handler = async (event, context) => {
             });
           }
 
+        // const res = new Response();
+        // res.statusCode=200;
+        // res.body= JSON.stringify(events);
+        // res.headers.set("Access-Control-Allow-Origin", "*");
+        // res.headers.append("Access-Control-Allow-Headers", "*");
+        // res.headers.append("Access-Control-Allow-Methods", "*");
+
+        // return res;
+
         return {
           statusCode: 200,
-          body: JSON.stringify(events)
+          body: JSON.stringify(events),
           // // more keys you can return:
-          // headers: { "headerName": "headerValue", ... },
+          headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*","Access-Control-Allow-Methods": "*"
+                  //  ,"Access-Control-Allow-Headers": "Accept, X-Requested-With, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization" 
+                  }
           // isBase64Encoded: true,
         }
     
-      case 'PATCH': 
-
-      case 'DELETE':
-
-      default:
-      return  {
-        statusCode: 400,
-        body: JSON.stringify({message: "Route not found"})
-      };
     }
-
+    console.log('saiu do switch');
     
   } catch (error) {
-    return { statusCode: 500, body: error.toString() }
+    return { statusCode: 500, body: error.toString(),headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*","Access-Control-Allow-Methods": "*" }, }
   }
 }
 
