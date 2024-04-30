@@ -29,7 +29,7 @@ const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+ev
 });
 
 // const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
-const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId="+event_id)
+const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions_v2?eventId="+event_id)
     .then(r=>r.json())
     .then(data => {
     return data;
@@ -58,7 +58,7 @@ window.onload = async () => {
     eventConfig = await promiseOfEventConfig;
     playersArray= await promiseOfPlayers;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
     buildDivisions(eventConfig.divisions);
@@ -123,7 +123,7 @@ function transformRegistrer(players){
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
             console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
             
-            aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
+            aRow= {'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
             
             rP.push(aRow);  
         }
@@ -273,7 +273,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle text-end">${sScore}</td>
                     <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
-                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i></button>
+                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i></button>
                     </td>
                 </tr>`;
                 table.innerHTML+= row;
@@ -452,6 +452,24 @@ function uuidv4() {
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
+
+function getShooterByEmail(eventId, shooterEmail){
+applySpinners(true);
+fetch("/.netlify/functions/shooters_divisions_v2?eventId="+eventId+"&email="+shooterEmail)
+        .then(r=>r.json())
+        .then(data=>{
+            if(data.length>0){
+            document.getElementById('modalName').value= data[0].name;
+            document.getElementById('modalShooterId').value.data[0].name;
+            }else{
+                console.log(`Shooter not found.`);
+            }
+        })
+        .catch(err => console.log(`Error adding, updating shooter: ${err}`))
+        .finally(()=> applySpinners(false));
+}
+
+
 //////////------------UPDATES-----------------------
 function addUpdateShooter(){
 
@@ -496,10 +514,12 @@ function addUpdateShooter(){
 
             if(document.getElementById('modalOption'+cLadies).checked)
                 categ= cLadies;
-            if(document.getElementById('modalOption'+cOverall).checked)
-                categ= cOverall;
-            if(document.getElementById('modalOption'+cSeniors).checked)
+            else if(document.getElementById('modalOption'+cSeniors).checked)
                 categ= cSeniors;
+            else{ //if(document.getElementById('modalOption'+cOverall).checked)
+                document.getElementById('modalOption'+cOverall).checked= true;
+                categ= cOverall;
+            }
             
             document.getElementById('modalShooterId').value= idShooter;
                 aEvt= [];
@@ -509,18 +529,22 @@ function addUpdateShooter(){
                             ,'email':document.getElementById('modalEmail').value
                             ,'category': categ
                             ,'eventId': aEvt
+                            // ,'event_id': eventConfig._id
                             ,'registered':aRegistered};     
 
             //    playersArray.push(jShooter);
             applySpinners(true);
-            fetch('/.netlify/functions/shooters_divisions', {
+            fetch('/.netlify/functions/shooters_divisions_v2', {
                     method: "PATCH",
                     body: JSON.stringify(jShooter),
                     headers: {"Content-type": "application/json; charset=UTF-8"}
                     })
                     .then(response => response.json()) 
                     .then(json => {
-                        console.log(`Shooter added/updated= ${json.toString}`);
+                        console.log(`Shooter added/updated= ${ JSON.stringify(json,null,2)}`);
+                        applySpinners(false);
+                        // console.log(`document.getElementById('modalClose').value= ${ document.getElementById('modalClose').value}`);
+                        document.getElementById('modalClose').click();
                 
                         if(idShooter===null || idShooter==''){
                             // alert(document.getElementById('modalName').value+' se juntou ao evento!');
@@ -538,8 +562,6 @@ function addUpdateShooter(){
                     })
                     .catch(err => console.log(`Error adding, updating shooter: ${err}`))
                     .finally(()=> applySpinners(false));
-                
-    
 }
     
 function deleteShooter(){
@@ -552,7 +574,7 @@ function deleteShooter(){
         let jShooter= {shooterId:''};
         jShooter.shooterId= idShooter;
         applySpinners(true);
-        fetch('/.netlify/functions/shooters_divisions', {
+        fetch('/.netlify/functions/shooters_divisions_v2', {
             method: "DELETE",
             body: JSON.stringify(jShooter),
             headers: {"Content-type": "application/json; charset=UTF-8"}
@@ -575,17 +597,6 @@ function deleteShooter(){
             .catch(err => console.log(`Error deleting shooter, updating shooter: ${err}`))
             .finally(()=> applySpinners(false));
         
-
-        // for(i=0;i<playersArray.length;i++){
-        //     if(idShooter==playersArray[i].id){
-        //         playersArray.splice(i, 1);
-        //     }
-
-        // }
-       
-        //scoreCal();
-        //buildPlayersTables(transformRegistrer(playersArray), eventConfig, document.getElementById('selectDivision').value);
-       // document.getElementById('modalShooterId').value='';
     }
     
 }
@@ -599,7 +610,29 @@ function getDivision(eventDivisions, divisionID){
     }
 }
 
-function timeTrack(idShooter, nameShooter, gunShooter, bestScore){
+function getUserFromEmail(userEmail){
+
+    applySpinners(true);
+    fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${event_id}&email=${userEmail}`, {
+            method: "GET",
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+                if(json!==null&&json.length!==null&json.length>0){
+                    alert(`Atirador encontrado ${json[0].name}`);
+                    document.getElementById('modalName').value= json[0].name;
+
+                }else{
+                    alert(`Aturador não encontrado.`);
+                }
+
+            })
+            .catch(err => console.log(`Error getting shooter from email: ${err}`))
+            .finally(()=> applySpinners(false));
+}
+
+function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision ){
     const selectedDivision= selectDivision= document.getElementById('selectDivision').value;
 
      
@@ -608,6 +641,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore){
     
     document.getElementById('timeRecordShooterId').value= idShooter;
     document.getElementById('timeRecordDivision').value= selectedDivision;
+    document.getElementById('timeRecordShooterDivision').value= idShooterDivision;
 
     document.getElementById('offcanvasRightLabel').innerText= 'Tempos de '+nameShooter;
     document.getElementById('timeShooterName').innerText= nameShooter;
@@ -617,7 +651,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore){
     document.getElementById('timeDivision').innerText= getDivision(eventConfig.divisions, selectedDivision).name;    
 
 
-    buildTimeTable(idShooter,selectedDivision);
+    buildTimeTable(idShooter,selectedDivision, idShooterDivision);
 
 }
 
@@ -625,7 +659,9 @@ function addTimeRecord(){
 
     let idShooter= document.getElementById('timeRecordShooterId').value;
     let idDivision= document.getElementById('timeRecordDivision').value;
+    let idShooterDivision= document.getElementById('timeRecordShooterDivision').value;
     let vTime= Number(document.getElementById('timeRecordTime').value);
+    
     document.getElementById('timeRecordTime').value="";
     let vPenalties= Number(document.getElementById('timeRecordPenalty').value);
     document.getElementById('timeRecordPenalty').value="";
@@ -634,7 +670,7 @@ function addTimeRecord(){
 
 
     
-    let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties};
+    let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties, 'shooterDivisionId':idShooterDivision};
 
     applySpinners(true);
     fetch('/.netlify/functions/time-records', {
@@ -654,7 +690,7 @@ function addTimeRecord(){
                 console.log(`Apply new score ${vScore}`);
             }else console.log(`Not applied new score ${vScore}`);
             
-            buildTimeTable(idShooter,idDivision);
+            buildTimeTable(idShooter,idDivision, idShooterDivision);
             console.log(json);
         })
         // .then({
@@ -679,12 +715,12 @@ function addTimeRecord(){
 
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
-function buildTimeTable(idShooter,idDivision){
+function buildTimeTable(idShooter,idDivision,idShooterDivision){
     
     document.getElementById('timeTable').innerHTML="";
     
     applySpinners(true);
-    fetch(`/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}`)
+    fetch(`/.netlify/functions/time-records?eventID=${eventConfig.id}&shooterId=${idShooter}&divisionId=${idDivision}&shooterDivisionId=${idShooterDivision}`)
         .then(r=>r.json())
         .then(records=>{
 
@@ -704,7 +740,7 @@ function buildTimeTable(idShooter,idDivision){
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
                     <td class="text-end">${records[i].sTime}</td>
                     <td class="text-end">${records[i].penalties}</td>
-                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
+                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}', '${idShooterDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
                     </td>
                 </tr>`;
                 
@@ -734,7 +770,7 @@ function getBestScoreAndTries(idShooter, idDivision){
 
 }
 
-function deleteTime(idTimeRecord, idShooter, idDivision){
+function deleteTime(idTimeRecord, idShooter, idDivision, idShooterDivision){
 
     console.log(`idTimeRecord= ${idTimeRecord}`);
 
@@ -753,7 +789,7 @@ function deleteTime(idTimeRecord, idShooter, idDivision){
                 modalChanged=true;
                 document.getElementById('timeBestScore').innerText='';
         
-                buildTimeTable(idShooter,idDivision);
+                buildTimeTable(idShooter,idDivision, idShooterDivision);
                 console.log(r);
             })
             .catch(err => console.log(`Error deleting time: ${err}`))
@@ -869,7 +905,7 @@ function disableInputs(){
 
 function updateShootersList(){
     // fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
-    fetch("/.netlify/functions/shooters_divisions?eventId="+event_id)
+    fetch("/.netlify/functions/shooters_divisions_v2?eventId="+event_id)
             .then(r=>r.json())
             .then(data=>{
                 spinner.style.visibility = 'visible'//'visible'; //'hidden'

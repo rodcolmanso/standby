@@ -32,6 +32,8 @@ const handler = async (event, context) => {
         let p_event_date_to="2099-12-31";
         let p_split_duels="0";
 
+        let p_event_id="0";
+
         let ordem=-1;
         
         if(event.queryStringParameters.date_from !=null && event.queryStringParameters.date_from != undefined){
@@ -47,19 +49,40 @@ const handler = async (event, context) => {
         if(event.queryStringParameters.order !=null && event.queryStringParameters.order != undefined){
           ordem= parseInt(event.queryStringParameters.order);
         }
+        console.log('Antes do Match');
+        
+        let mMatch=  {
+          "date": { $gte: new Date(p_event_date_from.replace(/-/g, '\/'))
+                   , $lt: new Date(p_event_date_to.replace(/-/g, '\/')) }
+          , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
+       };
+
+        console.log('Antes do p_event_id');
+        if(event.queryStringParameters.event_id !=null && event.queryStringParameters.event_id != undefined){
+          p_event_id= event.queryStringParameters.event_id.toString();
+          const o_id = new ObjectId(p_event_id);
+          mMatch=  {"_id": o_id
+                   , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
+                   };
+        }
 
         const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
         const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
         
+        
+
+
+        console.log('Antes da Aggregation p_event_id='+p_event_id);
         let events= await cEvents.aggregate( [
           // Stage 1: Filter pizza events by date range
           {
-             $match:
-             {
-                "date": { $gte: new Date(p_event_date_from.replace(/-/g, '\/'))
-                         , $lt: new Date(p_event_date_to.replace(/-/g, '\/')) }
-                         , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
-             }
+             $match: mMatch
+            //  {
+            //     "date": { $gte: new Date(p_event_date_from.replace(/-/g, '\/'))
+            //              , $lt: new Date(p_event_date_to.replace(/-/g, '\/')) }
+            //     , $or:[{sB:true},{"_id": o_id}]
+            //     , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
+            //  }
           }
           ,{ "$addFields": { "eventIdd": { "$toString": "$_id" }}}
           ,{
@@ -80,9 +103,18 @@ const handler = async (event, context) => {
         const z= events.length;
 
         for(let i=0;i<z;i++){
-          events[i].subTitle="Contra o relógio + Duelos";
+
+          if(events[i].clock && events[i].duel){
+            events[i].subTitle="Contra o relógio + Duelos"
+          }else if(events[i].clock){
+            events[i].subTitle="Contra o relógio"
+          }else{
+            events[i].subTitle="Duelos"
+          }
+          
           console.log('p_split_duels='+p_split_duels);
-          if(p_split_duels==="1"){
+          let divisionsSummary="";
+          if(events[i].clock&&events[i].duel&&p_split_duels==="1"){
             if(events[i].dateDuel!==null&&events[i].dateDuel!==undefined&&events[i].dateDuel!==''&&events[i].dateDuel.toDateString()!==events[i].date.toDateString()){
               console.log(`${events[i].dateDuel.toDateString()}!==${events[i].date.toDateString()}?`);
               let nEvent= JSON.parse(JSON.stringify(events[i]));
@@ -97,6 +129,15 @@ const handler = async (event, context) => {
               console.log(``);
             }
           }
+
+          for(let j=0;j<events[i].divisions.length;j++){
+            if(j>0){
+              divisionsSummary+=', ';    
+            }
+            divisionsSummary+=events[i].divisions[j].name;
+          }
+          events[i].divisionsSummary= divisionsSummary;
+
         }
           
           console.log(`ordem=${ordem}`);

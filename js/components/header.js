@@ -26,8 +26,8 @@ class Header extends HTMLElement {
   </svg>
 
 
-      <header class="navbar navbar-expand-lg bd-navbar " >
-  <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap " aria-label="Main navigation">
+<header class="navbar navbar-expand-lg bd-navbar nav-bg-primary" data-bs-theme="light">
+  <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap " aria-label="Main navigation" >
     <div class="bd-navbar-toggle">
       
       <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
@@ -41,22 +41,23 @@ class Header extends HTMLElement {
     
     <div class="d-flex">
       <h6 class="text-small" id="eventTitle"></h6>
-      <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
-      <hr class="d-lg-none my-2 text-white-50">
+      <div class="vr d-none d-lg-flex h-100 mx-lg-2 "></div>
+      <hr class="d-lg-none my-2 text-white-50" />
     </div>
     
     <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true">
       <div class="offcanvas-header px-4 pb-0">
-        <h5 class="offcanvas-title text-white" id="bdNavbarOffcanvasLabel">T.P.M. Online</h5>
+        <h5 class="offcanvas-title " id="bdNavbarOffcanvasLabel">T.P.M. Online</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
       </div>
 
       <div class="offcanvas-body p-4 pt-0 p-lg-0">
-        <hr class="d-lg-none text-white-50">
+        <hr class="d-lg-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav">
-          <li class="nav-item col-6 col-lg-auto">
-            <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">Home</a>
+          <!--<li class="nav-item col-6 col-lg-auto">
+            <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="" >Home</a>
           </li>
+          -->
           <li class="nav-item col-6 col-lg-auto">
             <a class="nav-link py-2 px-0 px-lg-2" id="nav-events" href="/" onclick="">Eventos</a>
           </li>
@@ -66,9 +67,15 @@ class Header extends HTMLElement {
           <li class="nav-item col-6 col-lg-auto">
             <a class="nav-link py-2 px-0 px-lg-2" id="nav-matches" onclick="hrefMatches();" target="_blank" rel="noopener">Duelos</a>
           </li>
+          <li class="nav-item col-6 col-lg-auto">
+            <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">Ranking</a>
+          </li>
+          <li class="nav-item col-6 col-lg-auto">
+            <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">Clubes</a>
+          </li>
         </ul>
 
-        <hr class="d-lg-none text-white-50">
+        <hr class="d-lg-none text-white-50" />
 
         <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
           <li class="nav-item col-6 col-lg-auto">
@@ -91,8 +98,8 @@ class Header extends HTMLElement {
           </li>
           
           <li class="nav-item py-2 py-lg-1 col-12 col-lg-auto">
-            <div class="vr d-none d-lg-flex h-100 mx-lg-2 text-white"></div>
-            <hr class="d-lg-none my-2 text-white-50">
+            <div class="vr d-none d-lg-flex h-100 mx-lg-2 "></div>
+            <hr class="d-lg-none my-2 text-white-50" />
           </li>
 
           <li class="nav-item dropdown">

@@ -50,6 +50,10 @@
 .navbar .form-control {
   padding: .75rem 1rem;
 }
+.nav-bg-primary {
+  color: #000000 !important;
+  background-color: RGBA(255, 200, 0, var(--bs-bg-opacity, 1)) !important;
+}
 
 .scrollspy-example {
   position: relative;

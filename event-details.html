@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+
+<head>
+  <script src="assets/js/color-modes.js"></script>
+  <script src="js/components/header.js" type="text/javascript" defer></script>
+<!-- Font Awesome icons (free version)-->
+<script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Rodman">
+  <meta name="generator" content="Pris">
+  <title>T.P.M.</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
+
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+  <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    .b-example-divider {
+      width: 100%;
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .navbar-light .navbar-nav .nav-link {
+      color: red !important;
+  }
+  
+    .btn-bd-primary {
+      --bd-violet-bg: #712cf9;
+      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+      --bs-btn-font-weight: 600;
+      --bs-btn-color: var(--bs-white);
+      --bs-btn-bg: var(--bd-violet-bg);
+      --bs-btn-border-color: var(--bd-violet-bg);
+      --bs-btn-hover-color: var(--bs-white);
+      --bs-btn-hover-bg: #6528e0;
+      --bs-btn-hover-border-color: #6528e0;
+      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+      --bs-btn-active-color: var(--bs-btn-hover-color);
+      --bs-btn-active-bg: #5a23c8;
+      --bs-btn-active-border-color: #5a23c8;
+    }
+
+    .bd-mode-toggle {
+      z-index: 1500;
+    }
+
+    .bd-mode-toggle .dropdown-menu .active .bi {
+      display: block !important;
+    }
+
+    /* .nav-linkG {
+      color: goldenrod !important;
+      border-color: RGBA(255, 200, 0, var(--bs-bg-opacity, 1)) !important;
+}
+
+.active{
+  background-color: RGBA(255, 200, 0, var(--bs-bg-opacity, 1)) !important;
+    color: black !important;
+    border-color: RGBA(255, 200, 0, var(--bs-bg-opacity, 1)) !important;
+} */
+  </style>
+
+
+  <!-- Custom styles for this template -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/css/matches.css" rel="stylesheet">
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+
+<body>
+
+  <header-component></header-component>
+<!-- Modal Subscribe -->
+  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+    <div class="portfolio-modal modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+            <div class="container">
+              <div class="row justify-content-center">
+                      <!-- <div class="col-lg-8"> -->
+                <div class="modal-body">
+                    <!-- Project details-->
+                    <h2 class="" id="event-name">TPM XXXXXXXXXXX 9ª Ed.</h2>
+                    <input type="hidden" id="event-public">
+                    <input type="hidden" id="event-owners">
+                    <hr /> 
+                    <!-- <h3 class="">Inscreva-se</h2> -->
+                    <br>
+                    <form action="javascript:subscribeNew();">
+                      <div class="row gy-2 gx-3" >
+                        <div class="col-md-6">
+                            <div   > <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
+                              <div class="card" >
+                                <div class="row gy-2 gx-3" >
+                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important;"-->
+                                    <div class="btn" style="padding-right:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important; padding-bottom:1px !important;" -->
+                                      <label for="input-shooter-img" style="max-height:131px !important;">
+                                        <img id="shooter-img" style="max-height:131px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." src="https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_131,w_88/d_defaults:generic_avatar.jpg/nonononononononono"/>
+                                      </label>
+                                      <input type="file" class="form-control d-none" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" />
+                                    </div>
+                                  </div>
+                                  <div class="card-body col-auto" style="padding-left:8px !important;">
+                                    <div class="was-validated form-floating">
+                                      <input type="hidden" class="form-control" id="subscribe-shooterId">
+                                      <input disabled type="email" required placeholder="" class="form-control" id="subscribe-email">
+                                      <label for="subscribe-email" >Email</label>
+                                    </div>
+                                    <div class="form-floating">
+                                      <input disabled type="text" required class="form-control" id="subscribe-name">
+                                      <label for="subscribe-name">Atirador</label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          <!-- </form> -->
+                        </div>
+                        
+                        <div class="col-md-6">
+                          <!-- <form class=""> -->
+                            <div class="card" >
+                              <div class="row gy-2 gx-3">
+                                <div class=" card-body col-auto" style="padding-right:1px !important;" >
+                                  <div class="form-floating " > <!--col-md-2-->
+                                    <select class="form-select" required id="select-subscribe-division" aria-label="Floating label select example">
+                                      <option selected></option>
+                                    </select>
+                                    <label for="select-subscribe-division">Divisão</label>
+                                  </div>
+                                  <div class="col-auto" >
+                                    <div class="form-floating ">
+                                      <input type="text" class="form-control" id="subscribe-gun">
+                                      <label for="subscribe-gun">Arma</label>
+                                    </div>  
+                                  </div>
+                                </div> <!--min-width: 150px;-->
+                                <div class="card-body col-auto" style=" padding-left:4px !important; padding-right:8px !important; padding-top:20px !important; text-align: start;">
+                                  <div class="form-check form-switch" style="max-width: 70px !important;" >
+                                    <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
+                                    <label class="form-check-label" for="subscribe-check-clock"><small class="text-muted">Relógio</small></label>
+                                  </div>
+                                  <div class="form-check form-switch" style="max-width: 70px !important;" >
+                                    <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
+                                    <label class="form-check-label" for="subscribe-check-duel"><small class="text-muted">Duelo</small></label>
+                                  </div>
+                                  <div>
+                                    <label style="padding-top: 8px !important;" for="subscribe-optic"><small class="text-muted">Red dot</small></label>
+                                  </div>
+                                  <div class="form-check "> <!--form-switch--><!--role="switch"-->
+                                    <input class="form-check-input" type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="">
+                        <button type="submit" class=" btn btn-warning btn-xl" id="btn-add" >
+                          Inscriver <i class="fa-solid fa-angle-down"></i>
+                        </button>
+                      </div>
+                    </form>
+                    <br>
+                    <div class="table-responsive">
+                      <table class="table align-middle table-sm rounded">
+                        <thead>
+                          <tr>
+                            <!-- <th scope="col" class="w-5">#</th> -->
+                            <th scope="col" class="text-start d-none d-sm-table-cell"></th>
+                            <th scope="col" class="text-start d-none d-sm-table-cell">Atirador</th>
+                            <th scope="col" colspan="2" class="text-start">Divisão</th>
+                            <!-- <th scope="col"></th> -->
+                            <th scope="col" class="w-20 text-end">Arma</th>
+                            <th scope="col" class="w-10 text-start"><small>Red dot</small></th>
+                            <th scope="col" class="w-10"></th>
+                          </tr>
+                        </thead>
+                        <tbody class="table-group-divider" id="subscribe-table">
+                          
+                          <tr>
+                            <td class="text-start">
+                              <img class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/65bd6e808328263ca1d938c9"  alt="..." />
+                            </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">
+                              Pistola
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-clock-0" checked>
+                                <label class="form-check-label" for="subscribe-check-clock-0"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-duel-0" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="subscribe-check-duel-0"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">
+                                <input type="text" class="form-control form-control-sm" id="subscribe-gun-0" value="G2C 9mm"> 
+                            </td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="subscribe-optic-0" value="" aria-label="..." style="background-color:red" checked onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+
+                          <tr>
+                            <td class="text-start"><img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/65bd6e808328263ca1d938c9" class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" alt="..." />
+                            </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">Pistola
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="flexSwitchCheckChecked"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">TS 9mm</td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+                          <tr>
+                            <!-- <th scope="row">3</th> -->
+                            <td class="text-start"><img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/65bd6e808328263ca1d938c9" class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" alt="..." />
+                            </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">
+                              Força Livre
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="flexSwitchCheckChecked"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">Nylon 66</td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="" value="" aria-label="..." style="background-color:red" checked onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+                          <tr>
+                            <!-- <th scope="row">4</th> -->
+                            <td class="text-start"><img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/65bd6e808328263ca1d938c9" class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" alt="..." />
+                              </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">Força Livre
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="flexSwitchCheckChecked"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">Military 3.0</td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+                          <tr>
+                            <!-- <th scope="row">5</th> -->
+                            <td class="text-start"><img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/defaults/generic_avatar" class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" alt="..." />
+                            </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">
+                              Revolver
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="flexSwitchCheckChecked"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">RT692</td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="" value="" aria-label="..."  onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+                          <tr>
+                            <!-- <th scope="row">6</th> -->
+                            <td class="text-start"><img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/65bd6e808328263ca1d938c" class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" alt="..." />
+                            </td>
+                            <td class="text-start">
+                               Priscila da Rocha
+                            </td>
+                            <td class="text-end">
+                              Revolver
+                            </td>
+                            <td class="text-start">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
+                                <label class="form-check-label" for="flexSwitchCheckDefault"><small class="text-muted">Relógio</small></label>
+                              </div>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" style="background-color: goldenrod;" checked onchange="if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';"> 
+                                <label class="form-check-label" for="flexSwitchCheckChecked"><small class="text-muted">Duelo</small></label>
+                              </div>
+                            </td>
+                            <td class="text-end">RT 66</td>
+                            <td>
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="" value="" aria-label="..." style="background-color:red" checked onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';">
+                              </div>
+                            </td>
+                            <td class="text-end"><button onClick="" class="btn btn-sm btn-danger rounded-circle" value="-">-</button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">
+                      <i class="fas fa-xmark me-1"></i>
+                      Fechar
+                  </button>
+                </div>
+              </div>
+                  <!-- </div> -->
+            </div>
+          </div>
+      </div>
+  </div>
+  <!-- Modal Subscribe end -->
+
+
+<!-- Masthead-->
+<header class="masthead" id="event-bg-img" style="background-image:url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/defaults/header-bg')">
+  <div class="container">
+      <div class="masthead-heading" id="masthead-event-name">TPM CT Typhoon 4ª Ed.</div>
+      <!-- <div class="masthead-subheading">Pistola, Força livre e Revolver</div> -->
+      <div class="masthead-subheading" id="event-local">Avanida Jabuaquara, 1530 - São Paulo/SP</div>
+      <!-- <a class="btn btn-warning btn-xl text-uppercase" style="color: white;" href="#services">Inscreva-se</a> -->
+      <button type="button" class="btn btn-warning btn-xl text-uppercase" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Inscreva-se
+      </button>
+  </div>
+</header>
+<!-- Services-->
+<section class="page-section" id="services">
+  <div class="container">
+      <div class="text-center">
+          <h2 class="section-heading" id="event-divisions-summary">Pistola, Força livre e Revolver</h2>
+          <h5 class="section-subheading text-muted" id="event-date">24/04 17:30h (contra o relógio)</h5>
+          <h5 class="section-subheading text-muted" id="event-date-duel">26/04- 10hs (duelo)</h5>
+          <h5 class="section-subheading text-muted">&nbsp;</h5>
+      </div>
+      
+      <div class="row text-center">
+          <div class="col-md-4">
+              <span class="fa-stack fa-4x">
+                  <i class="fas fa-circle fa-stack-2x text-warning"></i>
+                  <i class="fas fa-user-plus fa-stack-1x fa-inverse"></i>
+              </span>
+              <h4 class="my-3">Inscrições</h4>
+              <p class="text-muted">23 já inscritos.</p>
+              <p class="text-muted">Você ainda não está inscrito.</p>
+          </div>
+          <div class="col-md-4">
+              <span class="fa-stack fa-4x">
+                  <i class="fas fa-circle fa-stack-2x text-warning"></i>
+                  <i class="fas fa-clock fa-stack-1x fa-inverse"></i>
+              </span>
+              <h4 class="my-3">Contra o relógio</h4>
+              <p class="text-muted">Acompanhe suas colocações</p>
+              <p class="text-muted">Melhores tempos: </p>
+          </div>
+          <div class="col-md-4">
+              <span class="fa-stack fa-4x">
+                  <i class="fas fa-circle fa-stack-2x text-warning"></i>
+                  <i class="fas fa-holly-berry fa-stack-1x fa-inverse"></i>
+              </span>
+              <h4 class="my-3">Duelos</h4>
+              <p class="text-muted">Acompanhe acompanha as chaves e resultados por modalidade</p>
+          </div>
+      </div>
+  </div>
+</section> 
+<!-- Portfolio Grid-->>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+
+  <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+  <!--<script src="https://code.jquery.com/jquery-1.9.1.js"></script>-->
+
+  <script src="./js/event-details.js"></script>
+  <script type="text/javascript">
+     $('#date').datepicker({
+    startView: 0,
+    minViewMode: 0,
+    maxViewMode: 2,
+    multidate: true,
+    multidateSeparator: "-",
+    autoClose: true,
+    beforeShowDay: highlightRange,
+  }).on("changeDate", function(event) {
+    var dates = event.dates,
+        elem = $('#date');
+    if (elem.data("selecteddates") == dates.join(",")) return;
+    if (dates.length > 2) dates = dates.splice(dates.length - 1);
+    dates.sort(function(a, b) { return new Date(a).getTime() - new Date(b).getTime() });
+    elem.data("selecteddates", dates.join(",")).datepicker('setDates', dates);
+  });
+
+  function highlightRange(date) {
+    var selectedDates = $('#date').datepicker('getDates');
+    if (selectedDates.length === 2 && date >= selectedDates[0] && date <= selectedDates[1]) {
+      return 'highlighted';
+    }
+    return '';
+  }
+    </script>
+
+</body>
+
+</html>

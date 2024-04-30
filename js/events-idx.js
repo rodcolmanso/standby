@@ -186,7 +186,7 @@ function buildEventsTable(events){
         
         row=`<div class="col">
         <div class="card h-100">
-          <a data-toggle="modal" data-target="#exampleModal" href="./event-config.html?event_id=${events[i]._id}" >
+          <a data-toggle="modal" data-target="#exampleModal" href="./event-details.html?event_id=${events[i]._id}" >
             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/${events[i]._id}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
             </a>
             <div class="card-body" >

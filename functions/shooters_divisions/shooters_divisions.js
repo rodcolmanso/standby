@@ -24,13 +24,54 @@ const handler = async (event, context)=>{
 
     switch (event.httpMethod){
       case 'GET':
-        const p_eventId= event.queryStringParameters.eventId.toString();
-        console.log(`p_eventId= ${p_eventId}`);
-  
-        if(p_eventId!==null){ //listing all shooters in a eventId, with their best time for each division
+        let p_eventId=null;
+        let p_email=null;
+        if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
+          p_eventId= event.queryStringParameters.eventId.toString();
+          console.log(`p_eventId= ${p_eventId}`);
+        }
+        if(event.queryStringParameters.email!==undefined&&event.queryStringParameters.email!==null&&event.queryStringParameters.email!==""){
+          p_email= event.queryStringParameters.email.toLowerCase();
+          console.log(`p_email= ${p_email}`);
+        }
+        console.log(`p_emailXXXXXXXX= ${p_email}`);
 
-          const shootersDiv= await cShooters.aggregate([
-            {$match:{eventId: p_eventId}} //"6578ad76e53c8b23971032c4"
+      if(p_eventId!==null&&p_email!==null){ // List shooter_division(inscriptions) detail
+        
+        console.log(`ENTROU NO EMAIL= ${p_email}`);
+        
+        const shootersDiv= await cShooters.aggregate([
+          { "$addFields": { 
+              "shooterId": { "$toString": "$_id" }
+          }}
+          ,{$lookup:
+              {
+                  from: "shooters_divisions"
+                  ,localField: "shooterId"
+                  ,foreignField: "shooterId"
+                  ,pipeline: [
+                      { $match: { eventId: "661ab4f9c412f4a5f17f0624"}}
+                      ]
+                  ,as: "shooters_divisions"
+              }
+          }
+          ,{$match:{ $and:[{email: "lucca@tpm.com"}
+                          // ,{shooters_divisions: {$ne: []}}
+                      ]
+                  }}
+          ,{$project:{"_id":0,"eventId":0,"shooters_divisions.shooterId":0}}
+          ]).toArray();
+
+          return  {
+            statusCode: 200,
+            body: JSON.stringify(shootersDiv)
+          };
+
+      }else if(p_eventId!==null){ //listing all shooters in a eventId, with their best time for each division
+        console.log(`ENTROU NO ENVENTO= ${p_eventId}`);
+          
+        const shootersDiv= await cShooters.aggregate([
+            {$match:{eventId: p_eventId}}
             ,{ "$addFields": { "shooterId": { "$toString": "$_id" }}},
             {$lookup:
                 {
@@ -78,12 +119,12 @@ const handler = async (event, context)=>{
                 }
             }            
             ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0, "registered.time_records":0}}
-        ]).sort({"registered.score":1}).toArray();
+            ]).sort({"registered.score":1}).toArray();
 
-        return  {
-          statusCode: 200,
-          body: JSON.stringify(shootersDiv)
-        };
+            return  {
+              statusCode: 200,
+              body: JSON.stringify(shootersDiv)
+            };
 
           }else{ //list all
             //TODO: 
@@ -94,8 +135,10 @@ const handler = async (event, context)=>{
         let shooter= JSON.parse(event.body);
         let registered= shooter.registered;
         let shooterId=shooter.shooterId;
+        let event_id= shooter.event_id;
         delete shooter.registered;
         delete shooter.shooterId;
+        delete shooter.event_id;
   
         if(shooterId===null||shooterId===""||shooterId===0){ // new shooter
 
@@ -127,6 +170,7 @@ const handler = async (event, context)=>{
           shooter_division= {};
           shooter_division.shooterId=shooterId;
           shooter_division.divisionId= registered[i].divisionId;
+          shooter_division.eventId=event_id;
           shooter_division.gun= registered[i].gun;
           shooter_division.optics= registered[i].optics;
           shooters_divisions.push(shooter_division);

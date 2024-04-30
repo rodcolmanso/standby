@@ -358,7 +358,8 @@ db.time_records.aggregate([
     ,{$sort:{score:1}}
   ]);
 
-  db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1}, { "unique": true } );
+//   db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1}, { "unique": true } );
+  db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1, "gun":1}, { "unique": true } );
 
 
 
@@ -380,10 +381,8 @@ db.time_records.aggregate([
 
 
 
-db.shooters.createIndex( {"name":1, "eventId":1}, { "unique": true } );
-
-
-
+// db.shooters.createIndex( {"name":1, "eventId":1}, { "unique": true } );
+db.shooters.createIndex( {"email":1}, { "unique": true } );
 
 ///
 db.divisions.aggregate([{$match:{eventId:"6578ad76e53c8b23971032c4"}}])
@@ -402,3 +401,129 @@ db.events.updateOne({ "_id" : ObjectId("6578ad76e53c8b23971032c4") }
 data= [{'name':'2º Campeonado Regional de TPM - CT Marília', 'local': 'CT Mariilia','date': new Date('2024-02-12'),'img':'/img/shooters_lineup.jpg'}
      ,{'name':'1º Nacional de TPM - CT Pinda', 'local': 'CT Pinda','date': new Date('2024-03-20'),'img':'/img/shooters_lineup.jpg'}];
 db.events.insertMany(data);
+
+
+//====================2024-04-22 Find shooters_division by email ==================
+    db.shooters.aggregate([
+        { "$addFields": { 
+            "shooterId": { "$toString": "$_id" }
+            ,"p_event_Id": "65b03f80081f13eb9a8d8c1a"
+        }}
+        ,{$lookup:
+            {
+                from: "shooters_divisions"
+                ,localField: "shooterId"
+                ,foreignField: "shooterId"
+                ,let: {p_event_Id:"$p_event_Id"}
+                ,pipeline: [
+                    { "$addFields": { "division_id": { "$toObjectId": "$divisionId" }
+                                ,"p_event_Id":"$$p_event_Id"
+                                    }
+                    },
+                    { $lookup:
+                        {
+                            from: "divisions"
+                            ,localField:"division_id"
+                            ,foreignField: "_id"
+                            ,let:{p_event_Id: "$p_event_Id"}
+                            ,pipeline:[ { $match: {$expr:{$and:
+                                [{$eq: ["$eventId", "$$p_event_Id"]}
+                                ,{}]
+                            }}}]
+                            ,as: "divisions"
+                        }
+                    }
+                    ,{$match: {divisions: {$ne: []}}}
+                    ]
+                ,as: "shooters_divisions"
+            }
+        }
+        ,{$match:{ $and:[{email: "petra@tpm.com"}
+                        // ,{shooters_divisions: {$ne: []}}
+                    ]
+                }}
+        ,{$project:{"_id":0,"eventId":0,"p_event_Id":0,"shooters_divisions.shooterId":0,"shooters_divisions.division_id":0,"shooters_divisions.p_event_Id":0 ,"shooters_divisions.divisions.advanceLimit":0,"shooters_divisions.divisions.order":0,"shooters_divisions.divisions.categories":0,"shooters_divisions.divisions._id":0}}
+        ])
+//=================================================================================
+//====================2024-04-23 Find shooters_division by email. New shooter_division with eventId==================
+db.shooters.aggregate([
+    { "$addFields": { 
+        "shooterId": { "$toString": "$_id" }
+    }}
+    ,{$lookup:
+        {
+            from: "shooters_divisions"
+            ,localField: "shooterId"
+            ,foreignField: "shooterId"
+            ,pipeline: [
+                { $match: { eventId: "661ab4f9c412f4a5f17f0624"}}
+                ]
+            ,as: "shooters_divisions"
+        }
+    }
+    ,{$match:{ $and:[{email: "lucca@tpm.com"}
+                    // ,{shooters_divisions: {$ne: []}}
+                ]
+            }}
+    ,{$project:{"_id":0,"eventId":0,"shooters_divisions.shooterId":0}}
+    ])
+//=================================================================================
+
+
+    db.shooters_divisions.aggregate([
+        { $match: {$expr:{$and:
+                            [{$eq: ["$eventId", "661ab4f9c412f4a5f17f0624" ]}
+                            ,{}]}}}
+        ,{ "$addFields": { "shooterId": { "$toObjectId": "$shooterId" }}}
+        ,{$lookup:{
+            from: "shooters"
+            ,localField: "shooterId"
+            ,foreignField: "_id"
+            ,as: "shooters"
+            }   
+        }
+        ,{ "$addFields": {"shooterDivision_Id": { "$toString": "$_id" }}}
+        ,{ $lookup:
+            {
+                from: "time_records"
+                ,localField: "shooterDivision_Id"
+                ,foreignField: "shooterDivisionId"
+                ,as: "time_records"
+            }
+        }
+        ,{$project:{"shooters.eventId":0}}
+        ])
+
+        // ======================
+
+        db.shooters.aggregate([
+            { "$addFields": {"shooterId": { "$toString": "$_id" }}}
+            ,{$lookup:{
+                from: "shooters_divisions"
+                ,localField: "shooterId"
+                ,foreignField: "shooterId"
+                ,as: "registered"
+                ,pipeline:[
+                    {$match:{eventId:"661ab4f9c412f4a5f17f0624"}}
+                    ,{ "$addFields": {"shooterDivisionId": { "$toString": "$_id" }}}
+                    ,{ $lookup:
+                        {
+                            from: "time_records"
+                            ,localField: "shooterDivisionId"
+                            ,foreignField: "shooterDivisionId"
+                            ,as: "time_records"
+                            ,pipeline:[
+                                {$project:{ "score":{"$add":["$sTime","$penalties"]} ,datetime:1}}
+                                ,{$group:
+                                    { _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}}
+                                }
+                            ]
+                        }
+                    }
+                    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
+                ]
+                }
+            }
+            ,{$match: {registered: {$ne: []}}}
+            ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
+            ]).sort({"registered.score":1})

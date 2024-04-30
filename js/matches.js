@@ -523,7 +523,7 @@ window.onload = async () => {
     applySpinners(true);
     eventConfig = await promiseOfEventConfig;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
     changeDivision(selectDivision);
     applySpinners(false);

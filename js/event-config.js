@@ -57,7 +57,7 @@ window.onload = async () => {
     document.getElementById('nav-events').classList.add('active');
 
     if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     }else{
         document.getElementById('eventTitle').innerHTML= `Novo evento`;
     }
@@ -76,10 +76,19 @@ window.onload = async () => {
     
     document.getElementById('event-date').value= eventConfig.date.toISOString().slice(0,16);
     document.getElementById('event-date-duel').value= eventConfig.dateDuel.toISOString().slice(0,16);
+    
+    document.getElementById('check-clock').checked= eventConfig.clock;
+    document.getElementById('check-duel').checked= eventConfig.duel;
+
+    if(!eventConfig.duel){
+        document.getElementById('check-duel').style='background-color:';
+    }
+    document.getElementById('event-date').disabled= !eventConfig.clock;
+    document.getElementById('event-date-duel').disabled= !eventConfig.duel;
 
     document.getElementById('event-local').value= eventConfig.local;
     
-    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400,w_400/'+eventConfig._id;
+    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/'+eventConfig._id;
     
     document.getElementById('event-note').value= eventConfig.note;
 
@@ -125,9 +134,22 @@ function updateEventConfig(){
         return 0;
     }
 
-    eventConfig.name= document.getElementById('event-name').value;    
+    eventConfig.name= document.getElementById('event-name').value;
+    
+    eventConfig.clock= document.getElementById('check-clock').checked;
+    eventConfig.duel= document.getElementById('check-duel').checked;
+
     eventConfig.date= new Date(document.getElementById('event-date').value);
     eventConfig.dateDuel= new Date(document.getElementById('event-date-duel').value);
+
+    if(!eventConfig.clock){
+        eventConfig.date= eventConfig.dateDuel;
+    }
+
+    if(!eventConfig.duel){
+        eventConfig.dateDuel= eventConfig.date;
+    }
+    
     eventConfig.local= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
     // eventConfig.img= document.getElementById('event-img').value;
@@ -391,4 +413,31 @@ function displaySelectedImage(event, elementId) {
 
         reader.readAsDataURL(fileInput.files[0]);
     }
+}
+
+function checkClock(bRadio){
+
+    if(bRadio.checked){
+        document.getElementById('event-date').disabled=false;
+    }else{        
+        document.getElementById('event-date').disabled=true;
+        document.getElementById('event-date-duel').disabled=false;
+        document.getElementById('check-duel').checked=true;
+        document.getElementById('check-duel').style='background-color:goldenrod';
+    }
+
+}
+
+function checkDuel(bRadio){
+
+    if(bRadio.checked){
+        document.getElementById('event-date-duel').disabled=false;
+        document.getElementById('check-duel').style='background-color:goldenrod';
+    }else{
+        document.getElementById('check-duel').style='background-color:';
+        document.getElementById('event-date-duel').disabled=true;
+        document.getElementById('event-date').disabled=false;
+        document.getElementById('check-clock').checked=true;
+    }
+    
 }

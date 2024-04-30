@@ -141,7 +141,7 @@
         <!-- <div class="d-flex justify-content-center"> -->
             <div class="btn">
               <label for="event-img">
-                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400,w_400/defaults/tmpyellow'" src="..."
+                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/defaults/tmpyellow'" src="..."
                   class="img-fluid" alt="example placeholder" />
                   </label>
                 <input type="file" class="form-control d-none" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
@@ -149,11 +149,21 @@
         <!-- </div> -->
       </div>
     
-      <div class="form-floating mb-3 col-md-6">
+      <div class="form-floating mb-3 col-md-5">
         <input type="text" class="form-control" id="event-name">
         <label for="event-name" >Título</label>
       </div>
       
+      <div class="form-floating mb-3 col-md-1">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
+          <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
+          <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
+        </div>
+      </div>
       <div class="form-floating mb-3 col-md-3">
         <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date" >
         <label for="event-date" >Contra o Relógio em:</label>
@@ -217,7 +227,7 @@
       
       <div class="form-floating col-md-8">
         <textarea class="form-control" id="event-note"></textarea>
-        <label for="event-note">Observações</label>
+        <label for="event-note">Descrição:</label>
       </div>  
       
     </form>

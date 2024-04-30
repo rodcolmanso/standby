@@ -17,6 +17,7 @@ const handler = async (event, context)=>{
       case 'GET':
         const p_shooterId= event.queryStringParameters.shooterId.toString();
         const p_divisionId= event.queryStringParameters.divisionId.toString();
+        // const p_shooter_divisionId= event.queryStringParameters.shooterDivisionId.toString();
         
         //listing all time records from a particular shooter and division
           console.log(`Estamos no GET! p_shooterId,p_divisionId = ${p_shooterId}, ${p_divisionId} `);

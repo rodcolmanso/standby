@@ -361,17 +361,17 @@
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
-                        <p class="card-title">
-                        <div class="form-floating mb-3">
-                          <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
-                          <label for="modalName">Nome</label>
-                        </div>
-                        </p>
                         <p class="card-text">
-                        <div class="form-floating mb-3">
-                          <input type="email" class="form-control" id="modalEmail" placeholder="name@example.com" >
-                          <label for="modalEmail">E-mail</label>
-                        </div>
+                          <div class="form-floating mb-3">
+                            <input type="email" class="form-control" required id="modalEmail" placeholder="name@example.com" onChange="getUserFromEmail(this.value)" >
+                            <label for="modalEmail">E-mail</label>
+                          </div>
+                        </p>
+                        <p class="card-title">
+                          <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
+                            <label for="modalName">Nome</label>
+                          </div>
                         </p>
                       </div>
                     </div>
@@ -457,9 +457,9 @@
                 <!--...-->
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalClose" value="Fechar">
+                <button type="button" class="btn btn-secondary closeModalBtn" data-bs-dismiss="modal" id="modalClose" value="Fechar">
                   <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
-                <button type="submit" class="btn btn-success" value="Salvar" data-bs-dismiss="modal" ><!--data-bs-dismiss="modal" -->
+                <button type="submit" class="btn btn-success" value="Salvar" ><!--data-bs-dismiss="modal" -->
                   <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal" value="Remover" onClick="deleteShooter()">
                   <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Remover</button>
@@ -518,6 +518,7 @@
 
                       <input type="hidden" id="timeRecordShooterId" >
                       <input type="hidden" id="timeRecordDivision" >
+                      <input type="hidden" id="timeRecordShooterDivision" >
 
                       <input type="number" step="0.001" min="0.1" max="100" required class="form-control" id="timeRecordTime" placeholder="0" value="0">
                       <label for="timeRecordTime">Tempo</label>

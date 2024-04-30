@@ -70,6 +70,8 @@ const handler = async (event, context)=>{
               ,city: event_config.city
               ,state: event_config.state
               ,public: event_config.public
+              ,clock: event_config.clock
+              ,duel: event_config.duel
 
             });
         }else{
@@ -105,6 +107,8 @@ const handler = async (event, context)=>{
                                                     ,city: event_config.city
                                                     ,state: event_config.state
                                                     ,public: event_config.public
+                                                    ,clock: event_config.clock
+                                                    ,duel: event_config.duel
                                                     }
                                                   }
                                                   // ,{ upsert: true }
