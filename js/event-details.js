@@ -434,7 +434,7 @@ netlifyIdentity.on('login', user => {
                     eventConfig=data[0];
                     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
                     if(isAdmin||(eventConfig.owners.indexOf(user.email)>-1)){
-                        document.getElementById('subscribe-email').r=false;
+                        document.getElementById('subscribe-email').disabled=false;
                         // document.getElementById('subscribe-name').disabled=false;
                     }else{
                         document.getElementById('subscribe-email').disabled=true;
