@@ -38,7 +38,7 @@ const handler = async (event, context)=>{
               let new_record= JSON.parse(event.body);
 
               new_record.datetime= new Date();
-              console.log(`new_record.datetime=${new_record.datetime} `);
+              console.log(`POSTING NEW TIME, JSON.stringify(new_record)=:${JSON.stringify(new_record,null,2)} `);
 
               new_record= await cTime_Records.insertOne(new_record);
     

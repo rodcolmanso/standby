@@ -9,23 +9,48 @@ var ObjectId = require('mongodb').ObjectId;
 const handler = async (event, context)=>{
   try {
 
-
-    const p_shooterId= event.queryStringParameters.shooterId.toString();
-    console.log(`p_eventId= ${p_shooterId}`);
-
-    const p_divisionId= event.queryStringParameters.divisionId.toString();
-
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
-    const cDivisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
+    const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     
 
     switch (event.httpMethod){
       case 'GET':
-        if(p_divisionId!==null){ //listing all shooters in this division, with their best time
 
-        }else{ //list all
+      filter={};
+      if(event.queryStringParameters.logged!==undefined){
 
+        if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
+          filter.email= context.clientContext.user.email;
+        }else{
+          filter.email= (Math.random()*1000000).toString();
         }
+
+      }else{ 
+        
+        if(event.queryStringParameters.email!==undefined){
+          filter.email= event.queryStringParameters.email;
+        }
+
+        if(event.queryStringParameters.name!==undefined){
+          filter.name= event.queryStringParameters.name;
+        }
+
+        if(event.queryStringParameters.category!==undefined){
+          filter.category= event.queryStringParameters.category;
+        }
+
+        if(event.queryStringParameters.id!==undefined){
+          filter._id= new ObjectId(event.queryStringParameters.id);
+        }
+
+      }
+        
+      const retShooters = await cShooters.find(filter).toArray();
+
+      return  {
+        statusCode: 200,
+        body: JSON.stringify(retShooters)
+      };
 
       case 'POST':
 
@@ -37,20 +62,6 @@ const handler = async (event, context)=>{
           body: JSON.stringify({message: "Route not found"})
         };
 
-    }
-
-    
-    const o_id = new ObjectId(p_shooterId);
-    const events= await cEvents.find({_id:o_id}).toArray();
-    
-    const divisions= await cDivisions.find({eventId:p_eventId}).sort({order:1}).toArray();
-
-    events[0].divisions= divisions;
-
-    
-    return{
-      statusCode: 200
-      ,body: JSON.stringify(events[0])
     }
 
   } catch (error) {

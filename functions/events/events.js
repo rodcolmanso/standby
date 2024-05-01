@@ -84,12 +84,12 @@ const handler = async (event, context) => {
             //     , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
             //  }
           }
-          ,{ "$addFields": { "eventIdd": { "$toString": "$_id" }}}
+          ,{ "$addFields": { "eventId": { "$toString": "$_id" }, "eventIdd": { "$toString": "$_id" }}}
           ,{
             $lookup:
               {
                 from: "divisions",
-                localField: "eventIdd",
+                localField: "eventId",
                 foreignField: "eventId",
                 as: "divisions"
               }

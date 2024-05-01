@@ -45,6 +45,25 @@ function hrefMatches(){
 
 window.onload = async () => {
 
+    if(netlifyIdentity.currentUser()){
+        applySpinners(true);
+        fetch('/.netlify/functions/shooters?logged', {
+            method: "GET",
+            headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                        ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
+                    }
+            }).then(response => response.json()
+            ).then(json => {
+                if(json.length>0){
+                    console.log(`User logged`);
+                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
+                }
+            })
+            .catch(err => console.log(`Error getting, logged user: ${err}`))
+            .finally(()=> applySpinners(false));
+    }
+
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
     // document.getElementById('divTAdvance').style.display='none';
@@ -670,7 +689,7 @@ function addTimeRecord(){
 
 
     
-    let newRecord={'shooterId':idShooter,'divisionId':idDivision,'sTime': vTime,'penalties': vPenalties, 'shooterDivisionId':idShooterDivision};
+    let newRecord={'shooterId':idShooter,'divisionId':idDivision, 'eventId':eventConfig._id ,'sTime': vTime,'penalties': vPenalties, 'shooterDivisionId':idShooterDivision};
 
     applySpinners(true);
     fetch('/.netlify/functions/time-records', {
@@ -858,7 +877,6 @@ function applySpinners(onoff){
 
         spans= btn.querySelectorAll("span");
         [].forEach.call(spans,span=>{
-        
             if(span.getAttribute('class').includes("spinner")){
                 if(onoff)
                     span.style.visibility = 'visible'//'visible'; //'hidden'

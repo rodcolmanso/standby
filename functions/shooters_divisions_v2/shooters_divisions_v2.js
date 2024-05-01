@@ -1,6 +1,15 @@
 const {MongoClient} = require ("mongodb");
 require('dotenv').config();
 
+// import {v2 as cloudinary} from 'cloudinary';
+const cloudinary = require ("cloudinary").v2;
+          
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
@@ -41,7 +50,7 @@ const handler = async (event, context)=>{
                   ,localField: "shooterId"
                   ,foreignField: "shooterId"
                   ,pipeline: [
-                      { $match: { eventId: "661ab4f9c412f4a5f17f0624"}}
+                      { $match: { eventId: p_eventId}}
                       ]
                   ,as: "shooters_divisions"
               }
@@ -104,6 +113,7 @@ const handler = async (event, context)=>{
 
       case 'PUT': // associates divisions with a shooter
 
+        let shooterDivisions= JSON.parse(event.body);
         try{
 
           console.log(JSON.stringify(context, null, 2))
@@ -119,8 +129,8 @@ const handler = async (event, context)=>{
               body: `Unauthorized, User ${user.email} cannot update the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
             }; 
           }
-          console.log(`PUTTED body=: ${event.body}`);
-          let shooterDivisions= JSON.parse(event.body);
+          console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
+          
           const new_record= await cShooters.updateOne(
                                             {email: shooterDivisions.email.toLowerCase().trim()}
                                             ,{$set:{
@@ -129,10 +139,16 @@ const handler = async (event, context)=>{
                                                     ,email: shooterDivisions.email.toLowerCase().trim()
                                                     }}
                                             ,{upsert:true}
-                                            );
+          
+                                          );
 
+          console.log('');
+          console.log('==============new_record===================');
+          console.log(JSON.stringify(new_record,null,2));
+          console.log('===========================================');
+          console.log('');
           if(shooterDivisions.shooterId===null||shooterDivisions.shooterId===""||shooterDivisions.shooterId===undefined){
-            shooterDivisions._id= new_record.insertedId.toString();
+            shooterDivisions._id= new_record.upsertedId.toString();
             shooterDivisions.shooterId= shooterDivisions._id;
           }
 
@@ -180,12 +196,29 @@ const handler = async (event, context)=>{
                   }
           } //for
 
+          console.log('shooterDivisions.imgChanged='+shooterDivisions.imgChanged);
+          if(shooterDivisions.imgChanged){
+            console.log('Uploading shooter img to cloudinary. img='+shooterDivisions._id);
+            
+            cloudinary.uploader.upload(shooterDivisions.img,
+                { public_id: "profile/"+shooterDivisions._id })
+                .then(result=>console.log(result));
+          }
+
           return  {
             statusCode: 200,
             body: JSON.stringify(new_record)
           };
         }catch(error){
-          console.log("Error updating shooter_divisions: "+error.toString())
+          console.log("Error updating shooter_divisions: "+error.toString());
+          if(error.code.toString()==="11000"){
+            let gun= error.toString().slice(-1*error.toString().indexOf('gun: "'));
+            return  {
+              statusCode:  409,
+              body: `E11000. Cannot subscribe a gun twice in a same division. { ${gun} `
+            };
+            }
+
           return  {
             statusCode: 510,
             body: error.toString()
@@ -250,39 +283,53 @@ const handler = async (event, context)=>{
 
       case 'DELETE':
 
-      const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
 
-        let body= JSON.parse(event.body);
-        let delShooterId= body.shooterId;
-
-        console.log(`Deleting shooter: trues shooterId: ${delShooterId}.`);
-
-        let r_delete_divisions= await cShooters_Divisions.deleteMany({shooterId: delShooterId});
-        console.log(`Deleto divisões: r_delete_divisions.toString() ${r_delete_divisions.toString()}`);
-
-        let r_delete_shooter= await cShooters.deleteOne({_id: new ObjectId(delShooterId)});
-        console.log(`Deleto atirador! r_delete_shooter.toString(): ${r_delete_shooter.toString()}`);
-
-         await cTime_Records.deleteMany({shooterId: delShooterId});
-
-        r_delete_shooter.shooter_acknowledged= r_delete_shooter.acknowledged;
-        r_delete_shooter.shooter_deletedCount= r_delete_shooter.deletedCount;
-
-        r_delete_shooter.divisions_acknowledged= r_delete_divisions.acknowledged;
-        r_delete_shooter.divisions_deletedCount= r_delete_divisions.deletedCount;
-
-        delete r_delete_shooter.acknowledged;
-        delete r_delete_shooter.deletedCount;
+      try{
+          console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
         
+          let user= context.clientContext.user;
+          console.log(`user.email: ${user.email}`);
+          let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+          console.log(`is Admin: ${isAdmin}`);
 
-        console.log(`r_delete_shooter.divisions_deletedCount: ${r_delete_shooter.divisions_deletedCount}`);
-        console.log(`r_delete_shooter.shooter_deletedCount: ${r_delete_shooter.shooter_deletedCount}`);
+          if(!isAdmin && user.email.toLowerCase().trim()!==shooterDivisions.email.toLowerCase().trim()){
+            return  {
+              statusCode: 401,
+              body: `Unauthorized, User ${user.email} cannot update the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
+            }; 
+          }
 
 
-        return  { 
-          statusCode: 200,  
-          body: JSON.stringify(r_delete_shooter)
-        };
+          let shooterDivisions= JSON.parse(event.body);
+          let filter_Ids= [new ObjectId("000000000000000000000000")];
+          let filterStringIds= ["000000000000000000000000"];
+          for(let i=0; i< shooterDivisions.shooters_divisions.length;i++){
+            filter_Ids.push(new ObjectId(shooterDivisions.shooters_divisions[i]._id));
+            filterStringIds.push(shooterDivisions.shooters_divisions[i]._id);
+          }
+          
+          let r_delete_divisions= await cShooters_Divisions.deleteMany({_id: { $in: filter_Ids }});
+          console.log(`Deleto divisões: r_delete_divisions.toString() ${r_delete_divisions.toString()}`);
+
+          const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
+          await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
+
+          r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
+          
+          console.log(`Deleted objects:  ${JSON.stringify(r_delete_divisions,null,2)}`);
+
+
+          return  { 
+            statusCode: 200,  
+            body: JSON.stringify(r_delete_divisions)
+          };
+        }catch(error){
+          console.log("Error delleting shooter_divisions: "+error.toString());
+          return  {
+            statusCode: 510,
+            body: error.toString()
+          };
+        }
 
       default:
         return  {

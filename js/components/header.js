@@ -135,7 +135,7 @@ class Header extends HTMLElement {
       </div>
     </div>
     <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-          <img class="small-profile-avatar-pic rounded-circle" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">   
+          <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="..." alt="...">  
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
         <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">
