@@ -506,6 +506,54 @@ function buildPage(eventConfig){
     
     document.getElementById('event-public').checked= eventConfig.public;
 
+    // let iHtmSubs ='<ul class="list-group">';
+    // let iHtmTimes ='<ul class="list-group">';
+    let iHtmSubs ='';
+    let iHtmTimes ='';
+
+    for(let i=0; i<eventConfig.divisions.length;i++){
+        
+        //// <span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i></span>
+        // <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+        //             <span class="visually-hidden">New alerts</span>
+        //           </span>
+        iHtmSubs +=`<p class="text-muted">
+                    ${eventConfig.divisions[i].name} 
+                    <span class="badge text-bg-primary">${eventConfig.divisions[i].subscribers===undefined?"NA":eventConfig.divisions[i].subscribers} 
+                        <span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i></span>
+                    </span>
+                </p>`;
+                // </li>`;
+        
+        let time= "NA";
+        let penals= "";
+        if(eventConfig.divisions[i].best_score!==undefined){
+
+            if(eventConfig.divisions[i].best_score<1000){
+                time=eventConfig.divisions[i].best_score;
+                penals="";
+            }else{
+                penals=" +"+eventConfig.divisions[i].best_score.toString().slice(0,1);
+                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1));
+            }
+        }
+
+        // iHtmTimes +=`<li class="list-group-item d-flex justify-content-between align-items-center">
+        iHtmTimes +=`<p class="text-muted">
+            ${eventConfig.divisions[i].name} 
+            <span class="badge text-bg-success">${time}
+            <span class="position-absolute top-0 start-100 translate-middle badge text-bg-warning rounded-pill">${penals}</span>
+            </span>
+            </p>`;
+            // </li>`;
+    }
+
+    // iHtmSubs +="</ul>";
+    // iHtmTimes +="</ul>";
+
+    document.getElementById('display-subscribers').innerHTML=iHtmSubs;
+    document.getElementById('display-best-times').innerHTML= iHtmTimes;
+
     if(eventConfig.owners!==undefined)
         document.getElementById('event-owners').value= eventConfig.owners.join("; ");
 
