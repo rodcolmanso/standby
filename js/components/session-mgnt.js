@@ -49,11 +49,17 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 let dbUser={};
 // let loggedUser={};
 
-function loadingUserSession(user){
+async function loadingUserSession(user){
     // loggedUser= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
+        let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
+        if(user.token.expires_at< exipre_compare){
+            await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
+        }
+
+
         if(getSessionDbUser()===null){ //sem _id no cookie
-            fetch('/.netlify/functions/shooters?logged', {
+            await fetch('/.netlify/functions/shooters?logged', {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
                         ,"Authorization":`Bearer ${user.token.access_token}` }
@@ -77,7 +83,7 @@ function loadingUserSession(user){
 }
 
 netlifyIdentity.on('login', user => {
-    loadingUserSession(user)
+    loadingUserSession(user);
     configPermissions(true);
     //display fields
 });
