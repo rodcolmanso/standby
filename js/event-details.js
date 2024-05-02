@@ -1,11 +1,11 @@
-const urlSearchParams = new URLSearchParams(window.location.search);
-const params = Object.fromEntries(urlSearchParams.entries());
+// const urlSearchParams = new URLSearchParams(window.location.search);
+// const params = Object.fromEntries(urlSearchParams.entries());
 
-const event_id = params.event_id;
+// const event_id = params.event_id;
 //6578ad76e53c8b23971032c4
 
 let loggedUser;   
-let eventConfig;
+let eventConfig=null;
 let shooterDivisions;
 
 function hrefQualify(){
@@ -18,20 +18,86 @@ function hrefMatches(){
         window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
 
- netlifyIdentity.on('logout', () => {
-    window.location.href = window.location="/index.html";
-});
+//  netlifyIdentity.on('logout', () => {
+//     window.location.href = window.location="/index.html";
+// });
 
-netlifyIdentity.on('close', () => {
 
-    if(!netlifyIdentity.currentUser()){
-     
+const subscribeModal = document.getElementById('exampleModal')
+const myInput = document.getElementById('myInput')
+
+subscribeModal.addEventListener('shown.bs.modal', () => {
+//   myInput.focus()
+
+    loggedUser= netlifyIdentity.currentUser();
+    if(!loggedUser){
+        
+        Array.from(document.getElementsByClassName('closeModalBtn')).forEach(function(element){element.click();})
+
         if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
             netlifyIdentity.open('signup');
-        }else{buildDivisions
+        }else{
+            //buildDivisions
+            // window.location.href = window.location="/index.html";
+            document.getElementById("subscrive-close-btn").click();
+        }
+    }else{
+
+    // if(!netlifyIdentity.currentUser()){
+    //     netlifyIdentity.open('login');
+    // }else{
+        let isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
+        if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
+            document.getElementById('subscribe-email').disabled=false;
+            // document.getElementById('subscribe-name').disabled=false;
+        }else{
+            document.getElementById('subscribe-email').disabled=true;
+        }
+        getFullShooterDivision(eventConfig, loggedUser.email );
+    }
+
+})
+
+
+window.onload = async () => {
+    
+    // loggedUser= netlifyIdentity.currentUser();
+    // if(!netlifyIdentity.currentUser()){
+    //     netlifyIdentity.open('login');
+    // }else{
+        loadPage();
+    // }
+}
+
+async function loadPage(){
+    // if(!netlifyIdentity.currentUser()){
+     
+    //     if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
+    //         netlifyIdentity.open('signup');
+    //     }else{
+    //         //buildDivisions
+    //         window.location.href = window.location="/index.html";
+    //     }
+    // }else{
+        loggedUser= netlifyIdentity.currentUser();
+        
+        applySpinners(true);
+        eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+        applySpinners(false);
+
+        if(eventConfig===null){
+            alert(`Evento não encontrado`);
             window.location.href = window.location="/index.html";
         }
-    }
+
+        buildPage(eventConfig);
+        // getFullShooterDivision(eventConfig, loggedUser.email );
+
+    // }
+}
+
+netlifyIdentity.on('close', () => {
+    loadPage();
 });
 
 $(function() {
@@ -163,7 +229,7 @@ function getFullShooterDivision(eventConfig, userEmail){
             .then(json => {
                 if(json!==null&&json.length!==null&json.length>0){
                     shooterDivisions= json[0];
-                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+shooterDivisions._id;
+                    // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+shooterDivisions._id;
                     buildSubscriptionModal(eventConfig, shooterDivisions);
                     buildSubscriptionModalTable(eventConfig, shooterDivisions);
 
@@ -171,7 +237,7 @@ function getFullShooterDivision(eventConfig, userEmail){
                     // alert(`Novo atirador.`);
                     shooterDivisions._id="";
                     shooterDivisions.name= "";
-                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
+                    // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
                     document.getElementById("subscribe-name").value="";
                     shooterDivisions.email= userEmail.toString().toLowerCase().trim();
                     shooterDivisions.category= 0;
@@ -397,65 +463,6 @@ function getDivisionName(divisionId){
     }
     return divisionId;
 }
-
-window.onload = async () => {
-
-    if(!netlifyIdentity.currentUser()){
-        netlifyIdentity.open('login');
-    }
-}
-
-netlifyIdentity.on('login', user => {
-//     location.reload(true);
-// });
-
-    if(!netlifyIdentity.currentUser()){
-        netlifyIdentity.open('login');
-    }
-    
-    loggedUser= netlifyIdentity.currentUser();
-    
-    applySpinners(true);
-    if(event_id!==null&&event_id!==undefined&&event_id!==0 && event_id!=='0'){
-        
-        console.log(`event_id= ${event_id}`);
-        // promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
-        fetch("/.netlify/functions/events?event_id="+event_id, {
-            method: "GET",
-            // body: JSON.stringify(eventConfig),
-            headers: {
-               "Content-type": "application/json; charset=UTF-8"
-              ,"Authorization":`Bearer ${user.token.access_token}`
-            }
-            })
-            .then(r=>r.json())
-            .then(data => {
-                if(data.length>0){
-                    eventConfig=data[0];
-                    let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
-                    if(isAdmin||(eventConfig.owners.indexOf(user.email)>-1)){
-                        document.getElementById('subscribe-email').disabled=false;
-                        // document.getElementById('subscribe-name').disabled=false;
-                    }else{
-                        document.getElementById('subscribe-email').disabled=true;
-                    }
-                    
-                    buildPage(eventConfig);
-                    getFullShooterDivision(eventConfig, user.email );
-                }else{
-                    event_id=null;
-                }
-            }).catch(err => {console.log(`Error loading event_id ${eventConfig._id}, updating eventConfig: ${err}`);
-                            window.location.href = window.location="/index.html";})
-            .finally(()=> applySpinners(false));
-    }
-   
-    if(event_id===null||event_id===undefined||event_id===0 || event_id==='0'){
-        alert(`Evento não encontrado`);
-        window.location.href = window.location="/index.html";
-    }
-
-});
     
 function buildPage(eventConfig){
     document.getElementById('nav-events').classList.add('active');

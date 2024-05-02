@@ -28,10 +28,10 @@ GET http://localhost:8888/.netlify/functions/events
 
 
 ###
-GET https//localhost:8888/.netlify/functions/events?split_duels=1&order=1&date_from=2024-01-01"
+GET https://localhost:8888/.netlify/functions/events?split_duels=1&order=1&date_from=2024-01-01"
 
 ####
-GET https//localhost:8888/.netlify/functions/events?event_id=661ab4f9c412f4a5f17f0624
+GET http://localhost:8888/.netlify/functions/events?event_id=661ab4f9c412f4a5f17f0624
 
 ###
 GET http://localhost:8888/.netlify/functions/events?split_duels=1&order=1&date_from=2024-01-01&date_to=2024-05-01"
@@ -80,7 +80,7 @@ GET http://localhost:8888/.netlify/functions/eventconfig?eventId=65adcf12c90395b
 http://localhost:8888 
 
 ###
-GET http://localhost:8888/.netlify/functions/shooters?eventID=1&divisionID=1
+GET http://localhost:8888/.netlify/functions/shooters?logged
 
 ###
 GET http://localhost:8888/.netlify/functions/records?eventID=1&shooterID=1&divisionID=2

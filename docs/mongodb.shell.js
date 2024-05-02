@@ -1,3 +1,5 @@
+const { ObjectId } = require("mongodb");
+
 const data= [{'eventId':0, 'name':'Revolver', 'categories':{'overall':true,'ladies':false,'advance':false,'optics':false,'seniors':true},'advanceLimit':{'passingScore':5,'topBestOf':-1},'order':2}
 ,{'eventId':0, 'name':'Pistol', 'categories':{'overall':true,'ladies':true,'advance':true,'optics':false,'seniors':false},'advanceLimit':{'passingScore':5,'topBestOf':-1},'order':1}
 ,{'eventId':0, 'name':'Free Force', 'categories':{'overall':true,'ladies':false,'advance':false,'optics':true,'seniors':false},'advanceLimit':{'passingScore':4,'topBestOf':-1},'order':3}]
@@ -527,3 +529,57 @@ db.shooters.aggregate([
             ,{$match: {registered: {$ne: []}}}
             ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
             ]).sort({"registered.score":1})
+
+
+
+//===========================================
+
+db.events.aggregate( [
+    // Stage 1: Filter 
+    {
+        $match:{_id:  ObjectId("661ab4f9c412f4a5f17f0624")}
+    }
+    ,{ "$addFields": { "eventId": { "$toString": "$_id" }, "eventIdd": { "$toString": "$_id" }}}
+    // Stage 1: Leftjoin with divisions
+    ,{
+      $lookup:
+        {
+          from: "divisions",
+          localField: "eventId",
+          foreignField: "eventId",
+          as: "divisions"
+          ,pipeline:[
+            { "$addFields": { "divisionId": { "$toString": "$_id" }}}
+            ,{$lookup:{ from: "shooters_divisions"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "count_shooters_divisions"
+                      ,pipeline:[
+                        {$group: {_id: "$divisionId"
+                                  ,subscribers:{$sum:1}}}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$count_shooters_divisions", 0 ] }, "$$ROOT" ] } } }
+            ,{$lookup:{ from: "time_records"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "best"
+                      ,pipeline:[
+                        { "$addFields": { "_penalty": {$sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}}}
+                        ,{$group: {_id: "$divisionId"
+                                  ,best_score:{$min:"$_penalty"}
+                        }}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$best", 0 ] }, "$$ROOT" ] } } }
+          ]
+        }
+   }
+   ,{"$project":{"divisions.count_shooters_divisions":0, "divisions.best":0}}
+    // Stage 3: Sort events by event_date in descending order
+  ,{
+       $sort: { "date": -1 }
+    }
+  ] )
