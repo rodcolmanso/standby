@@ -10,11 +10,12 @@ const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
    
-let eventConfig;
+let eventConfig=null;
 let playersArray;
 let timeRecords;
 let modalChanged;
 let language="pt-br";
+let loggedUser;
 
 
 function updateAllMatches(mainMatches, recapMatches, categ){
@@ -352,17 +353,17 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
 }
 
-const urlSearchParams = new URLSearchParams(window.location.search);
-const params = Object.fromEntries(urlSearchParams.entries());
+// const urlSearchParams = new URLSearchParams(window.location.search);
+// const params = Object.fromEntries(urlSearchParams.entries());
 
-const event_id = params.event_id;
+// const event_id = params.event_id;
 
-// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
-const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+// // const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
+// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
+//     .then(r=>r.json())
+//     .then(data => {
+//     return data;
+// });
 
 // const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
 //     .then(r=>r.json())
@@ -510,26 +511,44 @@ function hrefMatches(){
     window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
 
+
+async function loadPage(){
+    loggedUser= netlifyIdentity.currentUser();
+    applySpinners(true);
+    eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+    applySpinners(false);
+    if(eventConfig===null){
+        alert(`Evento não encontrado`);
+        window.location.href = window.location="/index.html";
+    }
+}
+
+netlifyIdentity.on('close', () => {
+loadPage();
+});
+
 window.onload = async () => {
 
-    if(netlifyIdentity.currentUser()){
-        applySpinners(true);
-        fetch('/.netlify/functions/shooters?logged', {
-            method: "GET",
-            headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                        ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
-                    }
-            }).then(response => response.json()
-            ).then(json => {
-                if(json.length>0){
-                    console.log(`User logged`);
-                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
-                }
-            })
-            .catch(err => console.log(`Error getting, logged user: ${err}`))
-            .finally(()=> applySpinners(false));
-    }
+    // if(netlifyIdentity.currentUser()){
+    //     applySpinners(true);
+    //     fetch('/.netlify/functions/shooters?logged', {
+    //         method: "GET",
+    //         headers: {
+    //                     "Content-type": "application/json; charset=UTF-8"
+    //                     ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
+    //                 }
+    //         }).then(response => response.json()
+    //         ).then(json => {
+    //             if(json.length>0){
+    //                 console.log(`User logged`);
+    //                 // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
+    //             }
+    //         })
+    //         .catch(err => console.log(`Error getting, logged user: ${err}`))
+    //         .finally(()=> applySpinners(false));
+    // }
+
+    loadPage();
     
     document.getElementById('btn-reset').style.display='';
     document.getElementById('nav-matches').classList.add('active');
@@ -539,12 +558,20 @@ window.onload = async () => {
     document.getElementById('liOptics').style.display='none';
     document.getElementById('liSeniors').style.display='none';
     
-    applySpinners(true);
-    eventConfig = await promiseOfEventConfig;
+    // applySpinners(true);
+    // eventConfig = await promiseOfEventConfig;
     // document.getElementById('eventTitle').innerHTML= eventConfig.name;
+
+    // loggedUser= netlifyIdentity.currentUser();
+        
+    // applySpinners(true);
+    // eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+    // applySpinners(false);
+
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
-    changeDivision(selectDivision);
+    // changeDivision(selectDivision);
+    changeDivision(document.getElementById('selectDivision'));
     applySpinners(false);
     
     

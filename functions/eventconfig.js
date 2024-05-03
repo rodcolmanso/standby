@@ -25,15 +25,22 @@ const handler = async (event, context)=>{
 
     const p_eventId= event.queryStringParameters.eventId.toString();
     
+    console.log(`=======================`);
     console.log(`p_eventId= ${p_eventId}`);
+    console.log(`=======================`);
 
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cDivisions= database.collection(process.env.MONGODB_COLLECTION_DIVISIONS);
     const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
     let o_id = null;
-    if(p_eventId!=='0'){
+    // if(p_eventId!=='0'||p_eventId!==''){
+    try{
       o_id = new ObjectId(p_eventId);
+    }catch(error){
+      o_id = null;
     }
+
+
     switch (event.httpMethod){
       case 'PATCH':
 
@@ -56,16 +63,25 @@ const handler = async (event, context)=>{
           console.log('event_config.owners'+event_config.owners);
         }
         
+        let clearOwners=[];
+        for(let i=0; i< event_config.owners.length;i++){
+          if(event_config.owners[i]!==null||event_config.owners[i]!==undefined||event_config.owners[i].trim()!==""){
+            clearOwners.push(event_config.owners[i]);
+          }
+        }
+
         if(o_id===null){
            updatedEvent= await cEvents.insertOne({  
               name : event_config.name
-              ,date: event_config.date
-              ,dateDuel: (event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel)
+              // ,date: event_config.date
+              ,date: new Date(event_config.date)
+              //,dateDuel: (event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel)
+              ,dateDuel: new Date((event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel))
               ,local: event_config.local
               ,img: ''
               ,note: event_config.note
-              ,owners:event_config.owners
-
+              // ,owners:event_config.owners
+              ,owners: clearOwners
               ,address: event_config.address
               ,city: event_config.city
               ,state: event_config.state
@@ -89,6 +105,12 @@ const handler = async (event, context)=>{
               event_config.dateDuel= event_config.date;
             }
 
+              let clearOwners=[];
+              for(let i=0; i< event_config.owners.length;i++){
+                if(event_config.owners[i]!==null||event_config.owners[i]!==undefined||event_config.owners[i].trim()!==""){
+                  clearOwners.push(event_config.owners[i]);
+                }
+              }
               updatedEvent= await cEvents.updateOne(
                                                 //{ _id : o_id, owners: user.email }
                                                   filter
@@ -101,8 +123,8 @@ const handler = async (event, context)=>{
                                                     ,local: event_config.local
                                                     ,img: ''
                                                     ,note: event_config.note
-                                                    ,owners: event_config.owners
-
+                                                    // ,owners: event_config.owners
+                                                    ,owners: clearOwners
                                                     ,address: event_config.address
                                                     ,city: event_config.city
                                                     ,state: event_config.state

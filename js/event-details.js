@@ -62,7 +62,7 @@ loggedUser= netlifyIdentity.currentUser();
 
 
 window.onload = async () => {
-        loadPage();
+       await loadPage();
 }
 
 async function loadPage(){

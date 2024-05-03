@@ -39,11 +39,11 @@ function hrefMatches(){
     console.log('hrefMatches()');
 }
 
-const promiseOfEvents = fetch("/.netlify/functions/events")
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-});
+// const promiseOfEvents = fetch("/.netlify/functions/events")
+//     .then(r=>r.json())
+//     .then(data => {
+//     return data;
+// });
 
 
 // netlifyIdentity.on('login', user => {

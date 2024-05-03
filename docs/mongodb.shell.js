@@ -624,3 +624,47 @@ db.shooters_divisions.aggregate( [
     }}
     ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
     ]);
+
+
+
+
+
+
+// ======================
+db.shooters_divisions.aggregate([
+      {$match:{eventId: "661ab4f9c412f4a5f17f0624" //  p_eventId
+              ,divisionId:"00000000c412f4a5f17f0625"  //p_division 
+              ,duel:true}}
+      ,{ $addFields: { "_shooterId": { $toObjectId: "$shooterId" }}}   
+      ,{$lookup:
+          {    from: "shooters"
+              ,localField: "_shooterId"
+              ,foreignField: "_id"
+              ,as:"shooter" //"shooters"
+          }
+      } 
+      ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }           
+      ,{$project:{"_shooterId":0,"shooter":0}}
+      /// Stage time records
+      ,{ "$addFields": { "shooterDivisionId": { "$toString": "$_id" }}}
+      ,{ $lookup:
+          {from: "time_records"
+          ,localField:"shooterDivisionId"
+          ,foreignField: "shooterDivisionId"
+          ,as:"time_records"
+          ,pipeline:[
+            {$project:{
+                  "score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}
+                  ,datetime:1
+              }}
+            ,{$group:
+                { _id:["$shooterDivisionId"],
+                   tries:{$count:{}},
+                    score:{$min:"$score"},
+                    datetime:{$min:"$datetime"}
+                }
+            }]}
+     }
+     ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
+     ,{$project:{"time_records":0}}
+  ]).sort({"score":1,"tries":1, "datetime":1});

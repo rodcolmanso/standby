@@ -1,30 +1,18 @@
-function advanceClick(div_adv_check){
+// const urlSearchParams = new URLSearchParams(window.location.search);
+// const params = Object.fromEntries(urlSearchParams.entries());
 
-    if(!div_adv_check.checked){
-        document.getElementById(''+div_adv_check.value+'SelectAdvance').style.display = 'none';
-        document.getElementById(''+div_adv_check.value+'IndexAdvance').style.display = 'none';
-    }else{
-        document.getElementById(''+div_adv_check.value+'SelectAdvance').style.display = '';
-        document.getElementById(''+div_adv_check.value+'IndexAdvance').style.display = '';
-    }
-    // document.getElementById(''+div_adv_check.value+'SelectAdvance').disabled= (!div_adv_check.checked);
-    //     document.getElementById(''+div_adv_check.value+'IndexAdvance').disabled= (!div_adv_check.checked);
-}
-
-const urlSearchParams = new URLSearchParams(window.location.search);
-const params = Object.fromEntries(urlSearchParams.entries());
-
-const event_id = params.event_id;
-let promiseOfEventConfig=null;
+// const event_id = params.event_id;
+// let promiseOfEventConfig=null;
 //6578ad76e53c8b23971032c4
-if(event_id!=='0'){
-    console.log(`event_id= ${event_id}`);
-    promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
-        .then(r=>r.json())
-        .then(data => {
-        return data;
-    });
-}
+
+// if(event_id!=='0'){
+//     console.log(`event_id= ${event_id}`);
+//     promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
+//         .then(r=>r.json())
+//         .then(data => {
+//         return data;
+//     });
+// }
 
 const cOverall= 0;
 const cAdvance= 1;
@@ -32,7 +20,7 @@ const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
    
-let eventConfig;
+let eventConfig=null;
 
 function hrefQualify(){
     if(eventConfig._id!=0)
@@ -44,33 +32,18 @@ function hrefMatches(){
         window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
 
-window.onload = async () => {
+async function loadPage(eId){
+    loggedUser= netlifyIdentity.currentUser();
 
-    if(netlifyIdentity.currentUser()){
-        applySpinners(true);
-        fetch('/.netlify/functions/shooters?logged', {
-            method: "GET",
-            headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                        ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
-                    }
-            }).then(response => response.json()
-            ).then(json => {
-                if(json.length>0){
-                    console.log(`User logged`);
-                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
-                }
-            })
-            .catch(err => console.log(`Error getting, logged user: ${err}`))
-            .finally(()=> applySpinners(false));
-    }
-    
     applySpinners(true);
-    if(event_id!==null&&event_id!==undefined&&event_id!==0 && event_id!=='0'){
-        eventConfig = await promiseOfEventConfig;
-    }else{
-        eventConfig= {"_id":event_id,"name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString() ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[]};
+    eventConfig = await promiseOfSessionEventConfig(eId,loggedUser);
+    applySpinners(false);
+
+    if(eventConfig==null){ // New event
+        eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString()
+        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false};
     }
+
     eventConfig.imgChanged=false;
 
     document.getElementById('nav-events').classList.add('active');
@@ -124,25 +97,70 @@ window.onload = async () => {
     applySpinners(false);
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
-    if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
+    
+
+
+    if(eventConfig._id!==""&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
         disableInputs(true);
     }
+    
+// }
+}
+
+window.onload = async () => {
+
+    // if(netlifyIdentity.currentUser()){
+    //     applySpinners(true);
+    //     fetch('/.netlify/functions/shooters?logged', {
+    //         method: "GET",
+    //         headers: {
+    //                     "Content-type": "application/json; charset=UTF-8"
+    //                     ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
+    //                 }
+    //         }).then(response => response.json()
+    //         ).then(json => {
+    //             if(json.length>0){
+    //                 console.log(`User logged`);
+    //                 document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
+    //             }
+    //         })
+    //         .catch(err => console.log(`Error getting, logged user: ${err}`))
+    //         .finally(()=> applySpinners(false));
+    // }
+    
+    await loadPage(null);
     
 }
 
     // location.reload(true);
-    netlifyIdentity.on('login', user => {
+    // netlifyIdentity.on('login', user => {
 
-        let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
-        if(event_id!==0&&event_id!=="0"&&eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
-            disableInputs(false);
-        }
-        console.log('login', user);
-    });
+    //     let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
+    //     if(event_id!==0&&event_id!=="0"&&eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
+    //         disableInputs(false);
+    //     }
+    //     console.log('login', user);
+    // });
     
-    netlifyIdentity.on('logout', () => {
-        disableInputs(true);
-        console.log('Logged out');
+    // netlifyIdentity.on('logout', () => {
+    //     disableInputs(true);
+    //     console.log('Logged out');
+    // });
+
+    netlifyIdentity.on('close', () => {
+        const user= netlifyIdentity.currentUser();
+
+        let isAdmin= (netlifyIdentity&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
+        
+        if(eventConfig!==null && eventConfig!==undefined && user!==null && (isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
+            disableInputs(false);
+        }else{
+            disableInputs(true);
+        }
+
+        console.log('On Identity window close. login', user);
+
+       // loadPage();
     });
     
 
@@ -179,8 +197,13 @@ function updateEventConfig(){
     eventConfig.state= document.getElementById('event-state').value;
     eventConfig.public= document.getElementById('event-public').checked;
 
-    if(eventConfig.name.replace(/\s/g, '')===''||eventConfig.date===''||eventConfig.divisions.length<1){
-        alert('Informe o nome, data e divisão do evento!')
+    if(eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
+     ||eventConfig.dateDuel===''||eventConfig.dateDuel.toString()==='Invalid Date'){
+        alert('Informe datas válidas para o evento!')
+        return 0;
+    }
+    if(eventConfig.divisions.length<1){
+        alert('Adicione ao menos uma divisão para o evento!')
         return 0;
     }
 
@@ -220,8 +243,10 @@ function updateEventConfig(){
                         console.log(`eventConfig._id= ${eventConfig._id}`);
                         eventConfig._id=json.insertedId;
                         console.log(`[json.upsertedId] eventConfig._id= ${eventConfig._id}`);
+                        clearSessionEventConfig();
+                        loadPage(eventConfig._id);
                         alert(`Torneio ${eventConfig.name} criado com sucesso!`);
-                        window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
+                        // window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
                         // location.reload(true);
                     })
                     .catch(err => console.log(`Error adding, updating eventConfig: ${err}`))
@@ -459,4 +484,17 @@ function checkDuel(bRadio){
         document.getElementById('check-clock').checked=true;
     }
     
+}
+
+function advanceClick(div_adv_check){
+
+    if(!div_adv_check.checked){
+        document.getElementById(''+div_adv_check.value+'SelectAdvance').style.display = 'none';
+        document.getElementById(''+div_adv_check.value+'IndexAdvance').style.display = 'none';
+    }else{
+        document.getElementById(''+div_adv_check.value+'SelectAdvance').style.display = '';
+        document.getElementById(''+div_adv_check.value+'IndexAdvance').style.display = '';
+    }
+    // document.getElementById(''+div_adv_check.value+'SelectAdvance').disabled= (!div_adv_check.checked);
+    //     document.getElementById(''+div_adv_check.value+'IndexAdvance').disabled= (!div_adv_check.checked);
 }

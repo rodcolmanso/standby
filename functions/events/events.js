@@ -1,3 +1,4 @@
+const { cat } = require("@cloudinary/url-gen/qualifiers/focusOn");
 const {MongoClient} = require ("mongodb");
 
 require('dotenv').config();
@@ -60,7 +61,13 @@ const handler = async (event, context) => {
         console.log('Antes do p_event_id');
         if(event.queryStringParameters.event_id !=null && event.queryStringParameters.event_id != undefined){
           p_event_id= event.queryStringParameters.event_id.toString();
-          const o_id = new ObjectId(p_event_id);
+          let o_id;
+          try{
+            o_id= new ObjectId(p_event_id);
+          }catch(error){
+             o_id= new ObjectId('000000000000000000000000');
+          }
+
           mMatch=  {"_id": o_id
                    , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
                    };
@@ -68,8 +75,18 @@ const handler = async (event, context) => {
 
         const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
         const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+
+        console.log(' ');
+        console.log(' ');
+        console.log('===================================================== ');
+        console.log(' ');
+        console.log('===     Antes da Aggregate. p_event_id='+p_event_id);
+        console.log('===     Match: '+JSON.stringify(mMatch,null,2));
+        console.log(' ');
+        console.log('===================================================== ');
+        console.log(' ');
+        console.log(' ');
         
-        console.log('Antes da Aggregation p_event_id='+p_event_id);
         let events= await cEvents.aggregate( [
           // Stage 1: Filter pizza events by date range
           {

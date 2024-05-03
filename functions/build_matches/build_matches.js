@@ -12,58 +12,44 @@ const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
 
-const shootersDiv = async(cShooters, p_eventId)=>{
-  return await cShooters.aggregate([
-      {$match:{eventId: p_eventId}} //"6578ad76e53c8b23971032c4"  p_eventId
-      ,{ "$addFields": { "shooterId": { "$toString": "$_id" }}},
-      {$lookup:
-          {
-              from: "shooters_divisions",
-              let: {div_shooterId:"$shooterId", div_divisionId:"$divisionId"},
-              pipeline: [
-                  { $match: { $expr: 
-                                  { $eq: [ "$shooterId", "$$div_shooterId" ] }
-                            } 
-                  }
-                  //,{ $project: { shooterId: 0, _id:0 } }
-                  ,{ $lookup:
-                        {
-                          from: "time_records",
-                          let: {record_shooter_id: "$shooterId", record_division_id:"$divisionId"},
-                          pipeline:[{ $match:
-                              { $expr:
-                                 { $and:
-                                    [
-                                      { $eq: [ "$shooterId",  "$$record_shooter_id" ] },
-                                      { $eq: [ "$divisionId", "$$record_division_id" ] }
-                                    ]
-                                 }
-                              }
-                           }
-                           ,{
-                              $project:{
-                                "score":{"$add":["$sTime","$penalties"]}
-                                ,datetime:1
-                              },
-                          }
-                          ,{$group:
-                              { _id:["$shooterId","$divisionId"],
-                                 tries:{$count:{}},
-                                  score:{$min:"$score"},
-                                  datetime:{$min:"$datetime"}
-                              }
-                          }
-                          ],
-                          as: "time_records"
-                        }
-                   }
-                   ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
-                  ],
-              as: "registered"
-          }
-      }            
-      ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0, "registered.time_records":0}}
-  ]).sort({"registered.score":1,"registered.tries":1, "registered.datetime":1}).toArray();
+const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
+  return await cShooters_divisions.aggregate([
+    {$match:{eventId: p_eventId //"661ab4f9c412f4a5f17f0624" //  p_eventId
+            ,divisionId: p_divisionId //"00000000c412f4a5f17f0625"  //p_division 
+            ,duel:true}}
+    ,{ $addFields: { "_shooterId": { $toObjectId: "$shooterId" }}}   
+    ,{$lookup:
+        {    from: "shooters"
+            ,localField: "_shooterId"
+            ,foreignField: "_id"
+            ,as:"shooter" //"shooters"
+        }
+    } 
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }           
+    ,{$project:{"_shooterId":0,"shooter":0}}
+    /// Stage time records
+    ,{ "$addFields": { "shooterDivisionId": { "$toString": "$_id" }}}
+    ,{ $lookup:
+        {from: "time_records"
+        ,localField:"shooterDivisionId"
+        ,foreignField: "shooterDivisionId"
+        ,as:"time_records"
+        ,pipeline:[
+          {$project:{
+                "score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}
+                ,datetime:1
+            }}
+          ,{$group:
+              { _id:["$shooterDivisionId"],
+                 tries:{$count:{}},
+                  score:{$min:"$score"},
+                  datetime:{$min:"$datetime"}
+              }
+          }]}
+   }
+   ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
+   ,{$project:{"time_records":0}}
+]).sort({"score":1,"tries":1, "datetime":1}).toArray();
 }
 
 const buildMatches = (shooters)=>{
@@ -278,27 +264,26 @@ console.log(`=========preKO 1: ${preKO}=========`)
     return [mainMatches,recapMatches];
 }
 const zeroPad = (num, places) => String(num).padStart(places, '0');
+
 const flatPlayesDivisions = (players, sort)=>{
-// function flatPlayesDivisions(players, sort){
   let rP= [];
   let aRow= '';
+  // for(i=0;i<players.length;i++){
+      // for(j=0;j<players[i].registered.length;j++){
   for(i=0;i<players.length;i++){
-      for(j=0;j<players[i].registered.length;j++){
-          if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
-              console.log(`*******players[${i}].name=${players[i].name} | players[${i}].registered[${j}].score=999;`);
-              players[i].registered[j].score=999;
-              players[i].registered[j].tries=0;
-              players[i].registered[j].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";
-          }
+    if(players[i].score===undefined||players[i].score===null||players[i].score===''){
+        players[i].score=Math.floor(Math.random() * (9999 - 9900 + 1)) + 9900;//range 9900 - 9999;
+        players[i].tries=0;
+        players[i].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";
+    }
 
-          score_idx= zeroPad((""+(Math.round(players[i].registered[j].score*100))),7);
-
-          sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
-          
-          aRow= {'division':players[i].registered[j].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries, 'sort_idx':sort_idx };
-          rP.push(aRow);  
-      }
+    score_idx= zeroPad((""+(Math.round(players[i].score*100))),7);
+    // 0999900 003 2099-01-01T00:00:00.
+    sort_idx= ''+score_idx+zeroPad(players[i].tries,3)+players[i].datetime;
+    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
+    rP.push(aRow);  
   }
+  // }
 
   if (sort>0){
       rP= rP.sort((a, b) => {
@@ -405,15 +390,12 @@ const handler = async (event, context)=>{
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cDivisions= database.collection(process.env.MONGODB_COLLECTION_DIVISIONS);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
+    const cShooters_divisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS_DIVISIONS);
     const cKos= database.collection(process.env.MONGODB_COLLECTION_KOS);
     
     let shootersAux=[];
     
     switch (event.httpMethod){
-      // case 'PUT':
-      //   const p_eventId= event.queryStringParameters.eventId.toString();
-      //   const p_divisionId= event.queryStringParameters.divisionId.toString();
-  
         
         case 'GET': // update kos of a division
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
@@ -422,7 +404,7 @@ const handler = async (event, context)=>{
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
+          console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
 
           console.log
@@ -437,8 +419,8 @@ console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`)
             const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
             // console.log('After division. division.lenght=' +division.length);
             
-            const shootersDivx= await shootersDiv(cShooters, p_eventId);
-            // console.log('After shootersDivx. shootersDivx.lenght=' +shootersDivx.length);
+            const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
+            
             let players= flatPlayesDivisions(shootersDivx, 1);
             players= matchShootersCategories(players, division);  
 

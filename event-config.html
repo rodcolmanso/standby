@@ -11,8 +11,6 @@
   <meta name="author" content="Rodman">
   <meta name="generator" content="Pris">
   <title>T.P.M.</title>
-  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
   <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
 
 
@@ -105,6 +103,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Custom styles for this template -->
   <link href="/css/matches.css" rel="stylesheet">
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 
 <body>
@@ -135,7 +134,7 @@
   <main class="px-md-4">
     <div class="tab-content scrollspy-example" data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-root-margin="0px 0px +1%"
     data-bs-smooth-scroll="true" tabindex="0" id="nav-tabContent">
-    <form class="row g-3">
+    <form class="row g-3" action="javascript:updateEventConfig()">
     
       <div  class="form-floating mb-3 col-md-12 d-flex justify-content-center">
         <!-- <div class="d-flex justify-content-center"> -->
@@ -150,7 +149,7 @@
       </div>
     
       <div class="form-floating mb-3 col-md-5">
-        <input type="text" class="form-control" id="event-name">
+        <input type="text" class="form-control" required id="event-name">
         <label for="event-name" >Título</label>
       </div>
       
@@ -174,7 +173,7 @@
       </div>
       
       <div class="form-floating mb-3 col-md-4">
-        <input id="event-local" type="text" class="form-control" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
+        <input id="event-local" required type="text" class="form-control" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
         <label for="event-local" >Clube</label>
       </div>
       <div class="form-floating col-md-8">
@@ -182,11 +181,11 @@
         <label for="event-address">Endereço</label>
       </div>
       <div class="form-floating col-md-6">
-        <input type="text" class="form-control" id="event-city">
-        <label for="event--ity">Cidade</label>
+        <input type="text" required class="form-control" id="event-city">
+        <label for="event-city">Cidade</label>
       </div>
       <div class="form-floating col-md-3">
-          <select class="form-select" id="event-state" aria-label="Floating label select example">
+          <select class="form-select" required id="event-state" aria-label="Floating label select example">
           <option selected>...</option>
           <option value="AP">Amapá</option>
           <option value="AM">Amazonas</option>
@@ -230,7 +229,7 @@
         <label for="event-note">Descrição:</label>
       </div>  
       
-    </form>
+    
       
       <p></p>
       <div class="card">
@@ -264,9 +263,11 @@
         <!-- <div  id="spinner" class="spinner-border" role="status">
           <span class="visually-hidden">Carregando...</span>
         </div> -->
-        <button type="button" class="btn btn-secondary" value="Cancelar" onclick="location.reload(true)"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Cancelar</button>
-        <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+        <button type="button" class="btn btn-secondary" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
+        <!-- <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button> -->
+        <button type="submit" class="btn btn-success" value="Salvar" ><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
       </div>
+    </form>
       <p>&nbsp;</p>
       <p>&nbsp;</p>
     </div>
@@ -276,7 +277,8 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
     integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
     crossorigin="anonymous"></script>
-  <script src="./js/event-config.js" ></script>
+    <script src="./js/components/session-mgnt.js" ></script>
+    <script src="./js/event-config.js" ></script>
   <!-- <script src="./js/matches.js"></script> -->
 </body>
 </html>
