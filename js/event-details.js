@@ -4,7 +4,7 @@
 // const event_id = params.event_id;
 //6578ad76e53c8b23971032c4
 
-let loggedUser;   
+let loggedUser;
 let eventConfig=null;
 let shooterDivisions;
 
@@ -29,7 +29,9 @@ const myInput = document.getElementById('myInput')
 subscribeModal.addEventListener('shown.bs.modal', () => {
 //   myInput.focus()
 
-    loggedUser= netlifyIdentity.currentUser();
+// DbUser
+// getSessionDbUser()
+loggedUser= netlifyIdentity.currentUser();
     if(!loggedUser){
         
         Array.from(document.getElementsByClassName('closeModalBtn')).forEach(function(element){element.click();})
@@ -60,25 +62,10 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 
 
 window.onload = async () => {
-    
-    // loggedUser= netlifyIdentity.currentUser();
-    // if(!netlifyIdentity.currentUser()){
-    //     netlifyIdentity.open('login');
-    // }else{
         loadPage();
-    // }
 }
 
 async function loadPage(){
-    // if(!netlifyIdentity.currentUser()){
-     
-    //     if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
-    //         netlifyIdentity.open('signup');
-    //     }else{
-    //         //buildDivisions
-    //         window.location.href = window.location="/index.html";
-    //     }
-    // }else{
         loggedUser= netlifyIdentity.currentUser();
         
         applySpinners(true);
@@ -400,6 +387,7 @@ function subscribeNew(){
 
 function putShooterDivisions(sD){
 
+    sD.eventId=eventConfig._id;
     // sD.img=eventConfig.img;
     // sD.imgChanged= eventConfig.imgChanged;
 
@@ -513,14 +501,25 @@ function buildPage(eventConfig){
 
     for(let i=0; i<eventConfig.divisions.length;i++){
         
-        //// <span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i></span>
-        // <span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-        //             <span class="visually-hidden">New alerts</span>
-        //           </span>
+        let divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">Você ainda não está aqui</span>
+                        </span>`;
+        if(shooterDivisions===null||shooterDivisions===undefined){
+            divisionbadge="";
+        }else{
+            for(j=0;j<shooterDivisions.shooterDivisions.shooters_divisions.length;j++){
+                if( eventConfig.divisions[i]._id===shooterDivisions.shooterDivisions.shooters_divisions[j].divisionId){
+                divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i>
+                            <span class="visually-hidden">Você está aqui</span>
+                            </span>`;
+                }
+            }
+        }
+
         iHtmSubs +=`<p class="text-muted">
                     ${eventConfig.divisions[i].name} 
-                    <span class="badge text-bg-primary">${eventConfig.divisions[i].subscribers===undefined?"NA":eventConfig.divisions[i].subscribers} 
-                        <span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i></span>
+                    <span class="badge text-bg-info">${eventConfig.divisions[i].subscribers===undefined?"NA":eventConfig.divisions[i].subscribers} 
+                        ${divisionbadge}
                     </span>
                 </p>`;
                 // </li>`;
@@ -541,7 +540,7 @@ function buildPage(eventConfig){
         // iHtmTimes +=`<li class="list-group-item d-flex justify-content-between align-items-center">
         iHtmTimes +=`<p class="text-muted">
             ${eventConfig.divisions[i].name} 
-            <span class="badge text-bg-success">${time}
+            <span class="badge text-bg-purple" >${time}
             <span class="position-absolute top-0 start-100 translate-middle badge text-bg-warning rounded-pill">${penals}</span>
             </span>
             </p>`;

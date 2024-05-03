@@ -12,21 +12,22 @@ function advanceClick(div_adv_check){
 let queryParam="";
 
     // location.reload(true);
-netlifyIdentity.on('login', user => {
-    buildEventsTable(events);
-    console.log('login', user);
-});
+// netlifyIdentity.on('login', user => {
+//     buildEventsTable(events);
+//     console.log('login', user);
+// });
 
-netlifyIdentity.on('logout', () => {
-    buildEventsTable(events);
-    console.log('Logged out');
-});
+// netlifyIdentity.on('logout', () => {
+//     buildEventsTable(events);
+//     console.log('Logged out');
+// });
 
 const cOverall= 0;
 const cAdvance= 1;
 const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
+let loggedUser=null;
    
 let events;
 
@@ -45,44 +46,26 @@ const promiseOfEvents = fetch("/.netlify/functions/events")
 });
 
 
-netlifyIdentity.on('login', user => {
+// netlifyIdentity.on('login', user => {
+//     // location.reload(true);
+// });
 
-    // location.reload(true);
-
-});
-
-netlifyIdentity.on('logout', () => {
-
-    location.reload(true);
-
-});
+// netlifyIdentity.on('logout', () => {
+//     location.reload(true);
+// });
 
 let user;
 let isAdmin=false;
+
+netlifyIdentity.on('close', () => {
+    search();
+});
+
 window.onload = async () => {
 
-    if(netlifyIdentity.currentUser()){
-        applySpinners(true);
-        fetch('/.netlify/functions/shooters?logged', {
-            method: "GET",
-            headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                        ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
-                    }
-            }).then(response => response.json()
-            ).then(json => {
-                if(json.length>0){
-                    console.log(`User logged`);
-                    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
-                }
-            })
-            .catch(err => console.log(`Error getting, logged user: ${err}`))
-            .finally(()=> applySpinners(false));
-    }
-    
     user= netlifyIdentity.currentUser();
     if(user===null || user===undefined || user.token.access_token===null || user.token.access_token===undefined){
-        user= {token:{access_token:""},email:'pris.rocha@gmail.com'};
+        user= {token:{access_token:""},email:'xxxxxxx'};
 
     } else isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     // if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
@@ -95,27 +78,28 @@ window.onload = async () => {
     document.getElementById('nav-matches').style.display='none';
     document.getElementById('nav-qualify').style.display='none';
 
-    // events = await promiseOfEvents;
-    // document.getElementById('eventTitle').innerHTML= eventConfig.name;
-    // document.getElementById('event-name').value= eventConfig.name;
-    // document.getElementById('event-date').value= eventConfig.date;
-
     const dDate= new Date();
     dDate.setDate(0);
     dDate.setDate(1);
     document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 
-    //buildEventsTable(events);
     search();
-
-    // applySpinners(false);
 
 }
 
 function search() {
     //some stuff...
-    applySpinners(true);
+    
+        // DbUser
+        // getSessionDbUser()
+        loggedUser= netlifyIdentity.currentUser();
 
+        if(loggedUser!==null){
+            _headers= {"Content-type": "application/json; charset=UTF-8"
+                    ,"Authorization":`Bearer ${loggedUser.token.access_token}`}
+        }else{
+            _headers= {"Content-type": "application/json; charset=UTF-8"}
+        }
     
     let queryDate= document.getElementById('date').value.split('-');
     let sQuery='?p=0';
@@ -129,13 +113,10 @@ function search() {
         const d=new Date(queryDate[1]);
         sQuery= sQuery+'&date_to='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     }
-    
+    applySpinners(true);
     fetch("/.netlify/functions/events"+sQuery,
         {method: "GET"
-        ,headers: {
-            "Content-type": "application/json; charset=UTF-8"
-           ,"Authorization":`Bearer ${user.token.access_token}`
-        }}
+        ,headers: _headers}
        ).then(r=>r.json())
         .then(data => {
         // return data;
@@ -157,7 +138,8 @@ function exlcuir(id, name){
             // .then(response => response.json()) 
             .then(r => {
                 alert(`Evento ${name} excluído com sucesso`);
-                location.reload(true);
+                //location.reload(true);
+                search();
             })
             .catch(err => console.log(`Error deleting event: ${err}`))
             .finally(()=> applySpinners(false));

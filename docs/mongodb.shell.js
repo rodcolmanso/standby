@@ -583,3 +583,44 @@ db.events.aggregate( [
        $sort: { "date": -1 }
     }
   ] )
+
+//=================================================================
+
+  db.events.aggregate( [
+    {$match:{_id: ObjectId('661ab4f9c412f4a5f17f0624')
+            , owners: 'pris.rocha@gmail.com'}}
+  ]);
+
+
+
+//=================================================================
+db.shooters_divisions.aggregate( [
+    {$match:{_id: { $in: [ObjectId('000000000000000000000000')
+                        ,ObjectId('6626d668f670ad607b70cf9e')
+                        ,ObjectId('662807725a3a3004ecd39792')
+                        ,ObjectId('662807725a3a3004ecd39793')
+                        ,ObjectId('662807785a3a3004ecd39794')
+                        ,ObjectId('662807785a3a3004ecd39795')
+                        ,ObjectId('6628077f5a3a3004ecd39796')
+                        ,ObjectId('6628077f5a3a3004ecd39797')
+                        ]} }}
+    ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
+    ,{ $lookup:{ from: "events"
+             ,localField: "eventId"
+             ,foreignField: "_id"
+             ,as: "events_adm"
+             ,pipeline:[
+                {$match:{"owners": 'pris.rocha@gmail.com'}}
+             ]
+    }}
+    ,{ $addFields: { "shooterId": { $toObjectId: "$shooterId" }}}
+    ,{$lookup:{ from: "shooters"
+        ,localField: "shooterId"
+        ,foreignField: "_id"
+        ,as: "shooters"
+        ,pipeline:[
+            {$match:{"email": 'pris.rocha@gmail.com'}}
+         ]
+    }}
+    ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
+    ]);

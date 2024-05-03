@@ -22,10 +22,13 @@ const handler = async (event, context)=>{
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     const cShooters_Divisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS_DIVISIONS);
 
+    let p_eventId=null;
+    let p_email=null;
+
     switch (event.httpMethod){
       case 'GET':
-        let p_eventId=null;
-        let p_email=null;
+        p_eventId=null;
+        p_email=null;
         if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
           p_eventId= event.queryStringParameters.eventId.toString();
           console.log(`p_eventId= ${p_eventId}`);
@@ -114,23 +117,55 @@ const handler = async (event, context)=>{
       case 'PUT': // associates divisions with a shooter
 
         let shooterDivisions= JSON.parse(event.body);
+        p_eventId=null;
+        if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
+              p_eventId= event.queryStringParameters.eventId.toString();
+            }else{
+              p_eventId= shooterDivisions.eventId;
+            }
+            console.log(`p_eventId= ${p_eventId}`);
+
         try{
+          console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
 
           console.log(JSON.stringify(context, null, 2))
           let user= context.clientContext.user;
+
+          if(!user){
+            console.log(`Unauthorized, User not logged!`);
+            return  {
+              statusCode: 401,
+              body: `Unauthorized, User not logged!`
+            }; 
+          }
 
           console.log(`user.email: ${user.email}`);
           let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
           console.log(`is Admin: ${isAdmin}`);
 
-          if(!isAdmin && user.email.toLowerCase().trim()!==shooterDivisions.email.toLowerCase().trim()){
+          let isEventAdmin=false;
+          if(!isAdmin){
+
+            //check if the user is admin of the event:
+            const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+            const f_id= new ObjectId(p_eventId)
+            const _e= await cEvent.aggregate( [
+              {$match:{_id: f_id
+                      , owners: user.email}}
+            ]).toArray();
+            
+            isEventAdmin= (_e.length>0);
+          }
+
+          if(shooterDivisions.email.toLowerCase().trim()!==user.email.toLowerCase().trim()
+          &&!isAdmin&&!isEventAdmin){
+            console.log(`Unauthorized, User ${user.email} (isEventAdmin=${isEventAdmin}) cannot update/insert the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user.email} cannot update the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
-            }; 
-          }
-          console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
-          
+              body: `Unauthorized, User ${user.email} cannot update/insert the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
+            };
+          }  
+            
           const new_record= await cShooters.updateOne(
                                             {email: shooterDivisions.email.toLowerCase().trim()}
                                             ,{$set:{
@@ -141,7 +176,7 @@ const handler = async (event, context)=>{
                                             ,{upsert:true}
           
                                           );
-
+                                        
           console.log('');
           console.log('==============new_record===================');
           console.log(JSON.stringify(new_record,null,2));
@@ -155,16 +190,26 @@ const handler = async (event, context)=>{
           new_record.updatedShooterDivisions=[];
           for(let i=0; i< shooterDivisions.shooters_divisions.length;i++){
           
+            if( shooterDivisions.shooters_divisions[i].shooterId===undefined
+              ||shooterDivisions.shooters_divisions[i].shooterId===null
+              ||shooterDivisions.shooters_divisions[i].shooterId===""){
+                shooterDivisions.shooters_divisions[i].shooterId=shooterDivisions._id.toString();
+            }
+
             if( shooterDivisions.shooters_divisions[i]._id===undefined
               ||shooterDivisions.shooters_divisions[i]._id===null
               ||shooterDivisions.shooters_divisions[i]._id===""){
                 shooterDivisions.shooters_divisions[i]._id=""
             }
-            
-            if( shooterDivisions.shooters_divisions[i].shooterId===undefined
-              ||shooterDivisions.shooters_divisions[i].shooterId===null
-              ||shooterDivisions.shooters_divisions[i].shooterId===""){
-                shooterDivisions.shooters_divisions[i].shooterId=shooterDivisions._id.toString();
+
+            if(shooterDivisions.shooters_divisions[i].eventId !== p_eventId
+             ||shooterDivisions.shooters_divisions[i].shooterId!== shooterDivisions._id
+            ){
+              console.log(`Unauthorized, User ${user.email} cannot update/insert registritions in events different than ${p_eventId}) or for other shoooters in this operation!`);
+              return  {
+                statusCode: 401,
+                body: `Unauthorized, User ${user.email} cannot update/insert registritions in events different than ${p_eventId}) in this operation!`
+                };
             }
 
             if(shooterDivisions.shooters_divisions[i]._id===""){
@@ -181,6 +226,8 @@ const handler = async (event, context)=>{
                                                     ));
             }else{
               
+              
+
               new_record.updatedShooterDivisions.push(await cShooters_Divisions.updateOne(
                                                                 {_id: new ObjectId(shooterDivisions.shooters_divisions[i]._id)}
                                                             ,{$set:{ shooterId: shooterDivisions.shooters_divisions[i].shooterId
@@ -286,34 +333,88 @@ const handler = async (event, context)=>{
 
       try{
           console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
+          let shooterDivisions= JSON.parse(event.body);
         
           let user= context.clientContext.user;
-          console.log(`user.email: ${user.email}`);
-          let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-          console.log(`is Admin: ${isAdmin}`);
-
-          if(!isAdmin && user.email.toLowerCase().trim()!==shooterDivisions.email.toLowerCase().trim()){
+          if(!user){
+            console.log(`Unauthorized, User (not logged)!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user.email} cannot update the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
+              body: `Unauthorized, User (not logged)!`
             }; 
           }
 
+          let isAdmin= (user.app_metadata&&!user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
+          console.log(`is Admin: ${isAdmin}`);
 
-          let shooterDivisions= JSON.parse(event.body);
+          
           let filter_Ids= [new ObjectId("000000000000000000000000")];
           let filterStringIds= ["000000000000000000000000"];
+
           for(let i=0; i< shooterDivisions.shooters_divisions.length;i++){
             filter_Ids.push(new ObjectId(shooterDivisions.shooters_divisions[i]._id));
             filterStringIds.push(shooterDivisions.shooters_divisions[i]._id);
           }
           
+          if(!isAdmin){
+            /*
+            Identify if the user has permissions to delete the subscriptions.
+            Users can delete  substriptins only if he/she is:
+            1, Master Admin (identiy role)
+            2. The Ouner of the event
+            3. The substriber itself
+            This logic will ignore the unautorized records, deletting only the autorized ones.  
+            */
+            console.log(``);
+            console.log(`=================================================`);
+            console.log(`filter ids: ${JSON.stringify(filter_Ids,null,2) }`);
+            console.log(`=================================================`);
+            let autorized_shooters_divisions= await cShooters_Divisions.aggregate( [
+              {$match:{_id: { $in: filter_Ids} }}
+              ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
+              ,{ $lookup:{ from: "events"
+                      ,localField: "eventId"
+                      ,foreignField: "_id"
+                      ,as: "events_adm"
+                      ,pipeline:[
+                          {$match:{"owners": user.email}}
+                      ]
+              }}
+              ,{ $addFields: { "shooterId": { $toObjectId: "$shooterId" }}}
+              ,{$lookup:{ from: "shooters"
+                  ,localField: "shooterId"
+                  ,foreignField: "_id"
+                  ,as: "shooters"
+                  ,pipeline:[
+                      {$match:{"email": user.email}}
+                  ]
+              }}
+              ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
+              ]).toArray();
+
+              if(autorized_shooters_divisions.length<1){
+                console.log(`Unauthorized! User ${user.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`);
+                return  {
+                  statusCode: 401,
+                  body: `Unauthorized! User ${user.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`
+                }; 
+              }
+
+              filter_Ids= [new ObjectId("000000000000000000000000")];
+              let filterStringIds= ["000000000000000000000000"];
+              
+              for(let i=0; i< autorized_shooters_divisions.length;i++){
+                filter_Ids.push(autorized_shooters_divisions[i]._id);
+                filterStringIds.push(autorized_shooters_divisions[i]._id.toString());
+              }
+
+          }
+
+          
           let r_delete_divisions= await cShooters_Divisions.deleteMany({_id: { $in: filter_Ids }});
           console.log(`Deleto divisões: r_delete_divisions.toString() ${r_delete_divisions.toString()}`);
 
           const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
-          await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
-
           r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
           
           console.log(`Deleted objects:  ${JSON.stringify(r_delete_divisions,null,2)}`);

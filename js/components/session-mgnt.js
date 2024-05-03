@@ -7,6 +7,8 @@
  * 3. Disable speficics not autorized inputs (use a specific class to identify?)
  */
 
+// const { parse } = require("dotenv");
+
 const SESSION_DBUSER="tpm-session-dbuser";
 const SESSION_EVENT_CONFIG="tpm-session-event-config";
 
@@ -21,7 +23,7 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
     if(ec!==null && (_eventId===null || ec._id===_eventId) ){ //nao tem query/method parameter
         return ec
     }else{    
-        
+        clearSessionEventConfig();
         if(_eventId===null) return null;
 
         let _headers;
@@ -57,8 +59,8 @@ async function loadingUserSession(user){
             await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
         }
 
-
-        if(getSessionDbUser()===null){ //sem _id no cookie
+        let sdbu=getSessionDbUser();
+        if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
             await fetch('/.netlify/functions/shooters?logged', {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
@@ -90,6 +92,7 @@ netlifyIdentity.on('login', user => {
 
 netlifyIdentity.on('logout', () => {
     clearSessionDbUser();
+    clearSessionEventConfig()
     configPermissions(false);
 
 });
@@ -142,6 +145,10 @@ function clearSessionDbUser(){
     setAvatarPic();
 }
 
+function clearSessionEventConfig(){
+    setCookie(SESSION_EVENT_CONFIG, null, 0.006);
+}
+
 function setSessionDbUser(dbUserJson){
     setCookie(SESSION_DBUSER, JSON.stringify(dbUserJson), 1);
 }
@@ -154,17 +161,44 @@ function getSessionDbUser(){
     }
 }
 
+
+function base64encode(str) {
+    let encode = encodeURIComponent(str).replace(/%([a-f0-9]{2})/gi, (m, $1) => String.fromCharCode(parseInt($1, 16)))
+    return btoa(encode)
+  }
+  function base64decode(str) {
+    let decode = atob(str).replace(/[\x80-\uffff]/g, (m) => `%${m.charCodeAt(0).toString(16).padStart(2, '0')}`)
+    return decodeURIComponent(decode)
+  }
+
+function setSessionEventConfig(ec){
+    // setCookie(SESSION_EVENT_CONFIG, JSON.stringify(ec), 1);
+
+    stringifyEc= JSON.stringify(ec);
+    b64ec= base64encode(stringifyEc);
+    setCookie(SESSION_EVENT_CONFIG, b64ec, 1);
+}
 function getSessionEventConfig(){
     let ec= getCookie(SESSION_EVENT_CONFIG);
     if(ec===null || ec===undefined ||ec===""){
         return null;
     }else{
-        return JSON.parse(ec);
+        try{
+            // ec= JSON.parse(ec);
+            decodedEc= base64decode(ec);
+            parsedEc= JSON.parse(decodedEc);
+            ec= parsedEc;
+        }catch(error){
+            console.log('Error parsing EventConfig from session: '+error)
+            ec=null;
+            clearSessionEventConfig();
+        }
+
+        return ec;
+        
     }
 }
-function setSessionEventConfig(ec){
-    setCookie(SESSION_EVENT_CONFIG, JSON.stringify(ec), 1);
-}
+
 
 function setAvatarPic(){
     _id= getSessionDbUser()===null?(Math.random()*1000000).toString():getSessionDbUser()._id;
