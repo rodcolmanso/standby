@@ -135,7 +135,7 @@ class Header extends HTMLElement {
       </div>
     </div>
     <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-          <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="..." alt="...">  
+          <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="...">  
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
         <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">
@@ -149,20 +149,3 @@ class Header extends HTMLElement {
   }
   
   customElements.define('header-component', Header);
-
-
-//   <head>
-//   <nav class="navbar navbar-expand-lg bg-body-tertiary">
-//     <div class="container-fluid">
-//       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-//           <div class="navbar-nav">
-//               <a class="nav-link active" aria-current="page" href="#">Home</a>
-//               <a class="nav-link" href="#">Features</a>
-//               <a class="nav-link" href="#">Pricing</a>
-//               <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-//           </div>
-//       </div>
-      
-//     </div>
-//   </nav>
-// </head>

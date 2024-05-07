@@ -7,6 +7,7 @@
 let loggedUser;
 let eventConfig=null;
 let shooterDivisions;
+let gunsOfShooterDivisions=[];
 
 function hrefQualify(){
     if(eventConfig._id!=0)
@@ -275,19 +276,16 @@ function buildSubscriptionModal(eventConfig, shooterDivisions){
         document.getElementById('input-shooter-img').disabled=true;
     }
     
-    const date= new Date();
-    let param= date.getMilliseconds()+date.toISOString();
-    param= param.replaceAll(":","ü").replaceAll(".","ë").replaceAll("-","ñ");
     // const uri= "https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_131,w_88/profile/"+shooterDivisions.shooterId+"?"+param;
-    const uri= "https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_88,h_131/profile/"+shooterDivisions.shooterId+"?"+param;
+    const uri= "https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_88,h_131/d_defaults:generic_avatar.jpg/profile/"+shooterDivisions.shooterId+".jpg?code="+uuidv4();
     
-    const encoded = encodeURI(uri);
+    // const encoded = encodeURI(uri);
     
-    if (shooterDivisions.shooterId!==""){
-        document.getElementById('shooter-img').src= encoded;
-    } else {
-        document.getElementById('shooter-img').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_131,w_88/defaults/generic_avatar.jpg";
-    }
+    // if (shooterDivisions.shooterId!==""){
+        document.getElementById('shooter-img').src= uri;
+    // } else {
+    //     document.getElementById('shooter-img').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_131,w_88/defaults/generic_avatar.jpg";
+    // }
 
     buildDivisions(eventConfig); 
     // 'select-subscribe-division'
@@ -318,8 +316,9 @@ function getChecked(b, color){
 function buildSubscriptionModalTable(eventConfig, shooterDivisions){
 
     let row='';
-
+    gunsOfShooterDivisions=[];
     for(let i=0;i<shooterDivisions.shooters_divisions.length;i++){
+        gunsOfShooterDivisions.push(shooterDivisions.shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
         // <td class="text-start d-none d-sm-table-cell">
         // <img class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/${shooterDivisions.shooterId}?${encodeURI((new Date()).toISOString())}"  alt="..." />
         // </td>
@@ -390,6 +389,11 @@ function putShooterDivisions(sD){
     sD.eventId=eventConfig._id;
     // sD.img=eventConfig.img;
     // sD.imgChanged= eventConfig.imgChanged;
+    
+    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""))!==undefined){
+        alert(`A arma ${sD.shooters_divisions[0].gun} não pode ser inscrita mais de uma vez na divisão ${getDivisionName(sD.shooters_divisions[0].divisionId)}.`);
+        return 0;
+    }
 
     applySpinners(true);
     fetch('/.netlify/functions/shooters_divisions_v2?eventId='+eventConfig._id, {

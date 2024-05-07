@@ -80,7 +80,7 @@ async function loadPage(eId){
 
     document.getElementById('event-local').value= eventConfig.local;
     
-    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/'+eventConfig._id;
+    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_450,w_600/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
     
     document.getElementById('event-note').value= eventConfig.note;
 

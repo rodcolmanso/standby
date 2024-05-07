@@ -248,7 +248,9 @@ const handler = async (event, context)=>{
             console.log('Uploading shooter img to cloudinary. img='+shooterDivisions._id);
             
             cloudinary.uploader.upload(shooterDivisions.img,
-                { public_id: "profile/"+shooterDivisions._id })
+                { public_id: "profile/"+shooterDivisions._id
+                  ,invalidate: true
+                 })
                 .then(result=>console.log(result));
           }
 

@@ -20,44 +20,48 @@ let loggedUser;
 
 function updateAllMatches(mainMatches, recapMatches, categ){
     
-    let idM=[];
-    for(let l=0;l<mainMatches.length;l++){
-        for(let i=0 ; i<mainMatches[l].length;i++){
-            if(mainMatches[l][i].parentA!=="root"){
-                idM= mainMatches[l][i].parentA.split('.');
-                if(idM[0]==="m")
-                    mainMatches[l][i].shooterA= mainMatches[idM[1]][idM[2]].v;
+    let parentMatch=[];
+
+    let co=1;
+    let li=2;
+    for(let round=0;round<mainMatches.length;round++){
+        for(let match=0 ; match<mainMatches[round].length;match++){
+
+            if(mainMatches[round][match].parentA!=="root"){
+                parentMatch= mainMatches[round][match].parentA.split('.');
+                if(parentMatch[0]==="m")
+                    mainMatches[round][match].shooterA= mainMatches[parentMatch[co]][parentMatch[li]].v;
                 else
-                    mainMatches[l][i].shooterA= recapMatches[idM[1]][idM[2]].v;
+                    mainMatches[round][match].shooterA= recapMatches[parentMatch[co]][parentMatch[li]].v;
             }
 
-            if(mainMatches[l][i].parentB!=="root"){
-                idM= mainMatches[l][i].parentB.split('.');
-                if(idM[0]==="m")
-                    mainMatches[l][i].shooterB= mainMatches[idM[1]][idM[2]].v;
+            if(mainMatches[round][match].parentB!=="root"){
+                parentMatch= mainMatches[round][match].parentB.split('.');
+                if(parentMatch[0]==="m")
+                    mainMatches[round][match].shooterB= mainMatches[parentMatch[co]][parentMatch[li]].v;
                 else
-                    mainMatches[l][i].shooterB= recapMatches[idM[1]][idM[2]].v;
+                    mainMatches[round][match].shooterB= recapMatches[parentMatch[co]][parentMatch[li]].v;
             }
 
         }
     }
 
-    for(let l=0;l<recapMatches.length;l++){
-        for(let i=0 ; i<recapMatches[l].length;i++){
-            if(recapMatches[l][i].parentA!=="root"){
-                idM= recapMatches[l][i].parentA.split('.');
-                if(idM[0]==="m")
-                    recapMatches[l][i].shooterA= mainMatches[idM[1]][idM[2]].d;
+    for(let round=0;round<recapMatches.length;round++){
+        for(let match=0 ; match<recapMatches[round].length;match++){
+            if(recapMatches[round][match].parentA!=="root"){
+                parentMatch= recapMatches[round][match].parentA.split('.');
+                if(parentMatch[0]==="m")
+                    recapMatches[round][match].shooterA= mainMatches[parentMatch[co]][parentMatch[li]].d;
                 else
-                    recapMatches[l][i].shooterA= recapMatches[idM[1]][idM[2]].v;
+                    recapMatches[round][match].shooterA= recapMatches[parentMatch[co]][parentMatch[li]].v;
             }
 
-            if(recapMatches[l][i].parentB!=="root"){
-                idM= recapMatches[l][i].parentB.split('.');
-                if(idM[0]==="m")
-                    recapMatches[l][i].shooterB= mainMatches[idM[1]][idM[2]].d;
+            if(recapMatches[round][match].parentB!=="root"){
+                parentMatch= recapMatches[round][match].parentB.split('.');
+                if(parentMatch[0]==="m")
+                    recapMatches[round][match].shooterB= mainMatches[parentMatch[co]][parentMatch[li]].d;
                 else
-                    recapMatches[l][i].shooterB= recapMatches[idM[1]][idM[2]].v;
+                    recapMatches[round][match].shooterB= recapMatches[parentMatch[co]][parentMatch[li]].v;
             }
 
         }
@@ -67,13 +71,6 @@ function updateAllMatches(mainMatches, recapMatches, categ){
 }
 
     function updateMatch(matchId, v, categ){
-        // console.log("Entrou no updateMatch");
-
-        // advance
-        // overall
-        // optics
-        // seniors
-        // ladies
         // alert(`matchId=${matchId}, v.id=${v.id}`);
 
         let mainMatches=[];
@@ -103,29 +100,26 @@ function updateAllMatches(mainMatches, recapMatches, categ){
             mainMatches=KOs.ladyDoubleKOs[0];
             recapMatches=KOs.ladyDoubleKOs[1];
         
-        }
+        }    mainMatches[0][1]
 
     let idM= matchId.split('.');
+    let duels;
 
-    if(idM[0]==="m"){
-        // alert(`mainMatches[idM[1]][idM[2]].shooterA.id= ${mainMatches[idM[1]][idM[2]].shooterA.id},
-        // mainMatches[idM[1]][idM[2]].shooterB.id= ${mainMatches[idM[1]][idM[2]].shooterB.id}`);
-        if(mainMatches[idM[1]][idM[2]].shooterA.id!==null&&mainMatches[idM[1]][idM[2]].shooterB.id!==null){
-            mainMatches[idM[1]][idM[2]].v= ""+mainMatches[idM[1]][idM[2]].shooterA.id===v ? mainMatches[idM[1]][idM[2]].shooterA : mainMatches[idM[1]][idM[2]].shooterB;
-            mainMatches[idM[1]][idM[2]].d= ""+mainMatches[idM[1]][idM[2]].shooterA.id===v ? mainMatches[idM[1]][idM[2]].shooterB : mainMatches[idM[1]][idM[2]].shooterA;
-            saveDivision();
-        }
-    }else{
-        if(recapMatches[idM[1]][idM[2]].shooterA.id!==null&&recapMatches[idM[1]][idM[2]].shooterB.id!==null){
-            recapMatches[idM[1]][idM[2]].v= ""+recapMatches[idM[1]][idM[2]].shooterA.id===v ? recapMatches[idM[1]][idM[2]].shooterA : recapMatches[idM[1]][idM[2]].shooterB;
-            recapMatches[idM[1]][idM[2]].d= ""+recapMatches[idM[1]][idM[2]].shooterA.id===v ? recapMatches[idM[1]][idM[2]].shooterB : recapMatches[idM[1]][idM[2]].shooterA;
-            saveDivision();
-        }
+    if(idM[0]==="m")
+        duels= mainMatches;
+    else
+        duels= recapMatches;
 
+    const round= idM[1];
+    const match= idM[2];
+
+    if(duels[round][match].shooterA.id!==null&&duels[round][match].shooterB.id!==null){
+        duels[round][match].v= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterA : duels[round][match].shooterB;
+        duels[round][match].d= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterB : duels[round][match].shooterA;
+        saveDivision();
     }
 
     updateAllMatches(mainMatches, recapMatches, categ);
-    
 
 }
 
@@ -176,28 +170,28 @@ function addMainMatches(mainMatches, recapMatches, categ){
     let space=["",""];
     
     //finding out if has preliminares or not
-    let has4plays= 1;
+    let has4play= 1;
     if(mainMatches.length>0 && mainMatches[0].length>0&&mainMatches[1].length>0&&
         mainMatches[0].length/mainMatches[1].length!==2 &&
         (mainMatches[0].length!==4&&mainMatches[0].length!==8&&mainMatches[0].length!==16&&mainMatches[0].length!==32&&mainMatches[0].length!==64)
         ){
-        has4plays=2;
+            has4play=2;
         }
 
-    for(let l=0;l<mainMatches.length;l++){
+    for(let round=0;round<mainMatches.length;round++){
 
-        for(let i=0;i<mainMatches[l].length;i++){
-            checkedA= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterA.id?"checked":"";
-            checkedB= mainMatches[l][i].v.id!==null&&mainMatches[l][i].v.id===mainMatches[l][i].shooterB.id?"checked":"";
+        for(let match=0;match<mainMatches[round].length;match++){
+            checkedA= mainMatches[round][match].v.id!==null&&mainMatches[round][match].v.id===mainMatches[round][match].shooterA.id?"checked":"";
+            checkedB= mainMatches[round][match].v.id!==null&&mainMatches[round][match].v.id===mainMatches[round][match].shooterB.id?"checked":"";
             
             space=["",""];
             
             let s="";
-            if(l>=has4plays){
+            if(round>=has4play){
                 s= `
                     <div class="ps-8">
                     </div>`;
-                for(let k=0;k<=(l-has4plays)*2;k++){
+                for(let k=0;k<=(round-has4play)*2;k++){
                     s+= `
                     <div class="ps-50">
                     </div>`;
@@ -210,39 +204,40 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
                     <div class="col-md-6 col-card-match ">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate">${mainMatches[l][i].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[l][i].shooterA.gun}</small></p>
+                        <h10 class="card-title text-truncate">${mainMatches[round][match].shooterA.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][match].shooterA.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
                         <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${mainMatches[l][i].id}" value="${mainMatches[l][i].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[l][i].id}', this.value,  '${categ}')" >
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${mainMatches[round][match].id}" value="${mainMatches[round][match].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[round][match].id}', this.value,  '${categ}')" >
                         </div>
                     </div>
                 </div>
             </div>`;
         
-            let iB=i;
+            let iB=match;
 
             matches+= `<!---->
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  style="height:50px" 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate">${mainMatches[l][iB].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[l][iB].shooterB.gun}</small></p>
+                        <h10 class="card-title text-truncate">${mainMatches[round][iB].shooterB.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][iB].shooterB.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
                         <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[l][iB].id}" value="${mainMatches[l][iB].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[l][iB].id}', this.value, '${categ}')" >
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[round][iB].id}" value="${mainMatches[round][iB].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[round][iB].id}', this.value, '${categ}')" >
                         </div>
                     </div>
                 </div>
@@ -253,11 +248,11 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
             
             s="";
-            if(l>=has4plays){
+            if(round>=has4play){
                 s+= `
                     <div class="ps-8">
                     </div>`;
-                for(let k=0;k<=(l-has4plays)*(2+(l-has4plays));k++){
+                for(let k=0;k<=(round-has4play)*(2+(round-has4play));k++){
                     s+= `
                     <div class="ps-50">
                     </div>`;
@@ -270,7 +265,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
         } 
         console.log('Erro aqui 3?');
-        document.getElementById(categ+'LevelM'+l).innerHTML= matches;
+        document.getElementById(categ+'LevelM'+round).innerHTML= matches;
         console.log('Nao Erro aqui 2.');
         matches="";
 
@@ -289,11 +284,11 @@ function addMainMatches(mainMatches, recapMatches, categ){
     }
     // levelSpace.push(space);
     let ls=0;
-    for(let l=recapMatches.length-1;l>=0;l--){
+    for(let round=recapMatches.length-1;round>=0;round--){
 
-        for(let i=0;i<recapMatches[l].length;i++){
-            checkedA= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterA.id?"checked":"";
-            checkedB= recapMatches[l][i].v.id!==null&&recapMatches[l][i].v.id===recapMatches[l][i].shooterB.id?"checked":"";
+        for(let match=0;match<recapMatches[round].length;match++){
+            checkedA= recapMatches[round][match].v.id!==null&&recapMatches[round][match].v.id===recapMatches[round][match].shooterA.id?"checked":"";
+            checkedB= recapMatches[round][match].v.id!==null&&recapMatches[round][match].v.id===recapMatches[round][match].shooterB.id?"checked":"";
             
             ls++;
             if(levelSpace.length-ls>=0){
@@ -304,17 +299,17 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <img  src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate">${recapMatches[l][i].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[l][i].shooterA.gun}</small></p>
+                        <h10 class="card-title text-truncate">${recapMatches[round][match].shooterA.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterA.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
                         <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${recapMatches[l][i].id}" value="${recapMatches[l][i].shooterA.id}"  onClick="javascript:updateMatch('${recapMatches[l][i].id}', this.value, '${categ}')" >
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${recapMatches[round][match].id}" value="${recapMatches[round][match].shooterA.id}"  onClick="javascript:updateMatch('${recapMatches[round][match].id}', this.value, '${categ}')" >
                         </div>
                     </div>
                 </div>
@@ -323,17 +318,17 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <img  style="height:50px" src="img/generic-avatar-human-male-head-silhouette-vector-40402253.jpg" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate">${recapMatches[l][i].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[l][i].shooterB.gun}</small></p>
+                        <h10 class="card-title text-truncate">${recapMatches[round][match].shooterB.name}</h10>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterB.gun}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
                         <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${recapMatches[l][i].id}" value="${recapMatches[l][i].shooterB.id}"  onClick="javascript:updateMatch('${recapMatches[l][i].id}', this.value, '${categ}')" >
+                        <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${recapMatches[round][match].id}" value="${recapMatches[round][match].shooterB.id}"  onClick="javascript:updateMatch('${recapMatches[round][match].id}', this.value, '${categ}')" >
                         </div>
                     </div>
                 </div>
@@ -346,41 +341,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
         } 
         console.log('Erro aqui X?');
-        document.getElementById(categ+'LevelR'+l).innerHTML= matches;
+        document.getElementById(categ+'LevelR'+round).innerHTML= matches;
         console.log('Nao Erro aqui X');
         matches="";
     }
 
 }
-
-// const urlSearchParams = new URLSearchParams(window.location.search);
-// const params = Object.fromEntries(urlSearchParams.entries());
-
-// const event_id = params.event_id;
-
-// // const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
-// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
-//     .then(r=>r.json())
-//     .then(data => {
-//     return data;
-// });
-
-// const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
-//     .then(r=>r.json())
-//     .then(data => {
-//     return data;
-// });
-
-// let mainMatches=[];
-// let recapMatches=[];
-// const promiseKOs = fetch("/.netlify/functions/build_matches?eventId=6578ad76e53c8b23971032c4&divisionId=6578a6dae53c8b23971032c1", {
-//     method: "PUT",
-//     headers: {"Content-type": "application/json; charset=UTF-8"}
-//     }).then(r=>r.json())
-//     .then(data => {
-//     return data;
-// });
-
 
 let KOs;
 
@@ -529,26 +495,7 @@ loadPage();
 
 window.onload = async () => {
 
-    // if(netlifyIdentity.currentUser()){
-    //     applySpinners(true);
-    //     fetch('/.netlify/functions/shooters?logged', {
-    //         method: "GET",
-    //         headers: {
-    //                     "Content-type": "application/json; charset=UTF-8"
-    //                     ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
-    //                 }
-    //         }).then(response => response.json()
-    //         ).then(json => {
-    //             if(json.length>0){
-    //                 console.log(`User logged`);
-    //                 // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
-    //             }
-    //         })
-    //         .catch(err => console.log(`Error getting, logged user: ${err}`))
-    //         .finally(()=> applySpinners(false));
-    // }
-
-    loadPage();
+    await loadPage();
     
     document.getElementById('btn-reset').style.display='';
     document.getElementById('nav-matches').classList.add('active');
@@ -558,25 +505,13 @@ window.onload = async () => {
     document.getElementById('liOptics').style.display='none';
     document.getElementById('liSeniors').style.display='none';
     
-    // applySpinners(true);
-    // eventConfig = await promiseOfEventConfig;
-    // document.getElementById('eventTitle').innerHTML= eventConfig.name;
-
-    // loggedUser= netlifyIdentity.currentUser();
-        
-    // applySpinners(true);
-    // eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
-    // applySpinners(false);
-
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
     // changeDivision(selectDivision);
     changeDivision(document.getElementById('selectDivision'));
     applySpinners(false);
     
-    
 }
-
 
 function getRandomFloat(min, max, decimals) {
     const str = (Math.random() * (max - min) + min).toFixed(decimals);
@@ -664,7 +599,7 @@ function disableInputs(){
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
     
-    if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+    if(eventConfig===undefined || eventConfig===null||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
         onoff= true;
     }
 

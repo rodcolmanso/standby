@@ -668,3 +668,37 @@ db.shooters_divisions.aggregate([
      ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
      ,{$project:{"time_records":0}}
   ]).sort({"score":1,"tries":1, "datetime":1});
+
+
+
+  db.shooters_divisions.deleteMany({divisionId:"00000000c412f4a5f17f0625"})
+
+
+
+
+
+  {divisionId:"ffffffffc412f4a5f17f0626"}
+_id
+ffffffffc412f4a5f17f0626
+
+ObjectId
+
+advanceLimit
+Object
+
+Object
+
+categories
+Object
+
+Object
+eventId
+661ab4f9c412f4a5f17f0624
+
+String
+name
+Força Livre
+
+String
+order
+1

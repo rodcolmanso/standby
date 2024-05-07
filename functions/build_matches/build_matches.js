@@ -56,7 +56,7 @@ const buildMatches = (shooters)=>{
   
   console.log(`------------------------------------------------`);
     for(let i=0; i<shooters.length;i++){
-      console.log(`|       shooters[${i}]= ${shooters[i].name}`);
+      console.log(`|       shooters[${i}]= ${shooters[i].name} ${shooters[i].gun}`);
     }
     console.log(`------------------------------------------------`);
 
@@ -67,7 +67,6 @@ const buildMatches = (shooters)=>{
 
     //NIVEL 0: Caso exista participantes <>4,8,16,32, 64, etc, deve existir uma rodada preliminhar
     let poten=2;
-    let preKOs0=0;
     let hasPreKOs=0;
 
     while(shooters.length>=poten){
@@ -75,77 +74,135 @@ const buildMatches = (shooters)=>{
     }
     let preKO=shooters.length*2-poten;
 
-console.log(`=========preKO 1: ${preKO}=========`)
+    ////Reoredenar a lista, 
+    //       1. reservando os cabeças de chave
+    //       2.  intercalando os primeiros com os ultimos (até a podentica de 2)
+    //  [0],[1],[2],[3],[4]
 
-    for(let i= 0; i< preKO; i++){
-     levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
-     // levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[preKO-(i+1)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
-        i++;
+    console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
+    let _4Players=[];
+    _4Players=shooters.slice(0,preKO);
+    let _midPlayer=[];
+    _midPlayer=shooters.slice(preKO);
+    let minNumAux= ((_4Players.length/2)<_midPlayer.length?(_4Players.length/2):_midPlayer.length);
+    let _headPleayer=[];
+    _headPleayer= _midPlayer.slice(_midPlayer.length-minNumAux);
+    _midPlayer= _midPlayer.slice(0,_midPlayer.length-minNumAux);
+    
+
+    // console.log(`=========4Players: size:${_4Players.length} - ${JSON.stringify(_4Players,null,2)}=========`);
+    // console.log(`=========_headPleayer. size:${_headPleayer.length} - ${JSON.stringify(_headPleayer,null,2)}=========`);
+    // console.log(`=========_midPlayer size:${_midPlayer.length} - ${JSON.stringify(_midPlayer,null,2)}=========`);
+    
+    levelMatches=[];
+    _4Players.reverse();
+    for(let i=0; i<_4Players.length/2;i++){ //melhores contra piores
+      if(i%2!==0)
+        levelMatches.push({id:"m."+mainMatches.length+"."+i, shooterA:_4Players[i], shooterB:_4Players[_4Players.length-i-1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+      else
+        levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:_4Players[i], shooterB:_4Players[_4Players.length-i-1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
     }
-    if(levelMatches.length>0){
+      //create root level with 4Plays
+     if(levelMatches.length>0){
+        hasPreKOs=1;
+        // fix IDs
+        for(let i=0;i<levelMatches.length;i++){
+          levelMatches[i].id="m.0."+i;
+        }
         mainMatches.push(levelMatches);
-        levelMatches=[];
-        hasPreKOs=1;    
-    }
+      }
+    
+    console.log(`4Plays done! mainMatches[0].length; `);
 
     //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
-    // cria o primeiro nível de partidas (root) quando não houver preliminares
+    //---------cria o primeiro nível de partidas (root) quando não houver preliminares
+    let headMatches=[]
+    let saveI=0
+    for(saveI=0; saveI<_headPleayer.length;saveI++){
+      console.log('ENTROU NO ADD HEADER!!!')
+      headMatches.unshift({id:"m."+mainMatches.length+"."+saveI, shooterA:_headPleayer[saveI], shooterB:mainMatches[0][saveI].v, v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"reorg" });
+    }
+
+    console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
+
     levelMatches=[];
-    
-    let savePreKO=0;
-    let backCount2=0;
 
-    if(mainMatches.length>0){ // preliminares
-      let backCount=0;
-        for(let i=0;i<mainMatches[0].length-backCount;i++){
-            if(preKO<shooters.length){
-              //2022-04-12 levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[preKO], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
-                levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:shooters[shooters.length-(i+1)], v:shootersTBD, d:shootersTBD , parentA:mainMatches[0][i].id, parentB:"root" });
-                preKO++;
-                backCount2++;
-            }else{
-//              console.log('Vai dar pau aqui NIVEL 1A?');
-              levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][mainMatches[0].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][mainMatches[0].length-i-1].id });  
-              backCount++;
-//              console.log('NÃO deu pau aqui NIVEL 1A?');
-              //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[0][i].v, shooterB:mainMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[0][i].id, parentB:mainMatches[0][i+1].id });
-              //SAVE  i++;
-            }
+    // console.log(`========+Building rest os duels. saveI=${saveI}, mainMatches[0].length=${mainMatches[0].length}`);
+
+    //criando duelos para o resto das 4plays
+    for(let i= saveI; mainMatches.length>0 && i<((mainMatches[0].length+saveI)/2);i++){
+      console.log(`ENTROOOOOOOU i=${i}`)
+      if(i%2!==0)
+           levelMatches.push({id:"m."+mainMatches.length+"."+i, shooterA:mainMatches[0][mainMatches[0].length-i-1].v, shooterB:mainMatches[0][i].v, v:shootersTBD, d:shootersTBD, parentA:"reorg", parentB:"reorg" });
+      else
+        levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:mainMatches[0][mainMatches[0].length-i-1].v, shooterB:mainMatches[0][i].v, v:shootersTBD, d:shootersTBD, parentA:"reorg", parentB:"reorg" });
+    }
+
+
+    console.log(`Head Plays done!`);
+
+    // levelMatches=[];
+    for(let i=0; i<_midPlayer.length/2;i++){ //melhores contra piores
+      if(i%2!==0)
+        levelMatches.push({id:"m."+mainMatches.length+"."+i, shooterA:_midPlayer[_midPlayer.length-i-1], shooterB:_midPlayer[i], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+      else
+        levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:_midPlayer[_midPlayer.length-i-1], shooterB:_midPlayer[i], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+    }
+    console.log(`Meddle Plays done! headMatches.length = ${headMatches.length}`);
+
+    for(let i=0;i<headMatches.length;i++){
+      if(i===0){
+        levelMatches.unshift(headMatches[i]);
+        console.log(`Adicionou o 1º colocado`)
+      }
+
+      if(i===1)
+        levelMatches.push(headMatches[i]);
+
+      if(i===2)
+        levelMatches.splice(Math.round(levelMatches.length/2),0,headMatches[i]);
+
+      if(i>2)
+        levelMatches.splice(1,0,headMatches[i]);
+    }
+
+    if(levelMatches.length>0){
+      //Fixing IDs
+      for(let i=0; i<levelMatches.length; i++){
+        levelMatches[i].id="m."+mainMatches.length+"."+i;
+      }
+
+      // Fixing parentIds
+      for(let j=0; mainMatches.length>0 && j< mainMatches[0].length;j++){
+
+        for(let i=0;i<levelMatches.length;i++){
+          if(levelMatches[i].parentA==="reorg"){
+            levelMatches[i].parentA=mainMatches[0][j].id;
+            break;
+          }else if(levelMatches[i].parentB==="reorg"){
+            levelMatches[i].parentB=mainMatches[0][j].id;
+            break;
+          }
         }
+      }
+      
+      mainMatches.push(levelMatches);
     }
-
-    let backCount=0;
-    console.log(`=========preKO 2: ${preKO}=========`)
-    for(let i=preKO-backCount2; i< shooters.length-backCount-backCount2;i++){
-//      console.log('Vai dar pau aqui NIVEL 1B?');
-      levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[shooters.length-backCount2-(1+backCount)], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
-      backCount++;
-//      console.log('NÃO deu pau aqui NIVEL 1B?');
-        //SAVE levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[i], shooterB:shooters[i+1], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
-        //SAVE i++;
-    }
-    mainMatches.push(levelMatches);
-
-    // NIVEL 2: partidas de vitoriosos até a final
-    //    pula a rodada preliminar
-    for(let l=(preKO>0?1:0) ; l<mainMatches.length; l++){
+    
+    for(let l=mainMatches.length-1 ; l<mainMatches.length; l++){
         levelMatches=[];
         hasMatches=false;
-        let backCount=0;
-        // for(let i=0; i<mainMatches[l].length-1-backCount; i++){
-  //        console.log('Lenght NIVEL_2?='+mainMatches[l].length);
-        for(let i=0; i<mainMatches[l].length&&mainMatches[l].length>1; i=i+2){
- //         console.log('Vai dar pau aqui NIVEL 2? i='+i);
-          // levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });  
-          backCount++;
+
+        for(let i=0; mainMatches[l].length>1 && i<mainMatches[l].length-1; i=i+2){
           
           levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][i+1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][i+1].id });
-          // i++;
+          // levelMatches.push({id:"m."+mainMatches.length+"."+i, shooterA:mainMatches[l][i].v, shooterB:mainMatches[l][mainMatches[l].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[l][i].id, parentB:mainMatches[l][mainMatches[l].length-i-1].id });
             hasMatches=true;
-// console.log('NÃO deu pau aqui NIVEL 2?');
-
         }
-        if(hasMatches) mainMatches.push(levelMatches);
+        if(levelMatches.length>0){;
+          console.log(`ADD`);
+          mainMatches.push(levelMatches)
+        }
     }
 
 
@@ -223,8 +280,15 @@ console.log(`=========preKO 1: ${preKO}=========`)
     }
     recapMatches.push(levelMatches);
 
-    ////resolvendo os niveis seguintes
+    console.log('Aqui!!!!!!!!!');
+    console.log(`-=====================hasPreKOs= ${hasPreKOs}=]======================================`);
+    console.log(`mainMatches= ${JSON.stringify(mainMatches,null,2)} `);
+    console.log(`-====================================================================================`);
 
+
+// =======================================
+    ////resolvendo os niveis seguintes
+    let even=true;
     for(let l=1+hasPreKOs;l<mainMatches.length;l++){
         levelMatches=[];
         let backCount=0;
@@ -235,18 +299,13 @@ console.log(`=========preKO 1: ${preKO}=========`)
                 //intercala com jogos principais
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:mainMatches[l][i].d, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:mainMatches[l][i].id });
             }else{
-            //jogos só de repesqueiros
-      //      console.log('Vai dar pau aqui RECAP 3.4?');
-            // SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][recapMatches[recapMatches.length-1].length-i-1].id });
+  
             backCount++;
             if (recapMatches[recapMatches.length-1][i+1]!==null && recapMatches[recapMatches.length-1][i+1]!== undefined){
               
               levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[recapMatches.length-1][i].v, shooterB:recapMatches[recapMatches.length-1][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[recapMatches.length-1][i].id, parentB:recapMatches[recapMatches.length-1][i+1].id });
               i++;
-            }//else break;
-            
-            // l--;
-//                console.log('Não deu pau no RECAP 3.4');
+            }
             }
         }
         if(!even){
@@ -254,7 +313,7 @@ console.log(`=========preKO 1: ${preKO}=========`)
         }
         recapMatches.push(levelMatches);
     }
-
+    console.log('Aqui FIM!!!!!!!!!');
     // 4. Super final com o ganhador do Main Matches com o campeao do Recap
     levelMatches=[];
     levelMatches.push({id:"r."+(mainMatches.length)+"."+levelMatches.length, shooterA:mainMatches[mainMatches.length-1][0].v
@@ -270,6 +329,7 @@ const flatPlayesDivisions = (players, sort)=>{
   let aRow= '';
   // for(i=0;i<players.length;i++){
       // for(j=0;j<players[i].registered.length;j++){
+  let gun_rd=""
   for(i=0;i<players.length;i++){
     if(players[i].score===undefined||players[i].score===null||players[i].score===''){
         players[i].score=Math.floor(Math.random() * (9999 - 9900 + 1)) + 9900;//range 9900 - 9999;
@@ -280,7 +340,9 @@ const flatPlayesDivisions = (players, sort)=>{
     score_idx= zeroPad((""+(Math.round(players[i].score*100))),7);
     // 0999900 003 2099-01-01T00:00:00.
     sort_idx= ''+score_idx+zeroPad(players[i].tries,3)+players[i].datetime;
-    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
+    // aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
+    gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
+    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterDivisionId,'gun': gun_rd, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
     rP.push(aRow);  
   }
   // }

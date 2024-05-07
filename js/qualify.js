@@ -132,12 +132,14 @@ function transformRegistrer(players){
     for(i=0;i<players.length;i++){
         for(j=0;j<players[i].registered.length;j++){
             if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
-                players[i].registered[j].score=999;
+                players[i].registered[j].score=9999;
                 players[i].registered[j].tries=0;
                 players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
             }
 
             score_idx= zeroPad((""+(Math.round(players[i].registered[j].score*100))),7);
+            // "score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}
+            // score_idx= zeroPad((""+(Math.round(players[i].score*100))),7);
 
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,3)+players[i].registered[j].datetime;
             console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
@@ -466,7 +468,7 @@ function editShooter(idShooter){
     }
 }
 
-function uuidv4() {
+function uuidv4_() {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );

@@ -17,14 +17,15 @@ const handler = async (event, context)=>{
       case 'GET':
         const p_shooterId= event.queryStringParameters.shooterId.toString();
         const p_divisionId= event.queryStringParameters.divisionId.toString();
-        // const p_shooter_divisionId= event.queryStringParameters.shooterDivisionId.toString();
+        const p_shooter_divisionId= event.queryStringParameters.shooterDivisionId.toString();
         
         //listing all time records from a particular shooter and division
           console.log(`Estamos no GET! p_shooterId,p_divisionId = ${p_shooterId}, ${p_divisionId} `);
 
           const timerRcords= await cTime_Records.aggregate([
-            {$match:{shooterId: p_shooterId, divisionId: p_divisionId}}
-            ,{$project:{"shooterId":1, "divisionId":1, "datetime":1, "sTime":1, "penalties":1, "score":{"$add":["$sTime","$penalties"]}}}
+            // {$match:{shooterId: p_shooterId, divisionId: p_divisionId}}
+            {$match:{shooterDivisionId: p_shooter_divisionId}}
+            ,{$project:{"shooterId":1, "divisionId":1, "datetime":1, "sTime":1, "penalties":1, "score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]} }}
             ,{$sort:{score:1}}
           ]).toArray();
 

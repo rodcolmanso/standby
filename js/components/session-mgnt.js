@@ -199,10 +199,19 @@ function getSessionEventConfig(){
     }
 }
 
+function uuidv4() {
+    try{
+        return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
+    }catch(e){
+        return (Math.random()*1000000).toString();
+    }
+  }
 
 function setAvatarPic(){
     _id= getSessionDbUser()===null?(Math.random()*1000000).toString():getSessionDbUser()._id;
-    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+_id+"?"+(Math.random()*1000000);
+    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?code="+uuidv4();
 }
 
 function setCookie(cname, cvalue, exdays) {

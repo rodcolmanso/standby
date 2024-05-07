@@ -158,7 +158,9 @@ const handler = async (event, context)=>{
           console.log('Uploading img to cloudinary. img='+event_config.img);
           
           cloudinary.uploader.upload(event_config.img,
-              { public_id: event_config._id }, 
+              { public_id: event_config._id 
+                ,invalidate:true
+              }, 
               function(error, result) {
                 // console.log(result);
               });
