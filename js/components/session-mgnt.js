@@ -16,6 +16,14 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 const s_event_id = params.event_id!==undefined?params.event_id:(params.eventId!==undefined?params.eventId:(params.s_event_id!==undefined?params.s_event_id:null));
 
+function getRandomInt(min, max) {
+    // Use Math.floor to round down to the nearest whole number
+    // Use Math.random() to generate a random decimal between 0 (inclusive) and 1 (exclusive)
+    // Multiply by the range (max - min + 1) to cover the entire range
+    // Add the minimum value to shift the range to [min, max]
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
 const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 
     _eventId= _eventId!==null?_eventId:s_event_id;

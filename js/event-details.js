@@ -6,7 +6,7 @@
 
 let loggedUser;
 let eventConfig=null;
-let shooterDivisions;
+let shooterDivisions=null;
 let gunsOfShooterDivisions=[];
 
 function hrefQualify(){
@@ -26,6 +26,11 @@ function hrefMatches(){
 
 const subscribeModal = document.getElementById('exampleModal')
 const myInput = document.getElementById('myInput')
+
+subscribeModal.addEventListener('hidden.bs.modal', function (event) {
+    clearSessionEventConfig();
+    loadPage();
+  })
 
 subscribeModal.addEventListener('shown.bs.modal', () => {
 //   myInput.focus()
@@ -223,11 +228,21 @@ function getFullShooterDivision(eventConfig, userEmail){
 
                 }else{
                     // alert(`Novo atirador.`);
+                    shooterDivisions={};
                     shooterDivisions._id="";
-                    shooterDivisions.name= "";
-                    // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
-                    document.getElementById("subscribe-name").value="";
                     shooterDivisions.email= userEmail.toString().toLowerCase().trim();
+                    shooterDivisions.name= loggedUser.email===shooterDivisions.email?loggedUser.user_metadata.full_name:"";
+                    // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
+                    document.getElementById("subscribe-name").value=shooterDivisions.name;
+                    document.getElementById("subscribe-email").value=shooterDivisions.email;
+
+                    document.getElementById("subscribe-check-clock").checked= eventConfig.clock;
+                    document.getElementById("subscribe-check-duel").checked= eventConfig.duel;
+
+                    document.getElementById("subscribe-check-clock").disabled= (!eventConfig.clock||!eventConfig.duel);
+                    document.getElementById("subscribe-check-duel").disabled= (!eventConfig.clock||!eventConfig.duel);
+                    
+
                     shooterDivisions.category= 0;
                     shooterDivisions.shooterId= ""
                     shooterDivisions.eventId= eventConfig._id;
@@ -277,7 +292,7 @@ function buildSubscriptionModal(eventConfig, shooterDivisions){
     }
     
     // const uri= "https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_131,w_88/profile/"+shooterDivisions.shooterId+"?"+param;
-    const uri= "https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_88,h_131/d_defaults:generic_avatar.jpg/profile/"+shooterDivisions.shooterId+".jpg?code="+uuidv4();
+    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?code=${uuidv4()}`;
     
     // const encoded = encodeURI(uri);
     
@@ -362,7 +377,7 @@ function subscribeNew(){
     
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
     nShooters_divisions._id=""; // NEW row!
-    nShooters_divisions.shooterId=shooterDivisions.shooterId;
+    nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions.shooterId!==undefined&&shooterDivisions.shooterId!==null?shooterDivisions.shooterId:"";
     nShooters_divisions.divisionId= document.getElementById("select-subscribe-division").value;
     nShooters_divisions.eventId=eventConfig._id;
     nShooters_divisions.gun= document.getElementById("subscribe-gun").value;
@@ -511,8 +526,8 @@ function buildPage(eventConfig){
         if(shooterDivisions===null||shooterDivisions===undefined){
             divisionbadge="";
         }else{
-            for(j=0;j<shooterDivisions.shooterDivisions.shooters_divisions.length;j++){
-                if( eventConfig.divisions[i]._id===shooterDivisions.shooterDivisions.shooters_divisions[j].divisionId){
+            for(j=0;j<shooterDivisions.shooters_divisions.length;j++){
+                if( eventConfig.divisions[i]._id===shooterDivisions.shooters_divisions[j].divisionId){
                 divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i>
                             <span class="visually-hidden">Você está aqui</span>
                             </span>`;
@@ -569,7 +584,7 @@ function applySpinners(onoff){
                                                                 <span class="visually-hidden">Loading...</span>
                                                             </div>`;
     }else{
-        document.getElementById("btnInscrever").innerHTML= `Inscriver <i class="fa-solid fa-angle-down"></i>`;
+        document.getElementById("btnInscrever").innerHTML= `Inscrever <i class="fa-solid fa-angle-down"></i>`;
     }
 
     let _button = document.querySelectorAll("button");
