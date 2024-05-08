@@ -51,6 +51,12 @@ const handler = async (event, context)=>{
         
         console.log(`ENTROU NO EMAIL= ${p_email}`);
         
+        let fEmail= {};
+
+        if(p_email!=="all")
+         fEmail= {"email": p_email};
+
+
         const shootersDiv= await cShooters.aggregate([
           { "$addFields": { 
               "shooterId": { "$toString": "$_id" }
@@ -66,10 +72,8 @@ const handler = async (event, context)=>{
                   ,as: "shooters_divisions"
               }
           }
-          ,{$match:{ $and:[{email: p_email}
-                          // ,{shooters_divisions: {$ne: []}}
-                      ]
-                  }}
+          // ,{$match:{ $and:[{email: p_email}]}
+          ,{$match: fEmail }
           ,{$project:{"eventId":0}}
           ]).toArray();
 

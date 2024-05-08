@@ -272,7 +272,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
 
                 if(aPlayers[i].score===undefined || aPlayers[i].score===null || aPlayers[i].score>9998){ 
                     // aPlayers[i].score='NA';
-                    sScore='NA';
+                    sScore='N/A';
                     _time=sScore;
                     _penal="";
                 }else if(aPlayers[i].score===undefined || aPlayers[i].score===null || aPlayers[i].score>999){ 
@@ -280,13 +280,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     sScore=parseFloat(aPlayers[i].score.toString().slice(1))
                                  +" +"+aPlayers[i].score.toString().slice(0,1);
                     _penal="+"+aPlayers[i].score.toString().slice(0,1);
-                    _time= parseFloat(aPlayers[i].score.toString().slice(1)).toFixed(2);
+                    _time= parseFloat(aPlayers[i].score.toString().slice(1)).toFixed(3);
                     console.log(`ENTROU PENAL. _penal=${_penal}`);
 
                 }else{
                     sScore= ''+aPlayers[i].score;
                     _penal="";
-                    _time= parseFloat(aPlayers[i].score).toFixed(2);
+                    _time= parseFloat(aPlayers[i].score).toFixed(3);
                 }
 
                 if(aPlayers[i].tries===undefined||aPlayers[i].tries===null||aPlayers[i].tries<1){  
@@ -294,10 +294,21 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     sTries=''; 
                     aPlayers[i].tries=0;                   
                 }
-                else if(aPlayers[i].tries==1)sTries='|';
-                else if(aPlayers[i].tries==2)sTries='||';
+                // else if(aPlayers[i].tries==1)sTries='|';
+                // else if(aPlayers[i].tries==2)sTries='||';
                 // else if(aPlayers[i].tries==3)sTries='|||';
-                else sTries='+||';
+                // else if(aPlayers[i].tries==4)sTries='&#9633;';
+                // else if(aPlayers[i].tries==5)sTries='&#10692;';
+                // else if(aPlayers[i].tries==6)sTries='| &#10692;';
+                // else if(aPlayers[i].tries==7)sTries='|| &#10692;';
+                // else if(aPlayers[i].tries==8)sTries='||| &#10692;';
+                // else if(aPlayers[i].tries==9)sTries='&#9633; &#10692;';
+                // else if(aPlayers[i].tries==10)sTries='&#10692; &#10692;';
+                // else 
+                // // sTries='+||';
+                // sTries='+&#10692;&#10692;';
+                sTries=`<span class="text-small">${aPlayers[i].tries.toString()}</span>`;
+                
 
                 if(position<2&&aPlayers[i].tries>0)
                     trophy=`<i class="bi bi-trophy"></i>`;
@@ -312,7 +323,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-start">
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                     ${aPlayers[i].name} <span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>
+                    ${aPlayers[i].name} <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd} <!--<span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>-->
                      <!--    </a> -->
                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
@@ -322,7 +333,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
-                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i></button>
+                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                        </button>
                     </td>
                 </tr>`;
                 table.innerHTML+= row;

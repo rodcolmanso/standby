@@ -24,13 +24,25 @@ function hrefMatches(){
 // });
 
 
-const subscribeModal = document.getElementById('exampleModal')
+const subscribeModal = document.getElementById('exampleModal');
+const subscribeModalAll = document.getElementById('subscriptionsModal');
 const myInput = document.getElementById('myInput')
 
 subscribeModal.addEventListener('hidden.bs.modal', function (event) {
     clearSessionEventConfig();
     loadPage();
   })
+
+subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
+    shooterDivisions=[];
+    clearSessionEventConfig();
+    loadPage();
+})
+
+
+subscribeModalAll.addEventListener('shown.bs.modal', () => {
+    getFullEventShootersDivision(eventConfig);
+  });
 
 subscribeModal.addEventListener('shown.bs.modal', () => {
 //   myInput.focus()
@@ -64,7 +76,7 @@ loggedUser= netlifyIdentity.currentUser();
         getFullShooterDivision(eventConfig, loggedUser.email );
     }
 
-})
+});
 
 
 window.onload = async () => {
@@ -124,34 +136,34 @@ $(function() {
 function updatePicOrName(){
 
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
-    shooterDivisions.name= document.getElementById("subscribe-name").value;
+    shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     // shooterDivisions.category= 
 
-    if(shooterDivisions.name.trim()!==""){
-        let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions));
+    if(shooterDivisions[0].name.trim()!==""){
+        let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
         uptShooterDiv.shooters_divisions=[];
         putShooterDivisions(uptShooterDiv);
     }
     
 }
 
-function changeSub(id, idx, elem){
+function changeSub(id, ldx ,idx, elem, _subs){
     
     if(!eventConfig.clock || !eventConfig.duel){
-        document.getElementById("subscribe-check-clock-"+id).checked= eventConfig.clock;
-        document.getElementById("subscribe-check-duel-"+id).checked= eventConfig.duel;
+        document.getElementById("subscribe-check-clock-"+id+_subs).checked= eventConfig.clock;
+        document.getElementById("subscribe-check-duel-"+id+_subs).checked= eventConfig.duel;
         if(!eventConfig.duel){
-            document.getElementById("subscribe-check-duel-"+id).style='background-color:';
+            document.getElementById("subscribe-check-duel-"+id+_subs).style='background-color:';
         }
     }
 
-    if (!document.getElementById("subscribe-check-clock-"+id).checked &&
-        !document.getElementById("subscribe-check-duel-"+id).checked){
-            if(elem.id==="subscribe-check-clock-"+id){
-                document.getElementById("subscribe-check-duel-"+id).checked= true;
-                document.getElementById("subscribe-check-duel-"+id).style='background-color:goldenrod';
+    if (!document.getElementById("subscribe-check-clock-"+id+_subs).checked &&
+        !document.getElementById("subscribe-check-duel-"+id+_subs).checked){
+            if(elem.id==="subscribe-check-clock-"+id+_subs){
+                document.getElementById("subscribe-check-duel-"+id+_subs).checked= true;
+                document.getElementById("subscribe-check-duel-"+id+_subs).style='background-color:goldenrod';
             }else{
-                document.getElementById("subscribe-check-clock-"+id).checked= true;
+                document.getElementById("subscribe-check-clock-"+id+_subs).checked= true;
             }
         }
 
@@ -162,32 +174,32 @@ function changeSub(id, idx, elem){
     if(elem.id.indexOf("subscribe-optic")>-1){
         if(elem.checked) elem.style='background-color:red'; else elem.style='background-color:';
     }
-    shooterDivisions.shooters_divisions[idx].gun= document.getElementById("subscribe-gun-"+id).value;
-    shooterDivisions.shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id).checked;
-    shooterDivisions.shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id).checked;
-    shooterDivisions.shooters_divisions[idx].duel= document.getElementById("subscribe-check-duel-"+id).checked;
+    shooterDivisions[ldx].shooters_divisions[idx].gun= document.getElementById("subscribe-gun-"+id+_subs).value;
+    shooterDivisions[ldx].shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id+_subs).checked;
+    shooterDivisions[ldx].shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id+_subs).checked;
+    shooterDivisions[ldx].shooters_divisions[idx].duel= document.getElementById("subscribe-check-duel-"+id+_subs).checked;
 
-    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions));
+    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[ldx]));
     uptShooterDiv.shooters_divisions=[];
-    uptShooterDiv.shooters_divisions.push(shooterDivisions.shooters_divisions[idx]);
+    uptShooterDiv.shooters_divisions.push(shooterDivisions[ldx].shooters_divisions[idx]);
 
     putShooterDivisions(uptShooterDiv);
 
 }
 
-function deleteSub(id, idx){
+function deleteSub(id, ldx, idx){
 
 
-    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions));
+    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[ldx]));
     uptShooterDiv.shooters_divisions=[];
-    uptShooterDiv.shooters_divisions.push(shooterDivisions.shooters_divisions[idx]);
+    uptShooterDiv.shooters_divisions.push(shooterDivisions[ldx].shooters_divisions[idx]);
 
     if(uptShooterDiv.shooters_divisions[0]._id!==id){
         console.log(`Error deleting inscription. shooter_dicision not match!`);
         return 0;
     }
 
-    if( confirm(`Desinscrever ${shooterDivisions.shooters_divisions[idx].gun} da divisão ${getDivisionName(shooterDivisions.shooters_divisions[idx].divisionId)}?
+    if( confirm(`Desinscrever ${shooterDivisions[ldx].shooters_divisions[idx].gun} da divisão ${getDivisionName(shooterDivisions[ldx].shooters_divisions[idx].divisionId)}?
 (tempos registrados anteriormente serão excluídos)`)){
                 applySpinners(true);
                 fetch('/.netlify/functions/shooters_divisions_v2?eventId='+eventConfig._id, {
@@ -203,6 +215,7 @@ function deleteSub(id, idx){
                         console.log(JSON.stringify(json, null, 2));
                         alert(`Inscrição (${getDivisionName(uptShooterDiv.shooters_divisions[0].divisionId)}/${uptShooterDiv.shooters_divisions[0].gun}) apagada!`);
                         getFullShooterDivision(eventConfig, uptShooterDiv.email);
+                        getFullEventShootersDivision(eventConfig);
                     })
                     .catch(err => console.log(`Error subscribing, error: ${err.toString()}`))
                     .finally(()=> applySpinners(false));
@@ -210,31 +223,36 @@ function deleteSub(id, idx){
 
 }
 
-// buildShooterDivision
 function getFullShooterDivision(eventConfig, userEmail){
 
+    let filterEmal="";
+    if(userEmail!==null){
+        filterEmal= `&email=${userEmail}`;
+    }
+
     applySpinners(true);
-    fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${eventConfig._id}&email=${userEmail}`, {
+    fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${eventConfig._id}${filterEmal}`, {
             method: "GET",
             headers: {"Content-type": "application/json; charset=UTF-8"}
             })
             .then(response => response.json()) 
             .then(json => {
                 if(json!==null&&json.length!==null&json.length>0){
-                    shooterDivisions= json[0];
+                    // shooterDivisions= json[0];
+                    shooterDivisions= json;
                     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+shooterDivisions._id;
-                    buildSubscriptionModal(eventConfig, shooterDivisions);
-                    buildSubscriptionModalTable(eventConfig, shooterDivisions);
+                    buildSubscriptionModal(eventConfig, shooterDivisions[0]);
+                    buildSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById('subscribe-table'));
 
                 }else{
                     // alert(`Novo atirador.`);
-                    shooterDivisions={};
-                    shooterDivisions._id="";
-                    shooterDivisions.email= userEmail.toString().toLowerCase().trim();
-                    shooterDivisions.name= loggedUser.email===shooterDivisions.email?loggedUser.user_metadata.full_name:"";
+                    shooterDivisions=[{}];
+                    shooterDivisions[0]._id="";
+                    shooterDivisions[0].email= userEmail.toString().toLowerCase().trim();
+                    shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:"";
                     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
-                    document.getElementById("subscribe-name").value=shooterDivisions.name;
-                    document.getElementById("subscribe-email").value=shooterDivisions.email;
+                    document.getElementById("subscribe-name").value=shooterDivisions[0].name;
+                    document.getElementById("subscribe-email").value=shooterDivisions[0].email;
 
                     document.getElementById("subscribe-check-clock").checked= eventConfig.clock;
                     document.getElementById("subscribe-check-duel").checked= eventConfig.duel;
@@ -243,14 +261,34 @@ function getFullShooterDivision(eventConfig, userEmail){
                     document.getElementById("subscribe-check-duel").disabled= (!eventConfig.clock||!eventConfig.duel);
                     
 
-                    shooterDivisions.category= 0;
-                    shooterDivisions.shooterId= ""
-                    shooterDivisions.eventId= eventConfig._id;
-                    shooterDivisions.shooters_divisions= [];
-                    buildSubscriptionModal(eventConfig, shooterDivisions);
-                    buildSubscriptionModalTable(eventConfig, shooterDivisions);
+                    shooterDivisions[0].category= 0;
+                    shooterDivisions[0].shooterId= ""
+                    shooterDivisions[0].eventId= eventConfig._id;
+                    shooterDivisions[0].shooters_divisions= [];
+                    buildSubscriptionModal(eventConfig, shooterDivisions[0]);
+                    buildSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById('subscribe-table'));
                 }
 
+            })
+            .catch(err => console.log(`Error getting shooter from email: ${err}`))
+            .finally(()=> applySpinners(false));
+}
+
+function getFullEventShootersDivision(eventConfig){
+
+    applySpinners(true);
+    fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${eventConfig._id}&email=all`, {
+            method: "GET",
+            headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then(json => {
+                if(json!==null&&json.length!==null&json.length>0){
+                    // shooterDivisions= json[0];
+                    shooterDivisions= json;
+                    buildSubscriptionModalTable(eventConfig, shooterDivisions, document.getElementById('subscribe-table-subs'));
+
+                }
             })
             .catch(err => console.log(`Error getting shooter from email: ${err}`))
             .finally(()=> applySpinners(false));
@@ -328,46 +366,70 @@ function getChecked(b, color){
      else return ' style="background-color:" ';
 }
 
-function buildSubscriptionModalTable(eventConfig, shooterDivisions){
+function buildSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
     let row='';
     gunsOfShooterDivisions=[];
-    for(let i=0;i<shooterDivisions.shooters_divisions.length;i++){
-        gunsOfShooterDivisions.push(shooterDivisions.shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
-        // <td class="text-start d-none d-sm-table-cell">
-        // <img class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/${shooterDivisions.shooterId}?${encodeURI((new Date()).toISOString())}"  alt="..." />
-        // </td>
-        // <td class="text-start d-none d-sm-table-cell">
-        //     <small>${shooterDivisions.name}</small>
-        // </td>
-        row+=
-        `<tr>
-        <td class="text-start">
-            <small>${getDivisionName(shooterDivisions.shooters_divisions[i].divisionId)}</small>
-        </td>
-        <td class="text-start">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions.shooters_divisions[i]._id}" ${getChecked(shooterDivisions.shooters_divisions[i].clock, '')} onChange="changeSub('${shooterDivisions.shooters_divisions[i]._id}', ${i}, this)" >
-            <label class="form-check-label" for="subscribe-check-clock-0"><small class="text-muted">Relógio</small></label>
-        </div>
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions.shooters_divisions[i]._id}" ${getChecked(shooterDivisions.shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions.shooters_divisions[i]._id}', ${i}, this)" > 
-            <label class="form-check-label" for="subscribe-check-duel-0"><small class="text-muted">Duelo</small></label>
-        </div>
-        </td>
-        <td class="text-end">
-            <input type="text" class="form-control form-control-sm" id="subscribe-gun-${shooterDivisions.shooters_divisions[i]._id}" value="${shooterDivisions.shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions.shooters_divisions[i]._id}', ${i}, this)"> 
-        </td>
-        <td>
-        <div class="form-check"> <!--form-switch--> <!--role="switch" -->
-            <input class="form-check-input" type="checkbox" id="subscribe-optic-${shooterDivisions.shooters_divisions[i]._id}" value="" aria-label="..." ${getChecked(shooterDivisions.shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions.shooters_divisions[i]._id}', ${i}, this)" >
-        </div>
-        </td>
-        <td class="text-end"><button onClick="deleteSub('${shooterDivisions.shooters_divisions[i]._id}',${i})" class="btn btn-sm btn-danger rounded-circle" value="${shooterDivisions.shooters_divisions[i]._id}">-</button></td>
-        </tr>`;
+    for(let l=0;l<shooterDivisions.length;l++){
+        for(let i=0;i<shooterDivisions[l].shooters_divisions.length;i++){
+            gunsOfShooterDivisions.push(shooterDivisions[l]._id+shooterDivisions[l].divisionId+shooterDivisions[l].shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
+            // <td class="text-start d-none d-sm-table-cell">
+            // <img class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/${shooterDivisions.shooterId}?${encodeURI((new Date()).toISOString())}"  alt="..." />
+            // </td>
+            // <td class="text-start d-none d-sm-table-cell">
+            //     <small>${shooterDivisions.name}</small>
+            // </td>
+            row+=`<tr>`;
+            
+            let _subs="";
+            let _disabled="";
+            let isAdmin=true;
+            if(tb.id=== 'subscribe-table-subs'){
+                isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
+                isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1));
+                if(!isAdmin){
+                    _disabled=" disabled "
+                }
+
+
+                _subs='-subs';
+            row+=
+                `<td class="text-start">
+                    <small>${shooterDivisions[l].name}</small>
+                </td>`
+            }
+
+            row+=
+            `<td class="text-start">
+                <small>${getDivisionName(shooterDivisions[l].shooters_divisions[i].divisionId)}</small>
+            </td>
+            <td class="text-start">
+            <div class="form-check form-switch">
+                <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" ${_disabled}>
+                <label class="spinnerIgnore form-check-label" for="subscribe-check-clock-0"><small class="text-muted">Relógio</small></label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled} > 
+                <label class="spinnerIgnore form-check-label" for="subscribe-check-duel-0"><small class="text-muted">Duelo</small></label>
+            </div>
+            </td>
+            <td class="text-end">
+                <input type="text" class="spinnerIgnore form-control form-control-sm" id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')" ${_disabled}> 
+            </td>
+            <td>
+            <div class="form-check"> <!--form-switch--> <!--role="switch" -->
+                <input class="spinnerIgnore form-check-input" type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled}>
+            </div></td> <td class="text-end">`;
+            if(isAdmin){
+                row+=`
+                <button onClick="deleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i})" class="btn btn-sm btn-danger rounded-circle" value="${shooterDivisions[l].shooters_divisions[i]._id}" ${_disabled}>-</button> `;
+            }
+            row+=
+            `</td></tr>`;
+        }
     }
 
-    document.getElementById('subscribe-table').innerHTML=row;
+    tb.innerHTML=row;
 
 }
 
@@ -377,7 +439,7 @@ function subscribeNew(){
     
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
     nShooters_divisions._id=""; // NEW row!
-    nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions.shooterId!==undefined&&shooterDivisions.shooterId!==null?shooterDivisions.shooterId:"";
+    nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions[0].shooterId!==undefined&&shooterDivisions[0].shooterId!==null?shooterDivisions[0].shooterId:"";
     nShooters_divisions.divisionId= document.getElementById("select-subscribe-division").value;
     nShooters_divisions.eventId=eventConfig._id;
     nShooters_divisions.gun= document.getElementById("subscribe-gun").value;
@@ -385,10 +447,10 @@ function subscribeNew(){
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
 
-    shooterDivisions.name= document.getElementById("subscribe-name").value;
+    shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     // shooterDivisions.category= 
 
-    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions));
+    let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
     uptShooterDiv.shooters_divisions=[];
     uptShooterDiv.shooters_divisions.push(nShooters_divisions);
 
@@ -405,7 +467,7 @@ function putShooterDivisions(sD){
     // sD.img=eventConfig.img;
     // sD.imgChanged= eventConfig.imgChanged;
     
-    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""))!==undefined){
+    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0]._id+sD.shooters_divisions[0].divisionId+ sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""))!==undefined){
         alert(`A arma ${sD.shooters_divisions[0].gun} não pode ser inscrita mais de uma vez na divisão ${getDivisionName(sD.shooters_divisions[0].divisionId)}.`);
         return 0;
     }
@@ -437,6 +499,7 @@ function putShooterDivisions(sD){
 
             console.log(JSON.stringify(json, null, 2));
             getFullShooterDivision(eventConfig, sD.email);
+            getFullEventShootersDivision(eventConfig);
             // location.reload(true);
         })
         .catch(err => console.log(`Error subscribing, error: ${err.toString()} `))
@@ -482,6 +545,7 @@ function buildPage(eventConfig){
     
     document.getElementById('event-name').innerHTML= eventConfig.name;
     document.getElementById('masthead-event-name').innerHTML= eventConfig.name;
+    document.getElementById('event-name-subs').innerHTML= eventConfig.name;
 
 
     if(eventConfig.dateDuel===null||eventConfig.dateDuel===undefined||eventConfig.dateDuel===''){
@@ -523,11 +587,11 @@ function buildPage(eventConfig){
         let divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                             <span class="visually-hidden">Você ainda não está aqui</span>
                         </span>`;
-        if(shooterDivisions===null||shooterDivisions===undefined){
+        if(shooterDivisions===null||shooterDivisions===undefined||shooterDivisions[0]===undefined){
             divisionbadge="";
         }else{
-            for(j=0;j<shooterDivisions.shooters_divisions.length;j++){
-                if( eventConfig.divisions[i]._id===shooterDivisions.shooters_divisions[j].divisionId){
+            for(j=0;j<shooterDivisions[0].shooters_divisions.length;j++){
+                if( eventConfig.divisions[i]._id===shooterDivisions[0].shooters_divisions[j].divisionId){
                 divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle badge text-bg-success rounded-pill"><i class="fas fa-check"></i>
                             <span class="visually-hidden">Você está aqui</span>
                             </span>`;
@@ -537,22 +601,22 @@ function buildPage(eventConfig){
 
         iHtmSubs +=`<p class="text-muted">
                     ${eventConfig.divisions[i].name} 
-                    <span class="badge text-bg-info">${eventConfig.divisions[i].subscribers===undefined?"NA":eventConfig.divisions[i].subscribers} 
+                    <span class="badge text-bg-info">${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers} 
                         ${divisionbadge}
                     </span>
                 </p>`;
                 // </li>`;
         
-        let time= "NA";
+        let time= "N/A";
         let penals= "";
         if(eventConfig.divisions[i].best_score!==undefined){
 
             if(eventConfig.divisions[i].best_score<1000){
-                time=eventConfig.divisions[i].best_score;
+                time=eventConfig.divisions[i].best_score.toFixed(3);
                 penals="";
             }else{
                 penals=" +"+eventConfig.divisions[i].best_score.toString().slice(0,1);
-                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1));
+                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1)).toFixed(3);
             }
         }
 
@@ -618,7 +682,7 @@ function applySpinners(onoff){
     let _input = document.querySelectorAll('input');
     [].forEach.call(_input,rdo=>{
         if(rdo.id!=='subscribe-email'){
-            rdo.disabled=onoff;
+            // rdo.disabled=onoff;
         }
     });
     // let _checkbox = document.querySelectorAll('input[type="checkbox"]');
@@ -636,9 +700,9 @@ function displaySelectedImage(event, elementId) {
         reader.onload = function(e) {
             selectedImage.src = e.target.result;
             // eventConfig.img= selectedImage.src;
-            shooterDivisions.img= selectedImage.src;
+            shooterDivisions[0].img= selectedImage.src;
             // eventConfig.imgChanged=true;
-            shooterDivisions.imgChanged=true;
+            shooterDivisions[0].imgChanged=true;
             updatePicOrName();
         };
 

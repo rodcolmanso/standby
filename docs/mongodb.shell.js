@@ -744,3 +744,57 @@ db.shooters.aggregate([
     ]).sort({"registered.score":1}).toArray();
 
 // ==========================
+
+
+
+
+/////////=========
+db.events.aggregate( [
+    // Stage 1: Filter pizza events by date range
+    {
+       $match: {_id:ObjectId("6621d4cfc55df3c3e277cc2a")}
+    }
+    ,{ "$addFields": { "eventId": { "$toString": "$_id" }, "eventIdd": { "$toString": "$_id" }}}
+    // Stage 1: Leftjoin with divisions
+    ,{
+      $lookup:
+        {
+          from: "divisions",
+          localField: "eventId",
+          foreignField: "eventId",
+          as: "divisions"
+          ,pipeline:[
+            { "$addFields": { "divisionId": { "$toString": "$_id" }}}
+            ,{$lookup:{ from: "shooters_divisions"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "count_shooters_divisions"
+                      ,pipeline:[
+                        {$group: {_id: "$divisionId"
+                                  ,subscribers:{$sum:1}}}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$count_shooters_divisions", 0 ] }, "$$ROOT" ] } } }
+            ,{$lookup:{ from: "time_records"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "best"
+                      ,pipeline:[
+                        { "$addFields": { "_penalty": {$sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}}}
+                        ,{$group: {_id: "$divisionId"
+                                  ,best_score:{$min:"$_penalty"}
+                        }}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$best", 0 ] }, "$$ROOT" ] } } }
+          ]
+        }
+   }
+   ,{"$project":{"divisions.count_shooters_divisions":0, "divisions.best":0}}
+    // Stage 3: Sort events by event_date in descending order
+  ,{
+       $sort: { "date": -1 }
+    }
+  ] )
