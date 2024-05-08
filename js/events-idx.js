@@ -67,7 +67,13 @@ window.onload = async () => {
     if(user===null || user===undefined || user.token.access_token===null || user.token.access_token===undefined){
         user= {token:{access_token:""},email:'xxxxxxx'};
 
-    } else isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+    } else{
+        let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
+        if(user.token.expires_at< exipre_compare){
+            await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
+        }
+         isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+    }
     // if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
     //     disableInputs(true);
     // }

@@ -67,12 +67,12 @@ class Header extends HTMLElement {
           <li class="nav-item col-6 col-lg-auto">
             <a class="nav-link py-2 px-0 px-lg-2" id="nav-matches" onclick="hrefMatches();" target="_blank" rel="noopener">Duelos</a>
           </li>
-          <li class="nav-item col-6 col-lg-auto">
+          <!--<li class="nav-item col-6 col-lg-auto">
             <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">Ranking</a>
           </li>
           <li class="nav-item col-6 col-lg-auto">
             <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">Clubes</a>
-          </li>
+          </li>-->
         </ul>
 
         <hr class="d-lg-none text-white-50" />
@@ -135,7 +135,7 @@ class Header extends HTMLElement {
       </div>
     </div>
     <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-          <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="...">  
+          <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="..." onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="...">  
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
         <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">

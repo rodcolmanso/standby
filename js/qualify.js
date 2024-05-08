@@ -77,7 +77,7 @@ window.onload = async () => {
     //         .finally(()=> applySpinners(false));
     // }
 
-    document.getElementById('btnAddShooter').style.display='';
+    // document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
     applySpinners(true);
 
@@ -123,11 +123,11 @@ function changeDivision(selectDivision){
     buildCategory2(eventConfig, selectDivision.value);
     
     
-    if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
-        document.getElementById('btnAddShooter').disabled = true;
-    }else{
-        document.getElementById('btnAddShooter').disabled = false;
-    }
+    // if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
+    //     document.getElementById('btnAddShooter').disabled = true;
+    // }else{
+    //     document.getElementById('btnAddShooter').disabled = false;
+    // }
     disableInputs();
 };
 
