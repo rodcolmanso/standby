@@ -199,7 +199,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 space[0]=s;
             }
             
-
+            _rd= mainMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             matches+= s+`
             <div class="card mb-3 card-block ">
                 <div class="row g-0">
@@ -209,7 +209,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match ">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${mainMatches[round][match].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][match].shooterA.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][match].shooterA.gun} ${_rd}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -222,6 +222,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
         
             let iB=match;
 
+            _rd= mainMatches[round][iB].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             matches+= `<!---->
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -232,7 +233,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${mainMatches[round][iB].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][iB].shooterB.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${mainMatches[round][iB].shooterB.gun} ${_rd}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -295,6 +296,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 matches+= levelSpace[levelSpace.length-ls][0];
                 console.log(`levelSpace[${levelSpace.length-ls}][0]=${levelSpace[levelSpace.length-ls][0]}`)
             }
+            _rdA= recapMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            _rdB= recapMatches[round][match].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             matches+= `
             <div class="card mb-3 card-block">
                 <div class="row g-0">
@@ -304,7 +307,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${recapMatches[round][match].shooterA.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterA.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterA.gun} ${_rdA}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -323,7 +326,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate">${recapMatches[round][match].shooterB.name}</h10>
-                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterB.gun}</small></p>
+                        <p class="card-text"><small class="text-body-secondary text-small">${recapMatches[round][match].shooterB.gun} ${_rdB}</small></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">

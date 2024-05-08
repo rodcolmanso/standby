@@ -24,11 +24,13 @@ const handler = async (event, context)=>{
 
     let p_eventId=null;
     let p_email=null;
+    let p_clockDuel=null;
 
     switch (event.httpMethod){
       case 'GET':
         p_eventId=null;
         p_email=null;
+        p_clockDuel=null;
         if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
           p_eventId= event.queryStringParameters.eventId.toString();
           console.log(`p_eventId= ${p_eventId}`);
@@ -37,7 +39,13 @@ const handler = async (event, context)=>{
           p_email= event.queryStringParameters.email.toLowerCase();
           console.log(`p_email= ${p_email}`);
         }
-        console.log(`p_emailXXXXXXXX= ${p_email}`);
+        
+        if(event.queryStringParameters.clock_duel!==undefined&&event.queryStringParameters.clock_duel!==null&&event.queryStringParameters.clock_duel!==""){
+          p_clockDuel= event.queryStringParameters.clock_duel.toLowerCase();
+          console.log(`p_clockDuel= ${p_clockDuel}`);
+        }
+
+        console.log(`p_email= ${p_email}`);
 
       if(p_eventId!==null&&p_email!==null){ // List shooter_division(inscriptions) detail
         
@@ -72,7 +80,15 @@ const handler = async (event, context)=>{
 
       }else if(p_eventId!==null){ //listing all shooters in a eventId, with their best time for each division
         console.log(`ENTROU NO ENVENTO= ${p_eventId}`);
-          
+        let _match={"eventId": p_eventId};
+
+        if(p_clockDuel==='clock'){
+          _match.clock= true;
+        }else if(p_clockDuel==='duel'){
+          _match.duel= true;
+        }
+
+        p_clockDuel=null;
         const shootersDiv= await cShooters.aggregate([
           { "$addFields": {"shooterId": { "$toString": "$_id" }}}
           ,{$lookup:{
@@ -81,7 +97,8 @@ const handler = async (event, context)=>{
               ,foreignField: "shooterId"
               ,as: "registered"
               ,pipeline:[
-                  {$match:{eventId: p_eventId}}
+                  // {$match:{eventId: p_eventId}}
+                  {$match:_match}
                   ,{ "$addFields": {"shooterDivisionId": { "$toString": "$_id" }}}
                   ,{ $lookup:
                       {
@@ -90,10 +107,11 @@ const handler = async (event, context)=>{
                           ,foreignField: "shooterDivisionId"
                           ,as: "time_records"
                           ,pipeline:[
-                              {$project:{ "score":{"$add":["$sTime","$penalties"]} ,datetime:1}}
-                              ,{$group:
-                                  { _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}}
-                              }
+                              // {$project:{ "score":{"$add":["$sTime","$penalties"]} ,datetime:1}}
+                              {$project:{"score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]},datetime:1, penalties:1}}
+                              
+                              // ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}}}
+                              ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}, penalties:{$min:"$penalties"}}}
                           ]
                       }
                   }

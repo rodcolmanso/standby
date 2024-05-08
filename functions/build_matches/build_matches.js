@@ -54,11 +54,11 @@ const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
 
 const buildMatches = (shooters)=>{
   
-  console.log(`------------------------------------------------`);
+  // console.log(`------------------------------------------------`);
     for(let i=0; i<shooters.length;i++){
-      console.log(`|       shooters[${i}]= ${shooters[i].name} ${shooters[i].gun}`);
+      // console.log(`|       shooters[${i}]= ${shooters[i].name} ${shooters[i].gun}`);
     }
-    console.log(`------------------------------------------------`);
+    // console.log(`------------------------------------------------`);
 
     let mainMatches=[];
     let recapMatches=[];
@@ -79,7 +79,7 @@ const buildMatches = (shooters)=>{
     //       2.  intercalando os primeiros com os ultimos (até a podentica de 2)
     //  [0],[1],[2],[3],[4]
 
-    console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
+    // console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
     let _4Players=[];
     _4Players=shooters.slice(0,preKO);
     let _midPlayer=[];
@@ -112,18 +112,18 @@ const buildMatches = (shooters)=>{
         mainMatches.push(levelMatches);
       }
     
-    console.log(`4Plays done! mainMatches[0].length; `);
+    // console.log(`4Plays done! mainMatches[0].length; `);
 
     //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
     //---------cria o primeiro nível de partidas (root) quando não houver preliminares
     let headMatches=[]
     let saveI=0
     for(saveI=0; saveI<_headPleayer.length;saveI++){
-      console.log('ENTROU NO ADD HEADER!!!')
+      // console.log('ENTROU NO ADD HEADER!!!')
       headMatches.unshift({id:"m."+mainMatches.length+"."+saveI, shooterA:_headPleayer[saveI], shooterB:mainMatches[0][saveI].v, v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"reorg" });
     }
 
-    console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
+    // console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
 
     levelMatches=[];
 
@@ -131,7 +131,7 @@ const buildMatches = (shooters)=>{
 
     //criando duelos para o resto das 4plays
     for(let i= saveI; mainMatches.length>0 && i<((mainMatches[0].length+saveI)/2);i++){
-      console.log(`ENTROOOOOOOU i=${i}`)
+      // console.log(`ENTROOOOOOOU i=${i}`)
       if(i%2!==0)
            levelMatches.push({id:"m."+mainMatches.length+"."+i, shooterA:mainMatches[0][mainMatches[0].length-i-1].v, shooterB:mainMatches[0][i].v, v:shootersTBD, d:shootersTBD, parentA:"reorg", parentB:"reorg" });
       else
@@ -139,7 +139,7 @@ const buildMatches = (shooters)=>{
     }
 
 
-    console.log(`Head Plays done!`);
+    // console.log(`Head Plays done!`);
 
     // levelMatches=[];
     for(let i=0; i<_midPlayer.length/2;i++){ //melhores contra piores
@@ -148,12 +148,12 @@ const buildMatches = (shooters)=>{
       else
         levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:_midPlayer[_midPlayer.length-i-1], shooterB:_midPlayer[i], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
     }
-    console.log(`Meddle Plays done! headMatches.length = ${headMatches.length}`);
+    // console.log(`Meddle Plays done! headMatches.length = ${headMatches.length}`);
 
     for(let i=0;i<headMatches.length;i++){
       if(i===0){
         levelMatches.unshift(headMatches[i]);
-        console.log(`Adicionou o 1º colocado`)
+        // console.log(`Adicionou o 1º colocado`)
       }
 
       if(i===1)
@@ -200,7 +200,6 @@ const buildMatches = (shooters)=>{
             hasMatches=true;
         }
         if(levelMatches.length>0){;
-          console.log(`ADD`);
           mainMatches.push(levelMatches)
         }
     }
@@ -226,16 +225,10 @@ const buildMatches = (shooters)=>{
     }
     preKO=rootRecapShooters.length*2-poten;
     levelMatches=[];
-    // console.log('Antes do primeiro .shooter.');
-    // console.log('mainMatches.length= '+mainMatches.length);
-    // console.log('rootRecapShooters.lenght= '+rootRecapShooters.length);
     backCount=0;
     for(let i= 0; i< preKO; i++){
-// console.log('Vai dar pau aqui RECAP 3.1?');
-      //levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });
       levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
       i++;
-// console.log('NÃO deu pau aqui RECAP 3.1?');
         
     }
     if(levelMatches.length>0){
@@ -247,7 +240,6 @@ const buildMatches = (shooters)=>{
     if(recapMatches.length>0){ // preliminares
 
         let backCount=0;
-        // for(let i=0;i<recapMatches[0].length-backCount;i++){
         for(let i=0;i<recapMatches[0].length;i++){
 
 
@@ -255,35 +247,28 @@ const buildMatches = (shooters)=>{
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:rootRecapShooters[preKO].shooter, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:rootRecapShooters[preKO].id });
                 preKO++;
             }else{
-//              console.log('Vai dar pau aqui RECAP 3.2?');
-              // SAVE levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][recapMatches[0].length-(1+backCount)].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][recapMatches[0].length-(1+backCount)].id });
               backCount++;
               if(recapMatches[0][i+1]!==null && recapMatches[0][i+1]!== undefined){
                 levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:recapMatches[0][i].v, shooterB:recapMatches[0][i+1].v, v:shootersTBD, d:shootersTBD, parentA:recapMatches[0][i].id, parentB:recapMatches[0][i+1].id });
               }
               i++;
-    // console.log('NÃO deu pau aqui RECAP 3.2?');
             }
         }
     }
     backCount=0;
-    // for(let i=preKO; i< rootRecapShooters.length-backCount;i++){
     for(let i=preKO; i< rootRecapShooters.length;i++){
-// console.log('Vai dar pau aqui RECAP 3.3?');
-      // SAVE?  levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[rootRecapShooters.length-i-1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[rootRecapShooters.length-i-1].id });  
       backCount++;
       if(rootRecapShooters[i+1]!==null && rootRecapShooters[i+1]!== undefined){
         levelMatches.push({id:"r."+recapMatches.length+"."+levelMatches.length, shooterA:rootRecapShooters[i].shooter, shooterB:rootRecapShooters[i+1].shooter, v:shootersTBD, d:shootersTBD, parentA:rootRecapShooters[i].id, parentB:rootRecapShooters[i+1].id });
       }
       i++;
- //     console.log('NÃO deu pau aqui RECAP 3.3?');
     }
     recapMatches.push(levelMatches);
 
-    console.log('Aqui!!!!!!!!!');
-    console.log(`-=====================hasPreKOs= ${hasPreKOs}=]======================================`);
-    console.log(`mainMatches= ${JSON.stringify(mainMatches,null,2)} `);
-    console.log(`-====================================================================================`);
+    // console.log('Aqui!!!!!!!!!');
+    // console.log(`-=====================hasPreKOs= ${hasPreKOs}=]======================================`);
+    // console.log(`mainMatches= ${JSON.stringify(mainMatches,null,2)} `);
+    // console.log(`-====================================================================================`);
 
 
 // =======================================
@@ -313,7 +298,7 @@ const buildMatches = (shooters)=>{
         }
         recapMatches.push(levelMatches);
     }
-    console.log('Aqui FIM!!!!!!!!!');
+    // console.log('Aqui FIM!!!!!!!!!');
     // 4. Super final com o ganhador do Main Matches com o campeao do Recap
     levelMatches=[];
     levelMatches.push({id:"r."+(mainMatches.length)+"."+levelMatches.length, shooterA:mainMatches[mainMatches.length-1][0].v
@@ -337,11 +322,12 @@ const flatPlayesDivisions = (players, sort)=>{
         players[i].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";
     }
 
-    score_idx= zeroPad((""+(Math.round(players[i].score*100))),7);
+    score_idx= zeroPad((""+(Math.round(players[i].score*1000))),7);
     // 0999900 003 2099-01-01T00:00:00.
-    sort_idx= ''+score_idx+zeroPad(players[i].tries,3)+players[i].datetime;
+    sort_idx= ''+score_idx+zeroPad(players[i].tries,4)+players[i].datetime;
     // aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
-    gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
+    //gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
+    gun_rd= players[i].optics? players[i].gun : players[i].gun;
     aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterDivisionId,'gun': gun_rd, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
     rP.push(aRow);  
   }
@@ -361,7 +347,6 @@ const flatPlayesDivisions = (players, sort)=>{
       });
   }
 
-//  console.log('Retornando rP. rP.lenght='+rP.length);
   return rP;
 }
 
@@ -375,39 +360,27 @@ const matchShootersCategories = (players, divisions)=>{
 
   let divPosition;
 
-  // console.log(`matchShootersCategories. ${}`);
-  // console.log(`matchShootersCategories. divisions.length= ${divisions.length}`);
-  // console.log(`matchShootersCategories. players.length= ${players.length}`);
-  
   for(let c=0; c<divisions.length;c++){
 
       divPosition=0;
       for(let i=0;i<players.length;i++){
           
-        // console.log(`matchShootersCategories| players[${i}].name:${players[i].name}, players[${i}].category:${players[i].category}, players[${i}].division===divisions[${c}]._id.toString()= ${players[i].division}===${divisions[c]._id.toString()}`);
           if(players[i].division===divisions[c]._id.toString()){
 
               players[i].division_name= divisions[c].name;
               divPosition++;
               players[i].qualify_position= divPosition;
-              // console.log(`matchShootersCategories. SETO players[i].division_name [${players[i].division_name}]`);
-              // console.log(`matchShootersCategories. SETO players[i].qualify_position [${players[i].qualify_position}]`);
-
+          
               if(divisions[c].categories.optics && players[i].optics){
-                // console.log('matchShootersCategories. players[i].category===cOptics');
-                // console.log('matchShootersCategories.  !divisions[c].categories.optics='+!divisions[c].categories.optics);                
                   players[i].category= cOptics;
-                  // console.log(`matchShootersCategories.  SETO PARA cOptics!!! ${players[i].name}`);
+  
               }else if( players[i].category===cLadies && divisions[c].categories.ladies){
                 players[i].category= cLadies;
-                // console.log(`matchShootersCategories. SETO cLadies PARA players[${i}].category=cOverall [${cOverall}]`);
               }else if( players[i].category===cSeniors && divisions[c].categories.seniors){
                 players[i].category= cSeniors;
-                // console.log(`matchShootersCategories.  SETO DE cSeniors PARA players[${i}].category=cOverall [${cOverall}]`);
               }else if(divisions[c].categories.advance &&
-                  ((players[i].score<100&&players[i].score<divisions[c].advanceLimit.passingScore) ||
+                  ((players[i].score<1000&&players[i].score<divisions[c].advanceLimit.passingScore) ||
                   divPosition<= divisions[c].advanceLimit.topBestOf )){
-                    // console.log(`matchShootersCategories.  SETO DE ${players[i].category} PARA players[${i}].category=cAdvance [${cAdvance}]`);
                     players[i].category= cAdvance;
               }else{
                 players[i].category= cOverall;
@@ -415,31 +388,21 @@ const matchShootersCategories = (players, divisions)=>{
           }
       }
   }
-  // console.log('Retornando players. players.lenght='+players.length);
   return players;
 }
 
 const getShootersByDivisionCategory = (players, divisionId, category)=>{
 
-  // console.log('AAAAnntes do ret. players.lenght='+ players.length);
-  // console.log('AAAAnntes do ret. divisionId='+ divisionId);
-  // console.log('AAAAnntes do ret. category='+ category);
   const ret=[];
 
-  // console.log('===========================================================================');
   for(let i=0; i< players.length;i++){
 
-    // console.log(`=== players[${i}].name= ${players[i]}. players[${i}].division:${players[i].division} === divisionId:${divisionId} && players[${i}].category:${players[i].category} === category:${category} ====`);
   
       if(players[i].division===divisionId && players[i].category===category){
           ret.push(players[i]);
-          // console.log('=====            PUSHOU!!!                       ======');
       }
   
   }
-  // console.log('===========================================================================');
-
-  // console.log('REEEtornando ret. ret.lenght='+ ret.length);
   return ret;
 
 }
@@ -466,10 +429,8 @@ const handler = async (event, context)=>{
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-          console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
+          // console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
-
-          console.log
         
           if(division_matches.length>0){
             return{
@@ -560,7 +521,7 @@ const handler = async (event, context)=>{
 
       case 'PATCH': // update kos of a division
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
-        console.log('Entrou no PATCH dos KOs');
+        // console.log('Entrou no PATCH dos KOs');
         let matchesBody= JSON.parse(event.body);
     
         new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
@@ -583,7 +544,7 @@ const handler = async (event, context)=>{
 
       case 'DELETE':
 
-      console.log('Entrou no DELETE dos KOs');
+      // console.log('Entrou no DELETE dos KOs');
         let eventId= event.queryStringParameters.eventId.toString();
         let divisionId= event.queryStringParameters.divisionId.toString();
         
