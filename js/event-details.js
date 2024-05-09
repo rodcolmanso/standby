@@ -42,6 +42,7 @@ subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
 
 subscribeModalAll.addEventListener('shown.bs.modal', () => {
     getFullEventShootersDivision(eventConfig);
+
   });
 
 subscribeModal.addEventListener('shown.bs.modal', () => {
@@ -78,6 +79,9 @@ loggedUser= netlifyIdentity.currentUser();
 
 });
 
+// $(document).ready( function () {
+//     $('#subscribe-table-subs-head').DataTable();
+// } );
 
 window.onload = async () => {
        await loadPage();
@@ -97,7 +101,6 @@ async function loadPage(){
 
         buildPage(eventConfig);
         // getFullShooterDivision(eventConfig, loggedUser.email );
-
     // }
 }
 
@@ -243,6 +246,7 @@ function getFullShooterDivision(eventConfig, userEmail){
                     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+shooterDivisions._id;
                     buildSubscriptionModal(eventConfig, shooterDivisions[0]);
                     buildSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById('subscribe-table'));
+                    // new DataTable('#subscribe-table-subs-head');
 
                 }else{
                     // alert(`Novo atirador.`);
@@ -287,7 +291,9 @@ function getFullEventShootersDivision(eventConfig){
                     // shooterDivisions= json[0];
                     shooterDivisions= json;
                     buildSubscriptionModalTable(eventConfig, shooterDivisions, document.getElementById('subscribe-table-subs'));
-
+                    const _tb= new DataTable('#subscribe-table-subs-head');
+                    _tb.draw();
+                    // document.getElementById('dt-search-0').value="";
                 }
             })
             .catch(err => console.log(`Error getting shooter from email: ${err}`))
