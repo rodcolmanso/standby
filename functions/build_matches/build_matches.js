@@ -79,7 +79,7 @@ const buildMatches = (shooters)=>{
     //       2.  intercalando os primeiros com os ultimos (até a podentica de 2)
     //  [0],[1],[2],[3],[4]
 
-    // console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
+    console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
     let _4Players=[];
     _4Players=shooters.slice(0,preKO);
     let _midPlayer=[];
@@ -90,9 +90,9 @@ const buildMatches = (shooters)=>{
     _midPlayer= _midPlayer.slice(0,_midPlayer.length-minNumAux);
     
 
-    // console.log(`=========4Players: size:${_4Players.length} - ${JSON.stringify(_4Players,null,2)}=========`);
-    // console.log(`=========_headPleayer. size:${_headPleayer.length} - ${JSON.stringify(_headPleayer,null,2)}=========`);
-    // console.log(`=========_midPlayer size:${_midPlayer.length} - ${JSON.stringify(_midPlayer,null,2)}=========`);
+    console.log(`=========4Players: size:${_4Players.length} - ${JSON.stringify(_4Players,null,2)}=========`);
+    console.log(`=========_headPleayer. size:${_headPleayer.length} - ${JSON.stringify(_headPleayer,null,2)}=========`);
+    console.log(`=========_midPlayer size:${_midPlayer.length} - ${JSON.stringify(_midPlayer,null,2)}=========`);
     
     levelMatches=[];
     _4Players.reverse();
@@ -112,7 +112,7 @@ const buildMatches = (shooters)=>{
         mainMatches.push(levelMatches);
       }
     
-    // console.log(`4Plays done! mainMatches[0].length; `);
+    console.log(`4Plays done! mainMatches[0].length; `);
 
     //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
     //---------cria o primeiro nível de partidas (root) quando não houver preliminares
@@ -123,11 +123,11 @@ const buildMatches = (shooters)=>{
       headMatches.unshift({id:"m."+mainMatches.length+"."+saveI, shooterA:_headPleayer[saveI], shooterB:mainMatches[0][saveI].v, v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"reorg" });
     }
 
-    // console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
+    console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
 
     levelMatches=[];
 
-    // console.log(`========+Building rest os duels. saveI=${saveI}, mainMatches[0].length=${mainMatches[0].length}`);
+    console.log(`========+Building rest os duels. saveI=${saveI}, mainMatches.length=${mainMatches.length}`);
 
     //criando duelos para o resto das 4plays
     for(let i= saveI; mainMatches.length>0 && i<((mainMatches[0].length+saveI)/2);i++){
@@ -139,7 +139,7 @@ const buildMatches = (shooters)=>{
     }
 
 
-    // console.log(`Head Plays done!`);
+    console.log(`Head Plays done!`);
 
     // levelMatches=[];
     for(let i=0; i<_midPlayer.length/2;i++){ //melhores contra piores
@@ -148,7 +148,7 @@ const buildMatches = (shooters)=>{
       else
         levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:_midPlayer[_midPlayer.length-i-1], shooterB:_midPlayer[i], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
     }
-    // console.log(`Meddle Plays done! headMatches.length = ${headMatches.length}`);
+    console.log(`Meddle Plays done! levelMatches.length = ${levelMatches.length}`);
 
     for(let i=0;i<headMatches.length;i++){
       if(i===0){
@@ -189,6 +189,7 @@ const buildMatches = (shooters)=>{
       mainMatches.push(levelMatches);
     }
     
+    console.log(`Aquiiiiiii. mainMatches.lenght= ${mainMatches.length}`);
     for(let l=mainMatches.length-1 ; l<mainMatches.length; l++){
         levelMatches=[];
         hasMatches=false;
@@ -204,6 +205,7 @@ const buildMatches = (shooters)=>{
         }
     }
 
+    console.log(`Fim mainMatches. Inciando RECAP`);
 
     // 3. NIVEL RECAP: partidas de derrotados do main match
     // 3.1 root level
@@ -429,7 +431,7 @@ const handler = async (event, context)=>{
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-          // console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
+          console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
         
           if(division_matches.length>0){
@@ -440,7 +442,7 @@ const handler = async (event, context)=>{
           }else{
             const o_id = new ObjectId(p_divisionId);
             const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
-            // console.log('After division. division.lenght=' +division.length);
+            console.log('After division. division.lenght=' +division.length);
             
             const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
             
@@ -454,6 +456,13 @@ const handler = async (event, context)=>{
                 return -1;
                 }
             });
+
+            if(shootersAux.length<3)
+              return  {
+                statusCode:  410,
+                body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Damas). Elimine essa categoria ou inscreva mais participantes.`
+              };
+
               ladyDoubleKOsKOs= buildMatches(shootersAux);
             }
             let seniorDoubleKOsKOs=[];
@@ -465,6 +474,12 @@ const handler = async (event, context)=>{
                 return -1;
                 }
               });
+
+              if(shootersAux.length<3)
+                return  {
+                  statusCode:  411,
+                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Seniores). Elimine essa categoria ou inscreva mais participantes.`
+                };
               seniorDoubleKOsKOs= buildMatches(shootersAux);
             }
 
@@ -477,7 +492,12 @@ const handler = async (event, context)=>{
                 return -1;
                 }
               });
-              shootersAux
+              
+              if(shootersAux.length<3)
+                return  {
+                  statusCode:  412,
+                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Optics). Elimine essa categoria ou inscreva mais participantes.`
+                };
               opticDoubleKOsKOs= buildMatches(shootersAux);
             }
 
@@ -490,6 +510,11 @@ const handler = async (event, context)=>{
                 return -1;
                 }
               });
+              if(shootersAux.length<3)
+                return  {
+                  statusCode:  413,
+                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Overall/Sport). Elimine essa categoria ou inscreva mais participantes.`
+                };
               overallDoubleKOsKOs= buildMatches(shootersAux);
             }
 
@@ -501,6 +526,11 @@ const handler = async (event, context)=>{
                 return -1;
                 }
               });
+              if(shootersAux.length<3)
+                return  {
+                  statusCode:  414,
+                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Avançados). Elimine essa categoria ou inscreva mais participantes.`
+                };
               advancedDoubleKOsKOs= buildMatches(shootersAux);
             }
 

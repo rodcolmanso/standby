@@ -420,12 +420,34 @@ function changeDivision(selectDivision){
     bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
     
     const idDivision= selectDivision.value;
+    var textDivision = selectDivision.options[selectDivision.selectedIndex].innerHTML;
     // selectDivision.disabled=true;
     
     fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${idDivision}`, {
         method: "GET",
         headers: {"Content-type": "application/json; charset=UTF-8"}
-        }).then(r=>r.json())
+        })
+        // .then(r=>r.json())
+        .then(function(response) {
+            console.log(response.status); // Will show you the status
+
+            if (!response.ok) {
+                if(response.status===410){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Damas]. Elimine essa categoria ou inscreva mais participantes.`);
+                } else if(response.status===411){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Seniores]. Elimine essa categoria ou inscreva mais participantes.`);
+                }if(response.status===412){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Optics]. Elimine essa categoria ou inscreva mais participantes.`);
+                }if(response.status===413){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Overall/Sport]. Elimine essa categoria ou inscreva mais participantes.`);
+                }if(response.status===414){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Avançados]. Elimine essa categoria ou inscreva mais participantes.`);
+                }
+
+                throw new Error("HTTP status " + response.status);
+            }
+            return response.json();
+        })
         .then(kos=>{
 
             KOs = kos;
@@ -499,6 +521,7 @@ loadPage();
 window.onload = async () => {
 
     await loadPage();
+    document.getElementById('eventTitleSelect').innerHTML="Duelos";
     
     document.getElementById('btn-reset').style.display='';
     document.getElementById('nav-matches').classList.add('active');

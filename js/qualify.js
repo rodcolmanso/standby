@@ -47,6 +47,9 @@ async function loadPage(){
     loggedUser= netlifyIdentity.currentUser();
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+
+    // document.getElementById('eventTitleSelect').innerHTML=eventConfig.name+" - Contra o Relógio";
+    document.getElementById('eventTitleSelect').innerHTML="Contra o Relógio";
     applySpinners(false);
     if(eventConfig===null){
         alert(`Evento não encontrado`);
@@ -280,14 +283,16 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     sScore=parseFloat(aPlayers[i].score.toString().slice(1))
                                  +" +"+aPlayers[i].score.toString().slice(0,1);
                     _penal="+"+aPlayers[i].score.toString().slice(0,1);
-                    _time= parseFloat(aPlayers[i].score.toString().slice(1)).toFixed(3);
+                    _time= parseFloat(aPlayers[i].score.toString().slice(1)).toFixed(2);
                     console.log(`ENTROU PENAL. _penal=${_penal}`);
 
                 }else{
                     sScore= ''+aPlayers[i].score;
                     _penal="";
-                    _time= parseFloat(aPlayers[i].score).toFixed(3);
+                    _time= parseFloat(aPlayers[i].score).toFixed(2);
                 }
+
+                _time=_time.replaceAll(".",",");
 
                 if(aPlayers[i].tries===undefined||aPlayers[i].tries===null||aPlayers[i].tries<1){  
                     // aPlayers[i].tries=0;

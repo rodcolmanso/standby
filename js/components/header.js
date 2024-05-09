@@ -45,7 +45,7 @@ class Header extends HTMLElement {
       <hr class="d-lg-none my-2 text-white-50" />
     </div>
     
-    <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="true">
+    <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="false">
       <div class="offcanvas-header px-4 pb-0">
         <h5 class="offcanvas-title " id="bdNavbarOffcanvasLabel">T.P.M. Online</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>

@@ -404,22 +404,24 @@ function buildSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 <small>${getDivisionName(shooterDivisions[l].shooters_divisions[i].divisionId)}</small>
             </td>
             <td class="text-start">
-            <div class="form-check form-switch">
-                <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" ${_disabled}>
-                <label class="spinnerIgnore form-check-label" for="subscribe-check-clock-0"><small class="text-muted">Relógio</small></label>
-            </div>
-            <div class="form-check form-switch">
-                <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled} > 
-                <label class="spinnerIgnore form-check-label" for="subscribe-check-duel-0"><small class="text-muted">Duelo</small></label>
-            </div>
+                <div class="form-check form-switch">
+                    <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" ${_disabled}>
+                    <label class="spinnerIgnore form-check-label" for="subscribe-check-clock-0"><small class="text-muted">Relógio</small></label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="spinnerIgnore form-check-input" type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled} > 
+                    <label class="spinnerIgnore form-check-label" for="subscribe-check-duel-0"><small class="text-muted">Duelo</small></label>
+                </div>
             </td>
             <td class="text-end">
                 <input type="text" class="spinnerIgnore form-control form-control-sm" id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')" ${_disabled}> 
             </td>
             <td>
-            <div class="form-check"> <!--form-switch--> <!--role="switch" -->
-                <input class="spinnerIgnore form-check-input" type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled}>
-            </div></td> <td class="text-end">`;
+                <div class="form-check"> <!--form-switch--> <!--role="switch" -->
+                    <input class="spinnerIgnore form-check-input" type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled}>
+                </div>
+            </td>
+            <td class="text-end">`;
             if(isAdmin){
                 row+=`
                 <button onClick="deleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i})" class="btn btn-sm btn-danger rounded-circle" value="${shooterDivisions[l].shooters_divisions[i]._id}" ${_disabled}>-</button> `;
@@ -612,12 +614,13 @@ function buildPage(eventConfig){
         if(eventConfig.divisions[i].best_score!==undefined){
 
             if(eventConfig.divisions[i].best_score<1000){
-                time=eventConfig.divisions[i].best_score.toFixed(3);
+                time=eventConfig.divisions[i].best_score.toFixed(2);
                 penals="";
             }else{
                 penals=" +"+eventConfig.divisions[i].best_score.toString().slice(0,1);
-                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1)).toFixed(3);
+                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1)).toFixed(2);
             }
+            time= time.replaceAll(".",",")+"s";
         }
 
         // iHtmTimes +=`<li class="list-group-item d-flex justify-content-between align-items-center">

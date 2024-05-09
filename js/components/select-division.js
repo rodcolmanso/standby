@@ -5,7 +5,9 @@ class Division extends HTMLElement {
   
     connectedCallback() {
       this.innerHTML = `
-      <!--h6 class="" id="eventTitleX"></h6-->
+      <br>
+      <h4 class="" id="eventTitleSelect"></h4>
+      <br>
       <div class=" row flex-nowrap"><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
         <div class="w-80 input-group">
             <span class="input-group-text">Divisão:</span>
@@ -22,7 +24,7 @@ class Division extends HTMLElement {
            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>-->
         </div>
       </div>
-      
+      <h4> </h4>
       <nav class="navbar-fixed-top">
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link text-small"        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
