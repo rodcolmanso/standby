@@ -521,7 +521,7 @@ loadPage();
 window.onload = async () => {
 
     await loadPage();
-    document.getElementById('eventTitleSelect').innerHTML="Duelos";
+    document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     
     document.getElementById('btn-reset').style.display='';
     document.getElementById('nav-matches').classList.add('active');

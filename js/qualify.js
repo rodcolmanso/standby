@@ -49,7 +49,7 @@ async function loadPage(){
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
 
     // document.getElementById('eventTitleSelect').innerHTML=eventConfig.name+" - Contra o Relógio";
-    document.getElementById('eventTitleSelect').innerHTML="Contra o Relógio";
+    document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
     applySpinners(false);
     if(eventConfig===null){
         alert(`Evento não encontrado`);
