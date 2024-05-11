@@ -33,21 +33,28 @@ function hrefMatches(){
 const subscribeModal = document.getElementById('exampleModal');
 const subscribeModalAll = document.getElementById('subscriptionsModal');
 const myInput = document.getElementById('myInput')
-
+let _reload=true;
 subscribeModal.addEventListener('hidden.bs.modal', function (event) {
-    clearSessionEventConfig();
     // loadPage();
-    location.reload(true);
+    if(_reload){
+        clearSessionEventConfig();
+        location.reload(true);
+    }
+    
   })
 
 subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
     // shooterDivisions=[];
-    clearSessionEventConfig();
-    location.reload(true);
+    // clearSessionEventConfig();
+    if(_reload){
+        clearSessionEventConfig();
+        location.reload(true);
+    }
 })
 
 
 subscribeModalAll.addEventListener('shown.bs.modal', () => {
+    _reload=true;
     if(allShootersDivisions===null){
         promiseOfGetShootersDivisions(eventConfig._id, null, MODAL_TABLE_ALL_SUBS_ID);
     }else{
@@ -63,7 +70,8 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         Array.from(document.getElementsByClassName('closeModalBtn')).forEach(function(element){element.click();})
 
         if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
-            netlifyIdentity.open('signup');
+            _reload=false;
+            netlifyIdentity.open();
         }else{
             document.getElementById("subscrive-close-btn").click();
         }
@@ -90,6 +98,7 @@ const qrcode = new QRCode("qrcode");
 window.onload = async () => {
     const sUrl= ""+window.location.toString();
     qrcode.makeCode(sUrl);
+    _reload=true;
        await loadPage();
 }
 
@@ -141,7 +150,7 @@ function updatePicOrName(){
     if(shooterDivisions[0].name.trim()!==""){
         let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
         uptShooterDiv.shooters_divisions=[];
-        
+        _reload=true;
         promiseOfPutShootersDivisions(eventConfig._id, uptShooterDiv.email, uptShooterDiv, MODAL_TABLE_SUB_ID);
     }
     
@@ -193,7 +202,7 @@ function changeSub(id, ldx ,idx, elem, _subs){
     let uptShooterDiv= JSON.parse(JSON.stringify(_sD[ldx]));
     uptShooterDiv.shooters_divisions=[];
     uptShooterDiv.shooters_divisions.push(_sD[ldx].shooters_divisions[idx]);
-
+    _reload=true;
     promiseOfPutShootersDivisions(eventConfig._id, uptShooterDiv.email, uptShooterDiv, _tableId);
 
 }
@@ -495,6 +504,7 @@ function subscribeNew(){
     document.getElementById("select-subscribe-division").value="";
     document.getElementById("subscribe-gun").value="";
 
+    _reload=true;
     promiseOfPutShootersDivisions(eventConfig._id, uptShooterDiv.email, uptShooterDiv, MODAL_TABLE_SUB_ID);
 
 }

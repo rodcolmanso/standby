@@ -206,8 +206,11 @@ const handler = async (event, context)=>{
           console.log('===========================================');
           console.log('');
           if(shooterDivisions.shooterId===null||shooterDivisions.shooterId===""||shooterDivisions.shooterId===undefined){
-            shooterDivisions._id= new_record.upsertedId.toString();
-            shooterDivisions.shooterId= shooterDivisions._id;
+
+            if(new_record.upsertedId!==null && new_record.upsertedId!==undefined){
+              shooterDivisions._id= new_record.upsertedId.toString();
+              shooterDivisions.shooterId= shooterDivisions._id;
+            }
           }
 
           new_record.updatedShooterDivisions=[];
@@ -246,7 +249,11 @@ const handler = async (event, context)=>{
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
                     }));
-                    shooterDivisions.shooters_divisions[i]._id= new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId.toString();
+
+                    if(new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==null && new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==undefined)
+                      shooterDivisions.shooters_divisions[i]._id= new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId.toString();
+                    else
+                      shooterDivisions.shooters_divisions[i]._id= shooterDivisions.shooterId;
                     
             }else{
               
