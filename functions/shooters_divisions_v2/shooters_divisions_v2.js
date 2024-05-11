@@ -53,8 +53,11 @@ const handler = async (event, context)=>{
         
         let fEmail= {};
 
-        if(p_email!=="all")
-         fEmail= {"email": p_email};
+        if(p_email==="all")
+          fEmail= {shooters_divisions: {$ne: []}}
+        else{
+          fEmail= {"email": p_email};
+        }
 
 
         const shootersDiv= await cShooters.aggregate([
@@ -72,9 +75,8 @@ const handler = async (event, context)=>{
                   ,as: "shooters_divisions"
               }
           }
-          // ,{$match:{ $and:[{email: p_email}]}
           ,{$match: fEmail }
-          ,{$match: {shooters_divisions: {$ne: []}}}
+          // ,{$match: {shooters_divisions: {$ne: []}}}
           ,{$project:{"eventId":0}}
           ]).toArray();
 
@@ -377,7 +379,7 @@ const handler = async (event, context)=>{
             }; 
           }
 
-          let isAdmin= (user.app_metadata&&!user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
+          let isAdmin= (user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
           console.log(`is Admin: ${isAdmin}`);
 
           

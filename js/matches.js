@@ -181,18 +181,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
     for(let round=0;round<mainMatches.length;round++){
         
         if(has4play>1 && round===0){
-            matches+=`<span>Preliminares</span><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">Preliminares</div><br><br><br>`;
         }else if (mainMatches.length-round===1){
-            matches+=`<span style='color:black'> <i class="bi bi-trophy-fill"></i> GRANDE FINAL</span><br>
-                     <span style='color:black'>1º Colocado:</span><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" style='color:black'> <i class="bi bi-trophy-fill"></i><div>
+            <div class="row no-gutters justify-content-md-center text-center" style='color:black'>GRANDE FINAL</div>
+            <div class="row no-gutters justify-content-md-center text-center" style='color:black'>1º Colocado:</div><br><br>`;
         }else if (mainMatches.length-round===2){
-            matches+=`<span>Semi-finais:</span><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">Semi-finais:</div><br><br><br>`;
         }else if (mainMatches.length-round===3){
-            matches+=`<span>Quartas-de-final:</span><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">Quartas-de-final:</div><br><br><br>`;
         }else if (mainMatches.length-round===4){
-            matches+=`<span>Oitavas-de-final:</span><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">Oitavas-de-final:</div><br><br><br>`;
         }else
-            matches+=`<span>${mainMatches.length-round+1}º Rodata</span>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">${mainMatches.length-round+1}º Rodata</div>`;
 
         for(let match=0;match<mainMatches[round].length;match++){
             checkedA= mainMatches[round][match].v.id!==null&&mainMatches[round][match].v.id===mainMatches[round][match].shooterA.id?"checked":"";
@@ -301,19 +302,20 @@ function addMainMatches(mainMatches, recapMatches, categ){
     let ls=0;
     for(let round=recapMatches.length-1;round>=0;round--){
 
-        if(has4play>1 && round===0){
-            matches+=`<span>REPESCAGEM</span><br><br><br>`;
-        }else if (mainMatches.length-round===0){
-            matches+=`<span style='color:black'><i class="bi bi-trophy"></i> FINAL de repescagem</span><br>
-                     <span style='color:black'>Decisão do 2º e 3º Colocados:</span><br><br>`;
-        }else if (mainMatches.length-round===1){
-            matches+=`<span>Semi-de-repescagem:</span><br><br><br>`;
-        }else if (mainMatches.length-round===2){
-            matches+=`<span>Quartas-de-repescagem:</span><br><br><br>`;
-        }else if (mainMatches.length-round===3){
-            matches+=`<span>Oitavas-de-repescagem:</span><br><br><br>`;
+        if ((round+1)===recapMatches.length){
+            matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><i class="bi bi-trophy"></i></div>
+                    <div style='color:black' class="row no-gutters justify-content-md-center text-center"> FINAL de repescagem<br></div>
+                    <div style='color:black' class="row no-gutters justify-content-md-center text-center">2º e 3º Colocados:</div><br><br>`;
+        // }else if(round===0){
+        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">REPESCAGEM</div><br><br><br>`;
+        // }else if (recapMatches.length-round===2){
+        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Semi-de-repescagem:</div><br><br><br>`;
+        // }else if (recapMatches.length-round===3){
+        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Quartas-de-repescagem:</div><br><br><br>`;
+        // }else if (recapMatches.length-round===4){
+        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Oitavas-de-repescagem:</div><br><br><br>`;
         }else
-            matches+=`<span>${mainMatches.length-round+1}º Rodata da repescagem</span>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center">${round+1}º Rodata de repescagem</div><br><br>`;
 
         for(let match=0;match<recapMatches[round].length;match++){
             checkedA= recapMatches[round][match].v.id!==null&&recapMatches[round][match].v.id===recapMatches[round][match].shooterA.id?"checked":"";
