@@ -74,6 +74,7 @@ const handler = async (event, context)=>{
           }
           // ,{$match:{ $and:[{email: p_email}]}
           ,{$match: fEmail }
+          ,{$match: {shooters_divisions: {$ne: []}}}
           ,{$project:{"eventId":0}}
           ]).toArray();
 
@@ -244,8 +245,9 @@ const handler = async (event, context)=>{
                     ,optics: shooterDivisions.shooters_divisions[i].optics
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
-                    }
-                                                    ));
+                    }));
+                    shooterDivisions.shooters_divisions[i]._id= new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId.toString();
+                    
             }else{
               
               
@@ -275,10 +277,10 @@ const handler = async (event, context)=>{
                  })
                 .then(result=>console.log(result));
           }
-
+          shooterDivisions.db_return= new_record;
           return  {
             statusCode: 200,
-            body: JSON.stringify(new_record)
+            body: JSON.stringify(shooterDivisions)
           };
         }catch(error){
           console.log("Error updating shooter_divisions: "+error.toString());

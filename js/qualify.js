@@ -168,6 +168,11 @@ function transformRegistrer(players){
     return rP;
 }
 
+function naiveRound(num, decimalPlaces = 0) {
+    var p = Math.pow(10, decimalPlaces);
+    return Math.round(num * p) / p;
+}
+
 function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
     var row= "";
@@ -283,13 +288,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     sScore=parseFloat(aPlayers[i].score.toString().slice(1))
                                  +" +"+aPlayers[i].score.toString().slice(0,1);
                     _penal="+"+aPlayers[i].score.toString().slice(0,1);
-                    _time= parseFloat(aPlayers[i].score.toString().slice(1)).toFixed(2);
+                    _time= naiveRound(parseFloat(aPlayers[i].score.toString().slice(1)),2).toFixed(2);
                     console.log(`ENTROU PENAL. _penal=${_penal}`);
 
                 }else{
                     sScore= ''+aPlayers[i].score;
                     _penal="";
-                    _time= parseFloat(aPlayers[i].score).toFixed(2);
+                    _time= naiveRound(parseFloat(aPlayers[i].score),2).toFixed(2);
                 }
 
                 _time=_time.replaceAll(".",",");

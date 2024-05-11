@@ -17,6 +17,12 @@ const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
     {$match:{eventId: p_eventId //"661ab4f9c412f4a5f17f0624" //  p_eventId
             ,divisionId: p_divisionId //"00000000c412f4a5f17f0625"  //p_division 
             ,duel:true}}
+    ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
+    ,{$lookup:
+      {    from: "events"
+      ,localField: "eventId"
+      ,foreignField: "_id"
+      ,as:"event" }}
     ,{ $addFields: { "_shooterId": { $toObjectId: "$shooterId" }}}   
     ,{$lookup:
         {    from: "shooters"
@@ -318,7 +324,8 @@ const flatPlayesDivisions = (players, sort)=>{
       // for(j=0;j<players[i].registered.length;j++){
   let gun_rd=""
   for(i=0;i<players.length;i++){
-    if(players[i].score===undefined||players[i].score===null||players[i].score===''){
+    console.log(`players[i].event[0].randomDuel= ${players[i].event[0].randomDuel}`);
+    if(players[i].event[0].randomDuel || players[i].score===undefined||players[i].score===null||players[i].score===''){
         players[i].score=Math.floor(Math.random() * (9999 - 9900 + 1)) + 9900;//range 9900 - 9999;
         players[i].tries=0;
         players[i].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";

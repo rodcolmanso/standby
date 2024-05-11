@@ -88,6 +88,7 @@ const handler = async (event, context)=>{
               ,public: event_config.public
               ,clock: event_config.clock
               ,duel: event_config.duel
+              ,randomDuel:event_config.randomDuel
 
             });
         }else{
@@ -131,6 +132,7 @@ const handler = async (event, context)=>{
                                                     ,public: event_config.public
                                                     ,clock: event_config.clock
                                                     ,duel: event_config.duel
+                                                    ,randomDuel: event_config.randomDuel
                                                     }
                                                   }
                                                   // ,{ upsert: true }

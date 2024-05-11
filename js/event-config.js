@@ -41,7 +41,7 @@ async function loadPage(eId){
 
     if(eventConfig==null){ // New event
         eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString()
-        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false};
+        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true};
     }
 
     eventConfig.imgChanged=false;
@@ -88,6 +88,12 @@ async function loadPage(eId){
     document.getElementById('event-city').value= eventConfig.city;
     document.getElementById('event-state').value= eventConfig.state;
     document.getElementById('event-public').checked= eventConfig.public;
+
+    if(eventConfig.randomDuel)
+        document.getElementById('event-random-duel1').checked=true;
+    else
+        document.getElementById('event-random-duel2').checked=true;
+    
 
     //document.getElementById('
     if(eventConfig.owners!==undefined)
@@ -196,6 +202,7 @@ function updateEventConfig(){
     eventConfig.city= document.getElementById('event-city').value;
     eventConfig.state= document.getElementById('event-state').value;
     eventConfig.public= document.getElementById('event-public').checked;
+    eventConfig.randomDuel= document.getElementById('event-random-duel1').checked;
 
     if(eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
      ||eventConfig.dateDuel===''||eventConfig.dateDuel.toString()==='Invalid Date'){
