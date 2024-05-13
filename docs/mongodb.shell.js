@@ -804,3 +804,31 @@ db.events.aggregate( [
        $sort: { "date": -1 }
     }
   ] )
+
+
+
+
+
+
+
+//   =============
+db.shooters.aggregate([
+    { "$addFields": { 
+        "shooterId": { "$toString": "$_id" }
+    }}
+    ,{$lookup:
+        {
+            from: "shooters_divisions"
+            ,localField: "shooterId"
+            ,foreignField: "shooterId"
+            ,pipeline: [
+                { $match: { eventId: p_eventId}}
+                ]
+            ,as: "shooters_divisions"
+        }
+    }
+    // ,{$match:{ $and:[{email: p_email}]}
+    ,{$match: fEmail }
+    ,{$match: {shooters_divisions: {$ne: []}}}
+    ,{$project:{"eventId":0}}
+    ]).toArray();

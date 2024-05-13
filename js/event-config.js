@@ -214,7 +214,20 @@ function updateEventConfig(){
         return 0;
     }
 
+    let aDivisionName=[];
     for(let i=0; i<eventConfig.divisions.length;i++){
+        if(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value===""){
+            alert("Informe o nome da divisão.");
+            document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
+            return 0;
+        }
+
+        if(aDivisionName.indexOf(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value)>-1){
+            alert("Divisão já cadastrada.");
+            document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
+            return 0;
+        }else aDivisionName.push(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value);
+
         if(eventConfig.divisions[i].delete===undefined ||!eventConfig.divisions[i].delete){
             eventConfig.divisions[i].name= document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value;
             
@@ -252,7 +265,7 @@ function updateEventConfig(){
                         console.log(`[json.upsertedId] eventConfig._id= ${eventConfig._id}`);
                         clearSessionEventConfig();
                         loadPage(eventConfig._id);
-                        alert(`Torneio ${eventConfig.name} criado com sucesso!`);
+                        alert(`Torneio ${eventConfig.name} criado/atualizado com sucesso!`);
                         // window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
                         // location.reload(true);
                     })
@@ -314,7 +327,34 @@ function buildDivisionTable(eventConfig){
         row=`<tr>
         <!--<td scope="row">${i+1}</td>-->
         <td>
-            <input type="text" aria-label="indexAdvance" class="form-control form-control-sm" id="${eventConfig.divisions[i]._id}DivisionName" value="${eventConfig.divisions[i].name}">
+          <select id="${eventConfig.divisions[i]._id}DivisionName" class="form-select form-control form-select-sm" required placeholder="" value="${eventConfig.divisions[i].name}" >
+            <option value="${eventConfig.divisions[i].name}" selected>${eventConfig.divisions[i].name}</option>
+         `;
+            if(eventConfig.divisions[i].name!=='Pistola')
+                row+=`<option value="Pistola">Pistola</option>`;
+
+            if(eventConfig.divisions[i].name!=='Força livre')
+                row+=`<option value="Força livre">Força livre</option>`;
+            
+            if(eventConfig.divisions[i].name!=='Revolver')
+                row+=`<option value="Revolver">Revolver</option>`;
+            
+            row+=`<option value="">_____________</option>`;
+            
+            if(eventConfig.divisions[i].name!=='Armas curtas')
+                row+=`<option value="Armas curtas">Armas curtas</option>`;
+            
+            if(eventConfig.divisions[i].name!=='Levers & Pumps')
+                row+=`<option value="Levers & Pumps">Levers & Pumps</option>`;
+            
+            if(eventConfig.divisions[i].name!=='Calibres Menores')
+                row+=`<option value="Calibres Menores">Calibres Menores</option>`;
+            
+            if(eventConfig.divisions[i].name!=='Calibres Maiores')
+                row+=`<option value="Calibres Maiores">Calibres Maiores</option>`;
+            row+=`</select>
+
+
 <!--            <input type="checkbox" class="btn-check" id="btn-check-outlined_${eventConfig.divisions[i]._id}" autocomplete="off">
             <label class="btn btn-outline-success" for="btn-check-outlined_${eventConfig.divisions[i]._id}">Inscrever-se</label><br>
             <input type="checkbox" class="btn-check" id="btn-check-outlined_2_${eventConfig.divisions[i]._id}" autocomplete="off">
@@ -504,4 +544,31 @@ function advanceClick(div_adv_check){
     }
     // document.getElementById(''+div_adv_check.value+'SelectAdvance').disabled= (!div_adv_check.checked);
     //     document.getElementById(''+div_adv_check.value+'IndexAdvance').disabled= (!div_adv_check.checked);
+}
+
+document.getElementById('btn-import').disabled=true;
+function retriveSpreadsheet(){
+
+    if(document.getElementById('sheetId').value===""){
+        alert('Informe o ID da planilha');
+        return 0;
+    }
+    if(document.getElementById('tabName').value===""){
+        alert('Informe o nome da Tab da planilha');
+        return 0;
+    }
+    getSheetData({
+        // sheetID you can find in the URL of your spreadsheet after "spreadsheet/d/"
+        sheetID: document.getElementById('sheetId').value,
+        // sheetName is the name of the TAB in your spreadsheet (default is "Sheet1")
+        sheetName: document.getElementById('tabName').value,
+        query: "SELECT * ",
+        callback: sheetDataHandler,
+      });
+
+}
+
+const sheetDataHandler= (sheetData)=>{
+    console.log(sheetData);
+    document.getElementById('textArea').value= JSON.stringify(sheetData);
 }

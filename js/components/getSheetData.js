@@ -1,0 +1,54 @@
+const getSheetData = ({ sheetID, sheetName, query, callback }) => {
+
+  const base = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?`;
+  const url = `${base}&sheet=${encodeURIComponent(
+    sheetName
+  )}&tq=${encodeURIComponent(query)}`;
+
+  fetch(url)
+    .then((res) => res.text())
+    .then((response) => {
+      callback(responseToObjects(response));
+    });
+
+  function responseToObjects(res) {
+    console.log(res);
+    // credit to Laurence Svekis https://www.udemy.com/course/sheet-data-ajax/
+    const jsData = JSON.parse(res.substring(47).slice(0, -2));
+    let data = [];
+    const columns = jsData.table.cols;
+    const rows = jsData.table.rows;
+    let rowObject;
+    let cellData;
+    let propName;
+    for (let r = 0; r < rows.length; r++) {
+      rowObject = {};
+      let push=false;
+      for (let c = 0; c < columns.length; c++) {
+        cellData = rows[r]["c"][c];
+        propName = columns[c].label;
+
+        if(propName===''){
+          columns[c].label= rows[0]["c"][c]["v"];
+          push=false;
+        }else{
+
+          if (cellData === null) {
+            rowObject[propName] = "";
+          } else if (
+            typeof cellData["v"] == "string" &&
+            cellData["v"].startsWith("Date")
+          ) {
+            rowObject[propName] = new Date(cellData["f"]);
+          } else {
+            rowObject[propName] = cellData["v"];
+          }
+          if(rowObject[propName]!==null) push=true;
+        }
+      }
+      if(push)
+          data.push(rowObject);
+    }
+    return data;
+  }
+};

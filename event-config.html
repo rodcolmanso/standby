@@ -108,6 +108,49 @@
 
 <body>
   <header-component></header-component>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade modal-xl" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="importModalLabel">importar inscrições do Google Planilhas</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" action="javascript:retriveSpreadsheet()">
+          <div class="col-sm-7">
+            <label class="visually-hidden" for="sheetId">Id da Planilha</label>
+            <div class="input-group">
+              <input type="text" required class="form-control" id="sheetId" placeholder="">
+            </div>
+          </div>
+          <div class="col-sm">
+            <label class="visually-hidden" for="tabName">Nome da Tab</label>
+            <div class="input-group">
+              <input type="text" required class="form-control" id="tabName" placeholder="Sheet 1">
+            </div>
+          </div>
+        
+          <div class="col-sm">
+            <button type="submit" class="btn btn-primary">Carregar</button>
+          </div>
+        </form>
+        <div class="input-group">
+          <span class="input-group-text">With textarea</span>
+          <textarea id="textArea" rows="20" class="form-control" aria-label="With textarea"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btn-import" disabled >Importar</button>
+      </div>
+    </div>
+  </div>
+</div>
   
   <!-- Modal -->
   <div class="modal fade" id="divisionModal" tabindex="-1" aria-labelledby="divisionModalLabel" aria-hidden="true">
@@ -120,7 +163,29 @@
         <div class="modal-body">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Nome da divisão</span>
-            <input id="new-division-name" type="text" class="form-control" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
+            <!-- <input id="new-division-name" type="text" class="form-control" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1" list="divisionList">
+            <datalist id="divisionList">
+              <option value="Pistola"></option>
+              <option value="Força livre"></option>
+              <option value="Revolver"></option>
+              <option value=" "></option>
+              <option value="Armas curtas"></option>
+              <option value="Levers & Pumps"></option>
+              <option value="Calibres Menores"></option>
+              <option value="Calibres Maiores"></option>
+          </datalist> -->
+          <select id="new-division-name" class="form-select" placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
+            <option value=""></option>
+            <option value="Pistola">Pistola</option>
+            <option value="Força livre">Força livre</option>
+            <option value="Revolver">Revolver</option>
+            <option value="">_____________</option>
+            <option value="Armas curtas">Armas curtas</option>
+            <option value="Levers & Pumps">Levers & Pumps</option>
+            <option value="Calibres Menores">Calibres Menores</option>
+            <option value="Calibres Maiores">Calibres Maiores</option>
+          </select>
+
           </div>
         </div>
         <div class="modal-footer">
@@ -277,6 +342,10 @@
         <!-- <div  id="spinner" class="spinner-border" role="status">
           <span class="visually-hidden">Carregando...</span>
         </div> -->
+          <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+          Importar Inscrições
+        </button>
         <button type="button" class="btn btn-secondary" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
         <!-- <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button> -->
         <button type="submit" class="btn btn-success" value="Salvar" ><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
@@ -291,8 +360,9 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
     integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
     crossorigin="anonymous"></script>
-    <script src="./js/components/session-mgnt.js" ></script>
-    <script src="./js/event-config.js" ></script>
+    <script src="./js/components/getSheetData.js" type="text/javascript" defer ></script>
+    <script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
+    <script src="./js/event-config.js" type="text/javascript" defer></script>
   <!-- <script src="./js/matches.js"></script> -->
 </body>
 </html>

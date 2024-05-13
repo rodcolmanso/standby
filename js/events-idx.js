@@ -169,10 +169,10 @@ function buildEventsTable(events){
         readOnly=`class="dropdown-item"`;
     }
     
-    let newEvent= `<div class="col">
+    let newEvent= `<div class="col" >
                         <div class="card h-100">
                         <a data-toggle="modal" data-target="#exampleModal" href="javascript:newEvent()">
-                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/b_white,c_pad,h_210,w_280/shooters_lineupNovo" class="card-img-top" alt="... onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/shooters_lineup_gen'""></a>
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/b_white,c_pad,h_388,w_517/shooters_lineupNovo" class="card-img-top" alt="... onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/shooters_lineup_gen'""></a>
                         <div class="card-body">
                             <h5 class="card-title"><i>Novo Evento</i></h5>
                             <p class="card-text"><i>click na imagem para adicionar um novo evento.</i></p>
@@ -191,10 +191,10 @@ function buildEventsTable(events){
 
         //<i class="bi bi-bullseye"></i>
         // https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_210,w_280/d_defaults:tmpyellow.jpg/
-        row=`<div class="col">
-        <div class="card h-100">
+        row=`<div class="col" >
+        <div class="card h-100" >
           <a data-toggle="modal" data-target="#exampleModal" href="./event-details.html?event_id=${events[i]._id}" >
-            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_210,w_280/d_defaults:tmpyellow.jpg/${events[i]._id}.jpg?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
+            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_pad,h_388,w_517/d_defaults:tmpyellow.jpg/${events[i]._id}.jpg?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
             </a>
             <div class="card-body" >
               <div class="d-inline-block d-flex justify-content-between">
