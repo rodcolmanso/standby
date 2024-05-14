@@ -61,25 +61,6 @@ window.onload = async () => {
 
     await loadPage();
 
-    // if(netlifyIdentity.currentUser()){
-    //     applySpinners(true);
-    //     fetch('/.netlify/functions/shooters?logged', {
-    //         method: "GET",
-    //         headers: {
-    //                     "Content-type": "application/json; charset=UTF-8"
-    //                     ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
-    //                 }
-    //         }).then(response => response.json()
-    //         ).then(json => {
-    //             if(json.length>0){
-    //                 console.log(`User logged`);
-    //                 document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/"+json[0]._id;
-    //             }
-    //         })
-    //         .catch(err => console.log(`Error getting, logged user: ${err}`))
-    //         .finally(()=> applySpinners(false));
-    // }
-
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
     applySpinners(true);

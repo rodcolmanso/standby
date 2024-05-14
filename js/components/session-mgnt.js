@@ -220,6 +220,8 @@ function uuidv4() {
 function setAvatarPic(){
     _id= getSessionDbUser()===null?(Math.random()*1000000).toString():getSessionDbUser()._id;
     document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?code="+uuidv4();
+    document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
+    document.getElementById("loginout").innerHTML+= (netlifyIdentity.currentUser()===null?'Login':'Logout');
 }
 
 function setCookie(cname, cvalue, exdays) {

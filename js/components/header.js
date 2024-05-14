@@ -2,7 +2,7 @@ class Header extends HTMLElement {
     constructor() {
       super();
     }
-  
+
     connectedCallback() {
       this.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -124,14 +124,19 @@ class Header extends HTMLElement {
         </ul>
       </div>
     </div>
-    <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
-      <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="..." onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="...">  
-    </button>
-    <ul class="dropdown-menu dropdown-menu-end">
-    <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/" onclick="">
-      <div class="dropdown-item" data-netlify-identity-menu></div>
-      </a>
-    </ul>
+    <div class="nav-item dropdown">
+      <button type="button" name="loginAvatar" id="loginAvatar" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
+        <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="..." onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="...">  
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/shooter-idx.html" onclick="">
+        <i class="bi bi-pencil-square"></i> Perfil
+        </a>
+        <a id="loginout" class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="javascript:netlifyIdentity.open('login')" onclick="">
+        <i class="bi bi-box-arrow-in-left"></i> Log in
+        </a>
+      </ul>
+    </div>
   </nav>
 </header>
       `;
