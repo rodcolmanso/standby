@@ -19,10 +19,11 @@ class Division extends HTMLElement {
         <div class="w-20">
            <button type="button" class="btn btn-warning rounded-circle" onclick="deleteKos();"         data-bs-dismiss="modal" id="btn-reset"     style="display:none" value="Reset"><i class="bi bi-backspace-reverse-fill"></i></button>
            <button id="btnAddShooter" type="button" class="btn btn-primary btn-block rounded-circle" disabled
-            data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="clearShooterModal()" style="display:none" value="Incluir Atirador">
+            data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop" onclick="goToSubscription('');" style="display:none" value="Incluir Atirador">
             <i class="bi bi-person-fill-add"></i>
           </button>
-           <!--<button type="button" class="btn btn-success btn-sm" onclick="clearShooterModal();" data-bs-dismiss="modal" id="btnAddShooter" style="display:none" data-bs-target="#exampleModal" aria-controls="offcanvasTop" value="add">add</button>
+
+          <!--<button type="button" class="btn btn-success btn-sm" onclick="clearShooterModal();" data-bs-dismiss="modal" id="btnAddShooter" style="display:none" data-bs-target="#exampleModal" aria-controls="offcanvasTop" value="add">add</button>
            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>-->
         </div>
       </div>

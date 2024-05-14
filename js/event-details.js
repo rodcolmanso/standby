@@ -16,8 +16,16 @@ const MODAL_TABLE_SUB_ID= 'subscribe-table';
 const MODAL_TABLE_ALL_SUBS_ID= 'subscribe-table-subs';
 
 function hrefQualify(){
-    if(eventConfig._id!=0)
-        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+    if(eventConfig._id!=0){
+
+        let paramDiv='';
+        if(params.selected_division!==undefined){
+            paramDiv= '&selected_division='+params.selected_division;
+
+        }
+
+        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv;
+    }
 }
 
 function hrefMatches(){
@@ -36,7 +44,12 @@ const myInput = document.getElementById('myInput')
 let _reload=true;
 subscribeModal.addEventListener('hidden.bs.modal', function (event) {
     // loadPage();
-    if(_reload){
+
+    if(params.inscription!==undefined && params.inscription==="clock"){
+        hrefQualify();
+    }else if(params.inscription!==undefined && params.inscription==="duel"){
+        hrefMatches();
+    }else if(_reload){
         clearSessionEventConfig();
         location.reload(true);
     }
@@ -84,12 +97,24 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }else{
             document.getElementById('subscribe-email').disabled=true;
         }
-        if(shooterDivisions!==null && shooterDivisions.length>0){
-            popupSubscriptionModal(shooterDivisions[0]);
-        }else{
-            promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
-        }
 
+        if(params.inscription===undefined || params.inscription!=="clock"){
+            if(shooterDivisions!==null && shooterDivisions.length>0){
+                popupSubscriptionModal(shooterDivisions[0]);
+            }else{
+                promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
+            }
+        }else{
+            if(params.email!==undefined&&params.email!==''){
+                document.getElementById('subscribe-email').value= params.email;
+                document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
+            }
+
+            if(params.selected_division!==undefined){
+                document.getElementById('select-subscribe-division').value= params.selected_division;   
+            }
+            
+        }
     }
 
 });
@@ -99,7 +124,11 @@ window.onload = async () => {
     const sUrl= ""+window.location.toString();
     qrcode.makeCode(sUrl);
     _reload=true;
-       await loadPage();
+    await loadPage();
+
+    if(params.inscription!==undefined && params.inscription==="clock"){
+        document.getElementById(`btn-modal-inscrevase`).click();
+    }
 }
 
 async function loadPage(){

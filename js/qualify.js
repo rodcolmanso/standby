@@ -80,7 +80,7 @@ window.onload = async () => {
     //         .finally(()=> applySpinners(false));
     // }
 
-    // document.getElementById('btnAddShooter').style.display='';
+    document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
     applySpinners(true);
 
@@ -92,7 +92,12 @@ window.onload = async () => {
     
     buildDivisions(eventConfig.divisions);
     modalChanged=false;
+    
     const selectDivisions= document.getElementById('selectDivision');
+    if(params.selected_division!==undefined){
+        selectDivisions.value=params.selected_division;
+    }
+
     changeDivision(selectDivision);
     applySpinners(false);
     disableInputs();
@@ -126,11 +131,11 @@ function changeDivision(selectDivision){
     buildCategory2(eventConfig, selectDivision.value);
     
     
-    // if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
-    //     document.getElementById('btnAddShooter').disabled = true;
-    // }else{
-    //     document.getElementById('btnAddShooter').disabled = false;
-    // }
+    if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
+        document.getElementById('btnAddShooter').disabled = true;
+    }else{
+        document.getElementById('btnAddShooter').disabled = false;
+    }
     disableInputs();
 };
 
@@ -154,7 +159,7 @@ function transformRegistrer(players){
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,4)+players[i].registered[j].datetime;
             console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
             
-            aRow= {'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx };
+            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx };
             
             rP.push(aRow);  
         }
@@ -304,19 +309,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     sTries=''; 
                     aPlayers[i].tries=0;                   
                 }
-                // else if(aPlayers[i].tries==1)sTries='|';
-                // else if(aPlayers[i].tries==2)sTries='||';
-                // else if(aPlayers[i].tries==3)sTries='|||';
-                // else if(aPlayers[i].tries==4)sTries='&#9633;';
-                // else if(aPlayers[i].tries==5)sTries='&#10692;';
-                // else if(aPlayers[i].tries==6)sTries='| &#10692;';
-                // else if(aPlayers[i].tries==7)sTries='|| &#10692;';
-                // else if(aPlayers[i].tries==8)sTries='||| &#10692;';
-                // else if(aPlayers[i].tries==9)sTries='&#9633; &#10692;';
-                // else if(aPlayers[i].tries==10)sTries='&#10692; &#10692;';
-                // else 
-                // // sTries='+||';
-                // sTries='+&#10692;&#10692;';
                 sTries=`<span class="text-small">${aPlayers[i].tries.toString()}</span>`;
                 
 
@@ -333,8 +325,9 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-start">
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
                     ${aPlayers[i].name} <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd} <!--<span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>-->
-                     <!--    </a> -->
+                     </a>
                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
                     <td class="align-middle text-start">
@@ -701,6 +694,14 @@ function getUserFromEmail(userEmail){
             })
             .catch(err => console.log(`Error getting shooter from email: ${err}`))
             .finally(()=> applySpinners(false));
+}
+
+function goToSubscription(email){
+    console.log("Going To Subscribe");
+    if(email!==undefined && email!==''){
+        email= '&email='+email;
+    }else email='';
+    window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+email;
 }
 
 function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision ){
