@@ -219,11 +219,15 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
+                            <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        </a>
                     </div>
                     <div class="col-md-6 col-card-match ">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate"><b>${mainMatches[round][match].shooterA.name}</b></h10>
+                        <h10 class="card-title text-truncate"><b>
+                        ${mainMatches[round][match].shooterA.name}
+                        </b></h10>
                         <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][match].shooterA.gun}</span> ${_rd}</p>
                         </div>
                     </div>
@@ -242,12 +246,18 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
+                    <a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
                         <img  style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        </a>
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate"><b>${mainMatches[round][iB].shooterB.name}</b></h10>
+                        <h10 class="card-title text-truncate"><b>
+                        
+                        ${mainMatches[round][iB].shooterB.name}
+                        
+                        </b></h10>
                         <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][iB].shooterB.gun}</span> ${_rd}</p>
                         </div>
                     </div>

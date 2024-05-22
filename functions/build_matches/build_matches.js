@@ -337,7 +337,7 @@ const flatPlayesDivisions = (players, sort)=>{
     // aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
     //gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
     gun_rd= players[i].optics? players[i].gun : players[i].gun;
-    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterDivisionId,'gun': gun_rd, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
+    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId,'gun': gun_rd, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
     rP.push(aRow);  
   }
   // }
