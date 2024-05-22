@@ -35,6 +35,8 @@ const handler = async (event, context) => {
 
         let p_event_id="0";
 
+        let p_short_id="";
+
         let ordem=-1;
         
         if(event.queryStringParameters.date_from !=null && event.queryStringParameters.date_from != undefined){
@@ -50,6 +52,11 @@ const handler = async (event, context) => {
         if(event.queryStringParameters.order !=null && event.queryStringParameters.order != undefined){
           ordem= parseInt(event.queryStringParameters.order);
         }
+
+        if(event.queryStringParameters.short_id !=null && event.queryStringParameters.short_id != undefined){
+          p_short_id= parseInt(event.queryStringParameters.short_id);
+        }
+
         console.log('Antes do Match');
         
         let mMatch=  {
@@ -59,7 +66,12 @@ const handler = async (event, context) => {
        };
 
         console.log('Antes do p_event_id');
-        if(event.queryStringParameters.event_id !=null && event.queryStringParameters.event_id != undefined){
+
+      if(p_short_id!==""){
+
+        mMatch=  {"short_id": p_short_id};
+
+      }else if(event.queryStringParameters.event_id !=null && event.queryStringParameters.event_id != undefined){
           p_event_id= event.queryStringParameters.event_id.toString();
           let o_id;
           try{

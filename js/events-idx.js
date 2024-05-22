@@ -79,6 +79,33 @@ window.onload = async () => {
     // }
 
     // applySpinners(true);
+
+    const url= window.location.toString();
+    const args= url.substring(url.indexOf("?") + 1).split("&");
+
+    if(url.indexOf("?")>-1 && args.length>0){
+        if(user!==null){
+            _headers= {"Content-type": "application/json; charset=UTF-8"
+                    ,"Authorization":`Bearer ${user.token.access_token}`}
+        }else{
+            _headers= {"Content-type": "application/json; charset=UTF-8"}
+        }
+
+        console.log(JSON.stringify(args,null,2));
+        applySpinners(true);
+        fetch("/.netlify/functions/events?short_id="+args[0],
+            {method: "GET"
+            ,headers: _headers}
+        ).then(r=>r.json())
+            .then(data => {
+            // return data;
+            if(data.length>0){
+                window.location.href = window.location="/event-details.html?event_id="+data[0]._id+ "&inscription=new";
+            }
+        }).finally( applySpinners(false));
+    }
+
+
     document.getElementById('nav-events').classList.add('active');
     
     document.getElementById('nav-matches').style.display='none';
@@ -128,8 +155,7 @@ function search() {
         // return data;
         buildEventsTable(data);
         })
-        .finally( applySpinners(false))
-    ;
+        .finally( applySpinners(false));
     //some other stuff...
 };   
 
@@ -205,7 +231,7 @@ function buildEventsTable(events){
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
                         <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Partidas</a></li>
-                        <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-pencil-square"></i> Editar</a></li>
+                        <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurar</a></li>
                         <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
                     </ul>
                 </div>

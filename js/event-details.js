@@ -45,13 +45,14 @@ let _reload=true;
 subscribeModal.addEventListener('hidden.bs.modal', function (event) {
     // loadPage();
 
-    if(params.inscription!==undefined && params.inscription==="clock"){
+    if(_reload&&params.inscription!==undefined && params.inscription==="clock"){
         hrefQualify();
-    }else if(params.inscription!==undefined && params.inscription==="duel"){
+    }else if(_reload&&params.inscription!==undefined && params.inscription==="duel"){
         hrefMatches();
     }else if(_reload){
         clearSessionEventConfig();
-        location.reload(true);
+        // location.reload(true);
+        window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
     }
     
   })
@@ -84,9 +85,10 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 
         if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
             _reload=false;
-            netlifyIdentity.open();
+            netlifyIdentity.open('signup');
         }else{
-            document.getElementById("subscrive-close-btn").click();
+            // document.getElementById("subscrive-close-btn").click();
+            window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
         }
     }else{
 
@@ -97,23 +99,22 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }else{
             document.getElementById('subscribe-email').disabled=true;
         }
+        
+        if(params.selected_division!==undefined){
+            document.getElementById('select-subscribe-division').value= params.selected_division;   
+        }
 
-        if(params.inscription===undefined || params.inscription!=="clock"){
+        if(params.email!==undefined&&params.email!==''){ //editing inscription
+            document.getElementById('subscribe-email').value= params.email;
+            document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
+        }else{
+        
+        // if(params.inscription===undefined || params.inscription!=="clock"){
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
             }else{
                 promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
             }
-        }else{
-            if(params.email!==undefined&&params.email!==''){
-                document.getElementById('subscribe-email').value= params.email;
-                document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
-            }
-
-            if(params.selected_division!==undefined){
-                document.getElementById('select-subscribe-division').value= params.selected_division;   
-            }
-            
         }
     }
 
@@ -121,15 +122,38 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 
 const qrcode = new QRCode("qrcode");
 window.onload = async () => {
-    const sUrl= ""+window.location.toString();
-    qrcode.makeCode(sUrl);
+    // const sUrl= ""+window.location.toString();
     _reload=true;
     await loadPage();
 
-    if(params.inscription!==undefined && params.inscription==="clock"){
+    // if(params.inscription!==undefined && params.inscription==="clock"){
+    if(params.inscription!==undefined ){
         document.getElementById(`btn-modal-inscrevase`).click();
     }
 }
+
+
+function myFunction() {
+    // Get the text field
+    var copyText = document.getElementById("eventShortURL");
+  
+    // Select the text field
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+  
+     // Copy the text inside the text field
+    navigator.clipboard.writeText(copyText.value);
+  
+    // Alert the copied text
+    // alert("Copied the text: " + copyText.value);
+    document.getElementById("btn_copy").innerHTML= `Copiado! <i class="bi bi-clipboard-check-fill"></i>`;
+    new Promise(() => {
+        window.setTimeout(() => {
+            document.getElementById("btn_copy").innerHTML= `Copiar <i class="bi bi-clipboard"></i>`;
+        }, 3000);
+    });
+    // <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiado! <i class="bi bi-clipboard-check-fill"></i></button>
+  }
 
 async function loadPage(){
     
@@ -376,6 +400,9 @@ function populateNewShooter(_email){
 
     document.getElementById("subscribe-check-clock").disabled= (!eventConfig.clock||!eventConfig.duel);
     document.getElementById("subscribe-check-duel").disabled= (!eventConfig.clock||!eventConfig.duel);
+
+    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_85,h_135/defaults/generic_avatar.jpg`;
+    document.getElementById('shooter-img').src= uri;
     
 
     shooterDivisions[0].category= 0;
@@ -629,7 +656,7 @@ function buildEventDetailsPage(eventConfig){
     document.getElementById('nav-events').classList.add('active');
 
     if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}"><i class="bi bi-gear-fill"></i>${eventConfig.name}</a>`;
     }else{
         document.getElementById('eventTitle').innerHTML= `Novo evento`;
     }
@@ -727,6 +754,10 @@ function buildEventDetailsPage(eventConfig){
 
     document.getElementById('display-subscribers').innerHTML=iHtmSubs;
     document.getElementById('display-best-times').innerHTML= iHtmTimes;
+
+    const sUrl = 'https://'+window.location.host+'?'+eventConfig.short_id;
+    document.getElementById('eventShortURL').value= sUrl;
+    qrcode.makeCode(sUrl);
 
     if(eventConfig.owners!==undefined)
         document.getElementById('event-owners').value= eventConfig.owners.join("; ");
