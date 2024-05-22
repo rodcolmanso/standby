@@ -21,7 +21,6 @@ function hrefQualify(){
         let paramDiv='';
         if(params.selected_division!==undefined){
             paramDiv= '&selected_division='+params.selected_division;
-
         }
 
         window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv;
@@ -29,8 +28,14 @@ function hrefQualify(){
 }
 
 function hrefMatches(){
-    if(eventConfig._id!=0)
-        window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+    if(eventConfig._id!=0){
+        let paramDiv='';
+        if(params.selected_division!==undefined){
+            paramDiv= '&selected_division='+params.selected_division;
+        }
+        window.location.href = window.location="/matches.html?event_id="+eventConfig._id+paramDiv;
+
+    }
 }
 
 //  netlifyIdentity.on('logout', () => {

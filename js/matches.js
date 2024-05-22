@@ -548,12 +548,22 @@ netlifyIdentity.on('close', () => {
 loadPage();
 });
 
+function goToSubscription(email){
+    console.log("Going To Subscribe");
+    if(email!==undefined && email!==''){
+        email= '&email='+email;
+    }else email='';
+    window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+email;
+}
+
+
 window.onload = async () => {
 
     await loadPage();
     document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     
     document.getElementById('btn-reset').style.display='';
+    document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-matches').classList.add('active');
     document.getElementById('liAdvance').style.display='none';
     document.getElementById('liOverall').style.display= 'none';
@@ -564,6 +574,9 @@ window.onload = async () => {
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
     // changeDivision(selectDivision);
+    if(params.selected_division!==undefined){
+        document.getElementById('selectDivision').value=params.selected_division;
+    }
     changeDivision(document.getElementById('selectDivision'));
     applySpinners(false);
     
