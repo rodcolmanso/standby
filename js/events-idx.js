@@ -210,7 +210,18 @@ function buildEventsTable(events){
                     </div>`;
     document.getElementById('events-table').innerHTML+= newEvent;
 
+    var utc = new Date();
+    var offset = utc.getTimezoneOffset();
+
     for(let i=0;i<events.length;i++ ){
+
+        // utc = new Date();
+        // offset = utc.getTimezoneOffset();
+        
+        events[i].date= new Date((new Date(events[i].date)).getTime() - (offset * 60000) );
+        events[i].hour= events[i].date.toISOString().substring(11,16);
+        events[i].dateDuel= new Date((new Date(events[i].dateDuel)).getTime() - (offset * 60000) );
+        events[i].hourDuel= events[i].dateDuel.toISOString().substring(11,16);
         
         // if(eventConfig.divisions[i].delete===undefined)
         //     eventConfig.divisions[i].delete=false;
@@ -239,7 +250,7 @@ function buildEventsTable(events){
               <p class="card-text">Local: ${events[i].local}</p>
             </div>
             <div class="card-footer">
-              <small class="text-body-secondary">Quando: ${events[i].date.replace(/T.*/,'').split('-').reverse().join('-').replaceAll('-','/')} as ${events[i].date.substring(events[i].date.indexOf("T") + 1).substring(0,5) }</small>
+              <small class="text-body-secondary">Quando: ${events[i].date.toLocaleDateString().substring(0,5)} as ${events[i].hour }h</small>
             </div>
           
         </div>
