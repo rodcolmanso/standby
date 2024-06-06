@@ -143,9 +143,7 @@ function addLevels(mainMatches, recapMatches, categ){
             </div>`;
     }
 
-    console.log('Erro aqui 1? categ='+categ+'Levels');
     div_levels.innerHTML=levels;
-    console.log('Não erro aqui 1')
 
     levels="";
     count= recapMatches.length;
@@ -157,9 +155,9 @@ function addLevels(mainMatches, recapMatches, categ){
                 </div>`;
         col_matches= "col-matches";
         }
-        console.log('Erro aqui 2?');
+        
         div_levels.innerHTML+=levels;
-        console.log('Nao Erro aqui 2');
+        
 }
 
 function addMainMatches(mainMatches, recapMatches, categ){
@@ -290,9 +288,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
             
         } 
-        console.log('Erro aqui 3?');
         document.getElementById(categ+'LevelM'+round).innerHTML= matches;
-        console.log('Nao Erro aqui 2.');
         matches="";
 
         divRule=`<p class="ps-50"></p>
@@ -334,7 +330,6 @@ function addMainMatches(mainMatches, recapMatches, categ){
             ls++;
             if(levelSpace.length-ls>=0){
                 matches+= levelSpace[levelSpace.length-ls][0];
-                console.log(`levelSpace[${levelSpace.length-ls}][0]=${levelSpace[levelSpace.length-ls][0]}`)
             }
             _rdA= recapMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             _rdB= recapMatches[round][match].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
@@ -383,9 +378,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 matches+= levelSpace[levelSpace.length-ls][1];
             }
         } 
-        console.log('Erro aqui X?');
+        
         document.getElementById(categ+'LevelR'+round).innerHTML= matches;
-        console.log('Nao Erro aqui X');
         matches="";
     }
 
@@ -469,7 +463,6 @@ function changeDivision(selectDivision){
         })
         // .then(r=>r.json())
         .then(function(response) {
-            console.log(response.status); // Will show you the status
 
             if (!response.ok) {
                 if(response.status===410){
@@ -496,7 +489,7 @@ function changeDivision(selectDivision){
                 addLevels(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
                 
                 addMainMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
-                
+                updateAllMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
 
                 document.getElementById('liAdvance').style.display= '';
             }
@@ -504,6 +497,7 @@ function changeDivision(selectDivision){
             if(KOs.overallDoubleKOs !==null && KOs.overallDoubleKOs.length>0 && KOs.overallDoubleKOs[0]!==null && KOs.overallDoubleKOs[0].length>0){
                 addLevels(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
                 addMainMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
+                updateAllMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
 
                 document.getElementById('liOverall').style.display= '';
             }
@@ -511,13 +505,15 @@ function changeDivision(selectDivision){
             if(KOs.opticDoubleKOs !==null && KOs.opticDoubleKOs.length>0 && KOs.opticDoubleKOs !=="" && KOs.opticDoubleKOs[0]!==undefined && KOs.opticDoubleKOs[0].length>0){
                 addLevels(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
                 addMainMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
+                updateAllMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
 
                 document.getElementById('liOptics').style.display= '';
             }
             
             if(KOs.seniorDoubleKOs !==null && KOs.seniorDoubleKOs.length>0 && KOs.seniorDoubleKOs[0]!==undefined && KOs.seniorDoubleKOs[0].length>0){
                 addLevels(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
-            addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
+                addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
+                updateAllMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
 
                 document.getElementById('liSeniors').style.display= '';        
             }
@@ -525,6 +521,7 @@ function changeDivision(selectDivision){
             if(KOs.ladyDoubleKOs !==null && KOs.ladyDoubleKOs.length>0 && KOs.ladyDoubleKOs[0]!==undefined && KOs.ladyDoubleKOs[0].length>0){
                 addLevels(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1],'ladies');
                 addMainMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
+                updateAllMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
 
                 document.getElementById('liLadies').style.display= '';
             }
@@ -559,7 +556,7 @@ loadPage();
 });
 
 function goToSubscription(email){
-    console.log("Going To Subscribe");
+    // console.log("Going To Subscribe");
     if(email!==undefined && email!==''){
         email= '&email='+email;
     }else email='';
