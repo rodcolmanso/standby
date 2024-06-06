@@ -83,7 +83,12 @@ window.onload = async () => {
     applySpinners(false);
     disableInputs();
 
-
+    if(params.rl){
+        window.setTimeout( function() {
+            window.location.reload(true);
+          }, params.rl*1000);
+    }
+    
 
 };
   

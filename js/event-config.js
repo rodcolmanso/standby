@@ -41,7 +41,7 @@ async function loadPage(eId){
 
     if(eventConfig==null){ // New event
         eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString()
-        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true};
+        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0};
     }
 
     eventConfig.imgChanged=false;
@@ -94,7 +94,10 @@ async function loadPage(eId){
     else
         document.getElementById('event-random-duel2').checked=true;
     
-
+    document.getElementById('vl_first_try').value= eventConfig.vl_first_try= eventConfig.vl_first_try?eventConfig.vl_first_try:0;
+    document.getElementById('vl_second_try').value= eventConfig.vl_second_try= eventConfig.vl_second_try?eventConfig.vl_second_try:0;
+    document.getElementById('vl_other_tries').value= eventConfig.vl_other_tries= eventConfig.vl_other_tries?eventConfig.vl_other_tries:0;
+    
     //document.getElementById('
     if(eventConfig.owners!==undefined)
         document.getElementById('event-owners').value= eventConfig.owners.join("; ");
@@ -104,13 +107,77 @@ async function loadPage(eId){
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     
-
-
     if(eventConfig._id!==""&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
         disableInputs(true);
     }
     
 // }
+}
+
+document.getElementById('modalReport').addEventListener('shown.bs.modal', () => {
+    loadTriesReport(eventConfig);
+});
+
+let _tb= null;
+function loadTriesReport(_event){
+
+    if(netlifyIdentity.currentUser()){
+        applySpinners(true);
+        fetch('/.netlify/functions/time-records?report=1&eventId='+_event._id, {
+            method: "GET",
+            headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                        ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
+                    }
+            }).then(response => response.json()
+            ).then(json => {
+
+                let event_total=0;
+                document.getElementById('tb_tries').innerHTML='';
+                for(let i=0;i<json.length;i++){
+                    
+                    let vl_1=0
+                    let vl_2=0
+                    let vl_others= 0;
+
+                    if(json[i].tries>0)
+                        vl_1= parseFloat(json[i]._id[3]);
+
+                    if(json[i].tries>1)
+                        vl_2= parseFloat(json[i]._id[4]);
+
+                    if(json[i].tries>2)
+                        vl_others= (json[i].tries-2)* parseFloat(json[i]._id[5]);
+
+                    document.getElementById('tb_tries').innerHTML+=
+                    `<tr>
+                    <td class="text-start">${json[i]._id[2]}</td>
+                    <td class="text-start">${json[i]._id[1]}</td>
+                    <td class="text-end">${json[i].tries}</td>
+                    <td class="text-end">R$${vl_1}</td>
+                    <td class="text-end">R$${vl_2}</td>
+                    <td class="text-end">R$${vl_others}</td>
+                    <td class="text-end">R$${vl_1+vl_2+vl_others}</td>
+                  </tr>`;
+                  event_total=event_total+vl_1+vl_2+vl_others;
+                }
+
+                document.getElementById('eventTotal').innerHTML= event_total;
+
+                if(_tb!==null){
+                    // _tb.clear();
+                    _tb.destroy();
+                    // _tb.empty();
+                    _tb=null;
+                }
+
+                _tb= new DataTable('#table_report_tries');
+                _tb.draw(false);
+            })
+            .catch(err => console.log(`Error getting, logged user: ${err}`))
+            .finally(()=> applySpinners(false));
+    }
+    
 }
 
 window.onload = async () => {
@@ -203,6 +270,10 @@ function updateEventConfig(){
     eventConfig.state= document.getElementById('event-state').value;
     eventConfig.public= document.getElementById('event-public').checked;
     eventConfig.randomDuel= document.getElementById('event-random-duel1').checked;
+
+    eventConfig.vl_first_try= document.getElementById('vl_first_try').value;
+    eventConfig.vl_second_try= document.getElementById('vl_second_try').value;
+    eventConfig.vl_other_tries= document.getElementById('vl_other_tries').value;
 
     if(eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
      ||eventConfig.dateDuel===''||eventConfig.dateDuel.toString()==='Invalid Date'){

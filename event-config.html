@@ -5,6 +5,9 @@
   <script src="assets/js/color-modes.js"></script>
   <script src="js/components/header.js" type="text/javascript" defer></script>
 
+  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" type="text/javascript" defer></script>
+  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js" type="text/javascript" defer></script>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="">
@@ -18,6 +21,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css" />
 
   <style>
     .bd-placeholder-img {
@@ -307,8 +311,75 @@
           </label>
         </div>
       </div>
-      
-    
+
+      <div class="form-floating mb-3 col-md-3">
+        <!-- <input type="number" class="form-control" required id="vl_first_try">
+        <label for="vl_first_try" >1ª Passada</label> -->
+        <div class="input-group mb-3">
+          <span class="input-group-text">1ª Passada: R$</span>
+          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
+          <span class="input-group-text">.00</span>
+        </div>
+      </div>
+      <div class="form-floating mb-3 col-md-3">
+        <div class="input-group mb-3">
+          <!-- <input type="number" class="form-control" required id="vl_second_try">
+          <label for="vl_second_try" >2ª Passada R$</label> -->
+          <span class="input-group-text">2ª Passada: R$</span>
+          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
+          <span class="input-group-text">.00</span>
+        </div>
+      </div>
+      <div class="form-floating mb-3 col-md-3">
+        <div class="input-group mb-3">
+          <!-- <input type="number" class="form-control" required id="vl_other_tries">
+          <label for="vl_other_tries" >Demais Passada R$</label> -->
+          <span class="input-group-text">Demais Passada: R$</span>
+          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
+          <span class="input-group-text">.00</span>
+          
+        </div>
+      </div>
+      <div class="form-floating mb-3 col-md-3">
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalReport">
+          Relatório Passagens (R$)
+        </button>
+      </div> 
+      <!-- Modal -->
+<div class="portfolio-modal modal fade" id="modalReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Relatório de Passagens</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm" id="table_report_tries" style="width:100% !important;">
+          <thead>
+            <tr>
+              <th scope="col" class="text-start">Atirador</th>
+              <th scope="col" class="text-start">E-mail</th>
+              <th scope="col" class="text-end">Passadas</th>
+              <th scope="col" class="text-end">1ª Passada</th>
+              <th scope="col" class="text-end">2ª Passada</th>
+              <th scope="col" class="text-end">Demais Passada</th>
+              <th scope="col" class="text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody id="tb_tries">
+          </tbody>
+        </table>
+        <p></p>
+        <p class="text-end">Total do evento: <b> R$ <span id="eventTotal">234,54</span><b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+     
       
       <p></p>
       <div class="card">

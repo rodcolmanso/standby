@@ -44,7 +44,10 @@ GET http://localhost:8888/.netlify/functions/events?split_duels=1&event_id=6621d
 
 
 ###
-GET https://tpmonline.netlify.app/.netlify/functions/time-records?shooterId=6578d331e53c8b23971032c5&divisionId=6578a6dae53c8b23971032c1
+GET http://localhost:8888/.netlify/functions/time-records?shooterId=6578d331e53c8b23971032c5&divisionId=6578a6dae53c8b23971032c1&shooterDivisionId=2332434
+
+###
+GET http://localhost:8888/.netlify/functions/time-records?eventId=661ab4f9c412f4a5f17f0624&report=1
 
 
 ###

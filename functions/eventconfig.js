@@ -89,6 +89,9 @@ const handler = async (event, context)=>{
               ,clock: event_config.clock
               ,duel: event_config.duel
               ,randomDuel:event_config.randomDuel
+              ,vl_first_try:event_config.vl_first_try
+              ,vl_second_try:event_config.vl_second_try
+              ,vl_other_tries:event_config.vl_other_tries
 
             });
         }else{
@@ -133,6 +136,9 @@ const handler = async (event, context)=>{
                                                     ,clock: event_config.clock
                                                     ,duel: event_config.duel
                                                     ,randomDuel: event_config.randomDuel
+                                                    ,vl_first_try: event_config.vl_first_try
+                                                    ,vl_second_try: event_config.vl_second_try
+                                                    ,vl_other_tries: event_config.vl_other_tries
                                                     }
                                                   }
                                                   // ,{ upsert: true }

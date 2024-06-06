@@ -832,3 +832,47 @@ db.shooters.aggregate([
     ,{$match: {shooters_divisions: {$ne: []}}}
     ,{$project:{"eventId":0}}
     ]).toArray();
+
+
+    // ============== Relatorio de Custo/checkout/ ================
+
+    // Atirador    Passagens   Vl 1ª Passagen      Vl 2ª Passagen  Vl 3ª Passagens Vl Demais passagens Total
+
+    // Divisão     Total de Passagens      Vl 1ª Passagen      Vl 2ª Passagen  Vl 3ª Passagens Vl Demais passagens
+
+    db.time_records.aggregate([
+        {$match:{eventId:'661ab4f9c412f4a5f17f0624'}}
+        ,{$addFields:{"_shooterId":{$toObjectId:"$shooterId"}
+                     ,"_eventId"  :{$toObjectId:"$eventId"}
+                     ,"_divisionId"  :{$toObjectId:"$divisionId"}
+                    }}
+        ,{$lookup:{
+                    from: "events"
+                    ,localField:"_eventId"
+                    ,foreignField: "_id"
+                    ,as:"event"
+        }}                     
+        ,{$lookup:{
+                    from: "shooters"
+                    ,localField:"_shooterId"
+                    ,foreignField:"_id"
+                    ,as: "shooter"
+        }}
+        ,{$lookup:{
+                    from: "divisions"
+                    ,localField:"_divisionId"
+                    ,foreignField:"_id"
+                    ,as: "division"
+                    ,pipeline:[
+                        {$project:{"divisionName":"$name"}}
+                    ]
+        }}
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+        ,{$group:{
+            // _id:["$divisionName","$shooterId", "$email" , "$name" ,"$vl_first_try", "$vl_second_try", "$vl_other_tries"],
+            _id:["$shooterId", "$email" , "$name" ,"$vl_first_try", "$vl_second_try", "$vl_other_tries"],
+            tries:{$count:{}}
+        }}
+    ]);

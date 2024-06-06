@@ -589,6 +589,12 @@ window.onload = async () => {
     }
     changeDivision(document.getElementById('selectDivision'));
     applySpinners(false);
+
+    if(params.rl){
+    window.setTimeout( function() {
+        window.location.reload(true);
+      }, params.rl*1000);
+    }
     
 }
 
