@@ -85,7 +85,7 @@ window.onload = async () => {
 
     if(params.rl){
         window.setTimeout( function() {
-            window.location.reload(true);
+            window.location.reload();
           }, params.rl*1000);
     }
     
