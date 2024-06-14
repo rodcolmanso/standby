@@ -25,7 +25,6 @@ class Header extends HTMLElement {
     </symbol>
   </svg>
 
-
 <header class="navbar navbar-expand-lg bd-navbar nav-bg-primary" data-bs-theme="light">
   <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap " aria-label="Main navigation" >
     <div class="bd-navbar-toggle">
@@ -45,12 +44,11 @@ class Header extends HTMLElement {
       <hr class="d-lg-none my-2 text-white-50" />
     </div>
     
-    <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="false">
+    <div class="offcanvas-sm offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="false">
       <div class="offcanvas-header px-4 pb-0">
-        <h5 class="offcanvas-title " id="bdNavbarOffcanvasLabel">T.P.M. Online</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
+        <a data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"><h5 class="offcanvas-title" id="bdNavbarOffcanvasLabel">T.P.M. Online</h5><a>
+        <a data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"><h5><i class="bi bi-x"></i></h5></a>
       </div>
-
       <div class="offcanvas-body p-4 pt-0 p-lg-0">
         <hr class="d-lg-none text-white-50" />
         <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav">
@@ -129,12 +127,23 @@ class Header extends HTMLElement {
         <img id="header-avatar-pic" class="small-profile-avatar-pic rounded-circle" alt="..." onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="...">  
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/shooter-idx.html" onclick="">
-        <i class="bi bi-pencil-square"></i> <span id=avatarUserName>Perfil</span>
-        </a>
-        <a id="loginout" class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="javascript:netlifyIdentity.open('login')" onclick="">
-        <i class="bi bi-box-arrow-in-left"></i> Log in
-        </a>
+        <div id="loggedin" style="display: none">
+          <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/shooter-idx.html" onclick="">
+            <i class="bi bi-pencil-square"></i> <span id=avatarUserName>Perfil</span>
+          </a>
+          <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+            <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>
+          </a>
+        </div>
+        <div id="loginout">
+          <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="javascript:netlifyIdentity.open('login')" onclick="">
+            <i class="bi bi-box-arrow-in-right"></i> Entrar
+          </a>
+          <a class="nav-link py-2 px-0 px-lg-2" id="nav-home_signup" href="javascript:netlifyIdentity.open('signup')" onclick="">
+            <i class="bi bi-pencil-square"></i> Registrar-se
+          </a>
+        </div>
+
       </ul>
     </div>
   </nav>

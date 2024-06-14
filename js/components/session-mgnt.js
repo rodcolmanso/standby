@@ -60,6 +60,7 @@ let dbUser={};
 // let loggedUser={};
 
 async function loadingUserSession(user){
+    
     // loggedUser= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
@@ -91,12 +92,28 @@ async function loadingUserSession(user){
         }
         
     }else setAvatarPic();
+    
 }
 
+netlifyIdentity.on('open', function() {
+    var iframe = document.getElementById("netlify-identity-widget");
+    if (iframe) {
+      var iOSfix = iframe.contentWindow.document.createElement("style");
+      iOSfix.innerText = "input { font-size: 16px!important }";
+      iframe.contentWindow.document.body.appendChild(iOSfix);
+    }
+  });
+
+netlifyIdentity.setLocale('pt');
 netlifyIdentity.on('login', user => {
     loadingUserSession(user);
     configPermissions(true);
     //display fields
+    var iframe = document.getElementById("netlify-identity-widget");
+    if (iframe) {
+        var btnClose = iframe.contentWindow.document.querySelector(".btnClose");
+        btnClose.click();
+    }
 });
 
 netlifyIdentity.on('logout', () => {
@@ -221,8 +238,12 @@ function uuidv4() {
 function setAvatarPic(){
     const _id= getSessionDbUser()===null?(Math.random()*1000000).toString():getSessionDbUser()._id;
     document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?code="+uuidv4();
-    document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
-    document.getElementById("loginout").innerHTML+= (netlifyIdentity.currentUser()===null?'Login':'Logout');
+    // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
+
+    document.getElementById("loggedin").style.display =  (netlifyIdentity.currentUser()===null?'none':'');
+    document.getElementById("loginout").style.display =  (netlifyIdentity.currentUser()===null?'':'none');
+
+    // document.getElementById("loginout").innerHTML+= (netlifyIdentity.currentUser()===null?'Login':'Logout');
     document.getElementById("avatarUserName").innerHTML= (netlifyIdentity.currentUser()===null?'Perfil':netlifyIdentity.currentUser().user_metadata.full_name);
 }
 
