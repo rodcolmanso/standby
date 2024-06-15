@@ -322,7 +322,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
-                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
                         </button>
                     </td>
                 </tr>`;
@@ -710,7 +710,8 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
 
 
     buildTimeTable(idShooter,selectedDivision, idShooterDivision);
-
+    // disableInputs();
+    console.log('No Build timetracktable, btnAddTimeRecord.disable? '+document.getElementById('btnAddTimeRecord').disabled);
 }
 
 function addTimeRecord(){
@@ -782,12 +783,35 @@ function buildTimeTable(idShooter,idDivision,idShooterDivision){
         .then(r=>r.json())
         .then(records=>{
 
+            let _bestScore=0;
+            if(records.length>0){
+                _bestScore= records[0].score;
+            }
+
+            records= records.sort((a, b) => {
+                if (a.datetime < b.datetime) {
+                  return -1;
+                }
+              });
+
             let row='';
 
             let ord=1;
             let dt; 
             for(let i=0; i< records.length ; i++){
                 
+
+                // <span class="badge bg-info text-dark">${_time}</span>
+                //     <span class="badge bg-warning text-dark rounded-pill">${_penal}</span>
+
+                let _sBS='bg-info text-dark';
+                if(_bestScore=== records[i].score)
+                    _sBS='text-bg-purple text-lg-start';
+
+                let _penal=""
+                if(records[i].penalties>0)
+                    _penal="+"+records[i].penalties;
+
                 console.log(`records[i].datetime= ${records[i].datetime}`);
 
                 dt= new Date(records[i].datetime.toString());
@@ -796,8 +820,8 @@ function buildTimeTable(idShooter,idDivision,idShooterDivision){
                 row+= `<tr>
                     <th scope="row">${ord++}</th>
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
-                    <td class="text-end">${records[i].sTime}</td>
-                    <td class="text-end">${records[i].penalties}</td>
+                    <td class="text-end"><span class="badge ${_sBS}">${records[i].sTime}</span></td>
+                    <td class="text-end"><span class="badge bg-warning text-dark rounded-pill">${_penal}</span></td>
                     <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}', '${idShooterDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
                     </td>
                 </tr>`;
@@ -927,6 +951,8 @@ function applySpinners(onoff){
             }
         );
     });
+
+    disableInputs();
     
 }
 
@@ -943,6 +969,7 @@ function disableInputs(){
     [].forEach.call(_button,btn=>{
         
         if(
+        (btn.getAttribute('class').indexOf('nodisable')<0)&&
         (["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
         (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
         (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
@@ -952,7 +979,6 @@ function disableInputs(){
         (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
             btn.disabled=onoff;
         }
-        //document.getElementById('selectDivision').disabled=onoff;
 
     });
 
