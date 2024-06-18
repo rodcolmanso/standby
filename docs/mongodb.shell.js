@@ -876,3 +876,11 @@ db.shooters.aggregate([
             tries:{$count:{}}
         }}
     ]);
+
+    db.events.aggregate(
+        [
+         {$match: {owners: 'pris.rocha@gmail.com'}}
+        ,{$addFields:{"eventId": { "$toString": "$_id" }}}
+        ,{$group:{_id:null, Xyz:{$push:"$eventId"}}}
+        ,{$project:{Xyz:true,_id:false}}
+        ]).toArray();

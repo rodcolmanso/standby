@@ -16,6 +16,7 @@ exports.handler = async (event, context) => {
   let events= await cEvents.aggregate(
      [
       {$match: {owners: user.email}}
+      // {$match: {owners: 'pris.rocha@gmail.com'}}
      ,{$addFields:{"eventId": { "$toString": "$_id" }}}
      ,{$group:{_id:null, array:{$push:"$eventId"}}}
      ,{$project:{array:true,_id:false}}
@@ -26,7 +27,7 @@ exports.handler = async (event, context) => {
       ...user,
       user_metadata: {
         ...user.user_metadata,
-        admin_events: events,
+        admin_events: events[0].array,
       },
     }),
       statusCode: 200,
