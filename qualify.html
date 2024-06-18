@@ -21,7 +21,7 @@
     .text-bg-purple{
       /* background-color :purple !important; */
       background-color: rgba(84, 33, 187, 0.5) !important;
-      color: yellow;
+      /* color: yellow; */
     } 
 
     .bd-placeholder-img {
@@ -322,7 +322,7 @@
                     <th scope="col">#</th>
                     <th scope="col" class="w-25">Quando</th>
                     <th class="text-end w-25" scope="col">Tempo</th>
-                    <th class="text-end w-25" scope="col" id="penalty">Penalidade</th>
+                    <th class="text-start w-25" scope="col" id="penalty">Penalidade</th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -341,45 +341,9 @@
         <div class="justify-content-between"><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
           <division-component></division-component>
         </div>
-      <!-- <p>
-        <div class="">
-        </div>
-        
-      </p> -->
 
-        
 
-        <!-- <div> -->
-          
-           <!-- <nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3">
-            <div class="clearfix">
-              <ul class="nav nav-pills float-start" id="navCat">
-                <li class="nav-item" id="liAdvance" style="display: none;">
-                  <a class="nav-link" href="#scrollspyHeadingAdvance">Avançado</a>
-                </li>
-                <li class="nav-item" id="liOverall" style="display: none;">
-                  <a class="nav-link" href="#scrollspyHeadingOverall" >Sport</a>
-                </li>
-                <li class="nav-item" id="liLadies" style="display: none;">
-                  <a class="nav-link" href="#scrollspyHeadingLadies">Damas</a>
-                </li>
-                <li class="nav-item" id="liOptics" style="display: none;">
-                  <a class="nav-link" href="#scrollspyHeadingOptics">Optrônica</a>
-                </li>
-                <li class="nav-item" id="liSeniors" style="display: none;">
-                  <a class="nav-link" href="#scrollspyHeadingSeniors">Senior</a>
-                </li>
-                <li class="nav-item dropdown" id="liDropdown" style="display: none;">
-                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"></a>
-                  <ul class="dropdown-menu">
-                    <li id="dLiOptics"  style="display: none;"><a class="dropdown-item" href="#scrollspyHeadingOptics">Optics</a></li>
-                    <li id="dLiSeniors"  style="display: none;"><a class="dropdown-item" href="#scrollspyHeadingSeniors">Seniors</a></li> 
-                  </ul>
-                </li>
-              </ul>
-              
-            </div>
-            </nav> -->
+
             <div  id="spinner" class="spinner-border float-end" role="status" >
               <span class="visually-hidden">Carregando...</span>
             </div>
@@ -402,7 +366,7 @@
                         <th class="w-50" scope="col">Atirador / arma</th>
                         <!-- <th class="w-20 d-none d-sm-table-cell" scope="col">Arma</th> -->
                         <th class="text-start" scope="col">Tempo</th>
-                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passagens</th>
+                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passadas</th>
                         </tr>
                       </thead>
                       <tbody id="tableAdvance">
@@ -426,7 +390,7 @@
                         <th class="w-50" scope="col">Atirador / arma</th>
                         <!-- <th class="w-20 d-none d-sm-table-cell" scope="col">Arma</th> -->
                         <th class="text-start" scope="col">Tempo</th>
-                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passagens</th>
+                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passadas</th>
                       </tr>
                     </thead>
                     <tbody id="tableOverall">
@@ -445,7 +409,7 @@
                         <th class="w-50" scope="col">Atirador / arma</th>
                         <!-- <th class="w-20 d-none d-sm-table-cell" scope="col">Arma</th> -->
                         <th class="text-start" scope="col">Tempo</th>
-                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passagens</th>
+                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passadas</th>
                     </thead>
                     <tbody id="tableLadies">
                     </tbody>
@@ -464,7 +428,7 @@
                         <th class="w-50" scope="col">Atirador / arma</th>
                         <!-- <th class="w-20 d-none d-sm-table-cell" scope="col">Arma</th> -->
                         <th class="text-start" scope="col">Tempo</th>
-                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passagens</th>
+                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passadas</th>
                       </tr>
                     </thead>
                     <tbody id="tableOptics">
@@ -485,7 +449,7 @@
                         <th class="w-50" scope="col">Atirador / arma</th>
                         <!-- <th class="w-20 d-none d-sm-table-cell" scope="col">Arma</th> -->
                         <th class="text-start" scope="col">Tempo</th>
-                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passagens</th>
+                        <th class="text-center text-small" colspan="2" scope="col">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Passadas</th>
                       </tr>
                     </thead>
                     <tbody id="tableSeniors">

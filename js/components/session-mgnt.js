@@ -102,6 +102,7 @@ netlifyIdentity.on('open', function() {
       iOSfix.innerText = "input { font-size: 16px!important }";
       iframe.contentWindow.document.body.appendChild(iOSfix);
     }
+
   });
 
 netlifyIdentity.setLocale('pt');
@@ -114,6 +115,7 @@ netlifyIdentity.on('login', user => {
         var btnClose = iframe.contentWindow.document.querySelector(".btnClose");
         btnClose.click();
     }
+    console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
 });
 
 netlifyIdentity.on('logout', () => {
@@ -268,3 +270,90 @@ function setCookie(cname, cvalue, exdays) {
     }
     return "";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
   }
+
+  function disableInputs(){
+    onoff=false;
+
+    const user= netlifyIdentity.currentUser();
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    // if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+    if(!isAdmin){
+        onoff= true;
+        console.log('Is not Admin');
+    }
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        
+        if(
+        (btn.getAttribute('class').indexOf('nodisable')<0)&&
+        (["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
+        (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
+        (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
+        (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+        (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+
+        (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
+            btn.disabled=onoff;
+        }
+
+    });
+
+    let _input = document.querySelectorAll("input");
+    [].forEach.call(_input,btn=>{
+        btn.disabled=onoff;        
+        });
+
+    let _radio = document.querySelectorAll('input[type="radio"]');
+        [].forEach.call(_radio,rdo=>{
+            rdo.disabled=onoff;
+        });
+}
+
+  function applySpinners(onoff){
+
+    let _spinner= document.getElementById('spinner');
+    if(_spinner){
+        _spinner.visibility=onoff;
+        if(onoff)
+            _spinner.style.visibility = 'visible'//'visible'; //'hidden'
+        else
+            _spinner.style.visibility = 'hidden'//'visible'; //'hidden'           
+    }
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        btn.disabled=onoff;
+
+        if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
+            ||btn.getAttribute('class').includes("btn-secondary")
+            ||btn.getAttribute('class').includes("btn-success")
+            ||btn.getAttribute('class').includes("btn-primary"))) {
+
+            if(onoff)
+                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+            else
+                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
+        }
+
+        spans= btn.querySelectorAll("span");
+        [].forEach.call(spans,span=>{
+            if(span.getAttribute('class').includes("spinner")){
+                if(onoff)
+                    span.style.visibility = 'visible'//'visible'; //'hidden'
+                else
+                    span.style.visibility = 'hidden'//'visible'; //'hidden'
+                }
+            }
+        );
+    });
+
+    let _select = document.querySelectorAll("select");
+    [].forEach.call(_select,btn=>{
+        btn.disabled=onoff;
+        // document.getElementById('selectDivision').disabled=onoff;
+    });
+
+    disableInputs();
+    
+}

@@ -11,17 +11,6 @@ function advanceClick(div_adv_check){
 
 let queryParam="";
 
-    // location.reload(true);
-// netlifyIdentity.on('login', user => {
-//     buildEventsTable(events);
-//     console.log('login', user);
-// });
-
-// netlifyIdentity.on('logout', () => {
-//     buildEventsTable(events);
-//     console.log('Logged out');
-// });
-
 const cOverall= 0;
 const cAdvance= 1;
 const cLadies= 2;
@@ -30,29 +19,6 @@ const cSeniors= 5;
 let loggedUser=null;
    
 let events;
-
-function hrefQualify(){
-    console.log('hrefQualify()');
-}
-
-function hrefMatches(){
-    console.log('hrefMatches()');
-}
-
-// const promiseOfEvents = fetch("/.netlify/functions/events")
-//     .then(r=>r.json())
-//     .then(data => {
-//     return data;
-// });
-
-
-// netlifyIdentity.on('login', user => {
-//     // location.reload(true);
-// });
-
-// netlifyIdentity.on('logout', () => {
-//     location.reload(true);
-// });
 
 let user;
 let isAdmin=false;
@@ -74,12 +40,7 @@ window.onload = async () => {
         }
          isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     }
-    // if(event_id!==0&&event_id!=="0"&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
-    //     disableInputs(true);
-    // }
-
-    // applySpinners(true);
-
+    
     const url= window.location.toString();
     const args= url.substring(url.indexOf("?") + 1).split("&");
 
@@ -91,7 +52,6 @@ window.onload = async () => {
             _headers= {"Content-type": "application/json; charset=UTF-8"}
         }
 
-        console.log(JSON.stringify(args,null,2));
         applySpinners(true);
         fetch("/.netlify/functions/events?short_id="+args[0],
             {method: "GET"
@@ -189,7 +149,6 @@ function buildEventsTable(events){
     
     const user = netlifyIdentity.currentUser();
 
-    // console.log(`user= ${user.user_metadata.full_name}`);
     let readOnly=`class="dropdown-item disabled" aria-disabled="true"`;
     if(user){
         readOnly=`class="dropdown-item"`;

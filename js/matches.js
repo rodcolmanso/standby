@@ -17,6 +17,33 @@ let modalChanged;
 let language="pt-br";
 let loggedUser;
 
+let mouseDown = false;
+let startX, scrollLeft;
+const slider = document.querySelector('.scrolling-wrapper');
+
+const startDragging = (e) => {
+  mouseDown = true;
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+}
+
+const stopDragging = (e) => {
+  mouseDown = false;
+}
+
+const move = (e) => {
+  e.preventDefault();
+  if(!mouseDown) { return; }
+  const x = e.pageX - slider.offsetLeft;
+  const scroll = x - startX;
+  slider.scrollLeft = scrollLeft - scroll;
+}
+
+// Add the event listeners
+slider.addEventListener('mousemove', move, false);
+slider.addEventListener('mousedown', startDragging, false);
+slider.addEventListener('mouseup', stopDragging, false);
+slider.addEventListener('mouseleave', stopDragging, false);
 
 function updateAllMatches(mainMatches, recapMatches, categ){
     
@@ -643,69 +670,69 @@ function getDivision(eventDivisions, divisionID){
 }
 
 
-function applySpinners(onoff){
+// function applySpinners(onoff){
 
-    // document.getElementById('spinner').visibility=onoff;
-    if(onoff)
-        spinner.style.visibility = 'visible'//'visible'; //'hidden'
-    else
-        spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+//     // document.getElementById('spinner').visibility=onoff;
+//     if(onoff)
+//         spinner.style.visibility = 'visible'//'visible'; //'hidden'
+//     else
+//         spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
-    document.getElementById('selectDivision').disabled=onoff;
+//     document.getElementById('selectDivision').disabled=onoff;
 
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
-        btn.disabled=onoff;
-        if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
-            ||btn.getAttribute('class').includes("btn-secondary")
-            ||btn.getAttribute('class').includes("btn-warning")
-            ||btn.getAttribute('class').includes("btn-primary"))) {
+//     let _button = document.querySelectorAll("button");
+//     [].forEach.call(_button,btn=>{
+//         btn.disabled=onoff;
+//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
+//             ||btn.getAttribute('class').includes("btn-secondary")
+//             ||btn.getAttribute('class').includes("btn-warning")
+//             ||btn.getAttribute('class').includes("btn-primary"))) {
 
-            if(onoff)
-                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-            else
-                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-        }
-    });
+//             if(onoff)
+//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+//             else
+//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
+//         }
+//     });
 
-    let _radio = document.querySelectorAll('input[type="radio"]');
-    [].forEach.call(_radio,rdo=>{
-        rdo.disabled=onoff;
-    });
-    disableInputs();
-}
+//     let _radio = document.querySelectorAll('input[type="radio"]');
+//     [].forEach.call(_radio,rdo=>{
+//         rdo.disabled=onoff;
+//     });
+//     disableInputs();
+// }
 
-function disableInputs(){
+// function disableInputs(){
 
-    onoff=false;
-    const user= netlifyIdentity.currentUser();
-    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+//     onoff=false;
+//     const user= netlifyIdentity.currentUser();
+//     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
     
-    if(eventConfig===undefined || eventConfig===null||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
-        onoff= true;
-    }
+//     if(eventConfig===undefined || eventConfig===null||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
+//         onoff= true;
+//     }
 
-    // document.getElementById('selectDivision').disabled=onoff;
+//     // document.getElementById('selectDivision').disabled=onoff;
 
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
+//     let _button = document.querySelectorAll("button");
+//     [].forEach.call(_button,btn=>{
     
-    if((["btn-close","btn-secondary","btn btn-secondary","accordion-button","collapsed","accordion-button collapsed"].indexOf(btn.getAttribute('class'))<0)&&
-    (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
-    (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
-    (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
-        btn.disabled=onoff;
-    }
+//     if((["btn-close","btn-secondary","btn btn-secondary","accordion-button","collapsed","accordion-button collapsed"].indexOf(btn.getAttribute('class'))<0)&&
+//     (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+//     (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+//     (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
+//         btn.disabled=onoff;
+//     }
     
-    });
+//     });
 
-    let _radio = document.querySelectorAll('input[type="radio"]');
-    [].forEach.call(_radio,rdo=>{
-        rdo.disabled=onoff;
-    });
-}
+//     let _radio = document.querySelectorAll('input[type="radio"]');
+//     [].forEach.call(_radio,rdo=>{
+//         rdo.disabled=onoff;
+//     });
+// }
 
-history.pushState(null, null, location.href);
-window.onpopstate = function(event) {
-    history.go(1);
-};
+// history.pushState(null, null, location.href);
+// window.onpopstate = function(event) {
+//     history.go(1);
+// };

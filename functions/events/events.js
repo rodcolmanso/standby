@@ -10,22 +10,22 @@ var ObjectId = require('mongodb').ObjectId;
 // Docs on event and context https://docs.netlify.com/functions/build/#code-your-function-2
 const handler = async (event, context) => {
 
-  console.log(JSON.stringify(context, null, 2))
+  // console.log(JSON.stringify(context, null, 2))
   let user= context.clientContext.user;
 
   if(user===null || user===undefined){
     user= {email:(Math.random()*1000000).toString()};
   }
 
-  console.log(`user.email: ${user.email}`);
+  // console.log(`user.email: ${user.email}`);
   let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-  console.log(`is Admin: ${isAdmin}`);
+  // console.log(`is Admin: ${isAdmin}`);
   try {
     
     
     switch (event.httpMethod){
       case 'GET':
-        console.log('entrou no GET');
+        
         // const subject = event.queryStringParameters.name || 'World'
         // const p_eventId= event.queryStringParameters.eventId.toString();
         
@@ -57,7 +57,7 @@ const handler = async (event, context) => {
           p_short_id= parseInt(event.queryStringParameters.short_id);
         }
 
-        console.log('Antes do Match');
+        
         
         let mMatch=  {
           "date": { $gte: new Date(p_event_date_from.replace(/-/g, '\/'))
@@ -65,7 +65,7 @@ const handler = async (event, context) => {
           , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
        };
 
-        console.log('Antes do p_event_id');
+        
 
       if(p_short_id!==""){
 
@@ -88,16 +88,6 @@ const handler = async (event, context) => {
         const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
         const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
 
-        console.log(' ');
-        console.log(' ');
-        console.log('===================================================== ');
-        console.log(' ');
-        console.log('===     Antes da Aggregate. p_event_id='+p_event_id);
-        console.log('===     Match: '+JSON.stringify(mMatch,null,2));
-        console.log(' ');
-        console.log('===================================================== ');
-        console.log(' ');
-        console.log(' ');
         
         let events= await cEvents.aggregate( [
           // Stage 1: Filter pizza events by date range
@@ -161,21 +151,16 @@ const handler = async (event, context) => {
             events[i].subTitle="Duelos"
           }
           
-          console.log('p_split_duels='+p_split_duels);
           let divisionsSummary="";
           if(events[i].clock&&events[i].duel&&p_split_duels==="1"){
             if(events[i].dateDuel!==null&&events[i].dateDuel!==undefined&&events[i].dateDuel!==''&&events[i].dateDuel.toDateString()!==events[i].date.toDateString()){
-              console.log(`${events[i].dateDuel.toDateString()}!==${events[i].date.toDateString()}?`);
+              
               let nEvent= JSON.parse(JSON.stringify(events[i]));
               nEvent.date=nEvent.dateDuel;
               nEvent.subTitle="Duelos";
               events[i].subTitle="Contra o relógio";
               events.push(nEvent);
 
-              console.log(`events[i].subTitle= ${events[i].subTitle}`);
-              console.log(`nEvent.subTitle= ${nEvent.subTitle}`);
-              
-              console.log(``);
             }
           }
 
@@ -189,16 +174,15 @@ const handler = async (event, context) => {
 
         }
           
-          console.log(`ordem=${ordem}`);
           if(ordem>0){
-            console.log(`Sorte Up`);
+            
             events = events.sort((a, b) => {
               if (Date.parse(new Date(a.date)) < Date.parse(new Date(b.date))) {
                 return -1;
               }
             });
           }else{
-            console.log(`Sorte Down`);
+            
             events = events.sort((a, b) => {
               if (Date.parse(new Date(a.date)) > Date.parse(new Date(b.date))) {
                 return -1;
@@ -226,7 +210,7 @@ const handler = async (event, context) => {
         }
     
     }
-    console.log('saiu do switch');
+    
     
   } catch (error) {
     return { statusCode: 500, body: error.toString(),headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*","Access-Control-Allow-Methods": "*" }, }

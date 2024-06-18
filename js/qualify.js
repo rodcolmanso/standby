@@ -317,8 +317,9 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
                     <td class="align-middle text-start">
-                        <span class="badge bg-info text-dark">${_time}</span>
-                        <span class="badge bg-warning text-dark rounded-pill">${_penal}</span>
+                        <span class="badge bg-info text-dark">${_time}
+                            <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
+                        </span>
                     </td>
                     <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
@@ -821,7 +822,7 @@ function buildTimeTable(idShooter,idDivision,idShooterDivision){
                     <th scope="row">${ord++}</th>
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
                     <td class="text-end"><span class="badge ${_sBS}">${records[i].sTime}</span></td>
-                    <td class="text-end"><span class="badge bg-warning text-dark rounded-pill">${_penal}</span></td>
+                    <td class="text-start"><span class="badge bg-danger rounded-pill">${_penal}</span></td>
                     <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}', '${idShooterDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
                     </td>
                 </tr>`;
@@ -855,8 +856,6 @@ function getBestScoreAndTries(idShooter, idDivision){
 
 function deleteTime(idTimeRecord, idShooter, idDivision, idShooterDivision){
 
-    console.log(`idTimeRecord= ${idTimeRecord}`);
-
     if(idTimeRecord===null ||idTimeRecord==''){
         return 0;
     }else if(confirm('Tem certeza que deseja remover essa passagem?')) {
@@ -873,7 +872,7 @@ function deleteTime(idTimeRecord, idShooter, idDivision, idShooterDivision){
                 document.getElementById('timeBestScore').innerText='';
         
                 buildTimeTable(idShooter,idDivision, idShooterDivision);
-                console.log(r);
+                
             })
             .catch(err => console.log(`Error deleting time: ${err}`))
             .finally(()=> applySpinners(false));
@@ -920,72 +919,6 @@ function scoreCal(){
         }        
     }
 
-}
-
-function applySpinners(onoff){
-
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
-        btn.disabled=onoff;
-        document.getElementById('selectDivision').disabled=onoff;
-
-        if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
-            ||btn.getAttribute('class').includes("btn-secondary")
-            ||btn.getAttribute('class').includes("btn-success")
-            ||btn.getAttribute('class').includes("btn-primary"))) {
-
-            if(onoff)
-                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-            else
-                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-        }
-
-        spans= btn.querySelectorAll("span");
-        [].forEach.call(spans,span=>{
-            if(span.getAttribute('class').includes("spinner")){
-                if(onoff)
-                    span.style.visibility = 'visible'//'visible'; //'hidden'
-                else
-                    span.style.visibility = 'hidden'//'visible'; //'hidden'
-                }
-            }
-        );
-    });
-
-    disableInputs();
-    
-}
-
-function disableInputs(){
-    onoff=false;
-
-    const user= netlifyIdentity.currentUser();
-    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
-        onoff= true;
-    }
-
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
-        
-        if(
-        (btn.getAttribute('class').indexOf('nodisable')<0)&&
-        (["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
-        (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
-        (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
-        (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
-        (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
-
-        (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
-            btn.disabled=onoff;
-        }
-
-    });
-
-    let _input = document.querySelectorAll("input");
-    [].forEach.call(_input,btn=>{
-        btn.disabled=onoff;        
-        });
 }
 
 function updateShootersList(){

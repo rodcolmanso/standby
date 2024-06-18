@@ -108,7 +108,7 @@ async function loadPage(eId){
     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     
     if(eventConfig._id!==""&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
-        disableInputs(true);
+        disableInputsHere(true);
     }
     
 // }
@@ -226,9 +226,9 @@ window.onload = async () => {
         let isAdmin= (netlifyIdentity&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
         
         if(eventConfig!==null && eventConfig!==undefined && user!==null && (isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
-            disableInputs(false);
+            disableInputsHere(false);
         }else{
-            disableInputs(true);
+            disableInputsHere(true);
         }
 
         console.log('On Identity window close. login', user);
@@ -497,40 +497,38 @@ function deleteDivision(_idIndex){
     buildDivisionTable(eventConfig);
 }
 
-function applySpinners(onoff){
+// function applySpinners(onoff){
 
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
-        btn.disabled=onoff;
+//     let _button = document.querySelectorAll("button");
+//     [].forEach.call(_button,btn=>{
+//         btn.disabled=onoff;
 
-        if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
-            ||btn.getAttribute('class').includes("btn-secondary")
-            // ||btn.getAttribute('class').includes("btn-info")
-            ||btn.getAttribute('class').includes("btn-primary"))) {
+//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
+//             ||btn.getAttribute('class').includes("btn-secondary")
+//             // ||btn.getAttribute('class').includes("btn-info")
+//             ||btn.getAttribute('class').includes("btn-primary"))) {
 
-            if(onoff)
-                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-            else
-                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-        }
+//             if(onoff)
+//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+//             else
+//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
+//         }
 
-        spans= btn.querySelectorAll("span");
-        [].forEach.call(spans,span=>{
-            if(span.getAttribute('class').includes("spinner")){
-                if(onoff){
-                    
-                    span.style.visibility = 'visible'//'visible'; //'hidden'
-                }else{
-                    
-                    span.style.visibility = 'hidden'//'visible'; //'hidden'
-                }
-            }
-            }
-                    );
-    });
-}
+//         spans= btn.querySelectorAll("span");
+//         [].forEach.call(spans,span=>{
+//             if(span.getAttribute('class').includes("spinner")){
+//                 if(onoff){
+//                     span.style.visibility = 'visible'//'visible'; //'hidden'
+//                 }else{
+//                     span.style.visibility = 'hidden'//'visible'; //'hidden'
+//                 }
+//             }
+//             }
+//                     );
+//     });
+// }
 
-function disableInputs(onOff){
+function disableInputsHere(onOff){
 
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+  <script src="assets/js/color-modes.js"></script>
+  <script src="js/components/header.js" type="text/javascript" defer></script>
+  <script src="js/components/select-division.js" type="text/javascript" defer></script>
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- <script src="jquery.js" type="text/javascript"></script>
+  <script src="jquery.maskedinput.js" type="text/javascript"></script> -->
+
+  
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T.P.M.</title>
+  
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="/css/dashboard.css" rel="stylesheet">
+
+  <style>
+    /* CSS personalizado aqui */
+  </style>
+
+</head>
+<body>
+  <header-component></header-component>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <!-- Foto de perfil -->
+        <ul class="list-group">
+          <li class="list-group-item">
+            <!-- <img id="pic-profile" src="caminho/para/foto-de-perfil.jpg" alt="Foto de Perfil" class="img-fluid mb-3"> -->
+            <div class="btn" style="padding-right:1px !important;">
+              <label for="input-shooter-img" >
+                <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" />
+              </label>
+              <input type="file" class="form-control d-none" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
+            </div>
+            <div class="row text-center">
+              <div class="col">
+                <input type="radio" class="btn-check" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
+                <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
+
+                <input type="radio" class="btn-check" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
+                <label class="btn btn-outline-info" for="modalOption0">Overall</label>
+
+                <input type="radio" class="btn-check" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
+                <label class="btn btn-outline-success" for="modalOption5">Senior</label>
+              </div>
+            </div>
+            <p class="card-text">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" required id="modalEmail" placeholder="name@example.com" onChange="getUserFromEmail(this.value)" >
+                <label for="modalEmail">E-mail</label>
+              </div>
+            </p>
+            <p class="card-text">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" required id="modalCpf" placeholder="000.000.001-99" onkeypress="$(this).mask('000.000.000-00');" >
+                <label for="modalEmail">CPF</label>
+              </div>
+            </p>
+            <p class="card-title">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
+                <label for="modalName">Nome</label>
+              </div>
+            </p>
+            <div class="row text-end">
+              <div class="col">
+                <button type="submit" class="btn btn-success" value="Salvar" ><!--data-bs-dismiss="modal" -->
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <p>&nbsp;</p>
+        <h4>Próximos Eventos:</h4>
+        <!-- Lista de próximos eventos -->
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="row text-justify">
+              <div class="col"><a href="#">18/05 - 5º TPM CT Raposo</a></div>
+              <div class="col text-end"><button type="submit" class=" btn btn-warning btn-sm">Inscrito</button></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="row text-justify">
+              <div class="col"><a href="#">24/06 - TPM CT Naja 1ª Edição</a></div>
+              <div class="col text-end"><button type="submit" class=" btn btn-warning btn-sm">Inscreva-se</button></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="row text-justify">
+              <div class="col"><a href="#">29/07 - 6º Ed. TPM CT Ranger</a></div>
+              <div class="col text-end"><button type="submit" class=" btn btn-warning btn-sm">Inscreva-se</button></div>
+            </div>
+          </li>
+          <!-- Mais eventos conforme necessário -->
+        </ul>
+        <!-- Últimos resultados -->
+        
+        
+      </div>
+      <div class="col-md-8">
+        <!-- Calendário de resultados -->
+        <div id="calendario-resultados" class="mb-4">
+          <!-- Calendário será renderizado aqui -->
+        </div>
+        <!-- Próximos eventos -->
+        <h4>Classificação 2024</h4>
+        <!-- Tabela de classificação -->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Divisão</th>
+              <th>Posição</th>
+              <th>Tempo</th>
+              <th>Arma</th>
+              <th>Local</th>
+              <th>Mês</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Revolver</b></td>
+              <td><b>2º</b></td>
+              <td>
+                <p class="text-muted">
+                  <span class="badge text-bg-info" >5,62
+                    <span class="position-absolute translate-middle badge text-bg-warning rounded-pill"></span>
+                  </span>
+                </p>
+              </td>
+              <td>RT692 357mag<i class="bi bi-dot" style="color:red !important;"></i></td>
+              <td>Typhoon</td>
+              <td>Fevereiro</td>
+            </tr>
+            <tr>
+              <td><b>Força Livre</b></td>
+              <td><b>7º</b></td>
+              <td>
+                <p class="text-muted">
+                  <span class="badge text-bg-info" >3,19
+                    <span class="position-absolute translate-middle badge text-bg-danger rounded-pill">+1</span>
+                  </span>
+                </p>
+              </td>
+              <td>Brigade 9mm<i class="bi bi-dot" style="color:red !important;"></i></td>
+              <td>CT Raposo</td>
+              <td>Fevereiro</td>
+            </tr>
+            <tr>
+              <td><b>Pistola</b></td>
+              <td><b>5º</b></td>
+              <td>
+                <p class="text-muted">
+                  <span class="badge text-bg-info" >4,77
+                    <span class="position-absolute translate-middle badge text-bg-warning rounded-pill"></span>
+                  </span>
+                </p>
+              </td>
+              <td>Chiappa 22lr<i class="bi bi-dot" style="color:red !important;"></i></td>
+              <td>CT Rangers</td>
+              <td>Março</td>
+            </tr>
+            <!-- Mais linhas conforme necessário -->
+          </tbody>
+        </table>
+        <!-- Gráfico de evolução -->
+        <p>&nbsp;</p>
+        <h4>Evolução</h4>
+        <canvas id="grafico-evolucao"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JavaScript (opcional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Código JavaScript para inicializar o calendário de resultados e o gráfico de evolução
+    // Exemplo de código JavaScript usando Chart.js para criar um gráfico
+    const ctx = document.getElementById('grafico-evolucao').getContext('2d');
+    const graficoEvolucao = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Dez-23', 'Jan-24', 'Fev-24', 'Mar-24', 'Abr-24', 'Mai-24'],
+        datasets: [{
+          label: 'Revolver',
+          data: [5.42, 4.56, 4.21, 4.02, 3.24, 3.01], // Substitua pelos dados reais do atleta
+          backgroundColor: 'rgba(255, 165, 0, 0.2)',
+          borderColor: 'rgba(255, 165, 0, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Pistola',
+          data: [4.42, 4.98, 4.12, 3.54, 3.87, 2.79], // Substitua pelos dados reais do atleta
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        },
+        {
+          label: 'Força libre',
+          data: [5.21, 5.02, 3.25, 4.07, 3.78, 2.37], // Substitua pelos dados reais do atleta
+          backgroundColor: 'rgba(106, 90, 205, 0.2)',
+          borderColor: 'rgba(106, 90, 205, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: false
+          }
+        }
+      }
+    });
+  </script>
+<script src="./js/components/session-mgnt.js"></script>
+<script src="./js/shooter-idx.js"></script>
+
+</body>
+</html>
