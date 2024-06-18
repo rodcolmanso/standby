@@ -116,6 +116,7 @@ netlifyIdentity.on('login', user => {
         btnClose.click();
     }
     console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
+    console.log(`user.user_metadata.roles= ${user.user_metadata.roles}`);
 });
 
 netlifyIdentity.on('logout', () => {

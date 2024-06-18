@@ -13,9 +13,9 @@ exports.handler = async (event, context) => {
   return {
     body: JSON.stringify({
       ...user,
-      app_metadata: {
-        ...user.app_metadata,
-        roles: ["XPTO"],
+      user_metadata: {
+        ...user.user_metadata,
+        events_admin: ["XPTO", "Xyz"],
       },
     }),
       statusCode: 200,
