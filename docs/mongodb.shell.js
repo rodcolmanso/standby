@@ -879,7 +879,7 @@ db.shooters.aggregate([
 
     db.events.aggregate(
         [
-         {$match: {owners: 'pris.rocha@gmail.com'}}
+         {$match: {owners: 'rodrigo2000inf@hotmail.com'}}
         ,{$addFields:{"eventId": { "$toString": "$_id" }}}
         // ,{$group:{_id:null, Xyz:{$push:"$eventId"}}}
         ,{$project:{eventId:1,_id:0}}
