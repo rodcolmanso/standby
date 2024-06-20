@@ -21,13 +21,17 @@ exports.handler = async (event, context) => {
      ,{$group:{_id:null, array:{$push:"$eventId"}}}
      ,{$project:{array:true,_id:false}}
      ]).toArray();
+     
+     let r_events=[];
+     if(events&&events.length&&events.length>0&&events[0]&&events[0].array)
+      r_events= events[0].array;
 
   return {
     body: JSON.stringify({
       ...user,
       user_metadata: {
         ...user.user_metadata,
-        admin_events: events[0].array,
+        admin_events: r_events,
       },
     }),
       statusCode: 200,

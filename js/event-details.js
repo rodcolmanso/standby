@@ -88,8 +88,9 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         
         Array.from(document.getElementsByClassName('closeModalBtn')).forEach(function(element){element.click();})
 
-        if(confirm('Voce precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
+        if(confirm('Você precisa estar logado para participar desse evento. Fazer cadastro ou login agora?')) {
             _reload=false;
+            document.getElementById("subscrive-close-btn").click();
             netlifyIdentity.open('signup');
         }else{
             // document.getElementById("subscrive-close-btn").click();
@@ -769,55 +770,55 @@ function buildEventDetailsPage(eventConfig){
 
 }
 
-function applySpinners(onoff){
-    if(onoff){
-        document.getElementById("btnInscrever").innerHTML= `<div class="spinner-border" role="status">
-                                                                <span class="visually-hidden">Loading...</span>
-                                                            </div>`;
-    }else{
-        document.getElementById("btnInscrever").innerHTML= `Inscrever <i class="fa-solid fa-angle-down"></i>`;
-    }
+// function applySpinners(onoff){
+//     if(onoff){
+//         document.getElementById("btnInscrever").innerHTML= `<div class="spinner-border" role="status">
+//                                                                 <span class="visually-hidden">Loading...</span>
+//                                                             </div>`;
+//     }else{
+//         document.getElementById("btnInscrever").innerHTML= `Inscrever <i class="fa-solid fa-angle-down"></i>`;
+//     }
 
-    let _button = document.querySelectorAll("button");
-    [].forEach.call(_button,btn=>{
-        btn.disabled=onoff;
-        // document.getElementById('selectDivision').disabled=onoff;
+//     let _button = document.querySelectorAll("button");
+//     [].forEach.call(_button,btn=>{
+//         btn.disabled=onoff;
+//         // document.getElementById('selectDivision').disabled=onoff;
 
-        if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-warning")
-            ||btn.getAttribute('class').includes("btn-secondary")
-            ||btn.getAttribute('class').includes("btn-success")
-            ||btn.getAttribute('class').includes("btn-danger")
-            ||btn.getAttribute('class').includes("btn-primary"))) {
-            if(onoff)
-                btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-            else
-                btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-        }
+//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-warning")
+//             ||btn.getAttribute('class').includes("btn-secondary")
+//             ||btn.getAttribute('class').includes("btn-success")
+//             ||btn.getAttribute('class').includes("btn-danger")
+//             ||btn.getAttribute('class').includes("btn-primary"))) {
+//             if(onoff)
+//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+//             else
+//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
+//         }
 
-        spans= btn.querySelectorAll("span");
-        [].forEach.call(spans,span=>{
-            if(span.getAttribute('class').includes("spinner")){
-                if(onoff){
-                    span.style.visibility = 'visible'//'visible'; //'hidden'
-                }else{
-                    span.style.visibility = 'hidden'//'visible'; //'hidden'
-                }
-            }
-        });
-    });
-    // "Input$disabled"
-    let _input = document.querySelectorAll('input');
-    [].forEach.call(_input,rdo=>{                                
-        if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
-        ){
-            rdo.disabled= onoff;    
-        }
-    });
-    // let _checkbox = document.querySelectorAll('input[type="checkbox"]');
-    // [].forEach.call(_checkbox,rdo=>{
-    //     rdo.disabled=onoff;
-    // });
-}
+//         spans= btn.querySelectorAll("span");
+//         [].forEach.call(spans,span=>{
+//             if(span.getAttribute('class').includes("spinner")){
+//                 if(onoff){
+//                     span.style.visibility = 'visible'//'visible'; //'hidden'
+//                 }else{
+//                     span.style.visibility = 'hidden'//'visible'; //'hidden'
+//                 }
+//             }
+//         });
+//     });
+//     // "Input$disabled"
+//     let _input = document.querySelectorAll('input');
+//     [].forEach.call(_input,rdo=>{                                
+//         if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
+//         ){
+//             rdo.disabled= onoff;    
+//         }
+//     });
+//     // let _checkbox = document.querySelectorAll('input[type="checkbox"]');
+//     // [].forEach.call(_checkbox,rdo=>{
+//     //     rdo.disabled=onoff;
+//     // });
+// }
 function displaySelectedImage(event, elementId) {
     const selectedImage = document.getElementById(elementId);
     const fileInput = event.target;

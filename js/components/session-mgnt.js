@@ -274,11 +274,11 @@ function setCookie(cname, cvalue, exdays) {
 
   function disableInputs(){
     onoff=false;
-
+    const _eventConfig= getSessionEventConfig();
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    // if(eventConfig===undefined||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
-    if(!isAdmin){
+    if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
+    // if(!isAdmin||!user||user.user_metadata.admin_events.indexOf(user.email)<0){
         onoff= true;
         console.log('Is not Admin');
     }
@@ -287,31 +287,84 @@ function setCookie(cname, cvalue, exdays) {
     [].forEach.call(_button,btn=>{
         
         if(
-        (btn.getAttribute('class').indexOf('nodisable')<0)&&
-        (["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
-        (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
-        (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
-        (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
-        (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
+        (btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0)
+        &&(btn.getAttribute('type')&&btn.getAttribute('type').indexOf('search')<0)
+        // &&(["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
+        // (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
+        // (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
+        // (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
+        // (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
 
-        (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0){
+        // (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0)
+        ){
             btn.disabled=onoff;
         }
 
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                btn.style.visibility = 'visible'//'visible'; //'hidden'
+            else
+                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+        }
     });
 
     let _input = document.querySelectorAll("input");
     [].forEach.call(_input,btn=>{
-        btn.disabled=onoff;        
-        });
+        if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+            && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0)
+            btn.disabled= onoff;
+        
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                btn.style.visibility = 'visible'//'visible'; //'hidden'
+            else
+                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+        }
+
+    });
+
+    let _div = document.querySelectorAll("div");
+    [].forEach.call(_div,elem=>{
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                elem.style.visibility = 'visible'//'visible'; //'hidden'
+            else
+                elem.style.visibility = 'hidden'//'visible'; //'hidden'
+        }
+
+    });
 
     let _radio = document.querySelectorAll('input[type="radio"]');
         [].forEach.call(_radio,rdo=>{
-            rdo.disabled=onoff;
+            if(rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('nodisable')<0
+               && rdo.getAttribute('type') && rdo.getAttribute('type').indexOf('search')<0)
+                rdo.disabled= onoff;
+            
+            if((rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('hide')>=0)){
+                if(!onoff)
+                    rdo.style.visibility = 'visible'//'visible'; //'hidden'
+                else
+                    rdo.style.visibility = 'hidden'//'visible'; //'hidden'
+            }
+        });
+
+    let _textarea = document.querySelectorAll("textarea");
+        [].forEach.call(_textarea,btn=>{
+            if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+                && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0)
+                btn.disabled=onoff;
+
+            if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
+                if(!onoff)
+                    btn.style.visibility = 'visible'//'visible'; //'hidden'
+                else
+                    btn.style.visibility = 'hidden'//'visible'; //'hidden'
+            }
         });
 }
 
-  function applySpinners(onoff){
+function applySpinners(onoff){
 
     let _spinner= document.getElementById('spinner');
     if(_spinner){
@@ -322,9 +375,18 @@ function setCookie(cname, cvalue, exdays) {
             _spinner.style.visibility = 'hidden'//'visible'; //'hidden'           
     }
 
+    if(onoff && document.getElementById("btnInscrever")){
+        document.getElementById("btnInscrever").innerHTML= `<div class="spinner-border" role="status">
+                                                                <span class="visually-hidden">Loading...</span>
+                                                            </div>`;
+    }else if(document.getElementById("btnInscrever")){
+        document.getElementById("btnInscrever").innerHTML= `Inscrever <i class="fa-solid fa-angle-down"></i>`;
+    }
+
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{
-        btn.disabled=onoff;
+        if(onoff&&btn.getAttribute('class').indexOf('nodisable')<0)
+            btn.disabled=onoff;
 
         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
             ||btn.getAttribute('class').includes("btn-secondary")
@@ -353,6 +415,14 @@ function setCookie(cname, cvalue, exdays) {
     [].forEach.call(_select,btn=>{
         btn.disabled=onoff;
         // document.getElementById('selectDivision').disabled=onoff;
+    });
+
+    let _input = document.querySelectorAll('input');
+    [].forEach.call(_input,rdo=>{                                
+        if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
+        ){
+            rdo.disabled= onoff;    
+        }
     });
 
     disableInputs();

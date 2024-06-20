@@ -287,35 +287,39 @@ function updateEventConfig(){
 
     let aDivisionName=[];
     for(let i=0; i<eventConfig.divisions.length;i++){
-        if(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value===""){
-            alert("Informe o nome da divisão.");
-            document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
-            return 0;
-        }
+        
+        if(document.getElementById(eventConfig.divisions[i]._id+'DivisionName')){
 
-        if(aDivisionName.indexOf(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value)>-1){
-            alert("Divisão já cadastrada.");
-            document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
-            return 0;
-        }else aDivisionName.push(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value);
-
-        if(eventConfig.divisions[i].delete===undefined ||!eventConfig.divisions[i].delete){
-            eventConfig.divisions[i].name= document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value;
-            
-            eventConfig.divisions[i].categories.ladies= document.getElementById(eventConfig.divisions[i]._id+'Check'+cLadies).checked;
-            eventConfig.divisions[i].categories.seniors= document.getElementById(eventConfig.divisions[i]._id+'Check'+cSeniors).checked;
-            eventConfig.divisions[i].categories.optics= document.getElementById(eventConfig.divisions[i]._id+'Check'+cOptics).checked;
-            eventConfig.divisions[i].categories.advance= document.getElementById(eventConfig.divisions[i]._id+'Check'+cAdvance).checked;
-            
-            if(""+document.getElementById(eventConfig.divisions[i]._id+'SelectAdvance').value==="1"){
-                eventConfig.divisions[i].advanceLimit.passingScore= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;
-                eventConfig.divisions[i].advanceLimit.topBestOf= -1;
-            }else{
-                eventConfig.divisions[i].advanceLimit.passingScore= -1;
-                eventConfig.divisions[i].advanceLimit.topBestOf= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;
+            if(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value===""){
+                alert("Informe o nome da divisão.");
+                document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
+                return 0;
             }
-        }
 
+            if(aDivisionName.indexOf(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value)>-1){
+                alert("Divisão já cadastrada.");
+                document.getElementById(eventConfig.divisions[i]._id+'DivisionName').focus();
+                return 0;
+            }else aDivisionName.push(document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value);
+
+            if(eventConfig.divisions[i].delete===undefined ||!eventConfig.divisions[i].delete){
+                eventConfig.divisions[i].name= document.getElementById(eventConfig.divisions[i]._id+'DivisionName').value;
+                
+                eventConfig.divisions[i].categories.ladies= document.getElementById(eventConfig.divisions[i]._id+'Check'+cLadies).checked;
+                eventConfig.divisions[i].categories.seniors= document.getElementById(eventConfig.divisions[i]._id+'Check'+cSeniors).checked;
+                eventConfig.divisions[i].categories.optics= document.getElementById(eventConfig.divisions[i]._id+'Check'+cOptics).checked;
+                eventConfig.divisions[i].categories.advance= document.getElementById(eventConfig.divisions[i]._id+'Check'+cAdvance).checked;
+                
+                if(""+document.getElementById(eventConfig.divisions[i]._id+'SelectAdvance').value==="1"){
+                    eventConfig.divisions[i].advanceLimit.passingScore= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;
+                    eventConfig.divisions[i].advanceLimit.topBestOf= -1;
+                }else{
+                    eventConfig.divisions[i].advanceLimit.passingScore= -1;
+                    eventConfig.divisions[i].advanceLimit.topBestOf= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;
+                }
+            }
+
+        }
     }
     // buildDivisionTable(eventConfig);
 
@@ -460,7 +464,7 @@ function buildDivisionTable(eventConfig){
           </div>
         </td>
         <td class="text-end">
-          <button onClick="deleteDivision('${eventConfig.divisions[i]._id}')" type="button" class="btn btn-danger rounded-circle" value="-">-</button>
+          <button onClick="deleteDivision('${eventConfig.divisions[i]._id}')" type="button" class="btn btn-danger rounded-circle hide" value="-">-</button>
         </td>
       </tr>`;
 
@@ -535,9 +539,11 @@ function disableInputsHere(onOff){
         if((["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
             (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
             (["bt_clock","bt_matches","loginAvatar","bt_share","btn-check-outlined","btn-check-outlined_2"].indexOf(btn.getAttribute('id'))<0)
-            )
-             btn.disabled=onOff;        
-                    });
+            ){
+                if(onOff&&onOff&&(btn.getAttribute('class').indexOf('nodisable')<0))
+                    btn.disabled=onOff;
+            }
+        });
 
     let _input = document.querySelectorAll("input");
     [].forEach.call(_input,btn=>{

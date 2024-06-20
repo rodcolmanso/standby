@@ -13,7 +13,7 @@ class Division extends HTMLElement {
       <div class=" row flex-nowrap"><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
         <div class="w-60 input-group">
             <span class="input-group-text">Divisão:</span>
-            <select class="form-control form-select form-select-sm align-middle" id="selectDivision" onchange="javascript:changeDivision(this)">
+            <select class="nodisable form-control form-select form-select-sm align-middle" id="selectDivision" onchange="javascript:changeDivision(this)">
             </select>
         </div>
         <div class="w-40">
@@ -29,11 +29,11 @@ class Division extends HTMLElement {
       <h4> </h4>
       <nav class="navbar-fixed-top">
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
-            <button class="nav-link  active" id="liOverall" data-bs-toggle="tab" data-bs-target="#nav-liOverall" type="button" role="tab" aria-controls="nav-liOverall" aria-selected="true">Overall</button>
-            <button class="nav-link "        id="liLadies" data-bs-toggle="tab" data-bs-target="#nav-liLadies" type="button" role="tab" aria-controls="nav-liLadies" aria-selected="false">Damas</button>
-            <button class="nav-link "        id="liOptics" data-bs-toggle="tab" data-bs-target="#nav-liOptics" type="button" role="tab" aria-controls="nav-liOptics" aria-selected="false">Optics</button>
-            <button class="nav-link "        id="liSeniors" data-bs-toggle="tab" data-bs-target="#nav-liSeniors" type="button" role="tab" aria-controls="nav-liSeniors" aria-selected="false">Seniors</button>
+            <button class="nodisable nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
+            <button class="nodisable nav-link  active" id="liOverall" data-bs-toggle="tab" data-bs-target="#nav-liOverall" type="button" role="tab" aria-controls="nav-liOverall" aria-selected="true">Overall</button>
+            <button class="nodisable nav-link "        id="liLadies" data-bs-toggle="tab" data-bs-target="#nav-liLadies" type="button" role="tab" aria-controls="nav-liLadies" aria-selected="false">Damas</button>
+            <button class="nodisable nav-link "        id="liOptics" data-bs-toggle="tab" data-bs-target="#nav-liOptics" type="button" role="tab" aria-controls="nav-liOptics" aria-selected="false">Optics</button>
+            <button class="nodisable nav-link "        id="liSeniors" data-bs-toggle="tab" data-bs-target="#nav-liSeniors" type="button" role="tab" aria-controls="nav-liSeniors" aria-selected="false">Seniors</button>
           </div>
         </nav>
         

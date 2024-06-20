@@ -122,7 +122,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Atirador</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <!--...-->
@@ -230,7 +230,7 @@
                 <!--...-->
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary closeModalBtn" data-bs-dismiss="modal" id="modalClose" value="Fechar">
+                <button type="button" class="nodisable btn btn-secondary closeModalBtn" data-bs-dismiss="modal" id="modalClose" value="Fechar">
                   <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
                 <button type="submit" class="btn btn-success" value="Salvar" ><!--data-bs-dismiss="modal" -->
                   <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
@@ -248,7 +248,7 @@
           aria-labelledby="offcanvasRightLabel">
           <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasRightLabel">Tomada de Tempo</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close nodisable" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div class="offcanvas-body">
             <div class="card mb-3" style="max-width: 400px;">
@@ -259,9 +259,15 @@
                   </div>
                   <div class="col-8">
                     <div class="card-body">
-                    <h5 class="card-title"><p  id="timeShooterName">Rodman Col</p></h5>
-                    <p class="card-text" id="timeShooterGun">Chiappa 22</p>
-                    <p class="card-text"><small class="text-body-secondary" id="timeBestScore">Best score: 3:65'</small></p>
+                    <h5 class="card-title"><p  id="timeShooterName"></p></h5>
+                    <p class="card-text">
+                      <span class="badge rounded-pill text-bg-secondary" id="timeShooterGun"></span>
+                    </p>
+                    <p class="card-text"><small class="text-body-secondary">Melhor passada:</small>
+                       <span class="badge text-bg-purple"><span id="timeBestScore"></span>
+                        <span class="position-absolute translate-middle badge bg-danger rounded-pill"id="timeBestScorePenal"></span>
+                    </span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -285,7 +291,7 @@
                     <b id="timeDivision">Pistol Division</b>
                   </div>
                 </div>
-                <div class="row g-2">
+                <div class="row g-2 hide">
                   <form class="row g-3 needs-validation" action="javascript:addTimeRecord()">
                     <div class="w-40 col-sm form-floating form-control-sm">
 
@@ -331,7 +337,7 @@
               </table>
             </div>
             <div class="container text-center">
-              <h1><button type="button" class="btn btn-secondary" id="bt_close_time" data-bs-dismiss="offcanvas" value="Fechar">Fechar</button></h1>
+              <h1><button type="button" class="btn btn-secondary nodisable" id="bt_close_time" data-bs-dismiss="offcanvas" value="Fechar">Fechar</button></h1>
             </div>
           </div>
         </div>

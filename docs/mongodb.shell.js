@@ -881,6 +881,66 @@ db.shooters.aggregate([
         [
          {$match: {owners: 'pris.rocha@gmail.com'}}
         ,{$addFields:{"eventId": { "$toString": "$_id" }}}
-        ,{$group:{_id:null, Xyz:{$push:"$eventId"}}}
-        ,{$project:{Xyz:true,_id:false}}
-        ]).toArray();
+        // ,{$group:{_id:null, Xyz:{$push:"$eventId"}}}
+        ,{$project:{eventId:1,_id:0}}
+        ]).toArray()[0].eventId;
+
+
+
+
+        db.events.aggregate(
+            [
+                {$match: {owners: 'pris.rocha@gmail.com'}}
+            ,{$addFields:{"eventId": { "$toString": "$_id" }}}
+            ,{$group:{_id:null, array:{$push:"$eventId"}}}
+            ,{$project:{array:true,_id:false}}
+            ]).toArray()[0].array
+
+
+
+// =============================================================================================
+// =========================Encontrando usuarios sem eventos para deletar em massa =============
+// =============================================================================================
+
+            db.shooters.aggregate(
+                [{ $match:{ docnum:{$exists:false}}}
+                ,{$addFields:{"shooterId": { "$toString": "$_id" }}}
+                ,{$lookup:
+                    {
+                        from: "shooters_divisions"
+                        ,localField: "shooterId"
+                        ,foreignField: "shooterId"
+                        ,as: "shooters_divisions"
+                    }
+                }
+                ,{ $match:{ shooters_divisions:{$eq:[]}}}
+                ,{$group:{_id:null, array:{$push:"$email"}}}
+                ,{$project:{array:true,_id:false}}
+                ]
+            ).toArray()[0].array;
+
+            db.shooters.deleteMany(
+                { email:{$in:[
+                    'jonathan.ggg@tpm.com',
+                    'mary@tpm.com',
+                    'petra@tpm.com',
+                    'ema@el.com.vc',
+                    'jonathan@tpm.com',
+                    'mf@t.c',
+                    'jecson@tpm.com',
+                    'testes@teste',
+                    'rmanso@outlook.com',
+                    'pedro@tpm.com.br',
+                    'priscila.manso@tivit.com',
+                    'guto@tpm.com',
+                    'guilherme@rozzino.com'
+                  ]
+                  }}    
+            )
+
+
+            db.shooters.updateMany({}, [{$set:{docnum:{ "$toString": "$_id" }}}])
+
+            db.shooters.createIndex( {"docnum":1}, { "unique": true } );
+
+        //sudo ntl functions:invoke identity-login

@@ -43,9 +43,26 @@ const handler = async (event, context)=>{
           filter._id= new ObjectId(event.queryStringParameters.id);
         }
 
+        if(event.queryStringParameters.docnun!==undefined){
+          filter.docnum= event.queryStringParameters.docnun;
+        }
+
       }
         
       const retShooters = await cShooters.find(filter).toArray();
+
+      const user= context.clientContext.user;
+      let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0;
+      
+      if(!isAdmin){ //mask sensitivy data
+        for(let i=0;i<retShooters.length;i++){
+            if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
+              retShooters[0].docnum='*********';
+              retShooters[0].email='*********@tpm.com';
+            }
+        }
+      }
+      
 
       return  {
         statusCode: 200,

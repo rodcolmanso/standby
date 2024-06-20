@@ -149,15 +149,15 @@
     <div class="portfolio-modal modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
             <div class="container">
               <div class="row justify-content-center">
                       <!-- <div class="col-lg-8"> -->
                 <div class="modal-body">
                     <!-- Project details-->
                     <h2 class="" id="event-name"></h2>
-                    <input type="hidden" id="event-public">
-                    <input type="hidden" id="event-owners">
+                    <input type="hidden" class="nodisable" id="event-public">
+                    <input type="hidden" class="nodisable" id="event-owners">
                     <hr /> 
                     <!-- <h3 class="">Inscreva-se</h2> -->
                     <br>
@@ -172,17 +172,17 @@
                                       <label for="input-shooter-img" style="max-height:131px !important;">
                                         <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:88px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." />
                                       </label>
-                                      <input type="file" class="form-control d-none" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" />
+                                      <input type="file" class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" />
                                     </div>
                                   </div>
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
                                     <div class="was-validated form-floating">
-                                      <input type="hidden" class="form-control" id="subscribe-shooterId">
-                                      <input disabled type="email" required placeholder="" class="form-control" id="subscribe-email">
+                                      <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
+                                      <input disabled type="email" required placeholder="" class="form-control nodisable" id="subscribe-email">
                                       <label for="subscribe-email" >Email</label>
                                     </div>
                                     <div class="form-floating">
-                                      <input disabled type="text" required class="form-control" id="subscribe-name">
+                                      <input disabled type="text" required class="form-control nodisable" id="subscribe-name">
                                       <label for="subscribe-name" onchange="updatePicOrName()" >Atirador</label>
                                     </div>
                                   </div>
@@ -198,32 +198,32 @@
                               <div class="row gy-2 gx-3">
                                 <div class=" card-body col-auto" style="padding-right:1px !important;" >
                                   <div class="form-floating " > <!--col-md-2-->
-                                    <select class="form-select" required id="select-subscribe-division" aria-label="Floating label select example">
+                                    <select class="form-select nodisable" required id="select-subscribe-division" aria-label="Floating label select example">
                                       <option selected></option>
                                     </select>
                                     <label for="select-subscribe-division">Divisão</label>
                                   </div>
                                   <div class="col-auto" >
                                     <div class="form-floating ">
-                                      <input type="text" class="form-control" required id="subscribe-gun">
+                                      <input type="text" class="form-control nodisable" required id="subscribe-gun">
                                       <label for="subscribe-gun">Arma</label>
                                     </div>  
                                   </div>
                                 </div> <!--min-width: 150px;-->
                                 <div class="card-body col-auto" style=" padding-left:4px !important; padding-right:8px !important; padding-top:20px !important; text-align: start;">
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
+                                    <input class="form-check-input nodisable" type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
                                     <label class="form-check-label" for="subscribe-check-clock"><small class="text-muted">Relógio</small></label>
                                   </div>
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input" type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
+                                    <input class="form-check-input nodisable" type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
                                     <label class="form-check-label" for="subscribe-check-duel"><small class="text-muted">Duelo</small></label>
                                   </div>
                                   <div>
                                     <label style="padding-top: 8px !important;" for="subscribe-optic"><small class="text-muted">Red dot</small></label>
                                   </div>
                                   <div class="form-check "> <!--form-switch--><!--role="switch"-->
-                                    <input class="form-check-input" type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
+                                    <input class="form-check-input nodisable" type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
                                   </div>
                                 </div>
                               </div>
@@ -232,7 +232,7 @@
                       </div>
                       <br>
                       <div class="">
-                        <button type="submit" class=" btn btn-warning btn-xl" id="btn-add" value="">
+                        <button type="submit" class=" btn btn-warning btn-xl nodisable" id="btn-add" value="">
                           <div class="text-center" id="btnInscrever">
                             Inscrever <i class="fa-solid fa-angle-down"></i>
                         </div>
@@ -261,7 +261,7 @@
                       </table>
                     </div>
 
-                  <button class="btn btn-secondary closeModalBtn" id="subscrive-close-btn" data-bs-dismiss="modal" type="button">
+                  <button class="btn btn-secondary closeModalBtn nodisable" id="subscrive-close-btn" data-bs-dismiss="modal" type="button">
                       <i class="fas fa-xmark me-1"></i>
                       Fechar
                   </button>
@@ -279,7 +279,7 @@
     <div class="portfolio-modal modal fade" id="subscriptionsModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
             <div class="container">
               <div class="row justify-content-center">
                       <!-- <div class="col-lg-8"> -->
@@ -311,7 +311,7 @@
                       </table>
                     </div>
 
-                  <button class="btn btn-secondary closeModalBtn" id="subscrive-close-btn-subs" data-bs-dismiss="modal" type="button">
+                  <button class="btn btn-secondary closeModalBtn nodisable" id="subscrive-close-btn-subs" data-bs-dismiss="modal" type="button">
                       <i class="fas fa-xmark me-1"></i>
                       Fechar
                   </button>
@@ -332,7 +332,7 @@
       <!-- <div class="masthead-subheading">Pistola, Força livre e Revolver</div> -->
       <div class="masthead-subheading" id="event-local"></div>
       <!-- <a class="btn btn-warning btn-xl text-uppercase" style="color: white;" href="#services">Inscreva-se</a> -->
-      <button type="button" class="btn btn-warning btn-xl text-uppercase" id="btn-modal-inscrevase" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-warning btn-xl text-uppercase nodisable" id="btn-modal-inscrevase" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Inscreva-se
       </button>      
   </div>
@@ -385,11 +385,11 @@
         <div class="btn col-md-4 text-center">
           <!-- The text field -->
           <!-- <label for="myInput" >Compartilhar</label> -->
-          <input type="text"  class="form-control" value="" id="eventShortURL">
+          <input type="text"  class="form-control nodisable" value="" id="eventShortURL">
 <!-- The button used to copy the text -->
         </div>
         <div class="btn col-md-4 text-start">
-          <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiar <i class="bi bi-clipboard"></i></button>
+          <button class="btn btn-secondary nodisable" id="btn_copy" onclick="myFunction()">Copiar <i class="bi bi-clipboard"></i></button>
         </div>
         <!-- <div class="btn col-md-4"> -->
         </div>

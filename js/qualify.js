@@ -143,7 +143,7 @@ function transformRegistrer(players){
             // score_idx= zeroPad((""+(Math.round(players[i].score*100))),7);
 
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,4)+players[i].registered[j].datetime;
-            console.log(`Name:${players[i].name} , sort_idx:${sort_idx} `);
+            
             
             aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx };
             
@@ -268,22 +268,25 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         position=actualOverallCount;
                     }
                 }
-
+                let _timee=0;
+                let _penall=0;
                 if(aPlayers[i].score===undefined || aPlayers[i].score===null || aPlayers[i].score>9998){ 
                     // aPlayers[i].score='NA';
                     sScore='N/A';
                     _time=sScore;
                     _penal="";
                 }else if(aPlayers[i].score===undefined || aPlayers[i].score===null || aPlayers[i].score>999){ 
-                    console.log(`ENTROU PENAL. aPlayers[i].score.toString()=${aPlayers[i].score.toString()}`);
-                    sScore=parseFloat(aPlayers[i].score.toString().slice(1))
-                                 +" +"+aPlayers[i].score.toString().slice(0,1);
+                    
+                    _timee= parseFloat(aPlayers[i].score.toString().slice(1)); 
+                    _penall= aPlayers[i].score.toString().slice(0,1);
+                    sScore=_timee +" +"+_penall;
                     _penal="+"+aPlayers[i].score.toString().slice(0,1);
                     _time= naiveRound(parseFloat(aPlayers[i].score.toString().slice(1)),2).toFixed(2);
-                    console.log(`ENTROU PENAL. _penal=${_penal}`);
+                    
 
                 }else{
-                    sScore= ''+aPlayers[i].score;
+                    _timee= aPlayers[i].score;
+                    sScore= ''+_timee;
                     _penal="";
                     _time= naiveRound(parseFloat(aPlayers[i].score),2).toFixed(2);
                 }
@@ -323,7 +326,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-end">${sTries}</td>
                     <td class="align-middle">
-                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}')" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
                         </button>
                     </td>
                 </tr>`;
@@ -526,7 +529,7 @@ function addUpdateShooter(){
 
     
     let idShooter= document.getElementById('modalShooterId').value;
-    console.log(`entro update shooter. idShooter=${idShooter}`);
+    
     let aRegistered=[];
         
         for(let i=0; i<eventConfig.divisions.length;i++){
@@ -592,7 +595,7 @@ function addUpdateShooter(){
                     })
                     .then(response => response.json()) 
                     .then(json => {
-                        console.log(`Shooter added/updated= ${ JSON.stringify(json,null,2)}`);
+                        
                         applySpinners(false);
                         // console.log(`document.getElementById('modalClose').value= ${ document.getElementById('modalClose').value}`);
                         document.getElementById('modalClose').click();
@@ -608,7 +611,7 @@ function addUpdateShooter(){
                         }
                         modalChanged=true;
                         updateShootersList();
-                        console.log(`document.getElementById('modalClose').value=`+document.getElementById('modalClose').value);
+                        
                         document.getElementById('modalClose').click();
                     })
                     .catch(err => console.log(`Error adding, updating shooter: ${err}`))
@@ -632,8 +635,7 @@ function deleteShooter(){
             })
             .then(response => response.json()) 
             .then(json => {
-                console.log(`Shooter deleted. akas: [divisions_deleted: ${json.divisions_deletedCount}, shooters_deleted:${json.shooter_deletedCount}]`);
-        
+                
                 if(json.shooter_deletedCount>0){
                     alert(`Atirador removido!`);
                     document.getElementById('modalShooterId').value= "";
@@ -684,14 +686,13 @@ function getUserFromEmail(userEmail){
 }
 
 function goToSubscription(email){
-    console.log("Going To Subscribe");
     if(email!==undefined && email!==''){
         email= '&email='+email;
     }else email='';
     window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+email;
 }
 
-function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision ){
+function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal ){
     const selectedDivision= selectDivision= document.getElementById('selectDivision').value;
 
      
@@ -705,14 +706,28 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
     document.getElementById('offcanvasRightLabel').innerText= 'Tempos de '+nameShooter;
     document.getElementById('timeShooterName').innerText= nameShooter;
     document.getElementById('timeShooterGun').innerText= gunShooter;
-    document.getElementById('timeBestScore').innerText= bestScore;    
+    
+    if(vlTime===0){
+        vlTime='NA';
+        vlPenal='';
+    }
+
+    if(vlPenal>0){
+        vlPenal='+'+vlPenal;
+    }else{
+        vlPenal='';
+    }
+
+    // document.getElementById('timeBestScore').innerText= bestScore;
+    document.getElementById('timeBestScore').innerText= vlTime;
+    document.getElementById('timeBestScorePenal').innerText= vlPenal;
 
     document.getElementById('timeDivision').innerText= getDivision(eventConfig.divisions, selectedDivision).name;    
 
 
     buildTimeTable(idShooter,selectedDivision, idShooterDivision);
     // disableInputs();
-    console.log('No Build timetracktable, btnAddTimeRecord.disable? '+document.getElementById('btnAddTimeRecord').disabled);
+    
 }
 
 function addTimeRecord(){
@@ -743,15 +758,13 @@ function addTimeRecord(){
             modalChanged=true;
             let bestScore= document.getElementById('timeBestScore').innerText;
 
-            console.log(`document.getElementById('timeBestScore').innerText; ${bestScore}`);
-
             if(bestScore=='NA' || Number(bestScore) >vScore){
                 document.getElementById('timeBestScore').innerText=vScore;
-                console.log(`Apply new score ${vScore}`);
+               
             }else console.log(`Not applied new score ${vScore}`);
             
             buildTimeTable(idShooter,idDivision, idShooterDivision);
-            console.log(json);
+            
         })
         // .then({
         
@@ -813,17 +826,17 @@ function buildTimeTable(idShooter,idDivision,idShooterDivision){
                 if(records[i].penalties>0)
                     _penal="+"+records[i].penalties;
 
-                console.log(`records[i].datetime= ${records[i].datetime}`);
+                
 
                 dt= new Date(records[i].datetime.toString());
-                console.log(`dt ${dt}`);
+                
                 
                 row+= `<tr>
                     <th scope="row">${ord++}</th>
                     <td>${dt.getHours()}:${zeroPad(dt.getMinutes(), 2)}</td>
                     <td class="text-end"><span class="badge ${_sBS}">${records[i].sTime}</span></td>
                     <td class="text-start"><span class="badge bg-danger rounded-pill">${_penal}</span></td>
-                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}', '${idShooterDivision}')" type="button" class="btn btn-danger btn-circle btn-xl" value="-">-</button>
+                    <td><button onClick="deleteTime('${records[i]._id}', '${idShooter}', '${idDivision}', '${idShooterDivision}')" type="button" class="btn btn-danger btn-circle btn-xl hide" value="-">-</button>
                     </td>
                 </tr>`;
                 
@@ -931,7 +944,7 @@ function updateShootersList(){
                 
                 changeDivision(document.getElementById("selectDivision"));
                 spinner.style.visibility = 'hidden'//'visible'; //'hidden'
-                console.log(`Changed canvas done`);
+                
             });
 }
 

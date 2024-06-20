@@ -122,7 +122,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="importModalLabel">importar inscrições do Google Planilhas</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form class="row g-3" action="javascript:retriveSpreadsheet()">
@@ -149,7 +149,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary" id="btn-import" disabled >Importar</button>
       </div>
     </div>
@@ -162,7 +162,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="divisionModalLabel">Nova Divisão</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="input-group mb-3">
@@ -193,7 +193,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" onclick="addDivision()" data-bs-dismiss="modal">Incluir</button>
         </div>
       </div>
@@ -341,7 +341,7 @@
         </div>
       </div>
       <div class="form-floating mb-3 col-md-3">
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalReport">
+        <button type="button" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
           Relatório Passagens (R$)
         </button>
       </div> 
@@ -351,7 +351,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Relatório de Passagens</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <table class="table table-sm" id="table_report_tries" style="width:100% !important;">
@@ -373,7 +373,7 @@
         <p class="text-end">Total do evento: <b> R$ <span id="eventTotal">0</span>,00<b></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Close</button>
         <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
@@ -399,13 +399,13 @@
             </tbody>
           </table>
           <div class="text-center">
-            <button type="button" class="btn btn-info btn-sm rounded-circle"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+            <button type="button" class="btn btn-info btn-sm rounded-circle hide"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
           </div>
         </div>
       </div>
       <p></p>
-      <div class="form-floating col-md-12">
-        <input type="text" class="form-control" id="event-owners">
+      <div class="form-floating col-md-12 hide">
+        <input type="text" class="form-control hide" id="event-owners">
         <label for="event-owners">Adminstradores</label>
       </div> 
       <p></p>
@@ -414,12 +414,12 @@
           <span class="visually-hidden">Carregando...</span>
         </div> -->
           <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+        <button type="button" class="btn btn-primary hide" data-bs-toggle="modal" data-bs-target="#importModal">
           Importar Inscrições
         </button>
-        <button type="button" class="btn btn-secondary" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
+        <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
         <!-- <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button> -->
-        <button type="submit" class="btn btn-success" value="Salvar" ><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+        <button type="submit" class="btn btn-success hide" value="Salvar" ><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
       </div>
     </form>
       <p>&nbsp;</p>
