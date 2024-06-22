@@ -18,7 +18,7 @@ const handler = async (event, context) => {
   }
 
   // console.log(`user.email: ${user.email}`);
-  let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+  let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==""&&(user.app_metadata.roles.indexOf("admin")>=0));
   // console.log(`is Admin: ${isAdmin}`);
   try {
     

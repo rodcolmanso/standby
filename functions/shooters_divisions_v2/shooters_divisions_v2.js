@@ -31,6 +31,8 @@ const handler = async (event, context)=>{
         p_eventId=null;
         p_email=null;
         p_clockDuel=null;
+        p_docnum=null;
+
         if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
           p_eventId= event.queryStringParameters.eventId.toString();
           console.log(`p_eventId= ${p_eventId}`);
@@ -45,20 +47,27 @@ const handler = async (event, context)=>{
           console.log(`p_clockDuel= ${p_clockDuel}`);
         }
 
-        console.log(`p_email= ${p_email}`);
+        if(event.queryStringParameters.docnum&&event.queryStringParameters.docnum!==""){
+          p_docnum= event.queryStringParameters.docnum.toLowerCase();
+          console.log(`p_docnum= ${p_docnum}`);
+        }
 
-      if(p_eventId!==null&&p_email!==null){ // List shooter_division(inscriptions) detail
+        
+
+      if(p_eventId&&(p_email||p_docnum)){ // List shooter_division(inscriptions) detail
         
         console.log(`ENTROU NO EMAIL= ${p_email}`);
         
         let fEmail= {};
 
-        if(p_email==="all")
+        if(p_email==="all"||p_docnum==="all")
           fEmail= {shooters_divisions: {$ne: []}}
-        else{
+        else if(p_docnum!==null){
+          fEmail= {"docnum": p_docnum};
+        }else{
           fEmail= {"email": p_email};
         }
-
+        console.log('[shooters_divisions_v2] fEmail='+JSON.stringify(fEmail,null,2));
 
         const shootersDiv= await cShooters.aggregate([
           { "$addFields": { 
@@ -197,6 +206,7 @@ const handler = async (event, context)=>{
                                                     name: shooterDivisions.name
                                                     ,category: shooterDivisions.category
                                                     ,email: shooterDivisions.email.toLowerCase().trim()
+                                                    ,docnum: shooterDivisions.docnum
                                                     }}
                                             ,{upsert:true}
           

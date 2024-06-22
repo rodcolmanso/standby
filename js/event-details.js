@@ -81,6 +81,12 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
     }
 });
 
+document.getElementById('subscribe-docnum').addEventListener('input', function(e) {
+    var value = e.target.value;
+    var cpfPattern = formatCpf(value,true);
+    e.target.value = cpfPattern;
+    });
+
 subscribeModal.addEventListener('shown.bs.modal', () => {
 
     loggedUser= netlifyIdentity.currentUser();
@@ -101,25 +107,32 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         let isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
         if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
             document.getElementById('subscribe-email').disabled=false;
+            document.getElementById('subscribe-docnum').disabled=false;
             // document.getElementById('subscribe-name').disabled=false;
         }else{
             document.getElementById('subscribe-email').disabled=true;
+            document.getElementById('subscribe-docnum').disabled=true;
         }
         
         if(params.selected_division!==undefined){
             document.getElementById('select-subscribe-division').value= params.selected_division;   
         }
 
-        if(params.email!==undefined&&params.email!==''){ //editing inscription
-            document.getElementById('subscribe-email').value= params.email;
-            document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
+        // if(params.email!==undefined&&params.email!==''){ //editing inscription
+        if(params.email!==undefined&&params.docnum!==''){ //editing inscription
+            // document.getElementById('subscribe-email').value= params.email;
+            document.getElementById('subscribe-docnum').value= formatCpf(params.ducnum,false);
+            // document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
+            document.getElementById('subscribe-docnum').dispatchEvent(new Event("change"));
         }else{
         
         // if(params.inscription===undefined || params.inscription!=="clock"){
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
             }else{
-                promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
+                // promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
+                let _dbUser= getSessionDbUser();
+                promiseOfGetShootersDivisions(eventConfig._id, _dbUser.docnum, MODAL_TABLE_SUB_ID);
             }
         }
     }
@@ -183,18 +196,20 @@ netlifyIdentity.on('close', () => {
 });
 
 $(function() {
-    $("#subscribe-email").change(function() {
+    // $("#subscribe-email").change(function() {
+    $("#subscribe-docnum").change(function() {
         if(this.value===""){
             this.value= this.placeholder;
         }
 
-        if(!this.checkValidity()){
-            alert('Por favor, informe um email válido.');
+        // if(!this.checkValidity()){
+        if (!validaCPF(this.value)) {
+            alert('Por favor, informe um CPF válido.');
             this.focus();
         }else{
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
-            promiseOfGetShootersDivisions(eventConfig._id, this.value, MODAL_TABLE_SUB_ID);
+            promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
   
     });
@@ -317,7 +332,8 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
     if(_email===null || _email.trim()==="")
       _email="all";
 
-    let filterEmal= `&email=${_email}`;
+    // let filterEmal= `&email=${_email}`;
+    let filterEmal= `&docnum=${_email}`;
     
     applySpinners(true);
     fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${_eventId}${filterEmal}`, {
@@ -352,7 +368,8 @@ function popupSubscriptionModal(shooterDivisions){
 
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
-    document.getElementById('subscribe-email').placeholder= loggedUser.email;
+    // document.getElementById('subscribe-email').placeholder= loggedUser.email;
+    document.getElementById('subscribe-docnum').value= formatCpf(shooterDivisions.docnum,false);
     
     document.getElementById('subscribe-name').value= shooterDivisions.name;
 
@@ -362,11 +379,11 @@ function popupSubscriptionModal(shooterDivisions){
             document.getElementById('subscribe-name').disabled=true;
         }
 
-        document.getElementById('input-shooter-img').disabled=true;
+        // document.getElementById('input-shooter-img').disabled=true;
 
     }else{
         document.getElementById('subscribe-name').disabled=false;
-        document.getElementById('input-shooter-img').disabled=true;
+        // document.getElementById('input-shooter-img').disabled=true;
     }
     
     const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?code=${uuidv4()}`;
@@ -391,15 +408,18 @@ function popupSubscriptionModal(shooterDivisions){
 
 }  //popupSubscriptionModal(shooterDivisions){}
 
-function populateNewShooter(_email){
+function populateNewShooter(_docnum){
     // alert(`Novo atirador.`);
     shooterDivisions=[{}];
     shooterDivisions[0]._id="";
-    shooterDivisions[0].email= _email.toString().toLowerCase().trim();
+    // shooterDivisions[0].email= _docnum.toString().toLowerCase().trim();
+    shooterDivisions[0].email= _docnum.replace(/\D+/g, '').trim()+'@tpmonline.com.br';
+    shooterDivisions[0].docnum= _docnum.replace(/\D+/g, '').trim();
     shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:"";
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("subscribe-email").value=shooterDivisions[0].email;
+    document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
 
     document.getElementById("subscribe-check-clock").checked= eventConfig.clock;
     document.getElementById("subscribe-check-duel").checked= eventConfig.duel;
@@ -477,10 +497,14 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 row+=
                 `
                 <td class="align-middle text-end">
+                    <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">
                     <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?code='${uuidv4()}'" class="small-profile-avatar-pic rounded-circle" alt="...">
+                    </a>
                 </td>
                 <td class="text-start">
-                    <small>${shooterDivisions[l].name}</small>
+                    <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">
+                        <small>${shooterDivisions[l].name}</small>
+                    </a>
                 </td>`
             }
 
@@ -820,6 +844,7 @@ function buildEventDetailsPage(eventConfig){
 //     // });
 // }
 function displaySelectedImage(event, elementId) {
+    return 0;
     const selectedImage = document.getElementById(elementId);
     const fileInput = event.target;
 

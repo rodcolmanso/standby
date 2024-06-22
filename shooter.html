@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
@@ -8,33 +8,113 @@
   <script src="js/components/header.js" type="text/javascript" defer></script>
   <script src="js/components/select-division.js" type="text/javascript" defer></script>
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-  <!-- <script src="jquery.js" type="text/javascript"></script>
-  <script src="jquery.maskedinput.js" type="text/javascript"></script> -->
-
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
   
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Rodman">
+  <meta name="generator" content="Pris">
   <title>T.P.M.</title>
-  
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link href="/css/dashboard.css" rel="stylesheet">
-
   <style>
-    /* CSS personalizado aqui */
+    .text-bg-purple{
+      /* background-color :purple !important; */
+      background-color: rgba(84, 33, 187, 0.5) !important;
+      /* color: yellow; */
+    } 
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    /* @media screen and (min-width: 768px) {
+    body { padding-top: 100px; }
+} */
+
+    .b-example-divider {
+      width: 100%;
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .btn-bd-primary {
+      --bd-violet-bg: #712cf9;
+      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+      --bs-btn-font-weight: 600;
+      --bs-btn-color: var(--bs-white);
+      --bs-btn-bg: var(--bd-violet-bg);
+      --bs-btn-border-color: var(--bd-violet-bg);
+      --bs-btn-hover-color: var(--bs-white);
+      --bs-btn-hover-bg: #6528e0;
+      --bs-btn-hover-border-color: #6528e0;
+      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+      --bs-btn-active-color: var(--bs-btn-hover-color);
+      --bs-btn-active-bg: #5a23c8;
+      --bs-btn-active-border-color: #5a23c8;
+    }
+
+    .bd-mode-toggle {
+      z-index: 1500;
+    }
+
+    .bd-mode-toggle .dropdown-menu .active .bi {
+      display: block !important;
+    }
   </style>
 
+
+  <!-- Custom styles for this template -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/css/dashboard.css" rel="stylesheet">
 </head>
 <body>
   <header-component></header-component>
@@ -43,54 +123,58 @@
       <div class="col-md-4">
         <!-- Foto de perfil -->
         <ul class="list-group">
-          <li class="list-group-item">
-            <!-- <img id="pic-profile" src="caminho/para/foto-de-perfil.jpg" alt="Foto de Perfil" class="img-fluid mb-3"> -->
-            <div class="btn" style="padding-right:1px !important;">
-              <label for="input-shooter-img" >
-                <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" />
-              </label>
-              <input type="file" class="form-control d-none" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
-            </div>
-            <div class="row text-center">
-              <div class="col">
-                <input type="radio" class="btn-check" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
-                <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
+          <form action="javascript:saveShooter();">
+            <li class="list-group-item text-center">
+              <!-- <img id="pic-profile" src="caminho/para/foto-de-perfil.jpg" alt="Foto de Perfil" class="img-fluid mb-3"> -->
+              <input type="hidden" name="_id" value="" id="_id" />
+              <input type="hidden" name="imgChanged" value=false id="imgChanged" />
+              <div class="btn" style="padding-right:1px !important;">
+                <label for="input-shooter-img" >
+                  <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" />
+                </label>
+                <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
+              </div>
+              <div class="row text-center">
+                <div class="col">
+                  <input type="radio" class="btn-check disableshooter" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
+                  <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
 
-                <input type="radio" class="btn-check" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
-                <label class="btn btn-outline-info" for="modalOption0">Overall</label>
+                  <input type="radio" class="btn-check disableshooter" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
+                  <label class="btn btn-outline-info" for="modalOption0">Overall</label>
 
-                <input type="radio" class="btn-check" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
-                <label class="btn btn-outline-success" for="modalOption5">Senior</label>
+                  <input type="radio" class="btn-check disableshooter" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
+                  <label class="btn btn-outline-success" for="modalOption5">Senior</label>
+                </div>
               </div>
-            </div>
-            <p class="card-text">
-              <div class="form-floating mb-3">
-                <input type="email" class="form-control" required id="modalEmail" placeholder="name@example.com" onChange="getUserFromEmail(this.value)" >
-                <label for="modalEmail">E-mail</label>
+              <p class="card-text">
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control disableshooter" disabled required id="modalEmail" placeholder="name@example.com" >
+                  <label for="modalEmail">E-mail</label>
+                </div>
+              </p>
+              <p class="card-text">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control disableshooter" required id="docnum" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="modalEmail">CPF</label>
+                </div>
+              </p>
+              <p class="card-title">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control disableshooter" id="modalName" placeholder="John Wick" required maxlength="20">
+                  <label for="modalName">Nome</label>
+                </div>
+              </p>
+              <div class="row text-end hideshooter">
+                <div class="col">
+                  <button type="submit" class="btn btn-success disableshooter" value="Salvar" ><!--data-bs-dismiss="modal" -->
+                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+                </div>
               </div>
-            </p>
-            <p class="card-text">
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" required id="docnum" placeholder="000.000.001-99" onkeypress="$(this).mask('000.000.000-00');" >
-                <label for="modalEmail">CPF</label>
-              </div>
-            </p>
-            <p class="card-title">
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="modalName" placeholder="John Wick" required maxlength="20">
-                <label for="modalName">Nome</label>
-              </div>
-            </p>
-            <div class="row text-end">
-              <div class="col">
-                <button type="submit" class="btn btn-success" value="Salvar" ><!--data-bs-dismiss="modal" -->
-                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
-              </div>
-            </div>
-          </li>
+            </li>
+          </form>
         </ul>
         <p>&nbsp;</p>
-        <h4>Próximos Eventos:</h4>
+        <h4>PRÓXIMOS EVENTOS:</h4>
         <!-- Lista de próximos eventos -->
         <ul class="list-group">
           <li class="list-group-item">
@@ -123,7 +207,7 @@
           <!-- Calendário será renderizado aqui -->
         </div>
         <!-- Próximos eventos -->
-        <h4>Classificação 2024</h4>
+        <h5>CLASSIFICAÇÃO 2024</h5>
         <!-- Tabela de classificação -->
         <table class="table">
           <thead>
@@ -147,9 +231,9 @@
                   </span>
                 </p>
               </td>
-              <td>RT692 357mag<i class="bi bi-dot" style="color:red !important;"></i></td>
-              <td>Typhoon</td>
-              <td>Fevereiro</td>
+              <td><span class="text-small">RT692 357mag<i class="bi bi-dot" style="color:red !important;"></i></span></td>
+              <td><span class="text-small">Typhoon</span></td>
+              <td><span class="text-small">Fevereiro</span></td>
             </tr>
             <tr>
               <td><b>Força Livre</b></td>
@@ -161,9 +245,9 @@
                   </span>
                 </p>
               </td>
-              <td>Brigade 9mm<i class="bi bi-dot" style="color:red !important;"></i></td>
-              <td>CT Raposo</td>
-              <td>Fevereiro</td>
+              <td><span class="text-small">Brigade 9mm<i class="bi bi-dot" style="color:red !important;"></i></span></td>
+              <td><span class="text-small">CT Raposo</span></td>
+              <td><span class="text-small">Fevereiro</span></td>
             </tr>
             <tr>
               <td><b>Pistola</b></td>
@@ -175,9 +259,9 @@
                   </span>
                 </p>
               </td>
-              <td>Chiappa 22lr<i class="bi bi-dot" style="color:red !important;"></i></td>
-              <td>CT Rangers</td>
-              <td>Março</td>
+              <td><span class="text-small">Chiappa 22lr<i class="bi bi-dot" style="color:red !important;"></i></span></td>
+              <td><span class="text-small">CT Rangers</span></td>
+              <td><span class="text-small">Março</span></td>
             </tr>
             <!-- Mais linhas conforme necessário -->
           </tbody>
@@ -197,6 +281,7 @@
     // Código JavaScript para inicializar o calendário de resultados e o gráfico de evolução
     // Exemplo de código JavaScript usando Chart.js para criar um gráfico
     const ctx = document.getElementById('grafico-evolucao').getContext('2d');
+
     const graficoEvolucao = new Chart(ctx, {
       type: 'line',
       data: {
@@ -232,8 +317,9 @@
       }
     });
   </script>
-<script src="./js/components/session-mgnt.js"></script>
-<script src="./js/shooter-idx.js"></script>
+<script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
+<script src="./js/shooter-idx.js" type="text/javascript" defer></script>
+
 
 </body>
 </html>

@@ -21,8 +21,12 @@
     - Traduzir Wedget - Done
     - Wedget- tirar o destaque do botbotão logout - Done (fecha quando logdin)
     - Wedget- caber na tela de celuar (responsive - Done
-    - Wedget - habilitar google)
-
+    - Wedget - habilitar google) - Done
+    - Cadastrar CPF para quem ja está na base com CPF inválido Done
+    - Cadastrar Novo login na base, com seu CPF Done
+    - Alterar tela de inscrição para pedir CPF; 
+       (quais emails precisão de CPF? [atiradores reais que ja estão na base])
+    -Mudar todos os emails sem login para @tpmonline.com.br
 
 
 

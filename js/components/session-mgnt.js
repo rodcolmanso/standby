@@ -81,7 +81,18 @@ async function loadingUserSession(user){
                         dbUser= json[0];
                         console.log(`DbUser logged. Name:${dbUser._id}`);
                         setSessionDbUser(dbUser);
-                    }else console.log(`Identity user has no DbUser yet. User email:${user.email}`);
+                        // window.$('#modalDocnum').modal();
+                    }else{ 
+                        console.log(`Identity user has no DbUser yet. User email:${user.email}`);
+                    };
+                    if(!dbUser|| !dbUser.docnum ||!validaCPF(dbUser.docnum)){   
+                        jQuery.noConflict();
+                        (function( $ ) {
+                        $(function() {
+                            $('#modalDocnum').modal('show');
+                        });
+                        })(jQuery);
+                    }
                     setAvatarPic();
                     
                 }
@@ -105,8 +116,137 @@ netlifyIdentity.on('open', function() {
 
   });
 
+  function formatCpf(cpf, valid){
+
+    if(valid)
+        cpf= cpf.replace(/\D/g, '') // Remove qualquer coisa que não seja número
+
+    return cpf.replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o terceiro dígito
+    .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o sexto dígito
+    .replace(/(\d{3})(\d)/, '$1-$2') // Adiciona traço após o nono dígito
+    .replace(/(-\d{2})\d+?$/, '$1'); // Impede entrada de mais de 11 dígitos
+
+}
+
+
+const modalDocnum = document.getElementById('modalDocnum');
+modalDocnum.addEventListener('hidden.bs.modal', function (event) {
+
+    // location.reload(true);
+    
+  });
+
+  const btnCloseDocnum = document.getElementById('btnCloseDocnum');
+  btnCloseDocnum.addEventListener('click', function(e) {
+
+    // if(!confirm('O CPF é necessário para registrar suas competições, esses dados não serão compartilhados com mais ninguém. Inserir CPF agora?')){
+    if(!confirm('Você não poderá se inscrever nas competições sem o seu CPF. Informar CPF agora?')){
+        clearSessionDbUser();
+        netlifyIdentity.logout();
+        jQuery.noConflict();
+        (function( $ ) {
+        $(function() {
+            $('#modalDocnum').modal('hide');
+        });
+        })(jQuery);
+    }
+  });
+  
+
+const btnSaveDocnum = document.getElementById('btnSaveDocnum');
+btnSaveDocnum.addEventListener('click', function(e) {
+    var _docnum = document.getElementById('input-modalDocnum').value;
+    if (!validaCPF(_docnum)) {
+      e.preventDefault(); // Impede o envio do formulário
+      alert('CPF inválido. Verifique o número digitado.');
+      document.getElementById('input-modalDocnum').focus(); // Foca no campo de CPF após o erro
+      return 0;
+    }
+    
+    let _userDb= getSessionDbUser();
+    if(!_userDb){
+        _userDb={};
+        _userDb.email= netlifyIdentity.currentUser().email;
+        _userDb.name= netlifyIdentity.currentUser().user_metadata.full_name;
+        _userDb.category=0;
+    }
+    _userDb.docnum= _docnum.replace(/\D+/g, '');
+
+    applySpinners(true);
+    fetch('/.netlify/functions/shooters?replace=1', {
+        method: "PATCH",
+        body: JSON.stringify(_userDb),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+           ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`
+        }
+        })
+        // .then(response => response.json())
+        .then(function(response) {
+            console.log(response.status); // Will show you the status
+
+            if (!response.ok) {
+                if(response.status===409){
+                    alert(`ERRO! CPF já cadastrado para outro Atirador.`);
+                    document.getElementById('docnum').value= shooterData.docnum;
+                }
+                if(response.status===408){
+                    alert(`ERRO! Email já cadastrado para outro Atirador.`);
+                    document.getElementById('modalEmail').value= shooterData.email;
+                }
+                if(response.status===401){
+                    alert(`ERRO! Você não tem permissão para executar essa ação.`);
+                }
+                throw new Error("HTTP status " + response.status);
+            }
+            return response.json();
+        })
+        .then(json => {
+            let _a='';
+            let _oa='o';
+            if(json.category===2){
+                _a='a';
+                _oa='a';
+            }
+            _userDb._id= json._id;
+            // if(netlifyIdentity.currentUser().email===json.email){
+                setSessionDbUser(_userDb);
+                loadingUserSession(netlifyIdentity.currentUser());
+                // buildShooterForm();
+            // }
+            alert('Atirador'+_a+' '+json.name+' atualizad'+_oa+' com sucesso.');
+            jQuery.noConflict();
+            (function( $ ) {
+            $(function() {
+                $('#modalDocnum').modal('hide');
+            });
+            })(jQuery);
+            
+        })
+        .catch(err => {
+            console.log(`Error updating atirador, error: ${err.toString()} `);
+            alert('Erro atualizando cpf do atirador: '+ err.toString());
+            clearSessionDbUser();
+            netlifyIdentity.logout();
+    })
+        .finally(()=> {applySpinners(false);});
+
+  });
+
+  document.getElementById('input-modalDocnum').addEventListener('input', function(e) {
+    var value = e.target.value;
+    var cpfPattern = value.replace(/\D/g, '') // Remove qualquer coisa que não seja número
+                          .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o terceiro dígito
+                          .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o sexto dígito
+                          .replace(/(\d{3})(\d)/, '$1-$2') // Adiciona traço após o nono dígito
+                          .replace(/(-\d{2})\d+?$/, '$1'); // Impede entrada de mais de 11 dígitos
+    e.target.value = cpfPattern;
+  });
+
 netlifyIdentity.setLocale('pt');
 netlifyIdentity.on('login', user => {
+    
+    applySpinners(true);
     loadingUserSession(user);
     configPermissions(true);
     //display fields
@@ -115,58 +255,22 @@ netlifyIdentity.on('login', user => {
         var btnClose = iframe.contentWindow.document.querySelector(".btnClose");
         btnClose.click();
     }
-    console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
-    console.log(`user.user_metadata.admin_events= ${user.user_metadata.admin_events}`);
+    applySpinners(false);
+    // console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
+    // console.log(`user.user_metadata.admin_events= ${user.user_metadata.admin_events}`);
+
 });
 
 netlifyIdentity.on('logout', () => {
     clearSessionDbUser();
     clearSessionEventConfig()
     configPermissions(false);
+    console.log('got logout on SESSION-MGNT');
 
 });
 
 function configPermissions(onoff){
 
-    // let _button = document.querySelectorAll("button");
-    // [].forEach.call(_button,btn=>{
-    //     btn.disabled=onoff;
-    //     // document.getElementById('selectDivision').disabled=onoff;
-
-    //     if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-warning")
-    //         ||btn.getAttribute('class').includes("btn-secondary")
-    //         ||btn.getAttribute('class').includes("btn-success")
-    //         ||btn.getAttribute('class').includes("btn-danger")
-    //         ||btn.getAttribute('class').includes("btn-primary"))) {
-    //         if(onoff)
-    //             btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-    //         else
-    //             btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-    //     }
-
-    //     spans= btn.querySelectorAll("span");
-    //     [].forEach.call(spans,span=>{
-    //         if(span.getAttribute('class').includes("spinner")){
-    //             if(onoff){
-    //                 span.style.visibility = 'visible'//'visible'; //'hidden'
-    //             }else{
-    //                 span.style.visibility = 'hidden'//'visible'; //'hidden'
-    //             }
-    //         }
-    //     });
-    // });
-
-    // let _input = document.querySelectorAll('input');
-    // [].forEach.call(_input,rdo=>{
-    //     if(rdo.id!=='subscribe-email'){
-    //         rdo.disabled=onoff;
-    //     }
-    // });
-    
-    // let _checkbox = document.querySelectorAll('input[type="checkbox"]');
-    // [].forEach.call(_checkbox,rdo=>{
-    //     rdo.disabled=onoff;
-    // });
 }
 
 function clearSessionDbUser(){
@@ -239,7 +343,8 @@ function uuidv4() {
   }
 
 function setAvatarPic(){
-    const _id= getSessionDbUser()===null?(Math.random()*1000000).toString():getSessionDbUser()._id;
+    const _dbUser= getSessionDbUser();
+    const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;
     document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?code="+uuidv4();
     // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
 
@@ -247,7 +352,7 @@ function setAvatarPic(){
     document.getElementById("loginout").style.display =  (netlifyIdentity.currentUser()===null?'':'none');
 
     // document.getElementById("loginout").innerHTML+= (netlifyIdentity.currentUser()===null?'Login':'Logout');
-    document.getElementById("avatarUserName").innerHTML= (netlifyIdentity.currentUser()===null?'Perfil':netlifyIdentity.currentUser().user_metadata.full_name);
+    document.getElementById("avatarUserName").innerHTML= (netlifyIdentity.currentUser()===null?'Perfil':(_dbUser?_dbUser.name:netlifyIdentity.currentUser().user_metadata.full_name));
 }
 
 function setCookie(cname, cvalue, exdays) {
@@ -280,7 +385,6 @@ function setCookie(cname, cvalue, exdays) {
     if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
     // if(!isAdmin||!user||user.user_metadata.admin_events.indexOf(user.email)<0){
         onoff= true;
-        console.log('Is not Admin');
     }
 
     let _button = document.querySelectorAll("button");
@@ -366,6 +470,13 @@ function setCookie(cname, cvalue, exdays) {
 
 function applySpinners(onoff){
 
+    if(onoff){
+        // Set the cursor ASAP to "Wait"
+        document.body.style.cursor='wait';
+    }else{// When the window has finished loading, set it back to default...
+        document.body.style.cursor='default';
+    }
+
     let _spinner= document.getElementById('spinner');
     if(_spinner){
         _spinner.visibility=onoff;
@@ -419,7 +530,8 @@ function applySpinners(onoff){
 
     let _input = document.querySelectorAll('input');
     [].forEach.call(_input,rdo=>{                                
-        if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
+        // if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
+        if(rdo.id!=='subscribe-docnum'&& !rdo.classList.contains("Inputdisabled")
         ){
             rdo.disabled= onoff;    
         }
@@ -428,3 +540,25 @@ function applySpinners(onoff){
     disableInputs();
     
 }
+
+function validaCPF(cpf) {
+    cpf = cpf.replace(/\D+/g, '');
+    if (cpf.length !== 11) return false;
+  
+    let soma = 0;
+    let resto;
+    if (/^(\d)\1{10}$/.test(cpf)) return false; // Verifica sequências iguais
+  
+    for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(9, 10))) return false;
+  
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+  
+    return true;
+  }

@@ -48,8 +48,8 @@ async function loadPage(){
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
 
-    // document.getElementById('eventTitleSelect').innerHTML=eventConfig.name+" - Contra o Relógio";
-    document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
+    // document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
+    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     applySpinners(false);
     if(eventConfig===null){
         alert(`Evento não encontrado`);
@@ -68,7 +68,7 @@ window.onload = async () => {
     // eventConfig = await promiseOfEventConfig;
     playersArray= await promiseOfPlayers(eventConfig._id);
     applySpinners(false);
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    // document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
     buildDivisions(eventConfig.divisions);

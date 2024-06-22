@@ -5,7 +5,10 @@
   <script src="assets/js/color-modes.js"></script>
   <script src="js/components/header.js" type="text/javascript" defer></script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
 
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js" type="text/javascript" defer></script> -->
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" type="text/javascript" defer></script>
@@ -168,18 +171,19 @@
                               <div class="card" >
                                 <div class="row gy-2 gx-3" >
                                   <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important;"-->
-                                    <div class="btn" style="padding-right:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important; padding-bottom:1px !important;" -->
-                                      <label for="input-shooter-img" style="max-height:131px !important;">
+                                    <div class="" disabled style="padding-right:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important; padding-bottom:1px !important;" -->
+                                      <!-- <label for="input-shooter-img" style="max-height:131px !important;"> -->
                                         <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:88px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." />
                                       </label>
-                                      <input type="file" class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" />
+                                      <!-- <input type="file" disabled class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" /> -->
                                     </div>
                                   </div>
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
                                     <div class="was-validated form-floating">
                                       <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
-                                      <input disabled type="email" required placeholder="" class="form-control nodisable" id="subscribe-email">
-                                      <label for="subscribe-email" >Email</label>
+                                      <input disabled type="hidden" required placeholder="" class="form-control nodisable" id="subscribe-email">
+                                      <input disabled type="text" required placeholder="" class="form-control nodisable" id="subscribe-docnum">
+                                      <label for="subscribe-docnum" >CPF</label>
                                     </div>
                                     <div class="form-floating">
                                       <input disabled type="text" required class="form-control nodisable" id="subscribe-name">
@@ -411,9 +415,10 @@
 
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
   <!--<script src="https://code.jquery.com/jquery-1.9.1.js"></script>-->
-
-  <script src="./js/components/session-mgnt.js"></script>
-  <script src="./js/event-details.js"></script>
+  
+  <script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
+  <script src="./js/event-details.js" type="text/javascript" defer></script>
+  
   <script type="text/javascript">
      $('#date').datepicker({
     startView: 0,

@@ -223,7 +223,7 @@ window.onload = async () => {
     netlifyIdentity.on('close', () => {
         const user= netlifyIdentity.currentUser();
 
-        let isAdmin= (netlifyIdentity&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
+        let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
         
         if(eventConfig!==null && eventConfig!==undefined && user!==null && (isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
             disableInputsHere(false);
