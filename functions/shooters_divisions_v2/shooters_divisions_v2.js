@@ -28,6 +28,13 @@ const handler = async (event, context)=>{
 
     switch (event.httpMethod){
       case 'GET':
+
+        const user= context.clientContext.user;
+
+        if(!user){
+          console.log(`User not logged!`);
+        }else console.log(`User logged!`);
+
         p_eventId=null;
         p_email=null;
         p_clockDuel=null;
@@ -52,7 +59,16 @@ const handler = async (event, context)=>{
           console.log(`p_docnum= ${p_docnum}`);
         }
 
-        
+        // console.log(`user.email: ${user.email}`);
+        let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+        let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+
+        // console.log(`JSON.stringify(user): ${JSON.stringify(user,null,2)}`);
+        // console.log(`user.user_metadata: ${user.user_metadata}`);
+        // console.log(`user.user_metadata.admin_events: ${user.user_metadata.admin_events}`);
+        // console.log(`user.user_metadata.admin_events: ${JSON.stringify(user.user_metadata.admin_events)}`);
+        // console.log(`is Admin: ${isAdmin}`);
+        // console.log(`is Event Admin: ${isEventAdmin}`);
 
       if(p_eventId&&(p_email||p_docnum)){ // List shooter_division(inscriptions) detail
         
@@ -88,6 +104,26 @@ const handler = async (event, context)=>{
           // ,{$match: {shooters_divisions: {$ne: []}}}
           ,{$project:{"eventId":0}}
           ]).toArray();
+
+          if(!isAdmin&&!isEventAdmin)
+          for(let i=0;i<shootersDiv.length;i++){
+            if(!user||user.email!==shootersDiv[i].email){
+              
+              shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
+
+              // const emailsize= shootersDiv[i].email.indexOf('@');
+              // if(emailsize<4){
+              //   shootersDiv[i].email='***'+  shootersDiv[i].email.substring(emailsize-1);
+              // }else{
+              //   let asterics='';
+              //   for(let i=0;i<emailsize-3;i++)
+              //     asterics+='*';
+
+              //   shootersDiv[i].email=  shootersDiv[i].email.substring(0,2)+ asterics + shootersDiv[i].email.substring(shootersDiv[i].email.indexOf('@')-1);
+
+              // }
+            }
+          }
 
           return  {
             statusCode: 200,
@@ -138,6 +174,26 @@ const handler = async (event, context)=>{
           ,{$match: {registered: {$ne: []}}}
           ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
           ]).sort({"registered.score":1}).toArray();
+
+          let user= context.clientContext.user;
+          for(let i=0;i<shootersDiv.length;i++){
+            if(!user||user.email!==shootersDiv[i].email){
+              
+              shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
+
+              // const emailsize= shootersDiv[i].email.indexOf('@');
+              // if(emailsize<4){
+              //   shootersDiv[i].email='***'+  shootersDiv[i].email.substring(emailsize-1);
+              // }else{
+              //   let asterics='';
+              //   for(let i=0;i<emailsize-3;i++)
+              //     asterics+='*';
+
+              //   shootersDiv[i].email=  shootersDiv[i].email.substring(0,2)+ asterics + shootersDiv[i].email.substring(shootersDiv[i].email.indexOf('@')-1);
+
+              // }
+            }
+          }
 
             return  {
               statusCode: 200,

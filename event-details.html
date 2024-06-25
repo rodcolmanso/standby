@@ -181,12 +181,12 @@
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
                                     <div class="was-validated form-floating">
                                       <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
-                                      <input disabled type="hidden" required placeholder="" class="form-control nodisable" id="subscribe-email">
-                                      <input disabled type="text" required placeholder="" class="form-control nodisable" id="subscribe-docnum">
+                                      <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">
+                                      <input disabled type="text" required placeholder="" class="form-control " id="subscribe-docnum">
                                       <label for="subscribe-docnum" >CPF</label>
                                     </div>
                                     <div class="form-floating">
-                                      <input disabled type="text" required class="form-control nodisable" id="subscribe-name">
+                                      <input disabled type="text" required class="form-control " id="subscribe-name">
                                       <label for="subscribe-name" onchange="updatePicOrName()" >Atirador</label>
                                     </div>
                                   </div>
@@ -202,32 +202,32 @@
                               <div class="row gy-2 gx-3">
                                 <div class=" card-body col-auto" style="padding-right:1px !important;" >
                                   <div class="form-floating " > <!--col-md-2-->
-                                    <select class="form-select nodisable" required id="select-subscribe-division" aria-label="Floating label select example">
+                                    <select class="form-select " required id="select-subscribe-division" aria-label="Floating label select example">
                                       <option selected></option>
                                     </select>
                                     <label for="select-subscribe-division">Divisão</label>
                                   </div>
                                   <div class="col-auto" >
                                     <div class="form-floating ">
-                                      <input type="text" class="form-control nodisable" required id="subscribe-gun">
+                                      <input type="text" class="form-control " required id="subscribe-gun">
                                       <label for="subscribe-gun">Arma</label>
                                     </div>  
                                   </div>
                                 </div> <!--min-width: 150px;-->
                                 <div class="card-body col-auto" style=" padding-left:4px !important; padding-right:8px !important; padding-top:20px !important; text-align: start;">
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input nodisable" type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
+                                    <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
                                     <label class="form-check-label" for="subscribe-check-clock"><small class="text-muted">Relógio</small></label>
                                   </div>
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input nodisable" type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
+                                    <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
                                     <label class="form-check-label" for="subscribe-check-duel"><small class="text-muted">Duelo</small></label>
                                   </div>
                                   <div>
                                     <label style="padding-top: 8px !important;" for="subscribe-optic"><small class="text-muted">Red dot</small></label>
                                   </div>
                                   <div class="form-check "> <!--form-switch--><!--role="switch"-->
-                                    <input class="form-check-input nodisable" type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
+                                    <input class="form-check-input " type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
                                   </div>
                                 </div>
                               </div>
@@ -236,7 +236,7 @@
                       </div>
                       <br>
                       <div class="">
-                        <button type="submit" class=" btn btn-warning btn-xl nodisable" id="btn-add" value="">
+                        <button type="submit" class=" btn btn-warning btn-xl" id="btn-add" value="">
                           <div class="text-center" id="btnInscrever">
                             Inscrever <i class="fa-solid fa-angle-down"></i>
                         </div>

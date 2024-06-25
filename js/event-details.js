@@ -41,6 +41,47 @@ function hrefMatches(){
 //  netlifyIdentity.on('logout', () => {
 //     window.location.href = window.location="/index.html";
 // });
+function enableShooterFields(){
+    
+    if(document.getElementById('subscribe-email').value===loggedUser.email){
+        
+        document.getElementById('subscribe-gun').classList.add('nodisable');
+        document.getElementById('subscribe-gun').disabled=false;
+
+        document.getElementById('select-subscribe-division').classList.add('nodisable');
+        document.getElementById('select-subscribe-division').disabled=false;
+
+        document.getElementById('subscribe-name').classList.add('nodisable');
+        document.getElementById('subscribe-name').disabled=false;
+
+        document.getElementById('subscribe-check-clock').classList.add('nodisable');
+        document.getElementById('subscribe-check-clock').disabled=false;
+
+        document.getElementById('subscribe-check-duel').classList.add('nodisable');
+        document.getElementById('subscribe-check-duel').disabled=false;
+
+        document.getElementById('subscribe-optic').classList.add('nodisable');
+        document.getElementById('subscribe-optic').disabled=false;
+
+        document.getElementById('btn-add').classList.add('nodisable');
+        document.getElementById('btn-add').disabled=false;
+
+
+        document.getElementById('subscribe-check-clock').disabled= !eventConfig.clock;
+        document.getElementById('subscribe-check-clock').checked= eventConfig.clock;
+
+        document.getElementById('subscribe-check-duel').disabled= !eventConfig.duel;
+        document.getElementById('subscribe-check-duel').checked= eventConfig.duel;
+
+        if(!eventConfig.duel){
+            document.getElementById('subscribe-check-duel').style= 'background-color:';
+        }
+        if(!eventConfig.clock||!eventConfig.duel){
+            document.getElementById('subscribe-check-clock').disabled= true;
+            document.getElementById('subscribe-check-duel').disabled= true;
+        }
+    }
+}
 
 
 const subscribeModal = document.getElementById('exampleModal');
@@ -106,24 +147,29 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 
         let isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
         if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
-            document.getElementById('subscribe-email').disabled=false;
+            // document.getElementById('subscribe-email').disabled=false;
             document.getElementById('subscribe-docnum').disabled=false;
+            document.getElementById('subscribe-docnum').disabled=false;
+            document.getElementById('select-subscribe-division').disabled=false;
+            
             // document.getElementById('subscribe-name').disabled=false;
         }else{
             document.getElementById('subscribe-email').disabled=true;
             document.getElementById('subscribe-docnum').disabled=true;
+            document.getElementById('select-subscribe-division').disabled=true;
         }
         
         if(params.selected_division!==undefined){
             document.getElementById('select-subscribe-division').value= params.selected_division;   
         }
 
-        // if(params.email!==undefined&&params.email!==''){ //editing inscription
-        if(params.email!==undefined&&params.docnum!==''){ //editing inscription
-            // document.getElementById('subscribe-email').value= params.email;
+        
+        if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
             document.getElementById('subscribe-docnum').value= formatCpf(params.ducnum,false);
-            // document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
             document.getElementById('subscribe-docnum').dispatchEvent(new Event("change"));
+        }else if(params.email&&params.email!==''){ //editing inscription
+            document.getElementById('subscribe-email').value= params.email;
+            document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
         }else{
         
         // if(params.inscription===undefined || params.inscription!=="clock"){
@@ -181,6 +227,7 @@ async function loadPage(){
         applySpinners(true);
         eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
         applySpinners(false);
+        enableShooterFields();
 
         if(eventConfig===null){
             alert(`Evento não encontrado`);
@@ -211,6 +258,24 @@ $(function() {
             // getFullShooterDivision(eventConfig, this.value);
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
+  
+    });
+});
+
+$(function() {
+    $("#subscribe-email").change(function() {
+        if(this.value===""){
+            this.value= this.placeholder;
+        }
+
+        // if(!this.checkValidity()){
+        //     alert('Por favor, informe um email válido.');
+        //     this.focus();
+        // }else{
+            // alert('Vai submeter busca de shooter');
+            // getFullShooterDivision(eventConfig, this.value);
+            promiseOfGetShootersDivisions(eventConfig._id, this.value, MODAL_TABLE_SUB_ID);
+        // }
   
     });
 });
@@ -323,7 +388,7 @@ const promiseOfDeleteSub = (id, ldx, idx, _tableId)=>{
                         // getFullEventShootersDivision(eventConfig);
                     })
                     .catch(err => console.log(`Error subscribing, error: ${err.toString()}`))
-                    .finally(()=> applySpinners(false));
+                    .finally(()=> {applySpinners(false);enableShooterFields();});
             }
 }
 
@@ -332,14 +397,22 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
     if(_email===null || _email.trim()==="")
       _email="all";
 
-    // let filterEmal= `&email=${_email}`;
-    let filterEmal= `&docnum=${_email}`;
+    let filterEmal= '';
+    if(_email.indexOf('@')<0){ //docnum
+        filterEmal= `&docnum=${_email}`;
+    }else{
+        filterEmal= `&email=${_email}`;
+    }
+
+    let _header= {"Content-type": "application/json; charset=UTF-8"}
+    if(loggedUser && loggedUser.token && loggedUser.token.access_token){
+        _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
+    }
     
     applySpinners(true);
     fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${_eventId}${filterEmal}`, {
-            method: "GET",
-            headers: {"Content-type": "application/json; charset=UTF-8"}
-            })
+            method: "GET"
+            ,headers: _header})
             .then(response => response.json()) 
             .then(json => {
                 
@@ -359,7 +432,7 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
                 return json;
             })
             .catch(err => console.log(`Error getting shooter from email: ${err}`))
-            .finally(()=> applySpinners(false));
+            .finally(()=> {applySpinners(false);enableShooterFields();});
 
 }
 
@@ -368,12 +441,14 @@ function popupSubscriptionModal(shooterDivisions){
 
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
-    // document.getElementById('subscribe-email').placeholder= loggedUser.email;
+    document.getElementById('subscribe-email').placeholder= loggedUser.email;
     document.getElementById('subscribe-docnum').value= formatCpf(shooterDivisions.docnum,false);
     
     document.getElementById('subscribe-name').value= shooterDivisions.name;
 
     if(shooterDivisions.email!==loggedUser.email){
+        
+        enableShooterFields();
 
         if(shooterDivisions.name!==""){
             document.getElementById('subscribe-name').disabled=true;
@@ -389,20 +464,6 @@ function popupSubscriptionModal(shooterDivisions){
     const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?code=${uuidv4()}`;
     document.getElementById('shooter-img').src= uri;
     
-    document.getElementById('subscribe-check-clock').disabled= !eventConfig.clock;
-    document.getElementById('subscribe-check-clock').checked= eventConfig.clock;
-
-    document.getElementById('subscribe-check-duel').disabled= !eventConfig.duel;
-    document.getElementById('subscribe-check-duel').checked= eventConfig.duel;
-
-    if(!eventConfig.duel){
-        document.getElementById('subscribe-check-duel').style= 'background-color:';
-    }
-
-    if(!eventConfig.clock||!eventConfig.duel){
-        document.getElementById('subscribe-check-clock').disabled= true;
-        document.getElementById('subscribe-check-duel').disabled= true;
-    }
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
     // new DataTable('#subscribe-table-subs-head');
 
@@ -439,13 +500,6 @@ function populateNewShooter(_docnum){
 }
 
 
-// async function getFullEventShootersDivision(eventConfig){
-async function popupAllSubscriptionsModal(allShootersDivisions){
-
-    
-}
-
-
 function buildDivisions(eventDivisions){
     const selectDivisions= document.getElementById('select-subscribe-division');
     while (selectDivisions.options.length > 0)
@@ -470,7 +524,21 @@ function getChecked(b, color){
 function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
     let row='';
+    let _subs="";
+    let _disabled="";
+    let isAdmin=true;
+    
+
+    isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
+    isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1));
+
+    
+    
+    // if(!isAdmin){
+    //     _disabled="disabled"
+    // }
     gunsOfShooterDivisions=[];
+
     for(let l=0;l<shooterDivisions.length;l++){
         for(let i=0;i<shooterDivisions[l].shooters_divisions.length;i++){
             gunsOfShooterDivisions.push(shooterDivisions[l]._id+shooterDivisions[l].divisionId+shooterDivisions[l].shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
@@ -480,24 +548,21 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             // <td class="text-start d-none d-sm-table-cell">
             //     <small>${shooterDivisions.name}</small>
             // </td>
+
+            if(isAdmin||(loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim()))
+                nodisableClass='nodisable"';
+            else
+                nodisableClass='" disabled ';
+
             row+=`<tr>`;
             
-            let _subs="";
-            let _disabled="";
-            let isAdmin=true;
             if(tb.id=== MODAL_TABLE_ALL_SUBS_ID){
-
-                isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
-                isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1));
-                if(!isAdmin){
-                    _disabled="disabled"
-                }
 
                 _subs='-subs';
                 row+=
                 `
                 <td class="align-middle text-end">
-                    <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">
+                    <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_new">
                     <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?code='${uuidv4()}'" class="small-profile-avatar-pic rounded-circle" alt="...">
                     </a>
                 </td>
@@ -514,26 +579,26 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             </td>
             <td class="text-start">
                 <div class="form-check form-switch">
-                    <input class="form-check-input Input${_disabled}" type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" ${_disabled}>
+                    <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" >
                     <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><small class="text-muted">Relógio</small></label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input Input${_disabled}" type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled} > 
+                    <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" > 
                     <label class="form-check-label" for="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}"><small class="text-muted">Duelo</small></label>
                 </div>
             </td>
             <td class="text-end">
-                <input type="text" class="form-control form-control-sm Input${_disabled}" id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')" ${_disabled}> 
+                <input type="text" class="form-control form-control-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
             </td>
             <td>
                 <div class="form-check"> <!--form-switch--> <!--role="switch" -->
-                    <input class="form-check-input Input${_disabled}" type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" ${_disabled}>
+                    <input class="form-check-input ${nodisableClass} type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')">
                 </div>
             </td>
             <td class="text-end">`;
-            if(isAdmin){
+            if(isAdmin||(loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim())){
                 row+=`
-                <button onClick="promiseOfDeleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i},'${tb.id}')" class="btn btn-sm btn-danger rounded-circle" value="${shooterDivisions[l].shooters_divisions[i]._id}" ${_disabled}>-</button> `;
+                <button onClick="promiseOfDeleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i},'${tb.id}')" class="btn btn-sm btn-danger rounded-circle ${nodisableClass} value="${shooterDivisions[l].shooters_divisions[i]._id}">-</button> `;
             }
             row+=
             `</td></tr>`;
@@ -651,7 +716,7 @@ const promiseOfPutShootersDivisions = (_eventId, _email, sD, modalId)=>{
             
         })
         .catch(err => console.log(`Error subscribing, error: ${err.toString()} `))
-        .finally(()=> applySpinners(false));
+        .finally(()=> {applySpinners(false);enableShooterFields();});
 }
 
 function checkClock(checkClock,checkDuel){

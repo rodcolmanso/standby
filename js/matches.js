@@ -244,7 +244,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                        <a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
+                        <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                        <a href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
                             <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
@@ -271,7 +272,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
-                    <a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
+                    <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                    <a href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
                         <img  style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
@@ -364,7 +366,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
+                    <a href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
                         <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </a>
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
@@ -383,7 +387,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block">
                 <div class="row g-0">
                     <div class="col-md-4 small-avatar-pic" >
+                    <a href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
                         <img  style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    </a>
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >

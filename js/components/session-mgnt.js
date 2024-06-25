@@ -390,16 +390,8 @@ function setCookie(cname, cvalue, exdays) {
     let _button = document.querySelectorAll("button");
     [].forEach.call(_button,btn=>{
         
-        if(
-        (btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0)
+    if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0)
         &&(btn.getAttribute('type')&&btn.getAttribute('type').indexOf('search')<0)
-        // &&(["btn-close","btn-secondary","btn btn-secondary"].indexOf(btn.getAttribute('class'))<0)&&
-        // (["nav-link text-small","nav-link text-small active"].indexOf(btn.getAttribute('class'))<0)&&
-        // (["light","dark","auto"].indexOf(btn.getAttribute('data-bs-theme-value'))<0)&&
-        // (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
-        // (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
-
-        // (["bt_clock","bt_matches","loginAvatar","bt_share", "bd-theme"].indexOf(btn.getAttribute('id')))<0)
         ){
             btn.disabled=onoff;
         }
@@ -411,6 +403,7 @@ function setCookie(cname, cvalue, exdays) {
                 btn.style.visibility = 'hidden'//'visible'; //'hidden'
         }
     });
+    
 
     let _input = document.querySelectorAll("input");
     [].forEach.call(_input,btn=>{
@@ -466,6 +459,22 @@ function setCookie(cname, cvalue, exdays) {
                     btn.style.visibility = 'hidden'//'visible'; //'hidden'
             }
         });
+
+        _input = document.querySelectorAll("select");
+    [].forEach.call(_input,btn=>{
+        if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+            && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0)
+            btn.disabled= onoff;
+        
+        
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                btn.style.visibility = 'visible'//'visible'; //'hidden'
+            else
+                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+        }
+
+    });
 }
 
 function applySpinners(onoff){
@@ -524,18 +533,18 @@ function applySpinners(onoff){
 
     let _select = document.querySelectorAll("select");
     [].forEach.call(_select,btn=>{
-        btn.disabled=onoff;
-        // document.getElementById('selectDivision').disabled=onoff;
+        if(onoff&&btn.getAttribute('class').indexOf('nodisable')<0)
+            btn.disabled=onoff;
     });
 
-    let _input = document.querySelectorAll('input');
-    [].forEach.call(_input,rdo=>{                                
-        // if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
-        if(rdo.id!=='subscribe-docnum'&& !rdo.classList.contains("Inputdisabled")
-        ){
-            rdo.disabled= onoff;    
-        }
-    });
+    // let _input = document.querySelectorAll('input');
+    // [].forEach.call(_input,rdo=>{                                
+    //     // if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
+    //     if(rdo.id!=='subscribe-docnum'&& !rdo.classList.contains("Inputdisabled")
+    //     ){
+    //         rdo.disabled= onoff;    
+    //     }
+    // });
 
     disableInputs();
     

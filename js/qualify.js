@@ -310,12 +310,15 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 _rd= aPlayers[i].optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
                 row= `<tr>
                     <td class="align-middle text-small">${position}</td>
-                    <td class="align-middle text-start"><img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=''" class="small-profile-avatar-pic rounded-circle" alt="...">
+                    <td class="align-middle text-start">
+                        <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
+                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=''" class="small-profile-avatar-pic rounded-circle" alt="...">
+                        </a>
                     </td>
                     <td class="align-middle text-start">
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">
-                    ${aPlayers[i].name} <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd} <!--<span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>-->
+                    <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">${aPlayers[i].name}</a>
+                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" > <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd} <!--<span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>-->
                      </a>
                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
@@ -719,6 +722,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
     }
 
     // document.getElementById('timeBestScore').innerText= bestScore;
+    document.getElementById('img-time-track').src= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${idShooter}.jpg?code=`
     document.getElementById('timeBestScore').innerText= vlTime;
     document.getElementById('timeBestScorePenal').innerText= vlPenal;
 
