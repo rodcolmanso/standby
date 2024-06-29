@@ -143,7 +143,7 @@ const handler = async (event, context)=>{
           }
 
           console.log('shooterData.imgChanged='+shooterData.imgChanged);
-          if(shooterData.imgChanged===true){
+          if(shooterData.imgChanged===true || shooterData.imgChanged==='true' || shooterData.imgChanged){
             console.log('Uploading shooter img to cloudinary. img='+shooterData._id);
             
             cloudinary.uploader.upload(shooterData.img,
