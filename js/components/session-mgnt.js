@@ -422,6 +422,10 @@ function setCookie(cname, cvalue, exdays) {
 
     let _div = document.querySelectorAll("div");
     [].forEach.call(_div,elem=>{
+
+        if(elem.getAttribute('class')&&elem.getAttribute('class').indexOf('nodisable')<0
+            && onoff)
+            elem.draggable= !onoff;
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)

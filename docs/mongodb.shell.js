@@ -944,3 +944,32 @@ db.shooters.aggregate([
             db.shooters.createIndex( {"docnum":1}, { "unique": true } );
 
         //sudo ntl functions:invoke identity-login
+
+
+// -------------------------------------------------------
+
+    db.shooters.aggregate( 
+        { $match:{ _id: ObjectId("661be2184277ae7378717fe3")}}
+        ,{$addFields:{"shooterId": { $toString: "$_id" }}}
+        ,{$lookup:
+            {
+                from: "time_records"
+                ,localField: "shooterId"
+                ,foreignField: "shooterId"
+                ,as: "time_records"
+                ,pipeline:[
+                    {$addFields:{"divisionId": { $toObjectId: "$_divisionId" }}}
+                    ,{$lookup:
+                        {   from: "divisions"
+                            ,localField: "_divisionId"
+                            ,foreignField: "id"
+                            ,as: "divisions"}}
+                    
+                    // ,{$project:{"score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]},datetime:1, penalties:1}}
+                    // ,{$group:{ _id:["$name"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}, penalties:{$min:"$penalties"}}}
+                
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$divisions", 0 ] }, "$$ROOT" ] } } }]
+            }
+            
+        }
+    )

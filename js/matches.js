@@ -45,7 +45,7 @@ slider.addEventListener('mousedown', startDragging, false);
 slider.addEventListener('mouseup', stopDragging, false);
 slider.addEventListener('mouseleave', stopDragging, false);
 
-function updateAllMatches(mainMatches, recapMatches, categ){
+function updateAllMatches(mainMatches, recapMatches, categ, force){
     
     let parentMatch=[];
 
@@ -97,7 +97,106 @@ function updateAllMatches(mainMatches, recapMatches, categ){
     addMainMatches(mainMatches, recapMatches, categ);
 }
 
-    function updateMatch(matchId, v, categ){
+function replaceShooter(matchId, targetId, categ){
+
+    let mainMatches=[];
+        let recapMatches=[];
+        if(categ==='advance'){
+            // KOs.advancedDoubleKOs
+            mainMatches=KOs.advancedDoubleKOs[0];
+            recapMatches=KOs.advancedDoubleKOs[1];
+        }
+        if(categ==='overall'){
+            //     KOs.overallDoubleKOs
+            mainMatches=KOs.overallDoubleKOs[0];
+            recapMatches=KOs.overallDoubleKOs[1];
+        }
+        if(categ==='optics'){
+            //     KOs.opticDoubleKOs
+            mainMatches=KOs.opticDoubleKOs[0];
+            recapMatches=KOs.opticDoubleKOs[1];
+        }
+        if(categ==='seniors'){
+                //     KOs.seniorDoubleKOs
+                mainMatches=KOs.seniorDoubleKOs[0];
+                recapMatches=KOs.seniorDoubleKOs[1];
+        }
+        if(categ==='ladies'){
+            //     KOs.ladyDoubleKOs
+            mainMatches=KOs.ladyDoubleKOs[0];
+            recapMatches=KOs.ladyDoubleKOs[1];
+        
+        }    mainMatches[0][1]
+
+    let idM= matchId.split('.');
+    let duelsS;
+
+    if(idM[0]==="m")
+        duelsS= mainMatches;
+    else
+        duelsS= recapMatches;
+
+    const roundS= idM[1];
+    const matchS= idM[2];
+    const abS= idM[3];
+
+    idM= targetId.split('.');
+    let duelsT;
+
+    if(idM[0]==="m")
+        duelsT= mainMatches;
+    else
+        duelsT= recapMatches;
+
+    const roundT= idM[1];
+    const matchT= idM[2];
+    const abT= idM[3];
+
+    let saveS;
+    let saveSv;
+    let saveSd;
+    let saveSp;
+
+        saveS= abS==='A'?duelsS[roundS][matchS].shooterA:duelsS[roundS][matchS].shooterB;
+        saveSp= abS==='A'?duelsS[roundS][matchS].parentA:duelsS[roundS][matchS].parentB;
+        // saveSv= duelsS[roundS][matchS].v;
+        // saveSd= duelsS[roundS][matchS].d;
+        
+        
+        if(abS==='A'){
+            duelsS[roundS][matchS].shooterA= (abT==='A'?duelsT[roundT][matchT].shooterA:duelsT[roundT][matchT].shooterB);
+            duelsS[roundS][matchS].parentA= (abT==='A'?duelsT[roundT][matchT].parentA:duelsT[roundT][matchT].parentB);
+        }else{ 
+            duelsS[roundS][matchS].shooterB= (abT==='A'?duelsT[roundT][matchT].shooterA:duelsT[roundT][matchT].shooterB);
+            duelsS[roundS][matchS].parentB= (abT==='A'?duelsT[roundT][matchT].parentA:duelsT[roundT][matchT].parentB);
+        }
+        // duelsS[roundS][matchS].v= duelsT[roundT][matchT].v;
+        // duelsS[roundS][matchS].d= duelsT[roundT][matchT].d;
+        
+        
+        if(abT==='A'){
+            duelsT[roundT][matchT].shooterA=saveS;
+            duelsT[roundT][matchT].parentA=saveSp;
+        }else{
+            duelsT[roundT][matchT].shooterB= saveS;
+            duelsT[roundT][matchT].parentB= saveSp;
+        }
+        // duelsT[roundT][matchT].v= saveSv;
+        // duelsT[roundT][matchT].d= saveSd;
+
+    // if(duels[round][match].shooterA.id!==null&&duels[round][match].shooterB.id!==null){
+    //     duels[round][match].v= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterA : duels[round][match].shooterB;
+    //     duels[round][match].d= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterB : duels[round][match].shooterA;
+        // saveDivision();
+    // }
+
+    // updateAllMatches(mainMatches, recapMatches, categ);
+    addMainMatches(mainMatches, recapMatches, categ);
+    addEventListenerShooterDiv();
+
+}
+
+function updateMatch(matchId, v, categ){
         // alert(`matchId=${matchId}, v.id=${v.id}`);
 
         let mainMatches=[];
@@ -147,6 +246,7 @@ function updateAllMatches(mainMatches, recapMatches, categ){
     }
 
     updateAllMatches(mainMatches, recapMatches, categ);
+    addEventListenerShooterDiv()
 
 }
 
@@ -187,6 +287,57 @@ function addLevels(mainMatches, recapMatches, categ){
         
 }
 
+function addEventListenerShooterDiv(){
+    
+    const doppables= document.querySelectorAll('.droppable');
+
+    doppables.forEach((targetCard)=>{
+        
+        targetCard.addEventListener('dragstart', (e)=>{
+            e.target.classList.add("dragging");
+        } );
+
+        targetCard.addEventListener("dragend",(ev) => {
+            ev.target.classList.remove("dragging");
+        });
+
+        targetCard.addEventListener('dragover', (e)=>{
+            e.preventDefault();
+        });
+
+        targetCard.addEventListener('drop', (e)=>{
+            e.preventDefault();
+
+            const draggings= document.querySelectorAll('.dragging');
+            draggings.forEach((dragging)=>{
+
+                // console.log('-----------------------------');
+                // console.log('SourceCard.id='+dragging.id);
+                // console.log('TargetCard.id='+targetCard.id);
+                
+                // console.log(e);
+                // console.log('-----------------------------');
+
+                const sourceId=dragging.id.split("-");
+                const targetId=targetCard.id.split("-");
+
+                // console.log('**************************************');
+                // console.log('sourceId[2].substring(0,sourceId[2].length-2)='+sourceId[2].substring(0,sourceId[2].length-2));
+                // console.log('targetId[2].substring(0,targetId[2].length-2)='+targetId[2].substring(0,targetId[2].length-2));
+                // console.log('**************************************');
+
+                if(sourceId[1]===targetId[1] &&sourceId[2].split(".")[0]===targetId[2].split(".")[0]
+                &&sourceId[2].substring(0,sourceId[2].length-2)!==targetId[2].substring(0,targetId[2].length-2)){
+                    replaceShooter(sourceId[2], targetId[2], sourceId[1]);
+                }
+                // else{
+                //     // alert('Alteração não permitida');
+                // }
+            });     
+        });
+    });
+};
+
 function addMainMatches(mainMatches, recapMatches, categ){
     
     let matches="";
@@ -202,6 +353,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
         ){
             has4play=2;
         }
+
+    let droppable= '" draggable="false';
 
     for(let round=0;round<mainMatches.length;round++){
         
@@ -240,21 +393,26 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
             
             _rd= mainMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            
+            droppable= '" draggable="false';
+            if(mainMatches[round][match].v.id===null && mainMatches[round][match].shooterA.id!==null){
+                droppable= 'droppable" draggable="true';
+            }
             matches+= s+`
-            <div class="card mb-3 card-block ">
-                <div class="row g-0">
+            <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
+                <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
                         <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                        <a href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
-                            <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
+                            <img draggable="false" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
                     <div class="col-md-6 col-card-match ">
-                        <div class="card-header-2" >
+                        <div class="card-header-2">
                         <h10 class="card-title text-truncate"><b>
                         ${mainMatches[round][match].shooterA.name}
                         </b></h10>
-                        <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][match].shooterA.gun}</span> ${_rd}</p>
+                        <p class="card-text" id="card-text-${mainMatches[round][match].id}-A"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][match].shooterA.gun}</span> ${_rd}</p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -266,15 +424,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
             </div>`;
         
             let iB=match;
+            droppable= '" draggable="false';
+            if(mainMatches[round][match].v.id===null && mainMatches[round][match].shooterB.id!==null){
+                droppable= 'droppable" draggable="true';
+            }
 
             _rd= mainMatches[round][iB].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             matches+= `<!---->
-            <div class="card mb-3 card-block">
-                <div class="row g-0">
+            <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.B">
+                <div class="row g-0 ">
                     <div class="col-md-4 small-avatar-pic" >
                     <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                    <a href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
-                        <img  style="height:50px" 
+                    <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
+                        <img draggable="false" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
@@ -362,12 +524,18 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
             _rdA= recapMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
             _rdB= recapMatches[round][match].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+
+            droppable= '" draggable="false';
+            if(recapMatches[round][match].v.id===null && recapMatches[round][match].shooterA.id!==null){
+                droppable= 'droppable" draggable="true';
+            }
+
             matches+= `
-            <div class="card mb-3 card-block">
-                <div class="row g-0">
+            <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.A" >
+                <div class="row g-0 " >
                     <div class="col-md-4 small-avatar-pic" >
-                    <a href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
-                        <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
+                        <img draggable="false" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
                     <div class="col-md-6 col-card-match">
@@ -383,12 +551,18 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     </div>
                 </div>
             </div>
-            <!---->
-            <div class="card mb-3 card-block">
-                <div class="row g-0">
+            <!---->`;
+
+            droppable= '" draggable="false';
+            if(recapMatches[round][match].v.id===null && recapMatches[round][match].shooterB.id!==null){
+                droppable= 'droppable" draggable="true';
+            }
+
+            matches+= `<div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.B">
+                <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
-                    <a href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
-                        <img  style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                    <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
+                        <img draggable="false" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
                     <div class="col-md-6 col-card-match">
@@ -415,7 +589,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
         document.getElementById(categ+'LevelR'+round).innerHTML= matches;
         matches="";
     }
-
+    
 }
 
 let KOs;
@@ -558,6 +732,7 @@ function changeDivision(selectDivision){
 
                 document.getElementById('liLadies').style.display= '';
             }
+            addEventListenerShooterDiv();
         } )
         .catch(err => console.log(`Error bringing knokouts: ${err}`))
         .finally(()=> applySpinners(false));
