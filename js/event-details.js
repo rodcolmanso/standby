@@ -43,7 +43,7 @@ function hrefMatches(){
 // });
 function enableShooterFields(){
     
-    if(document.getElementById('subscribe-email').value===loggedUser.email){
+    if(loggedUser && document.getElementById('subscribe-email').value===loggedUser.email){
         
         document.getElementById('subscribe-gun').classList.add('nodisable');
         document.getElementById('subscribe-gun').disabled=false;
@@ -95,6 +95,10 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
         hrefQualify();
     }else if(_reload&&params.inscription!==undefined && params.inscription==="duel"){
         hrefMatches();
+    }else if(_reload&&params.inscription!==undefined && params.inscription==="sublist"){
+        document.getElementById(`subscrive-close-btn`).click();
+        document.getElementById(`btn-subscriptionsModal`).click();
+    
     }else if(_reload){
         clearSessionEventConfig();
         // location.reload(true);
@@ -108,7 +112,8 @@ subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
     // clearSessionEventConfig();
     if(_reload){
         clearSessionEventConfig();
-        location.reload(true);
+        // location.reload(true);
+        window.location="/event-details.html?event_id="+eventConfig._id;
     }
 })
 
@@ -415,18 +420,25 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
             ,headers: _header})
             .then(response => response.json()) 
             .then(json => {
-                
+                console.log('A');
                 if(modalId===MODAL_TABLE_SUB_ID){
                     shooterDivisions= json;
+                    console.log('B');
                     if(shooterDivisions!==null && shooterDivisions.length>0){
+                        console.log('C');
                         popupSubscriptionModal(shooterDivisions[0]);
+                        console.log('D');
                         populateSubscriptionModalTable(eventConfig, shooterDivisions, document.getElementById(MODAL_TABLE_SUB_ID));
+                        console.log('E');
                     }else{
+                        console.log('F');
                         populateNewShooter(_email);
                     }
                 }else{
+                    console.log('G');
                     allShootersDivisions= json;
                     populateSubscriptionModalTable(eventConfig, allShootersDivisions, document.getElementById(MODAL_TABLE_ALL_SUBS_ID));
+                    console.log('H');
                 }
 
                 return json;
@@ -549,7 +561,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             //     <small>${shooterDivisions.name}</small>
             // </td>
 
-            if(isAdmin||(loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim()))
+            if(isAdmin||(loggedUser&&loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim()))
                 nodisableClass='nodisable"';
             else
                 nodisableClass='" disabled ';
@@ -567,7 +579,8 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                     </a>
                 </td>
                 <td class="text-start">
-                    <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">
+                    <!--<a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">-->
+                    <a href="#" onClick="goToSubscription('${shooterDivisions[l].email}')" >
                         <small>${shooterDivisions[l].name}</small>
                     </a>
                 </td>`
@@ -596,7 +609,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 </div>
             </td>
             <td class="text-end">`;
-            if(isAdmin||(loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim())){
+            if(isAdmin||(loggedUser&&loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim())){
                 row+=`
                 <button onClick="promiseOfDeleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i},'${tb.id}')" class="btn btn-sm btn-danger rounded-circle ${nodisableClass} value="${shooterDivisions[l].shooters_divisions[i]._id}">-</button> `;
             }
@@ -928,4 +941,11 @@ function displaySelectedImage(event, elementId) {
         reader.readAsDataURL(fileInput.files[0]);
         
     }
+}
+
+function goToSubscription(email){
+    if(email!==undefined && email!==''){
+        email= '&email='+email;
+    }else email='';
+    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist"+email;
 }

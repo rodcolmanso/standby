@@ -317,8 +317,10 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-start">
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                    <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">${aPlayers[i].name}</a>
-                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" > <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd} <!--<span class="text-small text-start">[${aPlayers[i].gun}${_rd}]</span>-->
+                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">-->
+                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" >
+                        ${aPlayers[i].name}
+                        <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
                      </a>
                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
