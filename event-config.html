@@ -207,12 +207,12 @@
     
       <div  class="form-floating mb-3 col-md-12 d-flex justify-content-center">
         <!-- <div class="d-flex justify-content-center"> -->
-            <div class="btn">
+            <div class="btn nodisable">
               <label for="event-img">
-                <img id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/defaults/tmpyellow'" src="..."
+                <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/defaults/tmpyellow'" src="..."
                   class="img-fluid" alt="example placeholder" />
                   </label>
-                <input type="file" class="form-control d-none" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
+                <input type="file" class="form-control d-none nodisable" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
             </div>
         <!-- </div> -->
       </div>
