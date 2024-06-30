@@ -129,13 +129,13 @@
           <div class="col-sm-7">
             <label class="visually-hidden" for="sheetId">Id da Planilha</label>
             <div class="input-group">
-              <input type="text" required class="form-control" id="sheetId" placeholder="">
+              <input type="text" required class="form-control nodisable" id="sheetId" placeholder="">
             </div>
           </div>
           <div class="col-sm">
             <label class="visually-hidden" for="tabName">Nome da Tab</label>
             <div class="input-group">
-              <input type="text" required class="form-control" id="tabName" placeholder="Sheet 1">
+              <input type="text" required class="form-control nodisable" id="tabName" placeholder="Sheet 1">
             </div>
           </div>
         
@@ -145,7 +145,7 @@
         </form>
         <div class="input-group">
           <span class="input-group-text">With textarea</span>
-          <textarea id="textArea" rows="20" class="form-control" aria-label="With textarea"></textarea>
+          <textarea id="textArea" rows="20" class="form-control nodisable" aria-label="With textarea"></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -167,7 +167,7 @@
         <div class="modal-body">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Nome da divisão</span>
-            <!-- <input id="new-division-name" type="text" class="form-control" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1" list="divisionList">
+            <!-- <input id="new-division-name" type="text" class="form-control nodisable" required placeholder="" value="" aria-label="" aria-describedby="basic-addon1" list="divisionList">
             <datalist id="divisionList">
               <option value="Pistola"></option>
               <option value="Força livre"></option>
@@ -178,7 +178,7 @@
               <option value="Calibres Menores"></option>
               <option value="Calibres Maiores"></option>
           </datalist> -->
-          <select id="new-division-name" class="form-select" placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
+          <select id="new-division-name" class="form-select nodisable" placeholder="" value="" aria-label="" aria-describedby="basic-addon1">
             <option value=""></option>
             <option value="Pistola">Pistola</option>
             <option value="Força livre">Força livre</option>
@@ -194,7 +194,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="addDivision()" data-bs-dismiss="modal">Incluir</button>
+          <button type="button" class="btn btn-primary nodisable" onclick="addDivision()" data-bs-dismiss="modal">Incluir</button>
         </div>
       </div>
     </div>
@@ -218,43 +218,43 @@
       </div>
     
       <div class="form-floating mb-3 col-md-5">
-        <input type="text" class="form-control" required id="event-name">
+        <input type="text" class="form-control nodisable" required id="event-name">
         <label for="event-name" >Título</label>
       </div>
       
       <div class="form-floating mb-3 col-md-1">
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
+          <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
           <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
         </div>
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
+          <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
           <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
         </div>
       </div>
       <div class="form-floating mb-3 col-md-3">
-        <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date" >
+        <input type="datetime-local" class="form-control nodisable" aria-describedby="basic-addon1"  id="event-date" >
         <label for="event-date" >Contra o Relógio em:</label>
       </div>
       <div class="form-floating mb-3 col-md-3">
-        <input type="datetime-local" class="form-control" aria-describedby="basic-addon1"  id="event-date-duel" >
+        <input type="datetime-local" class="form-control nodisable" aria-describedby="basic-addon1"  id="event-date-duel" >
         <label for="event-date" >Duelos em:</label>
       </div>
       
       <div class="form-floating mb-3 col-md-4">
-        <input id="event-local" required type="text" class="form-control" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
+        <input id="event-local" required type="text" class="form-control nodisable" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local">
         <label for="event-local" >Clube</label>
       </div>
       <div class="form-floating col-md-8">
-        <input type="text" class="form-control" id="event-address" >
+        <input type="text" class="form-control nodisable" id="event-address" >
         <label for="event-address">Endereço</label>
       </div>
       <div class="form-floating col-md-6">
-        <input type="text" required class="form-control" id="event-city">
+        <input type="text" required class="form-control nodisable" id="event-city">
         <label for="event-city">Cidade</label>
       </div>
       <div class="form-floating col-md-3">
-          <select class="form-select" required id="event-state" aria-label="Floating label select example">
+          <select class="form-select nodisable" required id="event-state" aria-label="Floating label select example">
           <option selected>...</option>
           <option value="AP">Amapá</option>
           <option value="AM">Amazonas</option>
@@ -286,7 +286,7 @@
       </div>
       <div class="col-3">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="event-public" checked>
+          <input class="form-check-input  nodisable" type="checkbox" id="event-public" checked>
           <label class="form-check-label" for="event-public">
             Público
           </label>
@@ -294,18 +294,18 @@
       </div>
       
       <div class="form-floating col-md-7">
-        <textarea class="form-control" id="event-note"></textarea>
+        <textarea class="form-control nodisable" id="event-note"></textarea>
         <label for="event-note">Descrição:</label>
       </div>  
       <div class="col-md-3">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="event-random-duel" id="event-random-duel1" checked value="true">
+          <input class="form-check-input nodisable" type="radio" name="event-random-duel" id="event-random-duel1" checked value="true">
           <label class="form-check-label" for="flexRadioDefault1">
             Duelos aleatórios ou
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="event-random-duel" id="event-random-duel2" value="false">
+          <input class="form-check-input nodisable" type="radio" name="event-random-duel" id="event-random-duel2" value="false">
           <label class="form-check-label" for="flexRadioDefault2">
             Melhores contra piores
           </label>
@@ -313,29 +313,29 @@
       </div>
 
       <div class="form-floating mb-3 col-md-3">
-        <!-- <input type="number" class="form-control" required id="vl_first_try">
+        <!-- <input type="number" class="form-control nodisable" required id="vl_first_try">
         <label for="vl_first_try" >1ª Passada</label> -->
         <div class="input-group mb-3">
-          <span class="input-group-text">1ª Passada: R$</span>
-          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
+          <span class="input-group-text">1ª Passada</span>
+          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
           <span class="input-group-text">.00</span>
         </div>
       </div>
       <div class="form-floating mb-3 col-md-3">
         <div class="input-group mb-3">
-          <!-- <input type="number" class="form-control" required id="vl_second_try">
+          <!-- <input type="number" class="form-control nodisable" required id="vl_second_try">
           <label for="vl_second_try" >2ª Passada R$</label> -->
-          <span class="input-group-text">2ª Passada: R$</span>
-          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
+          <span class="input-group-text">2ª</span>
+          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
           <span class="input-group-text">.00</span>
         </div>
       </div>
       <div class="form-floating mb-3 col-md-3">
         <div class="input-group mb-3">
-          <!-- <input type="number" class="form-control" required id="vl_other_tries">
+          <!-- <input type="number" class="form-control nodisable" required id="vl_other_tries">
           <label for="vl_other_tries" >Demais Passada R$</label> -->
-          <span class="input-group-text">Demais Passada: R$</span>
-          <input type="number" class="form-control" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
+          <span class="input-group-text">Demais</span>
+          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
           <span class="input-group-text">.00</span>
           
         </div>
@@ -358,11 +358,10 @@
           <thead>
             <tr>
               <th scope="col" class="text-start">Atirador</th>
-              <th scope="col" class="text-start">E-mail</th>
               <th scope="col" class="text-end">Passadas</th>
-              <th scope="col" class="text-end">1ª Passada</th>
-              <th scope="col" class="text-end">2ª Passada</th>
-              <th scope="col" class="text-end">Demais Passada</th>
+              <th scope="col" class="text-end">1ª</th>
+              <th scope="col" class="text-end">2ª</th>
+              <th scope="col" class="text-end">Demais</th>
               <th scope="col" class="text-end">Total</th>
             </tr>
           </thead>
@@ -399,7 +398,7 @@
             </tbody>
           </table>
           <div class="text-center">
-            <button type="button" class="btn btn-info btn-sm rounded-circle hide"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+            <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
           </div>
         </div>
       </div>
@@ -419,7 +418,7 @@
         </button>
         <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
         <!-- <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button> -->
-        <button type="submit" class="btn btn-success hide" value="Salvar" ><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+        <button type="submit" class="btn btn-success nodisable " value="Salvar" id="btn-salvar-geral"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
       </div>
     </form>
       <p>&nbsp;</p>
