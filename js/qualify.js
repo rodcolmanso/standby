@@ -36,11 +36,38 @@ const promiseOfPlayers = (id) => { return fetch("/.netlify/functions/shooters_di
 })};
 
 function hrefQualify(){
-    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
 }
 
 function hrefMatches(){
-    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+    window.location.href = "/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+}
+
+function getActiveCat(){
+    let _cat="";
+    if(document.getElementById('liAdvance').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liAdvance";
+
+    if(document.getElementById('liLadies').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liLadies";
+
+    if(document.getElementById('liOptics').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liOptics";
+
+    if(document.getElementById('liSeniors').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liSeniors";
+
+    return _cat;
+}
+
+function shareEvent(){
+    const _link = 'https://'+window.location.host+"/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+     // Copy the text inside the text field
+     navigator.clipboard.writeText(_link);
+}
+
+function editInscriptions(){
+    window.location.href = "/event-details.html?allInscriptions=clock&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
 }
 
 async function loadPage(){
@@ -57,12 +84,16 @@ async function loadPage(){
     }
 }
 
+
+
 window.onload = async () => {
 
     await loadPage();
 
     document.getElementById('btnAddShooter').style.display='';
+    document.getElementById('btnOptDuel').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
+
     applySpinners(true);
 
     // eventConfig = await promiseOfEventConfig;
@@ -83,12 +114,18 @@ window.onload = async () => {
     applySpinners(false);
     disableInputs();
 
+    if(params.cat){
+        document.getElementById('liOverall').classList.remove('active');
+        document.getElementById(params.cat).classList.add('active');
+    }
+
     if(params.rl){
         window.setTimeout( function() {
             window.location.reload();
           }, params.rl*1000);
     }
-    
+
+    // document.getElementById('liOverall').classList.add('active')
 
 };
   
@@ -317,12 +354,21 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle text-start">
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">-->
-                    <a href="#" onClick="goToSubscription('${aPlayers[i].email}')" >
-                        ${aPlayers[i].name}
-                        <span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
-                     </a>
-                    </td>
+                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> `;
+
+                    
+                    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+                    ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+                     || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+                        row+= `<a href="#" onClick="goToSubscription('${aPlayers[i].id}')" >
+                                ${aPlayers[i].name}<span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
+                               </a>`
+                    }else{
+                        row+= `${aPlayers[i].name}<span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}`
+                    }
+
+                    row+= `
+                     </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
                     <td class="align-middle text-start">
                         <span class="badge bg-info text-dark">${_time}
@@ -690,11 +736,11 @@ function getUserFromEmail(userEmail){
             .finally(()=> applySpinners(false));
 }
 
-function goToSubscription(email){
-    if(email!==undefined && email!==''){
-        email= '&email='+email;
-    }else email='';
-    window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+email;
+function goToSubscription(parms){
+    if(parms!==undefined && parms!==''){
+        parms= '&shooterId='+parms;
+    }else parms='';
+       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+getActiveCat();
 }
 
 function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal ){

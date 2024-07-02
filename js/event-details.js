@@ -23,7 +23,9 @@ function hrefQualify(){
             paramDiv= '&selected_division='+params.selected_division;
         }
 
-        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv;
+        const _cat= params.cat?"&cat="+params.cat:"";
+        
+        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv+_cat;
     }
 }
 
@@ -33,7 +35,8 @@ function hrefMatches(){
         if(params.selected_division!==undefined){
             paramDiv= '&selected_division='+params.selected_division;
         }
-        window.location.href = window.location="/matches.html?event_id="+eventConfig._id+paramDiv;
+        const _cat= params.cat?"&cat="+params.cat:"";
+        window.location.href = window.location="/matches.html?event_id="+eventConfig._id+paramDiv+ _cat;
 
     }
 }
@@ -98,7 +101,6 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
     }else if(_reload&&params.inscription!==undefined && params.inscription==="sublist"){
         document.getElementById(`subscrive-close-btn`).click();
         document.getElementById(`btn-subscriptionsModal`).click();
-    
     }else if(_reload){
         clearSessionEventConfig();
         // location.reload(true);
@@ -110,11 +112,17 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
 subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
     // shooterDivisions=[];
     // clearSessionEventConfig();
-    if(_reload){
+    
+    if(params.allInscriptions!==undefined && params.allInscriptions==="clock"){
+        hrefQualify();
+    }else if(params.allInscriptions!==undefined && params.allInscriptions==="duel"){
+        hrefMatches();
+    }else if(_reload){
         clearSessionEventConfig();
         // location.reload(true);
         window.location="/event-details.html?event_id="+eventConfig._id;
     }
+    
 })
 
 
@@ -154,7 +162,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
             // document.getElementById('subscribe-email').disabled=false;
             document.getElementById('subscribe-docnum').disabled=false;
-            document.getElementById('subscribe-docnum').disabled=false;
+            document.getElementById('subscribe-name').disabled=false;
             document.getElementById('select-subscribe-division').disabled=false;
             
             // document.getElementById('subscribe-name').disabled=false;
@@ -175,6 +183,9 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }else if(params.email&&params.email!==''){ //editing inscription
             document.getElementById('subscribe-email').value= params.email;
             document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
+        }else if(params.shooterId&&params.shooterId!==''){ //editing inscription
+            document.getElementById('subscribe-shooterId').value= params.shooterId;
+            promiseOfGetShootersDivisions(eventConfig._id, params.shooterId, MODAL_TABLE_SUB_ID);
         }else{
         
         // if(params.inscription===undefined || params.inscription!=="clock"){
@@ -199,6 +210,10 @@ window.onload = async () => {
     // if(params.inscription!==undefined && params.inscription==="clock"){
     if(params.inscription!==undefined ){
         document.getElementById(`btn-modal-inscrevase`).click();
+    }
+
+    if(params.allInscriptions!==undefined ){
+        document.getElementById(`btn-subscriptionsModal`).click();
     }
 }
 
@@ -403,8 +418,17 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
       _email="all";
 
     let filterEmal= '';
-    if(_email.indexOf('@')<0){ //docnum
+    // if(_email.indexOf('@')<0){ //docnum
+    //     filterEmal= `&docnum=${_email}`;
+    // }else{
+    //     filterEmal= `&email=${_email}`;
+    // }
+    if(!isNaN(Number(_email))){
         filterEmal= `&docnum=${_email}`;
+    }else if(_email.indexOf('@')>-1){ //docnum
+        filterEmal= `&email=${_email}`;
+    }else if(_email!=='all'){
+        filterEmal= `&shooterId=${_email}`;
     }else{
         filterEmal= `&email=${_email}`;
     }
@@ -462,14 +486,14 @@ function popupSubscriptionModal(shooterDivisions){
         
         enableShooterFields();
 
-        if(shooterDivisions.name!==""){
-            document.getElementById('subscribe-name').disabled=true;
-        }
+        //-> if(shooterDivisions.name!==""){
+        //->     document.getElementById('subscribe-name').disabled=true;
+        //-> }
 
         // document.getElementById('input-shooter-img').disabled=true;
 
     }else{
-        document.getElementById('subscribe-name').disabled=false;
+        //-> document.getElementById('subscribe-name').disabled=false;
         // document.getElementById('input-shooter-img').disabled=true;
     }
     
@@ -580,7 +604,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 </td>
                 <td class="text-start">
                     <!--<a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">-->
-                    <a href="#" onClick="goToSubscription('${shooterDivisions[l].email}')" >
+                    <a href="#" onClick="goToSubscription('${shooterDivisions[l].shooterId}')" >
                         <small>${shooterDivisions[l].name}</small>
                     </a>
                 </td>`
@@ -943,9 +967,9 @@ function displaySelectedImage(event, elementId) {
     }
 }
 
-function goToSubscription(email){
-    if(email!==undefined && email!==''){
-        email= '&email='+email;
-    }else email='';
-    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist"+email;
+function goToSubscription(parms){
+    if(parms!==undefined && parms!==''){
+        parms= '&shooterId='+parms;
+    }else parms='';
+    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist"+parms;
 }

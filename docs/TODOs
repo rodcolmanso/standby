@@ -1,33 +1,22 @@
 - Login com CPF
 - Home Page
-    - Alterar foto
-    - Alterar nome
-    - Alterar email
-    - Alterar CPF
     - Inscrever-se a evento
     - Ranking/Resultados
     - Acervos
     - Grafico de evolução
 
 - Inscrição
-  - Inscrever por CPF
   - Lista de Armas e Calibres
 
 
-
   Melhorar a experiencia de cadastro e login
-    - links diferentes para cadastro e login - Done
-    - menu flutuante menor - Done
-    - Traduzir Wedget - Done
-    - Wedget- tirar o destaque do botbotão logout - Done (fecha quando logdin)
-    - Wedget- caber na tela de celuar (responsive - Done
-    - Wedget - habilitar google) - Done
-    - Cadastrar CPF para quem ja está na base com CPF inválido Done
-    - Cadastrar Novo login na base, com seu CPF Done
-    - Alterar tela de inscrição para pedir CPF; 
-       (quais emails precisão de CPF? [atiradores reais que ja estão na base])
-    -Mudar todos os emails sem login para @tpmonline.com.br
+    - Pegar Avatar do Google
+    - Ampulheta/ Loading cobrindo a págita toda em todas as telas
+    - Sessão menu Home
+    - Sessao menu Ranking
+    - Mudar todos os emails sem login para @tpmonline.com.br
 
+- Cadastro de Clubes
 
 
     Brean storming

@@ -167,7 +167,9 @@ function buildEventsTable(events){
                         </div>
                         </div>
                     </div>`;
-    document.getElementById('events-table').innerHTML+= newEvent;
+    
+    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles &&!(netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")<0))
+        document.getElementById('events-table').innerHTML+= newEvent;
 
     var utc = new Date();
     var offset = utc.getTimezoneOffset();

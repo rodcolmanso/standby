@@ -402,16 +402,28 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
                 <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
-                        <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                        <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >-->
                         <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
                             <img draggable="false" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
                     <div class="col-md-6 col-card-match ">
                         <div class="card-header-2">
-                        <h10 class="card-title text-truncate"><b>
-                        ${mainMatches[round][match].shooterA.name}
-                        </b></h10>
+                        <h10 class="card-title text-truncate"><b> `;
+
+            if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+            ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+            || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+                matches+=
+                        `<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >
+                            ${mainMatches[round][match].shooterA.name}
+                        </a>`;
+            }else{
+                matches+=
+                ` ${mainMatches[round][match].shooterA.name} `;
+            }
+            matches+=
+                    ` </b></h10>
                         <p class="card-text" id="card-text-${mainMatches[round][match].id}-A"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][match].shooterA.gun}</span> ${_rd}</p>
                         </div>
                     </div>
@@ -434,7 +446,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.B">
                 <div class="row g-0 ">
                     <div class="col-md-4 small-avatar-pic" >
-                    <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.email}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                    <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
                     <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
                         <img draggable="false" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
@@ -442,11 +454,21 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     </div>
                     <div class="col-md-6 col-card-match">
                         <div class="card-header-2" >
-                        <h10 class="card-title text-truncate"><b>
+                        <h10 class="card-title text-truncate"><b> `;
                         
-                        ${mainMatches[round][iB].shooterB.name}
-                        
-                        </b></h10>
+            if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+            ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+            || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+                matches+=
+                        `<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" >
+                            ${mainMatches[round][iB].shooterB.name}
+                        </a>`;
+            }else{
+                matches+=
+                ` ${mainMatches[round][iB].shooterB.name} `;
+            }
+
+            matches+=  `    </b></h10>
                         <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][iB].shooterB.gun}</span> ${_rd}</p>
                         </div>
                     </div>
@@ -740,11 +762,11 @@ function changeDivision(selectDivision){
 };
 
 function hrefQualify(){
-    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id;
+    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
 }
 
 function hrefMatches(){
-    window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
 }
 
 
@@ -763,23 +785,57 @@ netlifyIdentity.on('close', () => {
 loadPage();
 });
 
-function goToSubscription(email){
-    // console.log("Going To Subscribe");
-    if(email!==undefined && email!==''){
-        email= '&email='+email;
-    }else email='';
-    window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+email;
+// function goToSubscription(email){
+//     // console.log("Going To Subscribe");
+//     if(email!==undefined && email!==''){
+//         email= '&email='+email;
+//     }else email='';
+//     window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+email;
+// }
+function goToSubscription(parms){
+    if(parms!==undefined && parms!==''){
+        parms= '&shooterId='+parms;
+    }else parms='';
+    window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+parms+getActiveCat();
 }
 
+function editInscriptions(){
+    window.location.href = window.location="/event-details.html?allInscriptions=duel&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+}
+
+function getActiveCat(){
+    let _cat="";
+    if(document.getElementById('liAdvance').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liAdvance";
+
+    if(document.getElementById('liLadies').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liLadies";
+
+    if(document.getElementById('liOptics').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liOptics";
+
+    if(document.getElementById('liSeniors').getAttribute('class').indexOf('active')>=0)
+        _cat= "&cat=liSeniors";
+    
+    return _cat;
+}
+
+function shareEvent(){
+    const _link = 'https://'+window.location.host+"/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+     // Copy the text inside the text field
+     navigator.clipboard.writeText(_link);
+}
 
 window.onload = async () => {
 
     await loadPage();
     document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     
+    document.getElementById('btnOptClock').style.display='';
     document.getElementById('btn-reset').style.display='';
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-matches').classList.add('active');
+
     document.getElementById('liAdvance').style.display='none';
     document.getElementById('liOverall').style.display= 'none';
     document.getElementById('liLadies').style.display='none';
@@ -794,6 +850,11 @@ window.onload = async () => {
     }
     changeDivision(document.getElementById('selectDivision'));
     applySpinners(false);
+
+    if(params.cat){
+        document.getElementById('liOverall').classList.remove('active');
+        document.getElementById(params.cat).classList.add('active');
+    }
 
     if(params.rl){
     window.setTimeout( function() {

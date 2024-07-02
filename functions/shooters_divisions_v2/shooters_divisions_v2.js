@@ -25,6 +25,7 @@ const handler = async (event, context)=>{
     let p_eventId=null;
     let p_email=null;
     let p_clockDuel=null;
+    let p_shooterId=null;
 
     switch (event.httpMethod){
       case 'GET':
@@ -39,6 +40,7 @@ const handler = async (event, context)=>{
         p_email=null;
         p_clockDuel=null;
         p_docnum=null;
+        p_shooterId=null;
 
         if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
           p_eventId= event.queryStringParameters.eventId.toString();
@@ -59,6 +61,11 @@ const handler = async (event, context)=>{
           console.log(`p_docnum= ${p_docnum}`);
         }
 
+        if(event.queryStringParameters.shooterId&&event.queryStringParameters.shooterId!==""){
+          p_shooterId= event.queryStringParameters.shooterId.trim();
+          console.log(`p_shooterId= ${p_shooterId}`);
+        }
+
         // console.log(`user.email: ${user.email}`);
         let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
         let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
@@ -70,7 +77,7 @@ const handler = async (event, context)=>{
         // console.log(`is Admin: ${isAdmin}`);
         // console.log(`is Event Admin: ${isEventAdmin}`);
 
-      if(p_eventId&&(p_email||p_docnum)){ // List shooter_division(inscriptions) detail
+      if(p_eventId&&(p_email||p_docnum|| p_shooterId)){ // List shooter_division(inscriptions) detail
         
         console.log(`ENTROU NO EMAIL= ${p_email}`);
         
@@ -80,6 +87,8 @@ const handler = async (event, context)=>{
           fEmail= {shooters_divisions: {$ne: []}}
         else if(p_docnum!==null){
           fEmail= {"docnum": p_docnum};
+        }else if(p_shooterId!==null){
+          fEmail= {"shooterId": p_shooterId};
         }else{
           fEmail= {"email": p_email};
         }
