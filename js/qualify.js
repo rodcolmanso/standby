@@ -369,7 +369,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         </a>
                     </td>
                     <td class="align-middle text-start">
-                    <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
+                    <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" >-->
                     <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> `;
 
                     
