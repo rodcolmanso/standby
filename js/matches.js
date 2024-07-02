@@ -181,14 +181,6 @@ function replaceShooter(matchId, targetId, categ){
             duelsT[roundT][matchT].shooterB= saveS;
             duelsT[roundT][matchT].parentB= saveSp;
         }
-        // duelsT[roundT][matchT].v= saveSv;
-        // duelsT[roundT][matchT].d= saveSd;
-
-    // if(duels[round][match].shooterA.id!==null&&duels[round][match].shooterB.id!==null){
-    //     duels[round][match].v= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterA : duels[round][match].shooterB;
-    //     duels[round][match].d= ""+duels[round][match].shooterA.id===v ? duels[round][match].shooterB : duels[round][match].shooterA;
-        // saveDivision();
-    // }
 
     // updateAllMatches(mainMatches, recapMatches, categ);
     addMainMatches(mainMatches, recapMatches, categ);
@@ -404,7 +396,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                         <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >-->
                         <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
-                            <img draggable="false" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                            <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
                     <div class="col-md-6 col-card-match ">
@@ -448,7 +440,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                     <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
                     <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
-                        <img draggable="false" style="height:50px" 
+                        <img  ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.B" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
@@ -525,14 +517,6 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><i class="bi bi-trophy"></i></div>
                     <div style='color:black' class="row no-gutters justify-content-md-center text-center"><b>FINAL de repescagem</b><br></div>
                     <div style='color:black' class="row no-gutters justify-content-md-center text-center">2º e 3º Colocados:</div><br><br>`;
-        // }else if(round===0){
-        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">REPESCAGEM</div><br><br><br>`;
-        // }else if (recapMatches.length-round===2){
-        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Semi-de-repescagem:</div><br><br><br>`;
-        // }else if (recapMatches.length-round===3){
-        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Quartas-de-repescagem:</div><br><br><br>`;
-        // }else if (recapMatches.length-round===4){
-        //     matches+=`<div class="row no-gutters justify-content-md-center text-center">Oitavas-de-repescagem:</div><br><br><br>`;
         }else
             matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>${round+1}º Rodata de repescagem</b></div><br><br>`;
 
@@ -557,7 +541,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 <div class="row g-0 " >
                     <div class="col-md-4 small-avatar-pic" >
                     <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
-                        <img draggable="false" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
                     <div class="col-md-6 col-card-match">
@@ -584,7 +568,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
                     <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
-                        <img draggable="false" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
                     <div class="col-md-6 col-card-match">
@@ -784,14 +768,6 @@ async function loadPage(){
 netlifyIdentity.on('close', () => {
 loadPage();
 });
-
-// function goToSubscription(email){
-//     // console.log("Going To Subscribe");
-//     if(email!==undefined && email!==''){
-//         email= '&email='+email;
-//     }else email='';
-//     window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+email;
-// }
 function goToSubscription(parms){
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
@@ -910,71 +886,3 @@ function getDivision(eventDivisions, divisionID){
         }
     }
 }
-
-
-// function applySpinners(onoff){
-
-//     // document.getElementById('spinner').visibility=onoff;
-//     if(onoff)
-//         spinner.style.visibility = 'visible'//'visible'; //'hidden'
-//     else
-//         spinner.style.visibility = 'hidden'//'visible'; //'hidden'
-    
-//     document.getElementById('selectDivision').disabled=onoff;
-
-//     let _button = document.querySelectorAll("button");
-//     [].forEach.call(_button,btn=>{
-//         btn.disabled=onoff;
-//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
-//             ||btn.getAttribute('class').includes("btn-secondary")
-//             ||btn.getAttribute('class').includes("btn-warning")
-//             ||btn.getAttribute('class').includes("btn-primary"))) {
-
-//             if(onoff)
-//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-//             else
-//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-//         }
-//     });
-
-//     let _radio = document.querySelectorAll('input[type="radio"]');
-//     [].forEach.call(_radio,rdo=>{
-//         rdo.disabled=onoff;
-//     });
-//     disableInputs();
-// }
-
-// function disableInputs(){
-
-//     onoff=false;
-//     const user= netlifyIdentity.currentUser();
-//     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    
-//     if(eventConfig===undefined || eventConfig===null||user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0))){
-//         onoff= true;
-//     }
-
-//     // document.getElementById('selectDivision').disabled=onoff;
-
-//     let _button = document.querySelectorAll("button");
-//     [].forEach.call(_button,btn=>{
-    
-//     if((["btn-close","btn-secondary","btn btn-secondary","accordion-button","collapsed","accordion-button collapsed"].indexOf(btn.getAttribute('class'))<0)&&
-//     (["bdNavbar"].indexOf(btn.getAttribute('aria-controls'))<0)&&
-//     (["Close"].indexOf(btn.getAttribute('aria-label'))<0)&&
-//     (["bt_clock","bt_matches","loginAvatar","bt_share"].indexOf(btn.getAttribute('id')))<0){
-//         btn.disabled=onoff;
-//     }
-    
-//     });
-
-//     let _radio = document.querySelectorAll('input[type="radio"]');
-//     [].forEach.call(_radio,rdo=>{
-//         rdo.disabled=onoff;
-//     });
-// }
-
-// history.pushState(null, null, location.href);
-// window.onpopstate = function(event) {
-//     history.go(1);
-// };
