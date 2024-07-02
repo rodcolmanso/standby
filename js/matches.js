@@ -185,6 +185,7 @@ function replaceShooter(matchId, targetId, categ){
     // updateAllMatches(mainMatches, recapMatches, categ);
     addMainMatches(mainMatches, recapMatches, categ);
     addEventListenerShooterDiv();
+    saveDivision();
 
 }
 
