@@ -296,19 +296,19 @@
                 </div>
                 <div class="row g-2 hide">
                   <form class="row g-3 needs-validation" action="javascript:addTimeRecord()">
-                    <div class="w-40 col-sm form-floating form-control-sm">
+                    <div class="w-50 col-sm form-floating form-control-sm">
 
                       <input type="hidden" id="timeRecordShooterId" >
                       <input type="hidden" id="timeRecordDivision" >
                       <input type="hidden" id="timeRecordShooterDivision" >
 
-                      <input type="number" step="0.001" min="0.1" max="100" required class="form-control" id="timeRecordTime" placeholder="0" value="0">
+                      <input type="number" pattern="\d*" step="0.01" min="0.1" max="100.00" required class="form-control" id="timeRecordTime" placeholder="0.00" value="0.00">
                       <label for="timeRecordTime">Tempo</label>
 
                     </div>
-                    <div class="w-30 col-sm form-floating form-control-sm">
+                    <div class="w-25 col-sm form-floating form-control-sm">
 
-                      <input type="number" min="0" max="9" class="form-control" id="timeRecordPenalty" placeholder="0" value="0">
+                      <input type="number" pattern="\d*" min="0" max="4" class="form-control" id="timeRecordPenalty" placeholder="0" value="0">
                       <label for="timeRecordPenalty">Penalidade</label>
                     </div>
 

@@ -116,7 +116,7 @@ netlifyIdentity.on('open', function() {
 
   });
 
-  function formatCpf(cpf, valid){
+function formatCpf(cpf, valid){
 
     if(valid)
         cpf= cpf.replace(/\D/g, '') // Remove qualquer coisa que não seja número
@@ -125,9 +125,38 @@ netlifyIdentity.on('open', function() {
     .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o sexto dígito
     .replace(/(\d{3})(\d)/, '$1-$2') // Adiciona traço após o nono dígito
     .replace(/(-\d{2})\d+?$/, '$1'); // Impede entrada de mais de 11 dígitos
-
 }
 
+function formattime(time, valid){
+    let ret= time;
+    if(valid)
+        ret= time.replace(/\D/g, '') // Remove qualquer coisa que não seja número
+    
+    if(Number(ret).toString().length==1)
+        return "0.0"+Number(ret).toString();
+    else
+    if(Number(ret).toString().length==2)
+        return "0."+Number(ret).toString();
+    else
+    if(Number(time)>100){
+        return 100;
+    }
+    if(Number(ret).toString().length>2){
+        var str = Number(ret).toString();
+        var len = str.length;
+        return str.substring(0, len-2) + "." + str.substring(len-2);
+    }else return time;
+}
+
+function formatpenal(time, valid){
+    let ret= time;
+    if(valid)
+        ret= time.replace(/\D/g, '') // Remove qualquer coisa que não seja número
+    
+    if(Number(time)>4){
+        return 4;
+    }else return time;
+}
 
 const modalDocnum = document.getElementById('modalDocnum');
 modalDocnum.addEventListener('hidden.bs.modal', function (event) {

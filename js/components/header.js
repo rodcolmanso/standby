@@ -150,7 +150,9 @@ class Header extends HTMLElement {
       <ul class="dropdown-menu dropdown-menu-end">
         <div id="loggedin" style="display: none">
           <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/shooter.html" onclick="">
-            <i class="bi bi-pencil-square"></i> <span id=avatarUserName>Perfil</span>
+            <span id=avatarUserName>Perfil</span>
+            <br/><span>_____________________</span>
+            <i class="bi bi-pencil-square"></i><span>Meu Perfil</span>
           </a>
           <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
             <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>

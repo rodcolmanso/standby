@@ -22,6 +22,11 @@ window.onload = async () => {
     applySpinners(true);
     let loggedUser= getSessionDbUser();
     const user= netlifyIdentity.currentUser();
+
+    console.log('==================NetlifyIdentity======================');
+    console.log(JSON.stringify(user,null,2));
+    console.log('=======================================================');
+
     applySpinners(false);
 
     if(loggedUser===null&&(!params.id||params.id==='')){

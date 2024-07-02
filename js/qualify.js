@@ -21,6 +21,22 @@ let language="pt-br"
 
 const event_id = params.event_id;
 
+// ----------------
+document.getElementById('timeRecordTime').addEventListener('input', function(e) {
+    var value = e.target.value;
+    var numPattern = formattime(value,true);
+    e.target.value = numPattern;
+    });
+
+    document.getElementById('timeRecordPenalty').addEventListener('input', function(e) {
+        var value = e.target.value;
+        var numPattern = formatpenal(value,true);
+        e.target.value = numPattern;
+        e.target.select();
+        // e.target.setSelectionRange(0, 99999); // For mobile devices
+        });
+// ----------------
+
 // const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
 const promiseOfEventConfig = (id) => {return fetch("/.netlify/functions/eventconfig?clock_duel=clock&eventId="+id)
     .then(r=>r.json())
