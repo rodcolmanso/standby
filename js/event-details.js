@@ -135,9 +135,12 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
     }
 });
 
-document.getElementById('subscribe-docnum').addEventListener('input', function(e) {
+ document.getElementById('subscribe-docnum').addEventListener('input', function(e) {
     var value = e.target.value;
-    var cpfPattern = formatCpf(value,true);
+    // var cpfPattern = formatCpf(value,true);
+    var cpfPattern = value; 
+    if(cpfPattern.length>10)
+        cpfPattern= cpfPattern.substring(0,11);
     e.target.value = cpfPattern;
     });
 
@@ -177,8 +180,10 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }
 
         
-        if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
-            document.getElementById('subscribe-docnum').value= formatCpf(params.ducnum,false);
+        //-> if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
+        if(params.docnum&&params.docnum!=='' ){ //editing inscription
+            //-> document.getElementById('subscribe-docnum').value= formatCpf(params.ducnum,false);
+            document.getElementById('subscribe-docnum').value= params.ducnum,false;
             document.getElementById('subscribe-docnum').dispatchEvent(new Event("change"));
         }else if(params.email&&params.email!==''){ //editing inscription
             document.getElementById('subscribe-email').value= params.email;
@@ -265,17 +270,19 @@ netlifyIdentity.on('close', () => {
 $(function() {
     // $("#subscribe-email").change(function() {
     $("#subscribe-docnum").change(function() {
+        
         if(this.value===""){
             this.value= this.placeholder;
         }
 
         // if(!this.checkValidity()){
         if (!validaCPF(this.value)) {
-            alert('Por favor, informe um CPF válido.');
+            
             this.focus();
         }else{
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
+            
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
   
@@ -478,7 +485,9 @@ function popupSubscriptionModal(shooterDivisions){
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
     document.getElementById('subscribe-email').placeholder= loggedUser.email;
-    document.getElementById('subscribe-docnum').value= formatCpf(shooterDivisions.docnum,false);
+    //-> document.getElementById('subscribe-docnum').value= formatCpf(shooterDivisions.docnum,false);
+    document.getElementById('subscribe-docnum').value= shooterDivisions.docnum;
+
     
     document.getElementById('subscribe-name').value= shooterDivisions.name;
 
@@ -516,7 +525,8 @@ function populateNewShooter(_docnum){
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("subscribe-email").value=shooterDivisions[0].email;
-    document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
+    //-> document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
+    document.getElementById("subscribe-docnum").value=hooterDivisions[0].docnum;
 
     document.getElementById("subscribe-check-clock").checked= eventConfig.clock;
     document.getElementById("subscribe-check-duel").checked= eventConfig.duel;

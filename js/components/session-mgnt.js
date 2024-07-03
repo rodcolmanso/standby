@@ -123,7 +123,7 @@ function formatCpf(cpf, valid){
 
     return cpf.replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o terceiro dígito
     .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após o sexto dígito
-    .replace(/(\d{3})(\d)/, '$1-$2') // Adiciona traço após o nono dígito
+    .replace(/(\d{3})(\d)/, '$1.$2') // Adiciona traço após o nono dígito
     .replace(/(-\d{2})\d+?$/, '$1'); // Impede entrada de mais de 11 dígitos
 }
 

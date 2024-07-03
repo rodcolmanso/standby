@@ -184,12 +184,13 @@
                                       <!-- <input type="file" disabled class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" /> -->
                                     </div>
                                   </div>
+                                  
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
                                     <div class="was-validated form-floating">
                                       <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
                                       <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">
-                                      <input disabled type="text" pattern="(^[\d-\-\.]+$)" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
-                                      <label for="subscribe-docnum" >CPFc</label>
+                                      <input disabled type="text" pattern="\d*" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
+                                      <label for="subscribe-docnum" >CPF</label>
                                     </div>
                                     <div class="form-floating">
                                       <input disabled type="text" required class="form-control " id="subscribe-name">
