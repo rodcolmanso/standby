@@ -174,9 +174,9 @@
           </form>
         </ul>
         <p>&nbsp;</p>
-        <h4>PRÓXIMOS EVENTOS:</h4>
+        <!-- <h4>Próximos Eventos </h4> -->
         <!-- Lista de próximos eventos -->
-        <ul class="list-group">
+        <!-- <ul class="list-group">
           <li class="list-group-item">
             <div class="row text-justify">
               <div class="col"><a href="#">18/05 - 5º TPM CT Raposo</a></div>
@@ -195,8 +195,8 @@
               <div class="col text-end"><button type="submit" class=" btn btn-warning btn-sm">Inscreva-se</button></div>
             </div>
           </li>
-          <!-- Mais eventos conforme necessário -->
-        </ul>
+          !-- Mais eventos conforme necessário --
+        </ul> -->
         <!-- Últimos resultados -->
         
         
@@ -207,21 +207,21 @@
           <!-- Calendário será renderizado aqui -->
         </div>
         <!-- Próximos eventos -->
-        <h5>CLASSIFICAÇÃO 2024</h5>
+        <!-- <h5>CLASSIFICAÇÃO 2024</h5> -->
         <!-- Tabela de classificação -->
         <table class="table">
           <thead>
-            <tr>
+            <!-- <tr>
               <th>Divisão</th>
               <th>Posição</th>
               <th>Tempo</th>
               <th>Arma</th>
               <th>Local</th>
               <th>Mês</th>
-            </tr>
+            </tr> -->
           </thead>
           <tbody>
-            <tr>
+            <!-- <tr>
               <td><b>Revolver</b></td>
               <td><b>2º</b></td>
               <td>
@@ -262,14 +262,14 @@
               <td><span class="text-small">Chiappa 22lr<i class="bi bi-dot" style="color:red !important;"></i></span></td>
               <td><span class="text-small">CT Rangers</span></td>
               <td><span class="text-small">Março</span></td>
-            </tr>
+            </tr> -->
             <!-- Mais linhas conforme necessário -->
           </tbody>
         </table>
         <!-- Gráfico de evolução -->
         <p>&nbsp;</p>
-        <h4>Evolução</h4>
-        <canvas id="grafico-evolucao"></canvas>
+        <!-- <h4>Evolução</h4>
+        <canvas id="grafico-evolucao"></canvas> -->
       </div>
     </div>
   </div>
@@ -285,24 +285,28 @@
     const graficoEvolucao = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Dez-23', 'Jan-24', 'Fev-24', 'Mar-24', 'Abr-24', 'Mai-24'],
+        // labels: ['Dez-23', 'Jan-24', 'Fev-24', 'Mar-24', 'Abr-24', 'Mai-24'],
+        labels: [],
         datasets: [{
           label: 'Revolver',
-          data: [5.42, 4.56, 4.21, 4.02, 3.24, 3.01], // Substitua pelos dados reais do atleta
+          // data: [5.42, 4.56, 4.21, 4.02, 3.24, 3.01], // Substitua pelos dados reais do atleta
+          data: [], // Substitua pelos dados reais do atleta
           backgroundColor: 'rgba(255, 165, 0, 0.2)',
           borderColor: 'rgba(255, 165, 0, 1)',
           borderWidth: 1
         },
         {
           label: 'Pistola',
-          data: [4.42, 4.98, 4.12, 3.54, 3.87, 2.79], // Substitua pelos dados reais do atleta
+          // data: [4.42, 4.98, 4.12, 3.54, 3.87, 2.79], // Substitua pelos dados reais do atleta
+          data: [], // Substitua pelos dados reais do atleta
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           borderColor: 'rgba(255, 99, 132, 1)',
           borderWidth: 1
         },
         {
           label: 'Força libre',
-          data: [5.21, 5.02, 3.25, 4.07, 3.78, 2.37], // Substitua pelos dados reais do atleta
+          // data: [5.21, 5.02, 3.25, 4.07, 3.78, 2.37], // Substitua pelos dados reais do atleta
+          data: [], // Substitua pelos dados reais do atleta
           backgroundColor: 'rgba(106, 90, 205, 0.2)',
           borderColor: 'rgba(106, 90, 205, 1)',
           borderWidth: 1

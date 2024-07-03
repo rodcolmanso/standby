@@ -38,6 +38,12 @@
 
   <style>
 
+    .form-control.no-validate:valid {
+      border-color: #ced4da;
+      padding-right: .75rem;
+      background: none;
+    }
+
     .text-bg-purple{
       /* background-color :purple !important; */
       background-color: rgba(84, 33, 187, 0.5) !important;
@@ -182,8 +188,8 @@
                                     <div class="was-validated form-floating">
                                       <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
                                       <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">
-                                      <input disabled type="text" pattern="\d*" required placeholder="" class="form-control " id="subscribe-docnum">
-                                      <label for="subscribe-docnum" >CPF</label>
+                                      <input disabled type="text" pattern="(^[\d-\-\.]+$)" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
+                                      <label for="subscribe-docnum" >CPFc</label>
                                     </div>
                                     <div class="form-floating">
                                       <input disabled type="text" required class="form-control " id="subscribe-name">

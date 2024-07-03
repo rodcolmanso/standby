@@ -72,8 +72,8 @@ window.onload = async () => {
     document.getElementById('nav-qualify').style.display='none';
 
     const dDate= new Date();
-    dDate.setDate(0);
-    dDate.setDate(1);
+    // dDate.setDate(0);
+    // dDate.setDate(1);
     document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 
     search();
@@ -95,7 +95,7 @@ function search() {
         }
     
     let queryDate= document.getElementById('date').value.split('-');
-    let sQuery='?p=0';
+    let sQuery='?order=1&p=0';
 
     if(queryDate.length>0){
         // sQuery= sQuery+'&date_from='+queryDate[0].substring(6,10)+'-'+queryDate[0].substring(3,5)+'-'+queryDate[0].substring(0,2);

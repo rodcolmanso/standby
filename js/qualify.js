@@ -217,6 +217,7 @@ function naiveRound(num, decimalPlaces = 0) {
     return Math.round(num * p) / p;
 }
 
+let _tb;
 function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
     var row= "";
@@ -248,8 +249,16 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     let _time;
     let _penal;
     let sTries;
-    let trophy;
+    let _gbColor;
 
+    if(_tb)
+        _tb.destroy();
+
+    document.getElementById('tableLadies').innerHTML='';
+    document.getElementById('tableOptics').innerHTML='';
+    document.getElementById('tableAdvance').innerHTML='';
+    document.getElementById('tableOverall').innerHTML='';
+        
         for(let i=0; i< aPlayers.length; i++){
             
             if(aPlayers[i].division == selectDivision){
@@ -276,7 +285,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         table= document.getElementById('tableOverall')
                         actualOverallCount++;
                         position=actualOverallCount;
-
                     }
                 }
 
@@ -355,20 +363,21 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 
 
                 if(position<2&&aPlayers[i].tries>0)
-                    trophy=`<i class="bi bi-trophy"></i>`;
+                    // trophy=`<i class="bi bi-trophy"></i>`;
+                _gbColor=`text-bg-purple text-lg-start`;
                 else
-                    trophy=``;
+                    _gbColor=`bg-warning text-dark`;
 
-        //data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop"
                 _rd= aPlayers[i].optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+
                 row= `<tr>
                     <td class="align-middle text-small">${position}</td>
                     <td class="align-middle text-start">
                         <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
                             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=''" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
-                    </td>
-                    <td class="align-middle text-start">
+                    <!--</td>
+                    <td class="align-middle text-start">-->
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" >-->
                     <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> `;
 
@@ -387,7 +396,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                      </td>
                     <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
                     <td class="align-middle text-start">
-                        <span class="badge bg-info text-dark">${_time}
+                        <span class="badge ${_gbColor}">${_time}
                             <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                         </span>
                     </td>
@@ -398,10 +407,23 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                 </tr>`;
                 table.innerHTML+= row;
-                // console.log(`row[${i}]=${row}`);
-
+                
             }
         }
+
+        let _ord=0;
+        if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+        ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+         || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+            _ord=3;
+         }
+
+        _tb= new DataTable(table.parentNode, 
+            {pageLength: 50
+            , order: [[_ord, 'asc']]
+            }
+        );
+                _tb.draw(false);
             // console.log(`BEFORE UNHIDDE SPINNER`);
             spinner.style.visibility = 'hidden'//'visible'; //'hidden'
                 //)
@@ -494,79 +516,79 @@ function buildDivisions(eventDivisions){
 
     //selectDivisions.value= eventDivisions[0].id;
 
-    clearShooterModal();
+    // clearShooterModal();
 
 }
 
-function clearShooterModal(){
+// function clearShooterModal(){
     
-    document.getElementById('modalShooterId').value='';
-    document.getElementById('modalName').value='';
-    document.getElementById('modalEmail').value='';
-    document.getElementById('modalOption'+cLadies).checked=false;
-    document.getElementById('modalOption'+cOverall).checked=false;
-    document.getElementById('modalOption'+cSeniors).checked=false;
+//     document.getElementById('modalShooterId').value='';
+//     document.getElementById('modalName').value='';
+//     document.getElementById('modalEmail').value='';
+//     document.getElementById('modalOption'+cLadies).checked=false;
+//     document.getElementById('modalOption'+cOverall).checked=false;
+//     document.getElementById('modalOption'+cSeniors).checked=false;
     
     
-    let modalRow='';
-    document.getElementById('modalShooterDivisions').innerHTML='';
-    for(k=0;k<eventConfig.divisions.length;k++){
+//     let modalRow='';
+//     document.getElementById('modalShooterDivisions').innerHTML='';
+//     for(k=0;k<eventConfig.divisions.length;k++){
 
-        modalRow= `
-        <tr>
-            <th scope="row">
-                <input type="checkbox" class="btn-check" id="btnCheckDivision${eventConfig.divisions[k]._id}" autocomplete="off">
-                <label class="btn btn-outline-warning" for="btnCheckDivision${eventConfig.divisions[k]._id}">${eventConfig.divisions[k].name}</label><br>
-            </th>
-                <td>
-                    <input class="form-control form-control-sm" id="gunName${eventConfig.divisions[k]._id}" type="text" maxlength="10"
-                        onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" placeholder="" aria-label=".form-control-sm example">
-                </td>
-                <td>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" type="checkbox" role="switch" id="optic${eventConfig.divisions[k]._id}">
-                    </div>
-                </td>
-        </tr>`;
-        document.getElementById('modalShooterDivisions').innerHTML+=modalRow;
+//         modalRow= `
+//         <tr>
+//             <th scope="row">
+//                 <input type="checkbox" class="btn-check" id="btnCheckDivision${eventConfig.divisions[k]._id}" autocomplete="off">
+//                 <label class="btn btn-outline-warning" for="btnCheckDivision${eventConfig.divisions[k]._id}">${eventConfig.divisions[k].name}</label><br>
+//             </th>
+//                 <td>
+//                     <input class="form-control form-control-sm" id="gunName${eventConfig.divisions[k]._id}" type="text" maxlength="10"
+//                         onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" placeholder="" aria-label=".form-control-sm example">
+//                 </td>
+//                 <td>
+//                     <div class="form-check form-switch">
+//                         <input class="form-check-input" onClick="document.getElementById('btnCheckDivision${eventConfig.divisions[k]._id}').checked=true" type="checkbox" role="switch" id="optic${eventConfig.divisions[k]._id}">
+//                     </div>
+//                 </td>
+//         </tr>`;
+//         document.getElementById('modalShooterDivisions').innerHTML+=modalRow;
 
-        document.getElementById('btnCheckDivision'+eventConfig.divisions[k]._id).checked=false;
-        document.getElementById('gunName'+eventConfig.divisions[k]._id).value="";
-        document.getElementById('optic'+eventConfig.divisions[k]._id).checked=false;
+//         document.getElementById('btnCheckDivision'+eventConfig.divisions[k]._id).checked=false;
+//         document.getElementById('gunName'+eventConfig.divisions[k]._id).value="";
+//         document.getElementById('optic'+eventConfig.divisions[k]._id).checked=false;
 
-    }
-}
+//     }
+// }
 
-function editShooter(idShooter){
+// function editShooter(idShooter){
 
-    clearShooterModal();
+//     clearShooterModal();
 
-    //populate modal registered
-    for(i=0;i< playersArray.length;i++){
+//     //populate modal registered
+//     for(i=0;i< playersArray.length;i++){
 
-        if(idShooter== playersArray[i].shooterId){
-            for(j=0;j< playersArray[i].registered.length;j++){
+//         if(idShooter== playersArray[i].shooterId){
+//             for(j=0;j< playersArray[i].registered.length;j++){
 
             
-                //&& selectDivision==playersArray2[i].registered[j].division
+//                 //&& selectDivision==playersArray2[i].registered[j].division
                 
 
-                document.getElementById('modalShooterId').value= playersArray[i].shooterId;
-                document.getElementById('modalName').value= playersArray[i].name;
-                document.getElementById('modalEmail').value= playersArray[i].email;
-                document.getElementById('modalOption'+playersArray[i].category).checked=true;
+//                 document.getElementById('modalShooterId').value= playersArray[i].shooterId;
+//                 document.getElementById('modalName').value= playersArray[i].name;
+//                 document.getElementById('modalEmail').value= playersArray[i].email;
+//                 document.getElementById('modalOption'+playersArray[i].category).checked=true;
 
-                document.getElementById('btnCheckDivision'+playersArray[i].registered[j].divisionId).checked=true;
-                document.getElementById('gunName'+playersArray[i].registered[j].divisionId).value= playersArray[i].registered[j].gun;
-                if(playersArray[i].registered[j].optics)
-                     document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= true;
-                else
-                    document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= false;
+//                 document.getElementById('btnCheckDivision'+playersArray[i].registered[j].divisionId).checked=true;
+//                 document.getElementById('gunName'+playersArray[i].registered[j].divisionId).value= playersArray[i].registered[j].gun;
+//                 if(playersArray[i].registered[j].optics)
+//                      document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= true;
+//                 else
+//                     document.getElementById('optic'+playersArray[i].registered[j].divisionId).checked= false;
 
-            }
-        }
-    }
-}
+//             }
+//         }
+//     }
+// }
 
 function uuidv4_() {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -886,7 +908,7 @@ function buildTimeTable(idShooter,idDivision,idShooterDivision){
                 // <span class="badge bg-info text-dark">${_time}</span>
                 //     <span class="badge bg-warning text-dark rounded-pill">${_penal}</span>
 
-                let _sBS='bg-info text-dark';
+                let _sBS='bg-warning text-dark';
                 if(_bestScore=== records[i].score)
                     _sBS='text-bg-purple text-lg-start';
 
