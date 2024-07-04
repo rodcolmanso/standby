@@ -707,7 +707,7 @@ function subscribeNew(){
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
-    nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
+    // nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
 
 
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
