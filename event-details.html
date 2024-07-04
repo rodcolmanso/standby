@@ -164,7 +164,7 @@
                       <!-- <div class="col-lg-8"> -->
                 <div class="modal-body">
                     <!-- Project details-->
-                    <h2 class="" id="event-name"></h2>
+                    <h5 class="" id="event-name"></h5>
                     <input type="hidden" class="nodisable" id="event-public">
                     <input type="hidden" class="nodisable" id="event-owners">
                     <hr /> 
@@ -179,14 +179,14 @@
                                   <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important;"-->
                                     <div class="" disabled style="padding-right:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important; padding-bottom:1px !important;" -->
                                       <!-- <label for="input-shooter-img" style="max-height:131px !important;"> -->
-                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:88px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." />
+                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:80px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." />
                                       </label>
                                       <!-- <input type="file" disabled class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" /> -->
                                     </div>
                                   </div>
                                   
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
-                                    <div class="was-validated form-floating">
+                                    <div class="form-floating">
                                       <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
                                       <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">
                                       <input disabled type="text" pattern="\d*" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
@@ -343,7 +343,7 @@
       <!-- <div class="masthead-subheading">Pistola, Força livre e Revolver</div> -->
       <div class="masthead-subheading" id="event-local"></div>
       <!-- <a class="btn btn-warning btn-xl text-uppercase" style="color: white;" href="#services">Inscreva-se</a> -->
-      <button type="button" class="btn btn-warning btn-xl text-uppercase nodisable" id="btn-modal-inscrevase" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <button type="button" class="btn btn-warning btn-xl text-white text-uppercase nodisable" id="btn-modal-inscrevase" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Inscreva-se
       </button>      
   </div>
@@ -360,30 +360,36 @@
      
        <div class="row text-center">
           <div class="btn col-md-4" data-bs-toggle="modal" id="btn-subscriptionsModal" data-bs-target="#subscriptionsModal">
+            <button type="button" class="btn btn-warning btn-lg">
               <span class="fa-stack fa-4x">
                   <i class="fas fa-circle fa-stack-2x text-warning"></i>
-                  <i class="fas fa-user-plus fa-stack-1x fa-inverse"></i>
+                  <i class="fas fa-users fa-stack-1x fa-inverse"></i>
               </span>
-              <h4 class="my-3">Inscrições</h4>
+              <h4 class="text-white">Inscritos</h4>
+            </button>
               <p class="text-muted" >Acompanhe os já inscritos no evento:</p>
               <div class="" id="display-subscribers"></div>
           </div>
           <div class="btn col-md-4">
+            <button type="button" class="btn btn-warning btn-lg">
               <span class="fa-stack fa-4x" onclick="hrefQualify()">
                   <i class="fas fa-circle fa-stack-2x text-warning"></i>
                   <i class="fas fa-clock fa-stack-1x fa-inverse"></i>
               </span>
-              <h4 class="my-3">Contra o relógio</h4>
+              <h4 class="text-white">Contra o relógio</h4>
+            </button>
               <!-- <p class="text-muted">Acompanhe as tomadas de tempo por divisão</p> -->
               <p class="text-muted" >Melhores tempos até o momento:</p>
               <div class="" id="display-best-times"></div>
           </div>
           <div class="btn col-md-4">
+            <button type="button" class="btn btn-warning btn-lg">
               <span class="fa-stack fa-4x"  onclick="hrefMatches()">
                   <i class="fas fa-circle fa-stack-2x text-warning"></i>
                   <i class="fas fa-holly-berry fa-stack-1x fa-inverse"></i>
               </span>
-              <h4 class="my-3">Duelos</h4>
+              <h4 class="text-white">Duelos</h4>
+            </button>
               <p class="text-muted">Acompanhe as chaves e resultados por modalidade</p>
           </div>
       </div>

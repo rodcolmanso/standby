@@ -281,13 +281,13 @@ $(function() {
 
         // if(!this.checkValidity()){
         if (this.value!=="" && !validaCPF(this.value)) {
-            alert('CPF inválido');
+            // alert('CPF inválido');
             document.getElementById('subscribe-name').value="";
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
 
-            this.focus();
+            // this.focus();
         }else if (this.value!=="") {
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
@@ -689,6 +689,13 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
 function subscribeNew(){
 
+    if(!validaCPF(document.getElementById('subscribe-docnum').value)){
+
+        alert('Cpf inválido');
+        document.getElementById('subscribe-docnum').focus();
+        return 0
+
+    }
     let nShooters_divisions= {};
     
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
@@ -700,6 +707,8 @@ function subscribeNew(){
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
+    nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
+
 
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     // shooterDivisions.category= 

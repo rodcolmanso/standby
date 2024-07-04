@@ -52,11 +52,11 @@ const promiseOfPlayers = (id) => { return fetch("/.netlify/functions/shooters_di
 })};
 
 function hrefQualify(){
-    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
 }
 
 function hrefMatches(){
-    window.location.href = "/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    window.location.href = "/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
 }
 
 function getActiveCat(){
@@ -77,13 +77,13 @@ function getActiveCat(){
 }
 
 function shareEvent(){
-    const _link = 'https://'+window.location.host+"/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    const _link = 'https://'+window.location.host+"/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
      // Copy the text inside the text field
      navigator.clipboard.writeText(_link);
 }
 
 function editInscriptions(){
-    window.location.href = "/event-details.html?allInscriptions=clock&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    window.location.href = "/event-details.html?allInscriptions=clock&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
 }
 
 async function loadPage(){
@@ -167,7 +167,7 @@ function getRandomDateTime() {
 function changeDivision(selectDivision){
     
     buildPlayersTables(transformRegistrer(playersArray), eventConfig, selectDivision.value);
-    buildCategory2(eventConfig, selectDivision.value);
+    //-> buildCategory2(eventConfig, selectDivision.value);
     
     
     if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
@@ -267,8 +267,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
         for(let i=0; i< aPlayers.length; i++){
             
             if(aPlayers[i].division == selectDivision){
-                
-                if(aPlayers[i].category==cLadies){
+                //->
+                if(1==0&&aPlayers[i].category==cLadies){
                     
                     if(eventConfig.divisions[divisionIndex].categories.ladies){
                         
@@ -279,7 +279,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         table= document.getElementById('tableOptics');
                         actualOpticsCount++;
                         position= actualOpticsCount;
-                    }else if(eventConfig.divisions[divisionIndex].categories.advance &&
+                    }else if(1==0&eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<1000&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
                             actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
@@ -291,9 +291,10 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         actualOverallCount++;
                         position=actualOverallCount;
                     }
+                    
                 }
 
-                if(aPlayers[i].category==cSeniors){
+                if(1==0&&aPlayers[i].category==cSeniors){
                     if(eventConfig.divisions[divisionIndex].categories.seniors){
                         table= document.getElementById('tableSeniors');
                         actualSeniorsCount++;
@@ -302,7 +303,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         table= document.getElementById('tableOptics');
                         actualOpticsCount++;
                         position= actualOpticsCount;
-                    }else if(eventConfig.divisions[divisionIndex].categories.advance &&
+                    }else if(1==0&eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<1000&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
                             actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
@@ -316,12 +317,12 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     }
                 }
 
-                if(aPlayers[i].category==cOverall){
+                if(1==1||aPlayers[i].category==cOverall){
                     if(eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
                         table= document.getElementById('tableOptics');
                         actualOpticsCount++
-                        position= actualOpticsCount;
-                    }else if(eventConfig.divisions[divisionIndex].categories.advance &&
+                        position= actualOpticsCount;//-->
+                    }else if(1==0&eventConfig.divisions[divisionIndex].categories.advance &&
                             ((aPlayers[i].score<1000&&aPlayers[i].score<eventConfig.divisions[divisionIndex].advanceLimit.passingScore) ||
                             actualAdvCount< eventConfig.divisions[divisionIndex].advanceLimit.topBestOf )){
                         table= document.getElementById('tableAdvance');
@@ -381,7 +382,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <div class="row">
                         <div class="col align-middle align-items-center" style="max-width: 40px !important;">
                         <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
-                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=''" class="small-profile-avatar-pic rounded-circle" alt="...">
+                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=${uuidv4()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
                         </div>
                     <!--</td>
@@ -390,12 +391,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> 
                     <div class="col text-truncate">`;
 
-                    
                     if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                     ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
                      || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
                         row+= `<a href="#" onClick="goToSubscription('${aPlayers[i].id}')" >
-                                ${aPlayers[i].name}</a><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
+                                ${aPlayers[i].name}
+                               </a>
+                                <p style="margin-bottom: 0 !important;"><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}</p>
                                `
                     }else{
                         row+= `${aPlayers[i].name}<p style="margin-bottom: 0 !important;"><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}</p>`
@@ -797,7 +799,7 @@ function goToSubscription(parms){
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
     }else parms='';
-       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+getActiveCat();
+       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms; //->+getActiveCat();
 }
 
 function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal ){

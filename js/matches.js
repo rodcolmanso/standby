@@ -397,10 +397,10 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                         <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >-->
                         <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
-                            <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                            <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=${uuidv4()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
-                    <div class="col-md-6 col-card-match ">
+                    <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2">
                         <h10 class="card-title text-truncate"><b> `;
 
@@ -442,10 +442,10 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
                     <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
                         <img  ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.B" style="height:50px" 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?code=${uuidv4()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
-                    <div class="col-md-6 col-card-match">
+                    <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b> `;
                         
@@ -542,10 +542,10 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 <div class="row g-0 " >
                     <div class="col-md-4 small-avatar-pic" >
                     <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
-                        <img  ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img  ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?code=${uuidv4()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
-                    <div class="col-md-6 col-card-match">
+                    <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterA.name}</b></h10>
                         <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${recapMatches[round][match].shooterA.gun}</span> ${_rdA}</p>
@@ -569,10 +569,10 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
                     <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
-                        <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=''" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?code=${uuidv4()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </a>
                     </div>
-                    <div class="col-md-6 col-card-match">
+                    <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterB.name}</b></h10>
                         <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${recapMatches[round][match].shooterB.gun}</span> ${_rdB}</p>
