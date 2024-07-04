@@ -217,6 +217,11 @@ function naiveRound(num, decimalPlaces = 0) {
     return Math.round(num * p) / p;
 }
 
+// let _tbAdvance;
+// let _tbOverall;
+// let _Ladies;
+// let _Optics;
+// let _Seniors;
 let _tb;
 function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
@@ -371,25 +376,29 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 _rd= aPlayers[i].optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
 
                 row= `<tr>
-                    <td class="align-middle text-small">${position}</td>
+                    <td class="align-middle text-small">${zeroPad(position,2)}º</td>
                     <td class="align-middle text-start">
+                    <div class="row">
+                        <div class="col align-middle align-items-center" style="max-width: 40px !important;">
                         <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
                             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?code=''" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
+                        </div>
                     <!--</td>
                     <td class="align-middle text-start">-->
                     <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" >-->
-                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> `;
+                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> 
+                    <div class="col text-truncate">`;
 
                     
                     if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                     ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
                      || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
                         row+= `<a href="#" onClick="goToSubscription('${aPlayers[i].id}')" >
-                                ${aPlayers[i].name}<span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
-                               </a>`
+                                ${aPlayers[i].name}</a><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}
+                               `
                     }else{
-                        row+= `${aPlayers[i].name}<span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}`
+                        row+= `${aPlayers[i].name}<p style="margin-bottom: 0 !important;"><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}</p>`
                     }
 
                     row+= `
@@ -400,10 +409,17 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                         </span>
                     </td>
-                    <td class="align-middle text-end">${sTries}</td>
-                    <td class="align-middle">
-                        <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
-                        </button>
+                    <td class="align-middle align-items-center align-items-center">
+                      <div class="row">
+                        <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
+                          ${sTries}
+                        </div>
+                        <!--</td><td class="align-middle">-->
+                        <div class="col">
+                         <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                         </button>
+                        </div>
+                     </div>
                     </td>
                 </tr>`;
                 table.innerHTML+= row;
@@ -419,8 +435,11 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
          }
 
         _tb= new DataTable(table.parentNode, 
-            {pageLength: 50
-            , order: [[_ord, 'asc']]
+            { order: [[_ord, 'asc']]
+            , paging: false
+            ,oLanguage: {
+                        sSearch: "Buscar:"
+                    }
             }
         );
                 _tb.draw(false);

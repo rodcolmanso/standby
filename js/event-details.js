@@ -135,6 +135,7 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
     }
 });
 
+
  document.getElementById('subscribe-docnum').addEventListener('input', function(e) {
     var value = e.target.value;
     // var cpfPattern = formatCpf(value,true);
@@ -269,17 +270,25 @@ netlifyIdentity.on('close', () => {
 
 $(function() {
     // $("#subscribe-email").change(function() {
-    $("#subscribe-docnum").change(function() {
+    $("#subscribe-docnum").focusout(function() {
         
         if(this.value===""){
-            this.value= this.placeholder;
+            document.getElementById('subscribe-name').value="";
+            document.getElementById('subscribe-email').value="";
+            document.getElementById('subscribe-shooterId').value="";
+            document.getElementById('shooter-img').src="none";
         }
 
         // if(!this.checkValidity()){
-        if (!validaCPF(this.value)) {
-            
+        if (this.value!=="" && !validaCPF(this.value)) {
+            alert('CPF inválido');
+            document.getElementById('subscribe-name').value="";
+            document.getElementById('subscribe-email').value="";
+            document.getElementById('subscribe-shooterId').value="";
+            document.getElementById('shooter-img').src="none";
+
             this.focus();
-        }else{
+        }else if (this.value!=="") {
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
             
