@@ -400,20 +400,22 @@ function addMainMatches(mainMatches, recapMatches, categ){
                             <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?code=${uuidv4()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </a>
                     </div>
-                    <div class="col-md-6 col-card-match text-truncate">
-                        <div class="card-header-2">
-                        <h10 class="card-title text-truncate"><b> `;
+                    `;
 
             if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
             ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
             || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
                 matches+=
-                        `<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >
+                        `<div class="col-md-6 col-card-match ">
+                        <div class="card-header-2">
+                        <h10 class="card-title text-truncate"><b> <a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >
                             ${mainMatches[round][match].shooterA.name}
                         </a>`;
             }else{
                 matches+=
-                ` ${mainMatches[round][match].shooterA.name} `;
+                `<div class="col-md-6 col-card-match text-truncate">
+                        <div class="card-header-2">
+                        <h10 class="card-title text-truncate"><b>  ${mainMatches[round][match].shooterA.name} `;
             }
             matches+=
                     ` </b></h10>
