@@ -202,6 +202,10 @@ btnSaveDocnum.addEventListener('click', function(e) {
     _userDb.docnum= _docnum.replace(/\D+/g, '');
 
     applySpinners(true);
+    document.getElementById('btnCloseDocnum').disabled=true
+    document.getElementById('btnSaveDocnum').disabled=true
+    document.getElementById('btnSaveDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+    document.getElementById('btnCloseDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
     fetch('/.netlify/functions/shooters?replace=1', {
         method: "PATCH",
         body: JSON.stringify(_userDb),
@@ -258,7 +262,15 @@ btnSaveDocnum.addEventListener('click', function(e) {
             clearSessionDbUser();
             netlifyIdentity.logout();
     })
-        .finally(()=> {applySpinners(false);});
+        .finally(()=> {
+            document.getElementById('btnCloseDocnum').disabled=false;
+            document.getElementById('btnSaveDocnum').disabled=false;
+
+            document.getElementById('btnCloseDocnum').innerHTML= `<span>${document.getElementById('btnCloseDocnum').getAttribute('value')}</span>`;
+            document.getElementById('btnSaveDocnum').innerHTML= `<span>${document.getElementById('btnSaveDocnum').getAttribute('value')}</span>`;
+
+            applySpinners(false);
+        });
 
   });
 
@@ -275,15 +287,15 @@ btnSaveDocnum.addEventListener('click', function(e) {
 netlifyIdentity.setLocale('pt');
 netlifyIdentity.on('login', user => {
     
-    applySpinners(true);
-    loadingUserSession(user);
-    configPermissions(true);
     //display fields
     var iframe = document.getElementById("netlify-identity-widget");
     if (iframe) {
         var btnClose = iframe.contentWindow.document.querySelector(".btnClose");
         btnClose.click();
     }
+    applySpinners(true);
+    loadingUserSession(user);
+    configPermissions(true);
     applySpinners(false);
     // console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
     // console.log(`user.user_metadata.admin_events= ${user.user_metadata.admin_events}`);
@@ -312,14 +324,29 @@ function clearSessionEventConfig(){
 }
 
 function setSessionDbUser(dbUserJson){
+    if(dbUserJson.img)
+        dbUserJson.img="none";
     setCookie(SESSION_DBUSER, JSON.stringify(dbUserJson), 1);
 }
+
 function getSessionDbUser(){
     let dbu= getCookie(SESSION_DBUSER);
     if(dbu===null || dbu===undefined ||dbu===""){
         return null;
     }else{
-        return JSON.parse(dbu);
+        if(dbu.img && dbu.img!=="none")
+                    dbu.img="none"
+        let jr=null;
+
+        try{
+            jr= JSON.parse(dbu);
+        }catch(error){
+            console.log(error);
+            clearSessionDbUser();
+        }
+        
+
+        return jr;
     }
 }
 
@@ -335,7 +362,7 @@ function base64encode(str) {
 
 function setSessionEventConfig(ec){
     // setCookie(SESSION_EVENT_CONFIG, JSON.stringify(ec), 1);
-
+    
     stringifyEc= JSON.stringify(ec);
     b64ec= base64encode(stringifyEc);
     setCookie(SESSION_EVENT_CONFIG, b64ec, 1);
@@ -347,6 +374,7 @@ function getSessionEventConfig(){
     }else{
         try{
             // ec= JSON.parse(ec);
+
             decodedEc= base64decode(ec);
             parsedEc= JSON.parse(decodedEc);
             ec= parsedEc;
@@ -374,7 +402,7 @@ function uuidv4() {
 function setAvatarPic(){
     const _dbUser= getSessionDbUser();
     const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;
-    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?code="+uuidv4();
+    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?"+uuidv4();
     // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
 
     document.getElementById("loggedin").style.display =  (netlifyIdentity.currentUser()===null?'none':'');
@@ -554,7 +582,7 @@ function applySpinners(onoff){
 
         spans= btn.querySelectorAll("span");
         [].forEach.call(spans,span=>{
-            if(span.getAttribute('class').includes("spinner")){
+            if(span.getAttribute('class')&&span.getAttribute('class').includes("spinner")){
                 if(onoff)
                     span.style.visibility = 'visible'//'visible'; //'hidden'
                 else

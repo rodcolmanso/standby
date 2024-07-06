@@ -71,7 +71,7 @@ console.log('Is there privider avatar?');
   // const testemail= 'luccamangamer@gmail.com';
 
 
-  if(user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+  if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
     // if(testProvidedImg){
     console.log('YES, provider avatar='+user.user_metadata.avatar_url+'. Getting dbUser._id...  user.email='+ user.email);
     // console.log('YES, provider avatar='+testProvidedImg+'. Getting dbUser._id...  user.email='+ testemail);

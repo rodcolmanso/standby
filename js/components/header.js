@@ -39,8 +39,8 @@ class Header extends HTMLElement {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary nodisable" id="btnCloseDocnum" >Fechar</button> <!--data-bs-dismiss="modal"-->
-        <button type="button" class="btn btn-primary nodisable" id="btnSaveDocnum" >Salvar</button>
+        <button type="button" class="btn btn-secondary nodisable" id="btnCloseDocnum" value="Fechar">Fechar</button> <!--data-bs-dismiss="modal"-->
+        <button type="button" class="btn btn-primary nodisable" id="btnSaveDocnum" value="Salvar">Salvar</button>
       </div>
     </div>
   </div>

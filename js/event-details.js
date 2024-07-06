@@ -291,6 +291,7 @@ $(function() {
         }else if (this.value!=="") {
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
+            document.getElementById('shooter-img').src="none";
             
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
@@ -515,7 +516,7 @@ function popupSubscriptionModal(shooterDivisions){
         // document.getElementById('input-shooter-img').disabled=true;
     }
     
-    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?code=${uuidv4()}`;
+    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
     document.getElementById('shooter-img').src= uri;
     
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
@@ -535,7 +536,8 @@ function populateNewShooter(_docnum){
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("subscribe-email").value=shooterDivisions[0].email;
     //-> document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
-    document.getElementById("subscribe-docnum").value=hooterDivisions[0].docnum;
+    document.getElementById("subscribe-docnum").value=shooterDivisions[0].docnum;
+    document.getElementById("subscribe-shooterId").value=shooterDivisions[0]._id;
 
     document.getElementById("subscribe-check-clock").checked= eventConfig.clock;
     document.getElementById("subscribe-check-duel").checked= eventConfig.duel;
@@ -618,7 +620,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 `
                 <td class="align-middle text-end">
                     <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_new">
-                    <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?code='${uuidv4()}'" class="small-profile-avatar-pic rounded-circle" alt="...">
+                    <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?'${uuidv4()}'" class="small-profile-avatar-pic rounded-circle" alt="...">
                     </a>
                 </td>
                 <td class="text-start">
@@ -698,8 +700,8 @@ function subscribeNew(){
     }
     let nShooters_divisions= {};
     
-    // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
-    nShooters_divisions._id=""; // NEW row!
+    nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;
+    // nShooters_divisions._id=""; // NEW row!
     nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions[0].shooterId!==undefined&&shooterDivisions[0].shooterId!==null?shooterDivisions[0].shooterId:"";
     nShooters_divisions.divisionId= document.getElementById("select-subscribe-division").value;
     nShooters_divisions.eventId=eventConfig._id;
@@ -707,11 +709,11 @@ function subscribeNew(){
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
-    // nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
+    nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
 
 
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
-    // shooterDivisions.category= 
+    shooterDivisions[0].category= 0;
 
     let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
     uptShooterDiv.shooters_divisions=[];
@@ -766,6 +768,7 @@ const promiseOfPutShootersDivisions = (_eventId, _email, sD, modalId)=>{
                 
                 shooterDivisions[0]._id=json._id;
                 shooterDivisions[0].email=json.email;
+                shooterDivisions[0].docnum=json.docnum;
                 shooterDivisions[0].name=json.name;
                 shooterDivisions[0].category=json.category;
                 shooterDivisions[0].shooterId=json.shooterId;

@@ -152,7 +152,7 @@ function saveShooter(){
 function buildShooterForm(){
 
     const _shooterid= shooterData===null?'.jpg'+(Math.random()*1000000).toString():shooterData._id;
-        document.getElementById('pic-profile').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/"+_shooterid;
+        document.getElementById('pic-profile').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/"+_shooterid+".jpg?"+uuidv4();
 
         document.getElementById('imgChanged').value=false;
 
@@ -162,6 +162,9 @@ function buildShooterForm(){
         document.getElementById('docnum').value= formatCpf(shooterData.docnum,false);
         document.getElementById('modalName').value= shooterData.name;
         
+        if(!shooterData.category|| shooterData.category===null)
+            shooterData.category=0;
+
         document.getElementById('modalOption0').checked = (shooterData.category===0);
         document.getElementById('modalOption2').checked = (shooterData.category===2);
         document.getElementById('modalOption5').checked = (shooterData.category===5);
