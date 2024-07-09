@@ -35,12 +35,11 @@ class Division extends HTMLElement {
                 <li id="btnOptClock" style="display:none"><a class="dropdown-item" onClick="hrefQualify()" ><i class="bi bi-stopwatch"></i> Ir para Contra o Relógio</a></li>
                 <li id="btnOptDuel" style="display:none"><a class="dropdown-item" onClick="hrefMatches()" ><i class="fas fa-holly-berry "></i> Ir para Duelos</a></li>
                 <li><a class="dropdown-item" href="./event-config.html"><i class="bi bi-gear-fill"></i> Configurações do Evento</a></li>
-                
             </ul>
           </div>
         </div>
       </div>
-      <h4> </h4>
+      
       <!--<nav class="navbar-fixed-top">
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nodisable nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
@@ -49,8 +48,8 @@ class Division extends HTMLElement {
             <button class="nodisable nav-link "        id="liOptics" data-bs-toggle="tab" data-bs-target="#nav-liOptics" type="button" role="tab" aria-controls="nav-liOptics" aria-selected="false">Optics</button>
             <button class="nodisable nav-link "        id="liSeniors" data-bs-toggle="tab" data-bs-target="#nav-liSeniors" type="button" role="tab" aria-controls="nav-liSeniors" aria-selected="false">Seniors</button>
           </div>
-        </nav>-->
-        
+      </nav>-->
+    </div>
       `;
     }
   }

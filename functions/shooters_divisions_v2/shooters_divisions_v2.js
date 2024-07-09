@@ -68,7 +68,20 @@ const handler = async (event, context)=>{
 
         // console.log(`user.email: ${user.email}`);
         let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
-        let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+        // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+        let isEventAdmin=false;
+          if(!isAdmin&& user && user.email){
+
+            //check if the user is admin of the event:
+            const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+            const f_id= new ObjectId(p_eventId)
+            const _e= await cEvent.aggregate( [
+              {$match:{_id: f_id
+                      , owners: user.email}}
+            ]).toArray();
+            
+            isEventAdmin= (_e.length>0);
+          }
 
         // console.log(`JSON.stringify(user): ${JSON.stringify(user,null,2)}`);
         // console.log(`user.user_metadata: ${user.user_metadata}`);
@@ -114,6 +127,7 @@ const handler = async (event, context)=>{
           ,{$project:{"eventId":0}}
           ]).toArray();
 
+          console.log('Masking Docnun. isEventAdmin='+isEventAdmin);
           if(!isAdmin&&!isEventAdmin)
           for(let i=0;i<shootersDiv.length;i++){
             if(!user||user.email!==shootersDiv[i].email){
@@ -172,7 +186,7 @@ const handler = async (event, context)=>{
                               {$project:{"score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]},datetime:1, penalties:1}}
                               
                               // ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}}}
-                              ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$min:"$datetime"}, penalties:{$min:"$penalties"}}}
+                              ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$max:"$datetime"}, penalties:{$min:"$penalties"}}}
                           ]
                       }
                   }

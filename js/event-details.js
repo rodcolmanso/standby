@@ -700,8 +700,8 @@ function subscribeNew(){
     }
     let nShooters_divisions= {};
     
-    nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;
-    // nShooters_divisions._id=""; // NEW row!
+    // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;
+    nShooters_divisions._id=""; // NEW row!
     nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions[0].shooterId!==undefined&&shooterDivisions[0].shooterId!==null?shooterDivisions[0].shooterId:"";
     nShooters_divisions.divisionId= document.getElementById("select-subscribe-division").value;
     nShooters_divisions.eventId=eventConfig._id;

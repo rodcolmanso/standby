@@ -90,6 +90,7 @@ async function loadPage(){
     loggedUser= netlifyIdentity.currentUser();
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+    applySpinners(false);
 
     // document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
@@ -198,7 +199,7 @@ function transformRegistrer(players){
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,4)+players[i].registered[j].datetime;
             
             
-            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx };
+            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime };
             
             rP.push(aRow);  
         }
@@ -414,7 +415,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle align-items-center align-items-center">
                       <div class="row">
                         <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
-                          ${sTries}
+                          ${sTries} <span style="display:none">${aPlayers[i].datetime}</span>
                         </div>
                         <!--</td><td class="align-middle">-->
                         <div class="col">
@@ -439,7 +440,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
         _tb= new DataTable(table.parentNode, 
             { order: [[_ord, 'asc']]
             , paging: false
-            ,responsive: true
+            ,responsive: false
             ,oLanguage: {sSearch: "Buscar:"}
             }
         );
@@ -475,8 +476,8 @@ function buildCategory2(eConfig, selectDivision){
     // document.getElementById('liOverall').classList.add('active');
     // document.getElementById('liOverall').ariaSelected= true;
 
-    const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
-    bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+    // const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
+    // bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
 
 
      let divisionIndex=-1;
@@ -534,9 +535,7 @@ function buildDivisions(eventDivisions){
 
     }
 
-    //selectDivisions.value= eventDivisions[0].id;
-
-    // clearShooterModal();
+    
 
 }
 
@@ -547,152 +546,6 @@ function uuidv4_() {
     );
   }
 
-function getShooterByEmail(eventId, shooterEmail){
-applySpinners(true);
-fetch("/.netlify/functions/shooters_divisions_v2?eventId="+eventId+"&email="+shooterEmail)
-        .then(r=>r.json())
-        .then(data=>{
-            if(data.length>0){
-            document.getElementById('modalName').value= data[0].name;
-            document.getElementById('modalShooterId').value.data[0].name;
-            }else{
-                console.log(`Shooter not found.`);
-            }
-        })
-        .catch(err => console.log(`Error adding, updating shooter: ${err}`))
-        .finally(()=> applySpinners(false));
-}
-
-
-//////////------------UPDATES-----------------------
-function addUpdateShooter(){
-
-    
-    let idShooter= document.getElementById('modalShooterId').value;
-    
-    let aRegistered=[];
-        
-        for(let i=0; i<eventConfig.divisions.length;i++){
-            if(document.getElementById('btnCheckDivision'+eventConfig.divisions[i]._id).checked){
-                aRegistered.push({'divisionId':eventConfig.divisions[i]._id
-                                 ,'gun':document.getElementById('gunName'+eventConfig.divisions[i]._id).value
-                                 ,'optics':document.getElementById('optic'+eventConfig.divisions[i]._id).checked
-                                 ,'score':9999,'tries':0 });
-            }
-        }
-
-        //Validations
-
-        document.getElementById('modalName').value= document.getElementById('modalName').value.trim();
-        let idDublicated= null;
-        for(let i=0; i<playersArray.length;i++){
-            if(playersArray[i].name.toUpperCase()===document.getElementById('modalName').value.toUpperCase()
-            && idShooter!= playersArray[i].shooterId){
-                idDublicated=  playersArray[i].shooterId;
-            }
-        }
-
-        //At least one Division
-        if(aRegistered.length<1){
-            alert('Selecione ao meno uma divisão!');
-            return 0;
-        }
-        
-        if (idDublicated!=null){
-            if(confirm('O nome "'+document.getElementById('modalName').value+'" já está em uso. Gostaria de atualiza-lo?')) {
-                idShooter=  idDublicated;
-            }else return 0;
-        }
-
-            let categ= cOverall;
-
-            if(document.getElementById('modalOption'+cLadies).checked)
-                categ= cLadies;
-            else if(document.getElementById('modalOption'+cSeniors).checked)
-                categ= cSeniors;
-            else{ //if(document.getElementById('modalOption'+cOverall).checked)
-                document.getElementById('modalOption'+cOverall).checked= true;
-                categ= cOverall;
-            }
-            
-            document.getElementById('modalShooterId').value= idShooter;
-                aEvt= [];
-                aEvt.push(eventConfig._id); 
-                let jShooter= {'shooterId':idShooter
-                            ,'name':document.getElementById('modalName').value
-                            ,'email':document.getElementById('modalEmail').value
-                            ,'category': categ
-                            ,'eventId': aEvt
-                            // ,'event_id': eventConfig._id
-                            ,'registered':aRegistered};     
-
-            //    playersArray.push(jShooter);
-            applySpinners(true);
-            fetch('/.netlify/functions/shooters_divisions_v2', {
-                    method: "PATCH",
-                    body: JSON.stringify(jShooter),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
-                    })
-                    .then(response => response.json()) 
-                    .then(json => {
-                        
-                        applySpinners(false);
-                        // console.log(`document.getElementById('modalClose').value= ${ document.getElementById('modalClose').value}`);
-                        document.getElementById('modalClose').click();
-                
-                        if(idShooter===null || idShooter==''){
-                            // alert(document.getElementById('modalName').value+' se juntou ao evento!');
-                            document.getElementById('modalShooterId').value= json.shooterId;
-
-                        }else{
-                            // alert(document.getElementById('modalName').value+' atualizado');
-                            // let sd= selectDivision= document.getElementById('selectDivision').value;
-                            // buildPlayersTables(transformRegistrer(playersArray), eventConfig, sd);
-                        }
-                        modalChanged=true;
-                        updateShootersList();
-                        
-                        document.getElementById('modalClose').click();
-                    })
-                    .catch(err => console.log(`Error adding, updating shooter: ${err}`))
-                    .finally(()=> applySpinners(false));
-}
-    
-// function deleteShooter(){
-//     let idShooter= document.getElementById('modalShooterId').value;
-    
-//     if(idShooter===null ||idShooter==''){
-//         return 0;
-//     }else if(confirm('Tem certeza que deseja remover esse atirador?')) {
-
-//         let jShooter= {shooterId:''};
-//         jShooter.shooterId= idShooter;
-//         applySpinners(true);
-//         fetch('/.netlify/functions/shooters_divisions_v2', {
-//             method: "DELETE",
-//             body: JSON.stringify(jShooter),
-//             headers: {"Content-type": "application/json; charset=UTF-8"}
-//             })
-//             .then(response => response.json()) 
-//             .then(json => {
-                
-//                 if(json.shooter_deletedCount>0){
-//                     alert(`Atirador removido!`);
-//                     document.getElementById('modalShooterId').value= "";
-
-//                 }else{
-//                     alert(`No users seems to have been deleted.`);
-//                 }
-//                 modalChanged=true;
-//                 updateShootersList();
-
-//             })
-//             .catch(err => console.log(`Error deleting shooter, updating shooter: ${err}`))
-//             .finally(()=> applySpinners(false));
-        
-//     }
-    
-// }
 
 function getDivision(eventDivisions, divisionID){
 
@@ -701,28 +554,6 @@ function getDivision(eventDivisions, divisionID){
             return eventDivisions[i];
         }
     }
-}
-
-function getUserFromEmail(userEmail){
-
-    applySpinners(true);
-    fetch(`/.netlify/functions/shooters_divisions_v2?eventId=${eventConfig._id}&clock_duel=clock&email=${userEmail}`, {
-            method: "GET",
-            headers: {"Content-type": "application/json; charset=UTF-8"}
-            })
-            .then(response => response.json()) 
-            .then(json => {
-                if(json!==null&&json.length!==null&json.length>0){
-                    alert(`Atirador encontrado ${json[0].name}`);
-                    document.getElementById('modalName').value= json[0].name;
-
-                }else{
-                    alert(`Aturador não encontrado.`);
-                }
-
-            })
-            .catch(err => console.log(`Error getting shooter from email: ${err}`))
-            .finally(()=> applySpinners(false));
 }
 
 function goToSubscription(parms){
