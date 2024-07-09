@@ -355,7 +355,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Preliminares</b></div><br><br><br>`;
         }else if (mainMatches.length-round===1){
             matches+=`<div class="row no-gutters justify-content-md-center text-center" style='color:black'> <i class="bi bi-trophy-fill"></i><div>
-            <div class="row no-gutters justify-content-md-center text-center" style='color:black'><b>GRANDE FINAL</b></div>
+            <div class="row no-gutters justify-content-md-center text-center" style='color:black'><b>FINAL</b></div>
             <div class="row no-gutters justify-content-md-center text-center" style='color:black'>1º Colocado:</div><br><br>`;
         }else if (mainMatches.length-round===2){
             matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Semi-finais:</b></div><br><br><br>`;
@@ -518,7 +518,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
         if ((round+1)===recapMatches.length){
             matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><i class="bi bi-trophy"></i></div>
-                    <div style='color:black' class="row no-gutters justify-content-md-center text-center"><b>FINAL de repescagem</b><br></div>
+                    <div style='color:black' class="row no-gutters justify-content-md-center text-center"><b>FINAL da Repescagem</b><br></div>
                     <div style='color:black' class="row no-gutters justify-content-md-center text-center">2º e 3º Colocados:</div><br><br>`;
         }else
             matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>${round+1}º Rodata de repescagem</b></div><br><br>`;
@@ -608,11 +608,18 @@ function deleteKos(){
         return 0;
     }
     applySpinners(true);
+
+    loggedUser= netlifyIdentity.currentUser();
+    let _header= {"Content-type": "application/json; charset=UTF-8"}
+    if(loggedUser && loggedUser.token && loggedUser.token.access_token){
+        _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
+    }
+
     const selectDivisions= document.getElementById('selectDivision');
     fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}`, {
         method: "DELETE",
         // body: JSON.stringify(body),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: _header
         })
         .then(response => response.json()) 
         .then(json => {
@@ -641,10 +648,16 @@ function saveDivision(){
                    ,"seniorDoubleKOs":KOs.seniorDoubleKOs
                    ,"ladyDoubleKOs":KOs.ladyDoubleKOs};
         
+        loggedUser= netlifyIdentity.currentUser();
+        let _header= {"Content-type": "application/json; charset=UTF-8"}
+        if(loggedUser && loggedUser.token && loggedUser.token.access_token){
+            _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
+        }
+        
         fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}`, {
             method: "PATCH",
             body: JSON.stringify(body),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            headers: _header
             })
             .then(response => response.json()) 
             .then(json => {
@@ -810,8 +823,21 @@ window.onload = async () => {
     await loadPage();
     document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     
-    document.getElementById('btnOptClock').style.display='';
-    document.getElementById('btn-reset').style.display='';
+    const user= netlifyIdentity.currentUser();
+    const _eventConfig= getSessionEventConfig();
+    
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
+        document.getElementById('btn-reset').style.display='none';
+    }else
+        document.getElementById('btn-reset').style.display='';
+
+    if(_eventConfig.clock)
+        document.getElementById('btnOptClock').style.display='';
+    else
+        document.getElementById('btnOptClock').style.display='none';
+    
+
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-matches').classList.add('active');
 

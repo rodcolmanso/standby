@@ -560,6 +560,32 @@ const handler = async (event, context)=>{
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
         // console.log('Entrou no PATCH dos KOs');
         let matchesBody= JSON.parse(event.body);
+
+        let user= context.clientContext.user;
+
+          let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+            // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+          let isEventAdmin=false;
+          if(!isAdmin&& user && user.email){
+
+            //check if the user is admin of the event:
+            const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+            const f_id= new ObjectId(matchesBody.eventId)
+            const _e= await cEvent.aggregate( [
+              {$match:{_id: f_id
+                      , owners: user.email}}
+            ]).toArray();
+            
+            isEventAdmin= (_e.length>0);
+          }
+
+          if(!isAdmin&&!isEventAdmin){
+            console.log(`Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`);
+            return  {
+              statusCode: 401,
+              body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`
+              };
+          }
     
         new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
                                           ,divisionId: matchesBody.divisionId}
@@ -588,6 +614,32 @@ const handler = async (event, context)=>{
         // console.log(`consultando eventId=${eventId}, divisionId:=${divisionId}`);
 
         if(eventId!==null&&divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
+
+          let user= context.clientContext.user;
+
+          let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+            // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+          let isEventAdmin=false;
+          if(!isAdmin&& user && user.email){
+
+            //check if the user is admin of the event:
+            const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+            const f_id= new ObjectId(eventId)
+            const _e= await cEvent.aggregate( [
+              {$match:{_id: f_id
+                      , owners: user.email}}
+            ]).toArray();
+            
+            isEventAdmin= (_e.length>0);
+          }
+
+          if(!isAdmin&&!isEventAdmin){
+            console.log(`Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`);
+            return  {
+              statusCode: 401,
+              body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`
+              };
+          }
 
           r_delete_shooter= await cKos.deleteMany({ eventId: eventId 
                                           ,divisionId: divisionId});

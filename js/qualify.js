@@ -95,6 +95,7 @@ async function loadPage(){
     // document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     applySpinners(false);
+
     if(eventConfig===null){
         alert(`Evento não encontrado`);
         window.location.href = window.location="/index.html";
@@ -110,6 +111,20 @@ window.onload = async () => {
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('btnOptDuel').style.display='';
     document.getElementById('nav-qualify').classList.add('active');
+
+    const user= netlifyIdentity.currentUser();
+    const _eventConfig= getSessionEventConfig();
+    
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    // if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
+    //     document.getElementById('btn-reset').style.display='';
+    // }else
+    //     document.getElementById('btn-reset').style.display='none';
+
+    if(_eventConfig.duel)
+        document.getElementById('btnOptDuel').style.display='';
+    else
+        document.getElementById('btnOptDuel').style.display='none';
 
     applySpinners(true);
 
@@ -437,14 +452,16 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
             _ord=3;
          }
 
-        _tb= new DataTable(table.parentNode, 
-            { order: [[_ord, 'asc']]
-            , paging: false
-            ,responsive: false
-            ,oLanguage: {sSearch: "Buscar:"}
-            }
-        );
-                _tb.draw(false);
+         if(table){
+            _tb= new DataTable(table.parentNode, 
+                { order: [[_ord, 'asc']]
+                , paging: false
+                ,responsive: false
+                ,oLanguage: {sSearch: "Buscar:"}
+                }
+            );
+            _tb.draw(false);
+        }
             // console.log(`BEFORE UNHIDDE SPINNER`);
             spinner.style.visibility = 'hidden'//'visible'; //'hidden'
                 //)
