@@ -341,44 +341,11 @@
         </div>
       </div>
       <div class="form-floating mb-3 col-md-3">
-        <button type="button" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
-          Relatório Passagens (R$)
+        <button type="button" id="btn-relat-tries" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
+          Relatório Passadas (R$)
         </button>
       </div> 
-      <!-- Modal -->
-<div class="portfolio-modal modal fade" id="modalReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Relatório de Passagens</h1>
-        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-sm" id="table_report_tries" style="width:100% !important;">
-          <thead>
-            <tr>
-              <th scope="col" class="text-start">Atirador</th>
-              <th scope="col" class="text-end">Passadas</th>
-              <th scope="col" class="text-end">1ª</th>
-              <th scope="col" class="text-end">2ª</th>
-              <th scope="col" class="text-end">Demais</th>
-              <th scope="col" class="text-end">Total</th>
-            </tr>
-          </thead>
-          <tbody id="tb_tries">
-          </tbody>
-        </table>
-        <p></p>
-        <p class="text-end">Total do evento: <b> R$ <span id="eventTotal">0</span>,00<b></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-      </div>
-    </div>
-  </div>
-</div>
-     
+      
       
       <p></p>
       <div class="card">
@@ -421,10 +388,48 @@
         <button type="submit" class="btn btn-success nodisable " value="Salvar" id="btn-salvar-geral"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
       </div>
     </form>
+    
       <p>&nbsp;</p>
       <p>&nbsp;</p>
     </div>
   </main>
+
+  <!-- Modal -->
+<div class="portfolio-modal modal fade" id="modalReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <h3 id="modal-eventName">Nome do Evento</h3>
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Relatório de Passadas</h1>
+        <span>&nbsp;&nbsp;&nbsp;</span><div><button class="btn btn-warning nodisable" onClick="loadTriesReport(null);"><i class="bi bi-bootstrap-reboot"></i> Atualizar</button></div>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-sm" id="table_report_tries" style="width:100% !important;">
+          <thead>
+            <tr>
+              <th scope="col" class="text-start">Atirador</th>
+              <th scope="col" class="text-end">Passadas</th>
+              <th scope="col" class="text-end">1ª</th>
+              <th scope="col" class="text-end">2ª</th>
+              <th scope="col" class="text-end">Demais</th>
+              <th scope="col" class="text-end">Total</th>
+            </tr>
+          </thead>
+          <tbody id="tb_tries">
+          </tbody>
+        </table>
+        <p></p>
+        <p class="text-end">Total do evento: <b> R$ <span id="eventTotal">0</span>,00<b></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+     
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
   <!-- <script src="https://code.jquery.com/jquery-1.9.1.js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

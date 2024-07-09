@@ -116,10 +116,13 @@ window.onload = async () => {
     const _eventConfig= getSessionEventConfig();
     
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    // if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
-    //     document.getElementById('btn-reset').style.display='';
-    // }else
-    //     document.getElementById('btn-reset').style.display='none';
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email)>=0);
+    
+    if(isAdmin || isEventAdmin){
+        document.getElementById('btnRelPassadas').style.display='';
+    }else{
+        document.getElementById('btnRelPassadas').style.display='none';
+    }
 
     if(_eventConfig.duel)
         document.getElementById('btnOptDuel').style.display='';

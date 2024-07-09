@@ -177,7 +177,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }
         
         if(params.selected_division!==undefined){
-            document.getElementById('select-subscribe-division').value= params.selected_division;   
+            document.getElementById('select-subscribe-division').value= params.selected_division;
         }
 
         
@@ -194,10 +194,9 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             promiseOfGetShootersDivisions(eventConfig._id, params.shooterId, MODAL_TABLE_SUB_ID);
         }else{
         
-        // if(params.inscription===undefined || params.inscription!=="clock"){
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
-            }else{
+            }else if(params.selected_division===undefined){
                 // promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
                 let _dbUser= getSessionDbUser();
                 promiseOfGetShootersDivisions(eventConfig._id, _dbUser.docnum, MODAL_TABLE_SUB_ID);
@@ -292,7 +291,7 @@ $(function() {
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
             document.getElementById('shooter-img').src="none";
-            
+            document.getElementById("search-button-name").style.display='none';
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
   
@@ -414,7 +413,7 @@ const promiseOfDeleteSub = (id, ldx, idx, _tableId)=>{
                     })
                     .then(response => response.json()) 
                     .then(json => {
-                        console.log(JSON.stringify(json, null, 2));
+                        // console.log(JSON.stringify(json, null, 2));
 
                         _sD[ldx].shooters_divisions.splice(idx,1);
 
@@ -435,11 +434,7 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
       _email="all";
 
     let filterEmal= '';
-    // if(_email.indexOf('@')<0){ //docnum
-    //     filterEmal= `&docnum=${_email}`;
-    // }else{
-    //     filterEmal= `&email=${_email}`;
-    // }
+
     if(!isNaN(Number(_email))){
         filterEmal= `&docnum=${_email}`;
     }else if(_email.indexOf('@')>-1){ //docnum
@@ -461,25 +456,17 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
             ,headers: _header})
             .then(response => response.json()) 
             .then(json => {
-                console.log('A');
                 if(modalId===MODAL_TABLE_SUB_ID){
                     shooterDivisions= json;
-                    console.log('B');
                     if(shooterDivisions!==null && shooterDivisions.length>0){
-                        console.log('C');
                         popupSubscriptionModal(shooterDivisions[0]);
-                        console.log('D');
                         populateSubscriptionModalTable(eventConfig, shooterDivisions, document.getElementById(MODAL_TABLE_SUB_ID));
-                        console.log('E');
                     }else{
-                        console.log('F');
                         populateNewShooter(_email);
                     }
                 }else{
-                    console.log('G');
                     allShootersDivisions= json;
                     populateSubscriptionModalTable(eventConfig, allShootersDivisions, document.getElementById(MODAL_TABLE_ALL_SUBS_ID));
-                    console.log('H');
                 }
 
                 return json;
@@ -927,55 +914,6 @@ function buildEventDetailsPage(eventConfig){
 
 }
 
-// function applySpinners(onoff){
-//     if(onoff){
-//         document.getElementById("btnInscrever").innerHTML= `<div class="spinner-border" role="status">
-//                                                                 <span class="visually-hidden">Loading...</span>
-//                                                             </div>`;
-//     }else{
-//         document.getElementById("btnInscrever").innerHTML= `Inscrever <i class="fa-solid fa-angle-down"></i>`;
-//     }
-
-//     let _button = document.querySelectorAll("button");
-//     [].forEach.call(_button,btn=>{
-//         btn.disabled=onoff;
-//         // document.getElementById('selectDivision').disabled=onoff;
-
-//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-warning")
-//             ||btn.getAttribute('class').includes("btn-secondary")
-//             ||btn.getAttribute('class').includes("btn-success")
-//             ||btn.getAttribute('class').includes("btn-danger")
-//             ||btn.getAttribute('class').includes("btn-primary"))) {
-//             if(onoff)
-//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-//             else
-//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-//         }
-
-//         spans= btn.querySelectorAll("span");
-//         [].forEach.call(spans,span=>{
-//             if(span.getAttribute('class').includes("spinner")){
-//                 if(onoff){
-//                     span.style.visibility = 'visible'//'visible'; //'hidden'
-//                 }else{
-//                     span.style.visibility = 'hidden'//'visible'; //'hidden'
-//                 }
-//             }
-//         });
-//     });
-//     // "Input$disabled"
-//     let _input = document.querySelectorAll('input');
-//     [].forEach.call(_input,rdo=>{                                
-//         if(rdo.id!=='subscribe-email'&& !rdo.classList.contains("Inputdisabled")
-//         ){
-//             rdo.disabled= onoff;    
-//         }
-//     });
-//     // let _checkbox = document.querySelectorAll('input[type="checkbox"]');
-//     // [].forEach.call(_checkbox,rdo=>{
-//     //     rdo.disabled=onoff;
-//     // });
-// }
 function displaySelectedImage(event, elementId) {
     return 0;
     const selectedImage = document.getElementById(elementId);
@@ -1004,3 +942,99 @@ function goToSubscription(parms){
     }else parms='';
     window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist"+parms;
 }
+
+
+document.getElementById("search-button-name").addEventListener('click', function (ev) {
+    
+    const _dataList= document.getElementById("shooter-list");
+
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+
+    const user= netlifyIdentity.currentUser();
+
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
+    applySpinners(true);
+
+    fetch('/.netlify/functions/shooters?regex=1&name='+document.getElementById("subscribe-name").value+'&eventId='+eventConfig._id, {
+        method: "GET",
+        headers: _headers
+        }
+    ).then(response => response.json()
+    ).then(json => {
+        _dataList.innerHTML="";
+        for(let i=0; i<json.length;i++){
+            _dataList.appendChild(new Option(formatCpf(json[i].docnum,false),json[i].name));
+        }
+        // _dataList.classList.add("show");
+        // document.getElementById("search-button-name").style.display='none';
+
+    }
+    ).catch(err => {console.log(`Error getting user: ${err}`); alert(`Erro ao localizar atirador.`); }
+    ).finally(()=> {
+        applySpinners(false);
+        var keyboardEvent = document.createEvent("KeyboardEvent");
+        var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
+
+        keyboardEvent[initMethod](
+        "keyup", // event type : keydown, keyup, keypress
+        true, // bubbles
+        true, // cancelable
+        window, // viewArg: should be window
+        false, // ctrlKeyArg
+        false, // altKeyArg
+        false, // shiftKeyArg
+        false, // metaKeyArg
+        40, // keyCodeArg : unsigned long the virtual key code, else 0
+        0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
+        );
+        document.getElementById("subscribe-name").focus();
+        document.getElementById("subscribe-name").dispatchEvent(keyboardEvent);
+        
+       
+    });
+
+    // document.getElementById("subscribe-name").focus();
+    // document.getElementById("subscribe-name").click();
+    // _dataList.classList.toggle("show");
+
+});
+
+document.getElementById("subscribe-name").addEventListener('keyup', function (ev) {
+
+    const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
+    const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
+
+    if(!_isAdmin && !_isEventAdmin){
+        return 0;
+    }
+    
+    if($(this).val().length>2){
+        document.getElementById("search-button-name").style.display="";
+    }else {
+        document.getElementById("search-button-name").style.display="none";
+    }
+
+});
+
+document.getElementById("subscribe-name").addEventListener('change', function (ev) {
+    
+    const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
+    const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
+
+    if(!_isAdmin && !_isEventAdmin){
+        return 0;
+    }
+    var options = $('datalist')[0].options;
+    var val = $(this).val();
+    for (var i = 0; i < options.length; i++) {
+      if (options[i].value === val) {
+        document.getElementById("subscribe-docnum").value= options[i].innerText.replaceAll(".","").replaceAll("-",'').trim();
+        document.getElementById("search-button-name").style.display='none';
+        document.getElementById('shooter-img').src="none";    
+        promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
+        break;
+      }
+    }
+});

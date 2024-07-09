@@ -55,6 +55,8 @@ async function loadPage(eId){
     }
     
     document.getElementById('event-name').value= eventConfig.name;
+    document.getElementById('modal-eventName').innerText= eventConfig.name;
+    
     if(eventConfig.dateDuel===null||eventConfig.dateDuel===undefined||eventConfig.dateDuel===''){
         eventConfig.dateDuel=eventConfig.date;
     }
@@ -121,6 +123,25 @@ document.getElementById('modalReport').addEventListener('shown.bs.modal', () => 
 let _tb= null;
 function loadTriesReport(_event){
 
+    if(!_event || _event===null)
+        _event= eventConfig;
+    let saveSearch="";
+    let _input = document.querySelectorAll("input");
+    [].forEach.call(_input,field=>{
+        if(field.getAttribute('type').indexOf('search')>=0)
+            saveSearch= field.value;
+
+    });
+
+    document.getElementById('tb_tries').innerHTML="";
+    if(_tb!==null){
+        // _tb.clear();
+        _tb.destroy();
+        // _tb.empty();
+        _tb=null;
+    }
+    document.getElementById('tb_tries').innerHTML="";
+
     if(netlifyIdentity.currentUser()){
         applySpinners(true);
         fetch('/.netlify/functions/time-records?report=1&eventId='+_event._id, {
@@ -164,15 +185,22 @@ function loadTriesReport(_event){
 
                 document.getElementById('eventTotal').innerHTML= event_total;
 
-                if(_tb!==null){
-                    // _tb.clear();
-                    _tb.destroy();
-                    // _tb.empty();
-                    _tb=null;
-                }
+                _tb= new DataTable('#table_report_tries',
+                     {pageLength: 25
+                    ,responsive: true
+                    ,oLanguage: {sSearch: "Buscar:"}
+                     });
+                // _tb.draw(false);
 
-                _tb= new DataTable('#table_report_tries', {pageLength: 25});
-                _tb.draw(false);
+                _input = document.querySelectorAll("input");
+                [].forEach.call(_input,field=>{
+                    if(field.getAttribute('type').indexOf('search')>=0){
+                        field.value= saveSearch;
+                        _tb.search(saveSearch).draw();
+                    }
+
+                });
+                
             })
             .catch(err => console.log(`Error getting, logged user: ${err}`))
             .finally(()=> applySpinners(false));
@@ -183,6 +211,9 @@ function loadTriesReport(_event){
 window.onload = async () => {
 
     await loadPage(null);
+
+    if(params.rel)
+        document.getElementById('btn-relat-tries').click();
     
 }
 

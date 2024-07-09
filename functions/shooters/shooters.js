@@ -44,7 +44,12 @@ const handler = async (event, context)=>{
         }
 
         if(event.queryStringParameters.name!==undefined){
-          filter.name= event.queryStringParameters.name;
+
+          if(event.queryStringParameters.regex!==undefined){
+            filter.name= {'$regex':event.queryStringParameters.name, '$options': 'si' };
+          }else{
+            filter.name= event.queryStringParameters.name;
+          }
         }
 
         if(event.queryStringParameters.category!==undefined){
@@ -61,6 +66,7 @@ const handler = async (event, context)=>{
 
       }
         
+      console.log("filter="+JSON.stringify(filter,null,2));
       const retShooters = await cShooters.find(filter).toArray();
 
 
@@ -107,24 +113,40 @@ console.log('Is there privider avatar?');
       let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0;
       
       if(!isAdmin){ //mask sensitivy data
-        for(let i=0;i<retShooters.length;i++){
-            if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
-              retShooters[0].docnum= retShooters[0].docnum.substring(0,2)+'*.***.*'+retShooters[0].docnum.substring(7,9)+"-"+retShooters[0].docnum.substring(9);
 
-              const emailsize= retShooters[0].email.indexOf('@');
-              if(emailsize<4){
-                retShooters[0].email='***'+  retShooters[0].email.substring(emailsize-1);
-              }else{
-                let asterics='';
-                for(let i=0;i<emailsize-3;i++)
-                  asterics+='*';
+        let isEventAdmin=false;
+        if(event.queryStringParameters.eventId && user && user.email){
 
-                retShooters[0].email=  retShooters[0].email.substring(0,2)+ asterics + retShooters[0].email.substring(retShooters[0].email.indexOf('@')-1);
-
-              }
-              
-            }
+          //check if the user is admin of the event:
+          const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+          const f_id= new ObjectId(event.queryStringParameters.eventId)
+          const _e= await cEvent.aggregate( [
+            {$match:{_id: f_id
+                    , owners: user.email}}
+          ]).toArray();
+          
+          isEventAdmin= (_e.length>0);
         }
+
+        if(!isEventAdmin)
+          for(let i=0;i<retShooters.length;i++){
+              if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
+                retShooters[0].docnum= retShooters[0].docnum.substring(0,2)+'*.***.*'+retShooters[0].docnum.substring(7,9)+"-"+retShooters[0].docnum.substring(9);
+
+                const emailsize= retShooters[0].email.indexOf('@');
+                if(emailsize<4){
+                  retShooters[0].email='***'+  retShooters[0].email.substring(emailsize-1);
+                }else{
+                  let asterics='';
+                  for(let i=0;i<emailsize-3;i++)
+                    asterics+='*';
+
+                  retShooters[0].email=  retShooters[0].email.substring(0,2)+ asterics + retShooters[0].email.substring(retShooters[0].email.indexOf('@')-1);
+
+                }
+                
+              }
+          }
       }
       
 

@@ -829,8 +829,13 @@ window.onload = async () => {
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
     if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
         document.getElementById('btn-reset').style.display='none';
-    }else
+        document.getElementById('btnRelPassadas').style.display='none';
+    }else{
         document.getElementById('btn-reset').style.display='';
+        document.getElementById('btnRelPassadas').style.display='';
+    }
+        
+
 
     if(_eventConfig.clock)
         document.getElementById('btnOptClock').style.display='';

@@ -27,13 +27,14 @@ class Division extends HTMLElement {
             <button class="btn btn-secondary dropdown-toggle nodisable" type="button" data-bs-toggle="dropdown" aria-expanded="false">      
             Opções</button>
             <ul class="dropdown-menu">
-                <li id="btnAddShooter" style="display:none" ><a class="dropdown-item" onclick="goToSubscription('');" ><i class="bi bi-person-plus-fill"></i> Adicionar Atirador</a></li>
+                <li id="btnAddShooter" style="display:none" ><a class="dropdown-item" onclick="goToSubscription('');" ><i class="bi bi-person-plus-fill"></i> Adicionar Atirador/Arma</a></li>
                 <li><a class="dropdown-item" onClick="editInscriptions()" ><i class="bi bi-pencil-fill"></i> Editar Inscrições</a></li>
                 <li id="btn-reset" style="display:none" ><a  class="dropdown-item" onclick="deleteKos();" ><i class="bi bi-recycle"></i> Recriar Duelos</a></li>
                 <li >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___________________</li>
                 <li id="btn-sharepage" ><a  class="dropdown-item" onclick="shareEvent();" ><i class="bi bi-box-arrow-up-right"></i> Copiar Link</a></li>
                 <li id="btnOptClock" style="display:none"><a class="dropdown-item" onClick="hrefQualify()" ><i class="bi bi-stopwatch"></i> Ir para Contra o Relógio</a></li>
                 <li id="btnOptDuel" style="display:none"><a class="dropdown-item" onClick="hrefMatches()" ><i class="fas fa-holly-berry "></i> Ir para Duelos</a></li>
+                <li id="btnRelPassadas" style="display:none"><a class="dropdown-item" target="_new" href="./event-config.html?rel=1"><i class="bi bi-currency-dollar"></i> Relatório de Passadas</a></li>
                 <li><a class="dropdown-item" href="./event-config.html"><i class="bi bi-gear-fill"></i> Configurações do Evento</a></li>
             </ul>
           </div>
