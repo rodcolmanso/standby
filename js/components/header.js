@@ -46,8 +46,8 @@ class Header extends HTMLElement {
   </div>
 </div>
 
-<header class="navbar navbar-expand-xl bd-navbar nav-bg-primary" data-bs-theme="light">
-  <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap " aria-label="Main navigation" >
+<header class="navbar navbar-expand-xl bd-navbar nav-bg-primary text-truncate" data-bs-theme="light">
+  <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap text-truncate" aria-label="Main navigation" >
     <div class="bd-navbar-toggle">
       
       <button class="navbar-toggler p-2 nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-label="Toggle navigation">
@@ -59,8 +59,8 @@ class Header extends HTMLElement {
       </button>
     </div>
     
-    <div class="d-flex">
-      <h6 class="text-small" id="eventTitle"></h6>
+    <div class="d-flex text-truncate">
+      <h6 class="text-small text-truncate" id="eventTitle"></h6>
       <div class="vr d-none d-lg-flex h-100 mx-lg-2 "></div>
       <hr class="d-lg-none my-2 text-white-50" />
     </div>
