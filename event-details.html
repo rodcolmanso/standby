@@ -43,6 +43,30 @@
 
   <style>
 
+    #shooter-list {
+        width: 15em;
+        height: 20em;
+        line-height: 2em;
+        border: 1px solid #ccc;
+        padding: 0;
+        margin: 0;
+        overflow: scroll;
+        overflow-x: hidden;
+    }
+
+    li {
+    border-top: 1px solid #ccc;
+    cursor: pointer;
+    }
+
+    ul ul {
+        text-indent: 1em;
+    }
+
+    ul ul ul {
+        text-indent: 2em;
+    }
+
     .form-control.no-validate:valid {
       border-color: #ced4da;
       padding-right: .75rem;
@@ -199,15 +223,20 @@
                                     </div>
                                     <div class="input-group">
                                       <div class="form-floating">
-                                        <input disabled type="text" autocomplete="off" required class="form-control " id="subscribe-name" list="shooter-list">
-                                        <label for="subscribe-name" >Atirador</label>
-                                        <datalist id="shooter-list">
-                                        </datalist>
+                                        <input disabled type="text" required class="form-control" id="subscribe-name" list="shooter-list" autocomplete="off">
+                                          <label for="subscribe-name" >Atirador</label>
                                       </div>
-                                      <button style="display: none;" id="search-button-name" type="button" class="btn btn-primary">
+                                        <!-- <button style="display: none;" id="search-button-name" type="button" class="btn btn-primary"> -->
+                                      <div class="dropup-center dropdown">
+                                        <button style="display: none;" id="search-button-name" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">      
                                         <i class="fas fa-search"></i>
-                                      </button>
+                                        </button>
+                                        
+                                        <ul id="shooter-list" class="dropdown-menu">
+                                        </ul>
+                                      </div>
                                     </div>
+                                    <!-- </div> -->
                                   </div>
                                 </div>
                               </div>

@@ -66,20 +66,20 @@ const handler = async (event, context)=>{
 
       }
         
-      console.log("filter="+JSON.stringify(filter,null,2));
+      // console.log("filter="+JSON.stringify(filter,null,2));
       const retShooters = await cShooters.find(filter).toArray();
 
 
 
 // ============================================
-console.log('Is there privider avatar?');
+// console.log('Is there privider avatar?');
   // const testProvidedImg= 'https://lh3.googleusercontent.com/a/ACg8ocKWUCCEL1qobxrjqmQAHsT2rNlJ4XSVJaOvyoJ7uxBxNO4Prw=s96-c'; //'https://www.imfdb.org/images/d/d6/YG2_012.jpg';
   // const testemail= 'luccamangamer@gmail.com';
 
 
   if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
     // if(testProvidedImg){
-    console.log('YES, provider avatar='+user.user_metadata.avatar_url+'. Getting dbUser._id...  user.email='+ user.email);
+    // console.log('YES, provider avatar='+user.user_metadata.avatar_url+'. Getting dbUser._id...  user.email='+ user.email);
     // console.log('YES, provider avatar='+testProvidedImg+'. Getting dbUser._id...  user.email='+ testemail);
     
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
@@ -90,9 +90,9 @@ console.log('Is there privider avatar?');
       ]).toArray();
     
     if(shooters && shooters.length && shooters.length>0){
-      console.log('dbUser._id= '+ shooters[0]._id);
+      // console.log('dbUser._id= '+ shooters[0]._id);
       
-      console.log('          uploading provider avatar on Cloudinay....... dbUser._id= '+ shooters[0]._id);
+      // console.log('          uploading provider avatar on Cloudinay....... dbUser._id= '+ shooters[0]._id);
       
       cloudinary.uploader.upload(user.user_metadata.avatar_url,
         // cloudinary.uploader.upload(testProvidedImg,
@@ -101,11 +101,11 @@ console.log('Is there privider avatar?');
             })
           .then(result=>console.log(result));
 
-    console.log('SUCCESS! Uploaded provider avatar='+user.user_metadata.avatar_url+' to Cloudinay....... dbUser._id= '+ shooters[0]._id);
+    // console.log('SUCCESS! Uploaded provider avatar='+user.user_metadata.avatar_url+' to Cloudinay....... dbUser._id= '+ shooters[0]._id);
 
-    }else console.log('dbUser not found. user.email='+ user.email);
+    }//else console.log('dbUser not found. user.email='+ user.email);
 
-  }else console.log('There is NO privider avatar.');
+  }//else console.log('There is NO privider avatar.');
 // ============================================
 
 
@@ -161,12 +161,12 @@ console.log('Is there privider avatar?');
 
         try{
 
-           console.log('user: '+user);
-           console.log('shooterData.email: '+shooterData.email);
-           console.log('user.email.toLowerCase().trim()): '+user.email.toLowerCase().trim());
-           console.log('shooterData.email.toLowerCase().trim(): '+shooterData.email.toLowerCase().trim());
-           console.log('user.app_metadata: '+user.app_metadata);
-           console.log('user.app_metadata.roles: '+user.app_metadata.roles)
+          //  console.log('user: '+user);
+          //  console.log('shooterData.email: '+shooterData.email);
+          //  console.log('user.email.toLowerCase().trim()): '+user.email.toLowerCase().trim());
+          //  console.log('shooterData.email.toLowerCase().trim(): '+shooterData.email.toLowerCase().trim());
+          //  console.log('user.app_metadata: '+user.app_metadata);
+          //  console.log('user.app_metadata.roles: '+user.app_metadata.roles)
           //  console.log('user.app_metadata.roles.indexOf("admin")<0: '+user.app_metadata.roles.indexOf("admin")<0);
 
           if(!user|| !shooterData.email ||!user.app_metadata|| (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&user.app_metadata.roles.indexOf("admin")<0){
@@ -179,7 +179,7 @@ console.log('Is there privider avatar?');
           let retShooterUpdate=null;
 
           if(!shooterData._id||shooterData._id===null||shooterData._id===0||shooterData._id===""||shooterData._id==="new"){
-            console.log(`[Shooters] Inserting new shooter:${shooterData.email.toLowerCase().trim()}, docnum:${shooterData.docnum}`);
+            // console.log(`[Shooters] Inserting new shooter:${shooterData.email.toLowerCase().trim()}, docnum:${shooterData.docnum}`);
             retShooterUpdate = await cShooters.insertOne(
               { email : shooterData.email.toLowerCase().trim()
               ,docnum: shooterData.docnum
@@ -191,7 +191,7 @@ console.log('Is there privider avatar?');
             shooterData._id= retShooterUpdate.insertedId;
 
           }else{
-            console.log(`[Shooters] Updating shooter:${shooterData.email.toLowerCase().trim()}, id:${shooterData._id}, docnum:${shooterData.docnum}`);
+            // console.log(`[Shooters] Updating shooter:${shooterData.email.toLowerCase().trim()}, id:${shooterData._id}, docnum:${shooterData.docnum}`);
             retShooterUpdate = await cShooters.updateOne(
               { _id : new ObjectId(shooterData._id) }
              ,{ $set: { email: shooterData.email.toLowerCase().trim()
@@ -204,9 +204,9 @@ console.log('Is there privider avatar?');
 
           }
 
-          console.log('shooterData.imgChanged='+shooterData.imgChanged);
+          // console.log('shooterData.imgChanged='+shooterData.imgChanged);
           if(shooterData.imgChanged===true || shooterData.imgChanged==='true' || shooterData.imgChanged){
-            console.log('Uploading shooter img to cloudinary. img='+shooterData._id);
+            // console.log('Uploading shooter img to cloudinary. img='+shooterData._id);
             
             cloudinary.uploader.upload(shooterData.img,
                 { public_id: "profile/"+shooterData._id

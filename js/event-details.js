@@ -273,6 +273,7 @@ $(function() {
         
         if(this.value===""){
             document.getElementById('subscribe-name').value="";
+            document.getElementById("search-button-name").style.display="none";
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
@@ -282,6 +283,7 @@ $(function() {
         if (this.value!=="" && !validaCPF(this.value)) {
             // alert('CPF inválido');
             document.getElementById('subscribe-name').value="";
+            document.getElementById("search-button-name").style.display="none";
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
@@ -487,6 +489,7 @@ function popupSubscriptionModal(shooterDivisions){
 
     
     document.getElementById('subscribe-name').value= shooterDivisions.name;
+    document.getElementById("search-button-name").style.display="none";
 
     if(shooterDivisions.email!==loggedUser.email){
         
@@ -521,6 +524,7 @@ function populateNewShooter(_docnum){
     shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:"";
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
+    document.getElementById("search-button-name").style.display="none";
     document.getElementById("subscribe-email").value=shooterDivisions[0].email;
     //-> document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
     document.getElementById("subscribe-docnum").value=shooterDivisions[0].docnum;
@@ -700,6 +704,7 @@ function subscribeNew(){
 
 
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
+    document.getElementById("search-button-name").style.display="none";
     shooterDivisions[0].category= 0;
 
     let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
@@ -943,6 +948,14 @@ function goToSubscription(parms){
     window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist"+parms;
 }
 
+function compareStrings(a, b) {
+    // Assuming you want case-insensitive comparison
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+  
+    return (a < b) ? -1 : (a > b) ? 1 : 0;
+  }
+
 
 document.getElementById("search-button-name").addEventListener('click', function (ev) {
     
@@ -964,35 +977,32 @@ document.getElementById("search-button-name").addEventListener('click', function
     ).then(response => response.json()
     ).then(json => {
         _dataList.innerHTML="";
-        for(let i=0; i<json.length;i++){
-            _dataList.appendChild(new Option(formatCpf(json[i].docnum,false),json[i].name));
-        }
-        // _dataList.classList.add("show");
-        // document.getElementById("search-button-name").style.display='none';
 
+        if(json.length>1){
+            json.sort(function(a, b) {
+                return compareStrings(a.name, b.name);
+              });
+        }
+        
+        for(let i=0; i<json.length;i++){
+            // _dataList.appendChild(new Option(formatCpf(json[i].docnum,false),json[i].name));
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(json[i].name));
+            li.setAttribute("value", formatCpf(json[i].docnum,false) ); // added line
+            li.setAttribute("href", "" ); // added line
+            li.setAttribute("onClick", `selectShooter('${json[i].docnum}','${json[i].name}')` ); // added line
+            _dataList.appendChild(li);
+        }
+        
+        
+        
     }
     ).catch(err => {console.log(`Error getting user: ${err}`); alert(`Erro ao localizar atirador.`); }
     ).finally(()=> {
         applySpinners(false);
-        var keyboardEvent = document.createEvent("KeyboardEvent");
-        var initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? "initKeyboardEvent" : "initKeyEvent";
-
-        keyboardEvent[initMethod](
-        "keyup", // event type : keydown, keyup, keypress
-        true, // bubbles
-        true, // cancelable
-        window, // viewArg: should be window
-        false, // ctrlKeyArg
-        false, // altKeyArg
-        false, // shiftKeyArg
-        false, // metaKeyArg
-        40, // keyCodeArg : unsigned long the virtual key code, else 0
-        0 // charCodeArgs : unsigned long the Unicode character associated with the depressed key, else 0
-        );
-        document.getElementById("subscribe-name").focus();
-        document.getElementById("subscribe-name").dispatchEvent(keyboardEvent);
-        
-       
+        // document.getElementById("subscribe-gun").focus();
+        // document.getElementById("subscribe-name").focus();
+        // _dataList.classList.toggle("show");
     });
 
     // document.getElementById("subscribe-name").focus();
@@ -1018,23 +1028,31 @@ document.getElementById("subscribe-name").addEventListener('keyup', function (ev
 
 });
 
-document.getElementById("subscribe-name").addEventListener('change', function (ev) {
+// document.getElementById("subscribe-name").addEventListener('change', function (ev) {
     
-    const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
-    const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
+//     const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
+//     const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
 
-    if(!_isAdmin && !_isEventAdmin){
-        return 0;
-    }
-    var options = $('datalist')[0].options;
-    var val = $(this).val();
-    for (var i = 0; i < options.length; i++) {
-      if (options[i].value === val) {
-        document.getElementById("subscribe-docnum").value= options[i].innerText.replaceAll(".","").replaceAll("-",'').trim();
-        document.getElementById("search-button-name").style.display='none';
-        document.getElementById('shooter-img').src="none";    
-        promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
-        break;
-      }
-    }
-});
+//     if(!_isAdmin && !_isEventAdmin){
+//         return 0;
+//     }
+//     var options = $('datalist')[0].options;
+//     var val = $(this).val();
+//     for (var i = 0; i < options.length; i++) {
+//       if (options[i].value === val) {
+//         document.getElementById("subscribe-docnum").value= options[i].innerText.replaceAll(".","").replaceAll("-",'').trim();
+//         document.getElementById("search-button-name").style.display='none';
+//         document.getElementById('shooter-img').src="none";    
+//         promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
+//         break;
+//       }
+//     }
+// });
+
+function selectShooter(_docnum, _name){
+    document.getElementById("subscribe-docnum").value= _docnum.replaceAll(".","").replaceAll("-",'').trim();
+    document.getElementById("search-button-name").style.display='none';
+    document.getElementById('shooter-img').src="none";    
+    promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
+
+}
