@@ -996,6 +996,16 @@ document.getElementById("search-button-name").addEventListener('click', function
             // _dataList.appendChild(new Option(formatCpf(json[i].docnum,false),json[i].name));
             var li = document.createElement("li");
             li.appendChild(document.createTextNode(json[i].name));
+            
+            if(json[i].email.indexOf('@tpm')<0){
+            
+                var span = document.createElement("p");
+                span.setAttribute("class", "text-small");
+                span.setAttribute("style", "margin-bottom: 1px !important;");
+                span.appendChild(document.createTextNode(json[i].email));
+                li.appendChild(span);
+            }
+
             li.setAttribute("value", formatCpf(json[i].docnum,false) ); // added line
             li.setAttribute("href", "" ); // added line
             li.setAttribute("onClick", `selectShooter('${json[i].docnum}','${json[i].name}')` ); // added line
@@ -1037,27 +1047,6 @@ document.getElementById("subscribe-name").addEventListener('keyup', function (ev
     }
 
 });
-
-// document.getElementById("subscribe-name").addEventListener('change', function (ev) {
-    
-//     const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
-//     const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
-
-//     if(!_isAdmin && !_isEventAdmin){
-//         return 0;
-//     }
-//     var options = $('datalist')[0].options;
-//     var val = $(this).val();
-//     for (var i = 0; i < options.length; i++) {
-//       if (options[i].value === val) {
-//         document.getElementById("subscribe-docnum").value= options[i].innerText.replaceAll(".","").replaceAll("-",'').trim();
-//         document.getElementById("search-button-name").style.display='none';
-//         document.getElementById('shooter-img').src="none";    
-//         promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
-//         break;
-//       }
-//     }
-// });
 
 function selectShooter(_docnum, _name){
     document.getElementById("subscribe-docnum").value= _docnum.replaceAll(".","").replaceAll("-",'').trim();
