@@ -274,6 +274,7 @@ $(function() {
         if(this.value===""){
             document.getElementById('subscribe-name').value="";
             document.getElementById("search-button-name").style.display="none";
+            // document.getElementById("search-button-name").style.visibility="hidden";
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
@@ -284,6 +285,7 @@ $(function() {
             // alert('CPF inválido');
             document.getElementById('subscribe-name').value="";
             document.getElementById("search-button-name").style.display="none";
+            // document.getElementById("search-button-name").style.visibility="hidden";
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
@@ -294,6 +296,7 @@ $(function() {
             // getFullShooterDivision(eventConfig, this.value);
             document.getElementById('shooter-img').src="none";
             document.getElementById("search-button-name").style.display='none';
+            // document.getElementById("search-button-name").style.visibility="hidden";
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
         }
   
@@ -490,6 +493,7 @@ function popupSubscriptionModal(shooterDivisions){
     
     document.getElementById('subscribe-name').value= shooterDivisions.name;
     document.getElementById("search-button-name").style.display="none";
+    // document.getElementById("search-button-name").style.visibility="hidden";
 
     if(shooterDivisions.email!==loggedUser.email){
         
@@ -525,6 +529,8 @@ function populateNewShooter(_docnum){
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("search-button-name").style.display="none";
+    // document.getElementById("search-button-name").style.visibility="hidden";
+
     document.getElementById("subscribe-email").value=shooterDivisions[0].email;
     //-> document.getElementById("subscribe-docnum").value=formatCpf(shooterDivisions[0].docnum,false);
     document.getElementById("subscribe-docnum").value=shooterDivisions[0].docnum;
@@ -705,6 +711,8 @@ function subscribeNew(){
 
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     document.getElementById("search-button-name").style.display="none";
+    // document.getElementById("search-button-name").style.visibility="hidden";
+
     shooterDivisions[0].category= 0;
 
     let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
@@ -1022,8 +1030,10 @@ document.getElementById("subscribe-name").addEventListener('keyup', function (ev
     
     if($(this).val().length>2){
         document.getElementById("search-button-name").style.display="";
+        // document.getElementById("search-button-name").style.visibility="visible";
     }else {
         document.getElementById("search-button-name").style.display="none";
+        // document.getElementById("search-button-name").style.visibility="hidden";
     }
 
 });
@@ -1052,6 +1062,7 @@ document.getElementById("subscribe-name").addEventListener('keyup', function (ev
 function selectShooter(_docnum, _name){
     document.getElementById("subscribe-docnum").value= _docnum.replaceAll(".","").replaceAll("-",'').trim();
     document.getElementById("search-button-name").style.display='none';
+    // document.getElementById("search-button-name").style.visibility="hidden";
     document.getElementById('shooter-img').src="none";    
     promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
 

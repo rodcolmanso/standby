@@ -168,7 +168,8 @@ function buildEventsTable(events){
                         </div>
                     </div>`;
     
-    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles &&!(netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")<0))
+    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles 
+    &&(netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0 || netlifyIdentity.currentUser().app_metadata.roles.indexOf("super")>=0))
         document.getElementById('events-table').innerHTML+= newEvent;
 
     var utc = new Date();
