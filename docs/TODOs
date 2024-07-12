@@ -1,8 +1,6 @@
 - Urgente
-  - Avoid cache img
-  - proper upload google avatar pic
 
-- Home Page
+- Shooter Home Page
     - Inscrever-se a evento
     - Ranking/Resultados
     - Acervos
@@ -15,13 +13,12 @@
 - Inscrição
   - Lista de Armas e Calibres
 
-
   Melhorar a experiencia de cadastro e login
-    - Pegar Avatar do Google
     - Ampulheta/ Loading cobrindo a págita toda em todas as telas
     - Sessão menu Home
     - Sessao menu Ranking
     - Mudar todos os emails sem login para @tpmonline.com.br
+    - Apagar aturadores de teste
 
 - Cadastro de Clubes
 
@@ -41,9 +38,3 @@
      Pedir para login?
 
 
-Duelos
-
-
-
-666f0ad8f4d045c776ebf277 (bom)
-6687f7edc06847c9a6f916a6 (ruim)

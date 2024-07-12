@@ -399,6 +399,20 @@ function uuidv4() {
     }
   }
 
+function getCodeImg() {
+    try{
+        const d = new Date();
+        let hour = ""+d.getHours()
+        if(d.getMinutes()>30)
+            hour += "3";
+        else
+            hour += "0";
+        return hour;
+    }catch(e){
+        return (Math.random()*1000000).toString();
+    }
+}
+
 function setAvatarPic(){
     const _dbUser= getSessionDbUser();
     const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;

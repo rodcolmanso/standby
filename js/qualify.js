@@ -401,7 +401,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <div class="row">
                         <div class="col align-middle align-items-center" style="max-width: 40px !important;">
                         <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
-                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${uuidv4()}" class="small-profile-avatar-pic rounded-circle" alt="...">
+                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
                         </div>
                     <!--</td>
@@ -610,7 +610,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
     }
 
     // document.getElementById('timeBestScore').innerText= bestScore;
-    document.getElementById('img-time-track').src= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${idShooter}.jpg?${uuidv4()}`
+    document.getElementById('img-time-track').src= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${idShooter}.jpg?${getCodeImg()}`
     document.getElementById('timeBestScore').innerText= vlTime;
     document.getElementById('timeBestScorePenal').innerText= vlPenal;
 
