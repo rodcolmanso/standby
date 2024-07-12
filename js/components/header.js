@@ -56,8 +56,8 @@ class Header extends HTMLElement {
             </button>
           </div>
           
-          <div class="d-flex text-truncate">
-            <h6 class="text-small text-truncate" id="eventTitle"></h6>
+          <div class="d-flex text-truncate ">
+            <h6 class="d-inline-block text-small text-truncate text-nowrap" id="eventTitle" style="max-width: 210px;"></h6>
             <div class="vr d-none d-lg-flex h-100 mx-lg-2 "></div>
             <hr class="d-lg-none my-2 text-white-50" />
           </div>

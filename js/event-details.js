@@ -819,7 +819,7 @@ function buildEventDetailsPage(eventConfig){
     document.getElementById('nav-events').classList.add('active');
 
     if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-config.html?event_id=${eventConfig._id}"><i class="bi bi-gear-fill"></i>${eventConfig.name}</a>`;
+        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate text-nowrap"  href="/event-config.html?event_id=${eventConfig._id}"><i class="bi bi-gear-fill"></i><span class="text-decoration-none text-nowrap">${eventConfig.name}</span></a>`;
     }else{
         document.getElementById('eventTitle').innerHTML= `Novo evento`;
     }
