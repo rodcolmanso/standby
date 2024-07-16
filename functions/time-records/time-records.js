@@ -8,7 +8,6 @@ var ObjectId = require('mongodb').ObjectId;
 
 const handler = async (event, context)=>{
   try {
-    
 
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
@@ -19,9 +18,182 @@ const handler = async (event, context)=>{
         const p_divisionId= event.queryStringParameters.divisionId?event.queryStringParameters.divisionId.toString():null;
         const p_shooter_divisionId= event.queryStringParameters.shooterDivisionId?event.queryStringParameters.shooterDivisionId.toString():null;
 
+        const p_rank= event.queryStringParameters.rank?event.queryStringParameters.rank.toString():null;
+
         let p_report=null;
         let p_eventId=null;
-        if(event.queryStringParameters.report && event.queryStringParameters.eventId){
+
+        if(p_rank!==null){
+
+          let _filter= {};
+          if(p_shooterId!==null){
+            _filter.shooterId= p_shooterId;
+          }
+
+          const p_divisionName= event.queryStringParameters.divisionName?event.queryStringParameters.divisionName.toString():null;
+          if(p_divisionName!==null){
+            _filter.divisionName= p_divisionName;
+          }
+          
+          const p_optics= event.queryStringParameters.optics?event.queryStringParameters.optics.toString():null;
+          if(p_optics!==null && p_optics.toLowerCase()==="true")
+            p_optics=true;
+          if(p_optics!==null){
+            _filter.optics= p_optics;
+          }
+          
+          const p_gun= event.queryStringParameters.gun?event.queryStringParameters.gun.toString():null;
+          if(p_gun!==null){
+            _filter.optics= p_gun;
+          }
+
+          const p_local= event.queryStringParameters.p_local?event.queryStringParameters.p_local.toString():null;
+          if(p_local!==null){
+            _filter.local= p_local;
+          }
+          console.log('_filter='+JSON.stringify(_filter,null,2));
+          let rank= await cTime_Records.aggregate([
+            {$addFields:{_shooterId:{$toObjectId:"$shooterId"}
+                        ,_divisionId:{$toObjectId:"$divisionId"}
+                        ,_eventId:{$toObjectId:"$eventId"}
+                        ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
+            ,{$lookup:{
+                from: "shooters"
+                ,localField: "_shooterId"
+                ,foreignField: "_id"
+                ,as: "shooter"
+                ,pipeline:[
+                    {$addFields:{shooterName:"$name"}}
+                ]
+            }}
+            ,{$lookup:{
+                from: "divisions"
+                ,localField: "_divisionId"
+                ,foreignField: "_id"
+                ,as: "division"
+                ,pipeline:[
+                    {$addFields:{divisionName:"$name"}}
+                ]
+            }}
+            ,{$lookup:{
+                from: "events"
+                ,localField: "_eventId"
+                ,foreignField: "_id"
+                ,as: "event"
+                ,pipeline:[
+                    {$addFields:{eventName:"$name",clockDate:"$date"}}
+                ]
+            }}
+            ,{$lookup:{
+                from: "shooters_divisions"
+                ,localField: "_shooterDivisionId"
+                ,foreignField: "_id"
+                ,as: "shooter_division"
+            }}
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
+            ,{$group: {
+                _id: {divisionName: "$divisionName"
+                     ,shooterId:"$shooterId"
+                     ,eventId: "$eventId"
+                     ,shooterName:"$shooterName"
+                     ,eventName: "$eventName"
+                     ,local: "$local"
+                     ,clockDate: "$clockDate"
+                     ,gun: "$gun"
+                     ,optics: "$optics"}
+                     ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
+                }
+            }
+            ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
+            ,{$project: {_id:0} }
+            ,{$match: _filter}
+          ]).sort({ divisionName:1, shooterName:1, gun:1, optics:1, bestTime:1}).toArray();
+
+          for(let i=0; i<rank.length;i++){
+            rank[i].sortDivision= ""+rank[i].divisionName+Math.round(rank[i].bestTime*100+1000000);
+            rank[i].sortDivisionShooter= ""+rank[i].divisionName+rank[i].shooterId+Math.round(rank[i].bestTime*100+1000000);
+          }
+
+          let _ret=[];
+
+          if(p_rank==="0"){ // mantem apenas o melhor tempo por divisão
+            console.log('Entrou no rank 0');
+
+            rank= rank.sort((a, b) => {
+              if (a.sortDivision < b.sortDivision) {
+                return -1;
+              }
+            });
+
+            let _divisionName="";
+            for(let i=0; i<rank.length;i++){
+              if(_divisionName!==rank[i].divisionName){
+                _divisionName=rank[i].divisionName;
+                _ret.push(rank[i]);
+              }
+            }
+
+            }else if(p_rank==="1"){ // mantem apenas o melhor tempo por divisão por atirador
+              console.log('Entrou no rank 1');
+
+              rank= rank.sort((a, b) => {
+                if (a.sortDivisionShooter < b.sortDivisionShooter) {
+                  return -1;
+                }
+              });
+
+            let _divisionName="";
+            let _shooterId="";
+            // let _gun="";
+            for(let i=0; i<rank.length;i++){ 
+
+              if(_divisionName!==rank[i].divisionName
+                || _shooterId!==rank[i].shooterId){
+                _divisionName=rank[i].divisionName;
+                _shooterId=rank[i].shooterId;
+                _ret.push(rank[i]);
+              }
+
+            }
+
+          }else if(p_rank==="2"){ // mantem melhores tempos por divisao/atirador/arma
+
+            console.log('Entrou no rank 2');
+
+            let _divisionName="";
+            let _shooterId="";
+            let _gun="";
+            let _optics="";
+
+            for(let i=0; i<rank.length;i++){
+
+              if(_divisionName!==rank[i].divisionName
+                || _shooterId!==rank[i].shooterId
+                || _gun!==rank[i].gun
+                || _optics!== rank[i].optics){
+                _divisionName=rank[i].divisionName;
+                _shooterId=rank[i].shooterId;
+                _gun= rank[i].gun;
+                _optics= rank[i].optics;
+                _ret.push(rank[i]);
+              }
+
+            }
+
+          } else{ //mantem todos os tempos por divisao/evento e arma
+            console.log('Entrou no rank xxxxx');
+            _ret= rank;
+          }
+
+          return  {
+            statusCode: 200,
+            body: JSON.stringify(_ret)
+          };
+
+        }else if(event.queryStringParameters.report && event.queryStringParameters.eventId){
           p_report= event.queryStringParameters.report.toString();
           p_eventId= event.queryStringParameters.eventId.toString();
 
@@ -63,7 +235,7 @@ const handler = async (event, context)=>{
 
           return  {
             statusCode: 200,
-            body: JSON.stringify(triesReport)
+            body: JSON.stringify(timerRcords)
           };
 
         }else{
@@ -82,9 +254,9 @@ const handler = async (event, context)=>{
               statusCode: 200,
               body: JSON.stringify(timerRcords)
             };
-          }
+        }
 
-          case 'POST':
+        case 'POST':
 
               let new_record= JSON.parse(event.body);
 

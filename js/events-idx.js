@@ -73,7 +73,8 @@ window.onload = async () => {
 
     const dDate= new Date();
     // dDate.setDate(0);
-    // dDate.setDate(1);
+    dDate.setDate(dDate.getDate() - 5);
+    // console.log('dDate: '+dDate)
     document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 
     search();
@@ -104,6 +105,7 @@ function search() {
     }
     if(queryDate.length>1){
         const d=new Date(queryDate[1]);
+        d.setDate(d.getDate() +1);
         sQuery= sQuery+'&date_to='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     }
     applySpinners(true);

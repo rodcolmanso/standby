@@ -1015,3 +1015,112 @@ db.shooters.aggregate([
         ,{$match: {registered: {$ne: []}}}
         ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
         ]).sort({"registered.score":1}).toArray();
+
+
+// =====================================================================================================================
+db.time_records.aggregate(
+    [{$group: {
+        _id: {shooterId:"$shooterId"
+             ,eventId: "$eventId"
+             ,divisionId: "$divisionId"}
+        ,bestTime: {$min:"$sTime"}
+        }
+    }
+    ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
+    ,{$project: {_id:0} }
+    ,{$addFields:{_shooterId:{$toObjectId:"$shooterId"}
+    ,_divisionId:{$toObjectId:"$divisionId"}}}
+    ,{$lookup:{
+        from: "shooters"
+        ,localField: "_shooterId"
+        ,foreignField: "_id"
+        ,as: "shooter"
+    }}
+    ,{$lookup:{
+        from: "divisions"
+        ,localField: "_divisionId"
+        ,foreignField: "_id"
+        ,as: "division"
+    }}
+]);
+
+30056800000
+52699999
+
+lpad = function (str, len, padstr=" ") {
+    var redExpr={$reduce:{
+      input:{$range:[0,{$subtract:[len, {$strLenCP:str}]}]},
+      initialValue:"",
+      in:{$concat:["$$value",padstr]}}};
+    return {$cond:{
+      if:{$gte:[{$strLenCP:str},len]},
+      then:str,
+      else:{$concat:[ redExpr, str]}
+    }};
+}
+
+100505000000
+
+db.time_records.aggregate([
+    {$addFields:{_shooterId:{$toObjectId:"$shooterId"}
+                ,_divisionId:{$toObjectId:"$divisionId"}
+                ,_eventId:{$toObjectId:"$eventId"}
+                ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
+    ,{$lookup:{
+        from: "shooters"
+        ,localField: "_shooterId"
+        ,foreignField: "_id"
+        ,as: "shooter"
+        ,pipeline:[
+            {$addFields:{shooterName:"$name"}}
+        ]
+    }}
+    ,{$lookup:{
+        from: "divisions"
+        ,localField: "_divisionId"
+        ,foreignField: "_id"
+        ,as: "division"
+        ,pipeline:[
+            {$addFields:{divisionName:"$name"}}
+        ]
+    }}
+    ,{$lookup:{
+        from: "events"
+        ,localField: "_eventId"
+        ,foreignField: "_id"
+        ,as: "event"
+        ,pipeline:[
+            {$addFields:{eventName:"$name",clockDate:"$date"}}
+        ]
+    }}
+    ,{$lookup:{
+        from: "shooters_divisions"
+        ,localField: "_shooterDivisionId"
+        ,foreignField: "_id"
+        ,as: "shooter_division"
+    }}
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
+    ,{$group: {
+        _id: {shooterId:"$shooterId"
+             ,shooterName:"$shooterName"
+             ,eventId: "$eventId"
+             ,eventName: "$eventName"
+             ,local: "$local"
+             ,clockDate: "$clockDate"
+             ,divisionName: "$divisionName"
+             ,gun: "$gun"
+             ,optics: "$optics"}
+             ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
+            //  ,sortFiled: {$concat: [ "$divisionName", " - ", {$toString:"$sTime"} ] }
+        }
+    }
+    // ,{$project: { sortFiled: { $concat: [ "_id.$divisionName", " - ", {$toString:{$round:[ {$multiply:[100000,{$round:["$_id.bestTime",2]} ]},0]}} ] } } }
+    ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
+    ,{$project: {_id:0} }
+    ,{$match: {}}
+]).sort({ divisionName:1, shooterName:1, bestTime:1});
+// =====================================================================================================================
+

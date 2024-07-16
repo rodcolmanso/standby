@@ -15,6 +15,36 @@ netlifyIdentity.on('close', () => {
     }
 });
 
+function buildClassiication(rank){
+
+    let badg=""
+    let row="";
+    for(let i=0; i<rank.length;i++){
+
+        if(rank[i].optics)
+            badg=`<i class="bi bi-dot" style="color:red !important;"></i></span>`;
+        else badg="";
+
+        row+= `<tr>
+              <td><b>${rank[i].divisionName}</b></td>
+              <td><b>xº</b></td>
+              <td>
+                <p class="text-muted">
+                  <span class="badge text-bg-warning" >${rank[i].bestTime}
+                    <span class="position-absolute translate-middle badge text-bg-warning rounded-pill"></span>
+                  </span>
+                </p>
+              </td>
+              <td><span class="text-small">${rank[i].gun} ${badg}</td>
+              <td><span class="text-small">${rank[i].eventName}</span></td>
+              <td><span class="text-small">${(new Date(rank[i].clockDate)).toLocaleDateString()}</span></td>
+            </tr>`;
+    }
+
+    document.getElementById("table-classification").innerHTML= row;
+
+}
+
 window.onload = async () => {
 
     await loadPage();
@@ -29,15 +59,17 @@ window.onload = async () => {
 
     applySpinners(false);
 
+    updater= (user&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
+
     if(loggedUser===null&&(!params.id||params.id==='')){
         netlifyIdentity.open('login');
     }else if(params.id&&params.id!==''&&(loggedUser===null||params.id!==loggedUser._id)){
-        updater= (user&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
-
-        let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
-        if(user&&user.token&&user.token.access_token){
-            _headers.Authorization= `Bearer ${user.token.access_token}` ;
-        }
+        
         applySpinners(true);
 
         await fetch('/.netlify/functions/shooters?id='+params.id, {
@@ -55,6 +87,9 @@ window.onload = async () => {
             }
         ).catch(err => {console.log(`Error getting user: ${err}`); alert(`Erro ao localizar atirador.`); window.location.href = window.location="/";}
         ).finally(()=> {applySpinners(false);disableShooterFields(updater);});
+
+
+        
     
     }else{
         //sessionUser
@@ -62,6 +97,28 @@ window.onload = async () => {
         shooterData= loggedUser;
         buildShooterForm();
     }
+
+    // =============Classification ===================
+    applySpinners(false);
+
+    let _shooterId=params.id;
+    if(!_shooterId)
+        _shooterId= loggedUser._id;
+
+    await fetch('/.netlify/functions/time-records?rank=2&shooterId='+ _shooterId , {
+        method: "GET",
+        headers: _headers
+        }
+    ).then(response => response.json()
+    ).then(json => {
+            if(json.length>0){
+                buildClassiication(json );
+            }else{ console.log(`Ranking não encontrado. id:${params.id}`);
+            alert(`Rank do atirador não encontrado.`); }
+        }
+    ).catch(err => {console.log(`Error getting user rank: ${err}`); alert(`Erro ao localizar ranking.`); }
+    ).finally(()=> {applySpinners(false);});
+    //================================================
 
     disableShooterFields(updater);
 };
