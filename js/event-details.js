@@ -324,6 +324,7 @@ $(function() {
 function updatePicOrName(){
 
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;;
+    document.getElementById("subscribe-name").value= document.getElementById("subscribe-name").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     // shooterDivisions.category= 
 
@@ -374,6 +375,7 @@ function changeSub(id, ldx ,idx, elem, _subs){
         _tableId= MODAL_TABLE_ALL_SUBS_ID;
     }
 
+    document.getElementById("subscribe-gun-"+id+_subs).value= document.getElementById("subscribe-gun-"+id+_subs).value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     _sD[ldx].shooters_divisions[idx].gun= document.getElementById("subscribe-gun-"+id+_subs).value;
     _sD[ldx].shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id+_subs).checked;
@@ -702,13 +704,14 @@ function subscribeNew(){
     nShooters_divisions.shooterId= shooterDivisions!==undefined&&shooterDivisions[0].shooterId!==undefined&&shooterDivisions[0].shooterId!==null?shooterDivisions[0].shooterId:"";
     nShooters_divisions.divisionId= document.getElementById("select-subscribe-division").value;
     nShooters_divisions.eventId=eventConfig._id;
+    document.getElementById("subscribe-gun").value= document.getElementById("subscribe-gun").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     nShooters_divisions.gun= document.getElementById("subscribe-gun").value;
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
     nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
 
-
+    document.getElementById("subscribe-name").value= document.getElementById("subscribe-name").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
     document.getElementById("search-button-name").style.display="none";
     // document.getElementById("search-button-name").style.visibility="hidden";
@@ -732,7 +735,7 @@ const promiseOfPutShootersDivisions = (_eventId, _email, sD, modalId)=>{
 
     sD.eventId=_eventId;
     
-    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0]._id+sD.shooters_divisions[0].divisionId+ sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""))!==undefined){
+    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0]._id+sD.shooters_divisions[0].divisionId+ sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";","").replaceAll('"','').replaceAll("'","").replaceAll('`',''))!==undefined){
         alert(`A arma ${sD.shooters_divisions[0].gun} não pode ser inscrita mais de uma vez na divisão ${getDivisionName(sD.shooters_divisions[0].divisionId)}.`);
         return 0;
     }

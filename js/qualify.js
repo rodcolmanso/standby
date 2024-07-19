@@ -268,15 +268,19 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     let position=0;
 
 
-    let table;
+    let table= document.getElementById('tableOverall');
     let sScore;
     let _time;
     let _penal;
     let sTries;
     let _gbColor;
 
-    if(_tb)
+    if(_tb
+        //  && _tb.rows() && _tb.rows().data() && _tb.rows().data().length>0
+        ){
+        console.log('_tb.rowsCount:'+_tb.rows().data().length);
         _tb.destroy();
+    }
 
     document.getElementById('tableLadies').innerHTML='';
     document.getElementById('tableOptics').innerHTML='';
@@ -337,7 +341,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 }
 
                 if(1==1||aPlayers[i].category==cOverall){
-                    if(eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
+                    if(1==0&eventConfig.divisions[divisionIndex].categories.optics && aPlayers[i].optics ){
                         table= document.getElementById('tableOptics');
                         actualOpticsCount++
                         position= actualOpticsCount;//-->

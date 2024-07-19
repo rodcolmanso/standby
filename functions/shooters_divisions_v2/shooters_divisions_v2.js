@@ -282,9 +282,9 @@ const handler = async (event, context)=>{
           const new_record= await cShooters.updateOne(
                                             {email: shooterDivisions.email.toLowerCase().trim()}
                                             ,{$set:{
-                                                    name: shooterDivisions.name
+                                                    name: shooterDivisions.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                     ,category: shooterDivisions.category
-                                                    ,email: shooterDivisions.email.toLowerCase().trim()
+                                                    ,email: shooterDivisions.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                     ,docnum: shooterDivisions.docnum
                                                     }}
                                             ,{upsert:true}
@@ -335,7 +335,7 @@ const handler = async (event, context)=>{
                 { shooterId: shooterDivisions.shooters_divisions[i].shooterId
                     ,divisionId: shooterDivisions.shooters_divisions[i].divisionId
                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
-                    ,gun: shooterDivisions.shooters_divisions[i].gun
+                    ,gun: shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                     ,optics: shooterDivisions.shooters_divisions[i].optics
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -355,7 +355,7 @@ const handler = async (event, context)=>{
                                                             ,{$set:{ shooterId: shooterDivisions.shooters_divisions[i].shooterId
                                                                     ,divisionId: shooterDivisions.shooters_divisions[i].divisionId
                                                                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
-                                                                    ,gun: shooterDivisions.shooters_divisions[i].gun
+                                                                    ,gun: shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                                     ,optics: shooterDivisions.shooters_divisions[i].optics
                                                                     ,clock: shooterDivisions.shooters_divisions[i].clock
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -419,8 +419,8 @@ const handler = async (event, context)=>{
         }else{
             new_record= await cShooters.updateOne({ _id : new ObjectId(shooterId) }
                                                  ,{ $set: { 
-                                                   name : shooter.name
-                                                   ,email: shooter.email 
+                                                   name : shooter.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
+                                                   ,email: shooter.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                    ,category: shooter.category 
                                                   //  ,eventId: shooter.eventId 
                                                   }
@@ -438,7 +438,7 @@ const handler = async (event, context)=>{
           shooter_division.shooterId=shooterId;
           shooter_division.divisionId= registered[i].divisionId;
           shooter_division.eventId=event_id;
-          shooter_division.gun= registered[i].gun;
+          shooter_division.gun= registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','');
           shooter_division.optics= registered[i].optics;
           shooters_divisions.push(shooter_division);
         }

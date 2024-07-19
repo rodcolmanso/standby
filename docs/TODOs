@@ -1,4 +1,17 @@
 - Urgente
+  - Impedir char especais (`" ') em campos textos
+  - memória de ordenação da tabela
+  - combo divisao. incluir na URL
+  - incluir RD no summary do lançar tempo
+  - incluir ultimos tempos na tabela contra relogio
+  - incluir icone de senior, dama, overall na tabela contra o relogio
+  - link dos atiradores vao para popup do Score do atirador (ou edição da inscrição)
+  - link de angora no refresh
+  - Cruzamento de chaves na repescagem
+  - opçao apra geraçao de chaves (todos contra todos, chaves com ou sem repescagem)
+    - nao permitir guest de gerar chave
+  
+  - 
 
 - Shooter Home Page
     - Inscrever-se a evento

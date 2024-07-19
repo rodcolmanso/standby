@@ -181,9 +181,9 @@ const handler = async (event, context)=>{
           if(!shooterData._id||shooterData._id===null||shooterData._id===0||shooterData._id===""||shooterData._id==="new"){
             // console.log(`[Shooters] Inserting new shooter:${shooterData.email.toLowerCase().trim()}, docnum:${shooterData.docnum}`);
             retShooterUpdate = await cShooters.insertOne(
-              { email : shooterData.email.toLowerCase().trim()
+              { email : shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
               ,docnum: shooterData.docnum
-              ,name: shooterData.name
+              ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
               ,category: shooterData.category
               }
             );
@@ -194,9 +194,9 @@ const handler = async (event, context)=>{
             // console.log(`[Shooters] Updating shooter:${shooterData.email.toLowerCase().trim()}, id:${shooterData._id}, docnum:${shooterData.docnum}`);
             retShooterUpdate = await cShooters.updateOne(
               { _id : new ObjectId(shooterData._id) }
-             ,{ $set: { email: shooterData.email.toLowerCase().trim()
+             ,{ $set: { email: shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                       ,docnum: shooterData.docnum
-                      ,name: shooterData.name
+                      ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                       ,category: shooterData.category
                       }
               }
@@ -235,8 +235,8 @@ const handler = async (event, context)=>{
                 try{
                   const dbShooter= await cShooters.updateOne(
                                               {'email':shooterData.docnum+'@tpmonline.com.br', 'docnum':shooterData.docnum}
-                                              ,{ $set: { email : shooterData.email.toLowerCase().trim()
-                                                ,name: shooterData.name}
+                                              ,{ $set: { email : shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
+                                                ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')}
                                               });
 
                    if(dbShooter.modifiedCount<1){

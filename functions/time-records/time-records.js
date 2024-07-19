@@ -196,7 +196,7 @@ const handler = async (event, context)=>{
         }else if(event.queryStringParameters.report && event.queryStringParameters.eventId){
           p_report= event.queryStringParameters.report.toString();
           p_eventId= event.queryStringParameters.eventId.toString();
-
+          console.log('got in report');
           const triesReport= await cTime_Records.aggregate([
               {$match:{eventId:p_eventId}}
               ,{$addFields:{"_shooterId":{$toObjectId:"$shooterId"}

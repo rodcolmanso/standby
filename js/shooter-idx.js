@@ -131,6 +131,7 @@ document.getElementById('docnum').addEventListener('input', function(e) {
 function saveShooter(){
     let _UshooterData={};
     _UshooterData._id= document.getElementById('_id').value;
+    document.getElementById('modalEmail').value= document.getElementById('modalEmail').value.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','');
     _UshooterData.email= document.getElementById('modalEmail').value;
     _UshooterData.docnum= document.getElementById('docnum').value.replaceAll('.','').replaceAll('-','');
 
@@ -141,6 +142,7 @@ function saveShooter(){
       return 0;
     }
 
+    document.getElementById('modalName').value= document.getElementById('modalName').value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     _UshooterData.name= document.getElementById('modalName').value;
 
     if(document.getElementById('modalOption2').checked)

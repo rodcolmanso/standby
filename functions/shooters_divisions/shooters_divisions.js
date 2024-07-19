@@ -171,14 +171,14 @@ const handler = async (event, context)=>{
           shooter_division.shooterId=shooterId;
           shooter_division.divisionId= registered[i].divisionId;
           shooter_division.eventId=event_id;
-          shooter_division.gun= registered[i].gun;
+          shooter_division.gun= registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','');
           shooter_division.optics= registered[i].optics;
           shooters_divisions.push(shooter_division);
         }
         await cShooters_Divisions.deleteMany({"shooterId":shooterId});
 
         new_record= await cShooters_Divisions.insertMany(shooters_divisions);
-        new_record.shooterId= shooterId;;
+        new_record.shooterId= shooterId;
 
         return  { 
           statusCode: 201,  
