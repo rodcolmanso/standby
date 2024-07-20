@@ -16,6 +16,8 @@ let timeRecords;
 let modalChanged;
 let language="pt-br"
 
+let _ord=[[0, 'asc']];
+
 // const urlSearchParams = new URLSearchParams(window.location.search);
 // const params = Object.fromEntries(urlSearchParams.entries());
 
@@ -52,11 +54,11 @@ const promiseOfPlayers = (id) => { return fetch("/.netlify/functions/shooters_di
 })};
 
 function hrefQualify(){
-    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
+    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"");//->+getActiveCat();
 }
 
 function hrefMatches(){
-    window.location.href = "/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
+    window.location.href = "/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"");
 }
 
 function getActiveCat(){
@@ -77,13 +79,13 @@ function getActiveCat(){
 }
 
 function shareEvent(){
-    const _link = 'https://'+window.location.host+"/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
+    const _link = 'https://'+window.location.host+"/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"");
      // Copy the text inside the text field
      navigator.clipboard.writeText(_link);
 }
 
 function editInscriptions(){
-    window.location.href = "/event-details.html?allInscriptions=clock&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value;//->+getActiveCat();
+    window.location.href = "/event-details.html?allInscriptions=clock&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"");
 }
 
 async function loadPage(){
@@ -107,6 +109,9 @@ async function loadPage(){
 window.onload = async () => {
 
     await loadPage();
+
+    if(params.tbord)
+        _ord=JSON.parse(atob(params.tbord));
 
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('btnOptDuel').style.display='';
@@ -242,6 +247,7 @@ function naiveRound(num, decimalPlaces = 0) {
 // let _Optics;
 // let _Seniors;
 let _tb;
+
 function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
     var row= "";
@@ -275,10 +281,11 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     let sTries;
     let _gbColor;
 
-    if(_tb
-        //  && _tb.rows() && _tb.rows().data() && _tb.rows().data().length>0
-        ){
-        console.log('_tb.rowsCount:'+_tb.rows().data().length);
+    if(_tb){
+        _ord= _tb.order();
+        // console.log('_tb.rowsCount:'+_tb.rows().data().length);
+        // console.log('_tb:.order'+ JSON.stringify(_tb.order,null,2));
+        // console.log('_tb:.Option'+ JSON.stringify(_tb.Option,null,2));
         _tb.destroy();
     }
 
@@ -408,10 +415,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
                         </div>
-                    <!--</td>
-                    <td class="align-middle text-start">-->
-                    <!--<a href="#" onClick="editShooter('${aPlayers[i].id}')" >-->
-                    <!--<a href="./shooter.html?id=${aPlayers[i].id}" target="_new">--> 
                     <div class="col text-truncate">`;
 
                     if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
@@ -428,7 +431,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
 
                     row+= `
                      </td>
-                    <!--<td class="align-middle d-none d-sm-table-cell" >${aPlayers[i].gun}</td>-->
                     <td class="align-middle text-start">
                         <span class="badge ${_gbColor}">${_time}
                             <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
@@ -439,9 +441,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
                           ${sTries} <span style="display:none">${aPlayers[i].datetime}</span>
                         </div>
-                        <!--</td><td class="align-middle">-->
                         <div class="col">
-                         <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                         <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
                          </button>
                         </div>
                      </div>
@@ -452,16 +453,15 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
             }
         }
 
-        let _ord=0;
-        if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-        ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-         || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
-            _ord=3;
-         }
+        // if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+        // ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+        //  || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+        //     _ord=[[3, 'asc']];
+        //  }
 
          if(table){
             _tb= new DataTable(table.parentNode, 
-                { order: [[_ord, 'asc']]
+                { order: _ord
                 , paging: false
                 ,responsive: false
                 ,oLanguage: {sSearch: "Buscar:"}
@@ -584,10 +584,10 @@ function goToSubscription(parms){
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
     }else parms='';
-       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms; //->+getActiveCat();
+       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):""); //->+getActiveCat();
 }
 
-function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal ){
+function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal, pOpctic ){
     const selectedDivision= selectDivision= document.getElementById('selectDivision').value;
 
      
@@ -600,7 +600,11 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
 
     document.getElementById('offcanvasRightLabel').innerText= 'Tempos de '+nameShooter;
     document.getElementById('timeShooterName').innerText= nameShooter;
-    document.getElementById('timeShooterGun').innerText= gunShooter;
+    document.getElementById('timeShooterGun').innerHTML= `<span class="badge rounded-pill text-bg-secondary">${gunShooter}</span>`;
+
+    if(pOpctic){
+        document.getElementById('timeShooterGun').innerHTML+= `<i class="bi bi-dot" style="color:red !important;"></i>`;
+    }
     
     if(vlTime===0){
         vlTime='NA';

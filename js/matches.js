@@ -762,11 +762,13 @@ function changeDivision(selectDivision){
 };
 
 function hrefQualify(){
-    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    const _tbord= params.tbord?"&tbord="+params.tbord:"";
+    window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat()+_tbord;
 }
 
 function hrefMatches(){
-    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    const _tbord= params.tbord?"&tbord="+params.tbord:"";
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat()+_tbord;
 }
 
 

@@ -469,9 +469,9 @@ function setCookie(cname, cvalue, exdays) {
 
         if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)
-                btn.style.visibility = 'visible'//'visible'; //'hidden'
+                btn.style.display = ''//'visible'; //'hidden'
             else
-                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                btn.style.display = 'none'//'visible'; //'hidden'
         }
     });
     
@@ -484,9 +484,9 @@ function setCookie(cname, cvalue, exdays) {
         
         if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)
-                btn.style.visibility = 'visible'//'visible'; //'hidden'
+                btn.style.display = ''//'visible'; //'hidden'
             else
-                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                btn.style.display = 'none'//'visible'; //'hidden'
         }
 
     });
@@ -500,9 +500,9 @@ function setCookie(cname, cvalue, exdays) {
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)
-                elem.style.visibility = 'visible'//'visible'; //'hidden'
+                elem.style.display = ''//'visible'; //'hidden'
             else
-                elem.style.visibility = 'hidden'//'visible'; //'hidden'
+                elem.style.display = 'none'//'visible'; //'hidden'
         }
 
     });
@@ -515,9 +515,9 @@ function setCookie(cname, cvalue, exdays) {
             
             if((rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('hide')>=0)){
                 if(!onoff)
-                    rdo.style.visibility = 'visible'//'visible'; //'hidden'
+                    rdo.style.display = ''//'visible'; //'hidden'
                 else
-                    rdo.style.visibility = 'hidden'//'visible'; //'hidden'
+                    rdo.style.display = 'none'//'visible'; //'hidden'
             }
         });
 
@@ -529,9 +529,9 @@ function setCookie(cname, cvalue, exdays) {
 
             if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
                 if(!onoff)
-                    btn.style.visibility = 'visible'//'visible'; //'hidden'
+                    btn.style.display = ''//'visible'; //'hidden'
                 else
-                    btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                    btn.style.display = 'none'//'visible'; //'hidden'
             }
         });
 
@@ -544,9 +544,9 @@ function setCookie(cname, cvalue, exdays) {
         
         if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)
-                btn.style.visibility = 'visible'//'visible'; //'hidden'
+                btn.style.display = ''//'visible'; //'hidden'
             else
-                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                btn.style.display = 'none'//'visible'; //'hidden'
         }
 
     });

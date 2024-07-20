@@ -286,9 +286,7 @@
               <div class="col-8">
                 <div class="card-body">
                 <h5 class="card-title"><p  id="timeShooterName"></p></h5>
-                <p class="card-text">
-                  <span class="badge rounded-pill text-bg-secondary" id="timeShooterGun"></span>
-                </p>
+                <p class="card-text" style="margin-bottom: 0 !important;" id="timeShooterGun"></p>
                 <p class="card-text"><small class="text-body-secondary">Melhor passada:</small>
                    <span class="badge text-bg-purple"><span id="timeBestScore"></span>
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill"id="timeBestScorePenal"></span>
@@ -318,8 +316,8 @@
               </div>
             </div>
             <div class="row g-2 hide">
-              <form class="row g-3 needs-validation" action="javascript:addTimeRecord()">
-                <div class="w-50 col-sm form-floating form-control-sm">
+              <form class="row g-3 needs-validation hide" action="javascript:addTimeRecord()">
+                <div class="w-50 col-sm form-floating form-control-sm hide">
 
                   <input type="hidden" id="timeRecordShooterId" >
                   <input type="hidden" id="timeRecordDivision" >
@@ -329,14 +327,14 @@
                   <label for="timeRecordTime">Tempo</label>
 
                 </div>
-                <div class="w-25 col-sm form-floating form-control-sm">
+                <div class="w-25 col-sm form-floating form-control-sm hide">
 
                   <input type="number" pattern="\d*" min="0" max="4" class="form-control" id="timeRecordPenalty" placeholder="0" value="0">
                   <label for="timeRecordPenalty">Penalidade</label>
                 </div>
 
 
-                <div class="w-auto col-sm" style="width:fit-content; display:flex;align-items:center;">
+                <div class="w-auto col-sm hide" style="width:fit-content; display:flex;align-items:center;">
                   <button type="submit" id="btnAddTimeRecord" class="btn btn-success" value="&lt;i class='bi bi-check'&gt;&lt;/i&gt;">
                     <span class="spinner-border spinner-border-sm" aria-hidden="true"></span><i class="bi bi-check"></i></button>
                 </div>

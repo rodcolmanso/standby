@@ -73,7 +73,7 @@ window.onload = async () => {
 
     const dDate= new Date();
     // dDate.setDate(0);
-    dDate.setDate(dDate.getDate() - 2);
+    dDate.setDate(dDate.getDate() - 1);
     // console.log('dDate: '+dDate)
     document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 

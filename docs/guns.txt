@@ -1,0 +1,80 @@
+Tipo	Marca	Modelo	Calibre	Funcionamento
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	CZ	P10	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Carabina	Brigade	BM9	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Arex	Zero 1	9mm	Semi-auto
+Pistola	Beretta	APX	9mm	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição
+Carabina	FireEagle	FE-9	9mm	Semi-auto
+Shotgun	Stoeger	M3000	12GA	Repetição
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	CZ	SHADOW	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Arex	Delta	9mm	Semi-auto
+Pistola	Beretta	PX4	9mm	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição
+Shotgun	Stoeger	STR-9	9mm	Repetição
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	CZ	SHADOW 2	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Arex	Alpha	9mm	Semi-auto
+Pistola	Beretta	PX4	.40S&W	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição
+Shotgun	Stoeger	M3000	12GA	Semi-auto
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	CZ	75	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Arex	Zero 2	9mm	Semi-auto
+Pistola	Beretta	PX4	.45 ACP	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	CZ	97	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Beretta	950	6.35mm	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição
+Pistola	Glock	G19	9mm	Semi-auto
+Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Taurus	TS9	9mm	Semi-auto
+Carabina	Taurus	CTT	.40S&W	Semi-auto
+Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	IWI	Masada	9mm	Semi-auto
+Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Springfield	XD-M	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Repetição

@@ -24,8 +24,10 @@ function hrefQualify(){
         }
 
         const _cat= params.cat?"&cat="+params.cat:"";
+
+        const _tbord= params.tbord?"&tbord="+params.tbord:"";
         
-        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv+_cat;
+        window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+paramDiv+_cat+_tbord;
     }
 }
 
@@ -283,7 +285,7 @@ $(function() {
         // if(!this.checkValidity()){
         if (this.value!=="" && !validaCPF(this.value)) {
             // alert('CPF inválido');
-            document.getElementById('subscribe-name').value="";
+            // document.getElementById('subscribe-name').value="";
             document.getElementById("search-button-name").style.display="none";
             // document.getElementById("search-button-name").style.visibility="hidden";
             document.getElementById('subscribe-email').value="";
@@ -426,7 +428,7 @@ const promiseOfDeleteSub = (id, ldx, idx, _tableId)=>{
 
                         populateSubscriptionModalTable(eventConfig, _sD, document.getElementById(_tableId));
 
-                        alert(`Inscrição (${getDivisionName(uptShooterDiv.shooters_divisions[0].divisionId)}/${uptShooterDiv.shooters_divisions[0].gun}) apagada!`);
+                        // alert(`Inscrição (${getDivisionName(uptShooterDiv.shooters_divisions[0].divisionId)}/${uptShooterDiv.shooters_divisions[0].gun}) apagada!`);
                         // getFullShooterDivision(eventConfig, uptShooterDiv.email);
                         // getFullEventShootersDivision(eventConfig);
                     })
@@ -527,7 +529,7 @@ function populateNewShooter(_docnum){
     // shooterDivisions[0].email= _docnum.toString().toLowerCase().trim();
     shooterDivisions[0].email= _docnum.replace(/\D+/g, '').trim()+'@tpmonline.com.br';
     shooterDivisions[0].docnum= _docnum.replace(/\D+/g, '').trim();
-    shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:"";
+    shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:document.getElementById("subscribe-name").value;//"";
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("search-button-name").style.display="none";
