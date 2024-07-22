@@ -220,7 +220,9 @@ function transformRegistrer(players){
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,4)+players[i].registered[j].datetime;
             
             
-            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime };
+            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
+                  ,'gunModel':players[i].registered[j].gunModel , 'gunFactory':players[i].registered[j].gunFactory, 'gunCaliber':players[i].registered[j].gunCaliber, 'gunId':players[i].registered[j].gunId
+            };
             
             rP.push(aRow);  
         }
@@ -402,7 +404,9 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 else
                     _gbColor=`bg-warning text-dark`;
 
-                _rd= aPlayers[i].optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+                // _rd= aPlayers[i].optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+                _rd= aPlayers[i].optics?`⦿`:""; //⨀
+                _rd_sm= aPlayers[i].optics?`⦿`:"";//⚬
 
                 row= `<tr>
                     <td class="align-middle text-small">${zeroPad(position,2)}º</td>
@@ -413,7 +417,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                         </a>
                         </div>
-                    <div class="col text-truncate">`;
+                    <div class="col d-inline-block text-truncate">`;
 
                     if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                     ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
@@ -421,10 +425,28 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         row+= `<a href="#" onClick="goToSubscription('${aPlayers[i].id}')" >
                                 ${aPlayers[i].name}
                                </a>
-                                <p style="margin-bottom: 0 !important;"><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}</p>
-                               `
+                                <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
+                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd}</span>
+                                  </span>
+                                </p>
+                                <p class="d-xl-none" style="margin-bottom: 0 !important;">
+                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel}
+                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
+                                  </span>
+                                </p>`;
                     }else{
-                        row+= `${aPlayers[i].name}<p style="margin-bottom: 0 !important;"><span class="badge rounded-pill text-bg-secondary">${aPlayers[i].gun}</span>${_rd}</p>`
+                        row+= `${aPlayers[i].name}
+                        <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
+                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd}</span>
+                                  </span>
+                                </p>
+                                <p class="d-xl-none" style="margin-bottom: 0 !important;">
+                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel}
+                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
+                                  </span>
+                                </p>`;
                     }
 
                     row+= `
@@ -598,11 +620,21 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
 
     document.getElementById('offcanvasRightLabel').innerText= 'Tempos de '+nameShooter;
     document.getElementById('timeShooterName').innerText= nameShooter;
-    document.getElementById('timeShooterGun').innerHTML= `<span class="badge rounded-pill text-bg-secondary">${gunShooter}</span>`;
 
+    let _rdBedge= ``;
     if(pOpctic){
-        document.getElementById('timeShooterGun').innerHTML+= `<i class="bi bi-dot" style="color:red !important;"></i>`;
+        _rdBedge= `⨀`;
     }
+
+    let gunBadge= `<span class="badge text-bg-secondary">${gunShooter}
+                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rdBedge}</span>
+                                  </span>`
+                                
+    document.getElementById('timeShooterGun').innerHTML= gunBadge;
+    // document.getElementById('timeShooterGun').innerHTML= `<span class="badge rounded-pill text-bg-secondary">${gunShooter}</span>`;
+    // if(pOpctic){
+    //     document.getElementById('timeShooterGun').innerHTML+= `<i class="bi bi-dot" style="color:red !important;"></i>`;
+    // }
     
     if(vlTime===0){
         vlTime='NA';

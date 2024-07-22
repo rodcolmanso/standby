@@ -47,9 +47,15 @@ console.log(rank[i].divisionCode);
       });
     for(let i=0; i<rank.length;i++){
 
-        if(rank[i].optics)
-            badg=`<i class="bi bi-dot" style="color:red !important;"></i></span>`;
-        else badg="";
+        if(rank[i].optics){
+            // badg=`<i class="bi bi-dot" style="color:red !important;"></i></span>`;
+            // badg_rd=`<span class="text-danger">⦿<span>`;
+            badg_rd=`⦿`; //⨀
+            badg_rd_sm=`⦿`;
+        }else{
+            badg_rd="";
+            badg_rd_sm=``;
+        }
 
         let _penal="";
         if(rank[i].bestTime>9999.99){ 
@@ -71,18 +77,29 @@ console.log(rank[i].divisionCode);
 
         
         row+= `<tr>
-              <td><b>${rank[i].divisionName}</b></td>
-              <td><b>${rank[i].position}º</b></td>
-              <td>
-                <p class="text-muted">
+              <td class="text-small text-sm-start nowrap"><b>${rank[i].divisionName}</b></td>
+              <td class="text-end">${rank[i].position}º</td>
+              <td class="text-end">
+                <p style="margin-bottom: 0 !important;">
                   <span class="badge text-bg-warning" >${_time}
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                   </span>
                 </p>
               </td>
-              <td><span class="text-small">${rank[i].gun} ${badg}</td>
-              <td><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
-              <td><span class="text-small">${(new Date(rank[i].clockDate)).toLocaleDateString()}</span></td>
+              <td class="text-start nowrap">
+                <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                <span class="badge text-bg-secondary">${rank[i].gun}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd}</span>
+                </span>
+                </p>
+                <p class="d-xl-none" style="margin-bottom: 0 !important;">
+                <span class="badge text-bg-secondary">${rank[i].model} ${rank[i].caliber}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd_sm}</span>
+                </span>
+                </p>
+              </td>
+              <td class="text-truncate text-start "><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
+              <td class="text-small text-sm-center"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${(new Date(rank[i].clockDate)).toLocaleDateString()}</a></td>
             </tr>`;
     }
 

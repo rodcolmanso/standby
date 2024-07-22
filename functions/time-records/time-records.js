@@ -97,7 +97,11 @@ const handler = async (event, context)=>{
                         ,foreignField: "_id"
                         ,as: "gun_det"
                         ,pipeline:[
-                            {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}   
+                            {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}
+                            // ,{$addFields:{gunFullName: { $replaceAll: { input: "$gunFullName", find: "Taurus", replacement: "" } }}}
+                            // ,{$addFields:{gunFullName: { $replaceAll: { input: "$gunFullName", find: "DFA", replacement: "" } }}}
+                            // ,{$addFields:{gunFullName: {$trim: {input:"$gunFullName"}}}}
+                            
                         ]
                     }}
                     ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$gun_det", 0 ] }, "$$ROOT" ] } } }
@@ -122,6 +126,9 @@ const handler = async (event, context)=>{
                      ,gun: "$gunFullName"
                      ,type: "$type"
                      ,gunId: "$gunId"
+                     ,model: "$model"
+                     ,factory: "$factory"
+                     ,caliber: "$caliber"
                      ,optics: "$optics"}
                      ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
                 }
@@ -210,15 +217,6 @@ const handler = async (event, context)=>{
               });
 
               for(let i=0; i<rank.length;i++){
-
-                console.log(`==================================================================`);
-                console.log(rank[i].sortDivisionShooter);
-                console.log(` ---------------------------------------------------------------- `);
-                console.log(`_divisionName!==rank[i].divisionName.toLowerCase().trim() => ${_divisionName}!==${rank[i].divisionName.toLowerCase().trim()}`);
-                console.log(`_shooterId!==rank[i].shooterId => ${_shooterId}!==${rank[i].shooterId}`);
-                console.log(`_gunId!==rank[i]._gunId => ${_gunId}!==${rank[i].gunId}`);
-                console.log(`_optics!== rank[i].optics => ${_optics}!== ${rank[i].optics}`);
-                console.log(`==================================================================`);
 
                 if(_divisionName!==rank[i].divisionName.toLowerCase().trim()
                   || _shooterId!==rank[i].shooterId
