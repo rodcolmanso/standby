@@ -33,7 +33,7 @@ class Division extends HTMLElement {
                 <li >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___________________</li>
                 <li id="btn-sharepage" ><a  class="dropdown-item" onclick="shareEvent();" ><i class="bi bi-box-arrow-up-right"></i> Copiar Link</a></li>
                 <li id="btnOptClock" style="display:none"><a class="dropdown-item" onClick="hrefQualify()" ><i class="bi bi-stopwatch"></i> Ir para Contra o Relógio</a></li>
-                <li id="btnOptDuel" style="display:none"><a class="dropdown-item" onClick="hrefMatches()" ><i class="fas fa-holly-berry "></i> Ir para Duelos</a></li>
+                <li id="btnOptDuel" style="display:none"><a class="dropdown-item" onClick="hrefMatches()" ><i class="fas fa-holly-berry"></i> Ir para Duelos</a></li>
                 <li id="btnRelPassadas" style="display:none"><a class="dropdown-item" target="_new" href="./event-config.html?rel=1"><i class="bi bi-currency-dollar"></i> Relatório de Passadas</a></li>
                 <li><a class="dropdown-item" href="./event-config.html"><i class="bi bi-gear-fill"></i> Configurações do Evento</a></li>
             </ul>

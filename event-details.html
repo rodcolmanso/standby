@@ -195,12 +195,10 @@
                             <div   > <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
                               <div class="card" >
                                 <div class="row gy-2 gx-3" >
-                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important;"-->
-                                    <div class="" disabled style="padding-right:1px !important;"> <!--style=" padding:1px !important; padding-right:1px !important; padding-bottom:1px !important;" -->
-                                      <!-- <label for="input-shooter-img" style="max-height:131px !important;"> -->
+                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> 
+                                    <div class="" disabled style="padding-right:1px !important;"> 
                                         <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:80px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="img-fluid rounded-start" alt="..." />
                                       </label>
-                                      <!-- <input type="file" disabled class="form-control d-none nodisable" id="input-shooter-img" onchange="displaySelectedImage(event, 'shooter-img')" /> -->
                                     </div>
                                   </div>
                                   
@@ -232,33 +230,41 @@
                             </div>
                           <!-- </form> -->
                         </div>
-                        
                         <div class="col-md-6">
                           <!-- <form class=""> -->
                             <div class="card" >
                               <div class="row gy-2 gx-3">
                                 <div class=" card-body col-auto" style="padding-right:1px !important;" >
                                   <div class="form-floating " > <!--col-md-2-->
-                                    <select class="form-select nodisable" required id="select-subscribe-division" aria-label="Floating label select example">
+                                    <select class="form-select form-control nodisable" required id="select-subscribe-division" aria-label="Floating label select example">
                                       <option selected></option>
                                     </select>
                                     <label for="select-subscribe-division">Divisão</label>
                                   </div>
                                   <div class="col-auto" >
-                                    <div class="form-floating ">
-                                      <input type="text" class="form-control " required id="subscribe-gun">
-                                      <label for="subscribe-gun">Arma</label>
-                                    </div>  
+
+                                    <div class="form-floating " > <!--col-md-2-->
+                                      <select class="form-select form-control form-select-sm nodisable" required id="select-subscribe-gun" aria-label="Floating label select example">
+                                        <option selected><span class="text-small">(selecione divisão)</span></option>
+                                      </select>
+                                      <label for="select-subscribe-gun">Arma</label>
+                                    </div>
+
+                                    <!-- <div class="form-floating "> -->
+                                      <input type="text" class="form-control input-sm nodisable" style="display: none;" id="subscribe-gun">
+                                      <!-- <label for="subscribe-gun">Arma</label> -->
+                                    <!-- </div>   -->
                                   </div>
                                 </div> <!--min-width: 150px;-->
+                                <!-- <div class="card-body col-auto" style="padding-left:8px !important;"> -->
                                 <div class="card-body col-auto" style=" padding-left:4px !important; padding-right:8px !important; padding-top:20px !important; text-align: start;">
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
                                     <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
-                                    <label class="form-check-label" for="subscribe-check-clock"><small class="text-muted">Relógio</small></label>
+                                    <label class="form-check-label" for="subscribe-check-clock"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Relógio</small></label>
                                   </div>
                                   <div class="form-check form-switch" style="max-width: 70px !important;" >
                                     <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
-                                    <label class="form-check-label" for="subscribe-check-duel"><small class="text-muted">Duelo</small></label>
+                                    <label class="form-check-label" for="subscribe-check-duel"><i class="d-xl-none fas fa-holly-berry"></i><small class="d-none d-xl-block text-muted">Duelo</small></label>
                                   </div>
                                   <div>
                                     <label style="padding-top: 8px !important;" for="subscribe-optic"><small class="text-muted">Red dot</small></label>

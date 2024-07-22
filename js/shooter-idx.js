@@ -15,28 +15,73 @@ netlifyIdentity.on('close', () => {
     }
 });
 
+function naiveRound(num, decimalPlaces = 0) {
+    var p = Math.pow(10, decimalPlaces);
+    return Math.round(num * p) / p;
+}
+
+
+const zeroPad = (num, places) => String(num).padStart(places, '0');
 function buildClassiication(rank){
 
     let badg=""
     let row="";
+
+
+    for(let i=0; i<rank.length;i++){
+        if(rank[i].divisionName==="Pistola"){
+            rank[i].divisionCode="1111111111111111"+ zeroPad(rank[i].position,4);
+        }else if(rank[i].divisionName==="Revolver"){
+            rank[i].divisionCode="2222222222222222"+ zeroPad(rank[i].position,4);
+        }else{
+            rank[i].divisionCode="3333333333333333"+ zeroPad(rank[i].position,4);
+        }
+        console.log(rank[i].divisionName);
+console.log(rank[i].divisionCode);
+    }
+
+    rank= rank.sort((a, b) => {
+        if (a.divisionCode < b.divisionCode) {
+          return -1;
+        }
+      });
     for(let i=0; i<rank.length;i++){
 
         if(rank[i].optics)
             badg=`<i class="bi bi-dot" style="color:red !important;"></i></span>`;
         else badg="";
 
+        let _penal="";
+        if(rank[i].bestTime>9999.99){ 
+                    
+            _timee= parseFloat(rank[i].bestTime.toString().slice(1)); 
+            _penall= rank[i].bestTime.toString().slice(0,1);
+            sScore=_timee +" +"+_penall;
+            _penal="+"+rank[i].bestTime.toString().slice(0,1);
+            _time= naiveRound(parseFloat(rank[i].bestTime.toString().slice(1)),2).toFixed(2);
+            
+
+        }else{
+            _timee= rank[i].bestTime;
+            sScore= ''+_timee;
+            _penal="";
+            _time= naiveRound(parseFloat(rank[i].bestTime),2).toFixed(2);
+        }
+
+
+        
         row+= `<tr>
               <td><b>${rank[i].divisionName}</b></td>
-              <td><b>xº</b></td>
+              <td><b>${rank[i].position}º</b></td>
               <td>
                 <p class="text-muted">
-                  <span class="badge text-bg-warning" >${rank[i].bestTime}
-                    <span class="position-absolute translate-middle badge text-bg-warning rounded-pill"></span>
+                  <span class="badge text-bg-warning" >${_time}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                   </span>
                 </p>
               </td>
               <td><span class="text-small">${rank[i].gun} ${badg}</td>
-              <td><span class="text-small">${rank[i].eventName}</span></td>
+              <td><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
               <td><span class="text-small">${(new Date(rank[i].clockDate)).toLocaleDateString()}</span></td>
             </tr>`;
     }

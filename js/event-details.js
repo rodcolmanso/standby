@@ -132,8 +132,10 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
     _reload=true;
     if(allShootersDivisions===null){
         promiseOfGetShootersDivisions(eventConfig._id, null, MODAL_TABLE_ALL_SUBS_ID);
+        // promiseOfGetGunList("");
     }else{
         populateSubscriptionModalTable(eventConfig, allShootersDivisions, document.getElementById(MODAL_TABLE_ALL_SUBS_ID));
+        // promiseOfGetGunList("");
     }
 });
 
@@ -180,8 +182,9 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         
         if(params.selected_division!==undefined){
             document.getElementById('select-subscribe-division').value= params.selected_division;
+            var event = new Event('change');
+            document.getElementById('select-subscribe-division').dispatchEvent(event);
         }
-
         
         //-> if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
         if(params.docnum&&params.docnum!=='' ){ //editing inscription
@@ -195,7 +198,6 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             document.getElementById('subscribe-shooterId').value= params.shooterId;
             promiseOfGetShootersDivisions(eventConfig._id, params.shooterId, MODAL_TABLE_SUB_ID);
         }else{
-        
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
             }else if(params.selected_division===undefined){
@@ -247,12 +249,15 @@ function myFunction() {
     // <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiado! <i class="bi bi-clipboard-check-fill"></i></button>
   }
 
+let gunList;
 async function loadPage(){
     
         loggedUser= netlifyIdentity.currentUser();
         
         applySpinners(true);
-        eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+        eventConfig= await promiseOfSessionEventConfig(null,loggedUser);
+        let _userDb= getSessionDbUser();
+        gunList= await promiseOfGetGunList(_userDb?_userDb._id:null,null);
         applySpinners(false);
         enableShooterFields();
 
@@ -377,8 +382,9 @@ function changeSub(id, ldx ,idx, elem, _subs){
         _tableId= MODAL_TABLE_ALL_SUBS_ID;
     }
 
-    document.getElementById("subscribe-gun-"+id+_subs).value= document.getElementById("subscribe-gun-"+id+_subs).value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
-    _sD[ldx].shooters_divisions[idx].gun= document.getElementById("subscribe-gun-"+id+_subs).value;
+    // document.getElementById("subscribe-gun-"+id+_subs).value= document.getElementById("subscribe-gun-"+id+_subs).value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
+    _sD[ldx].shooters_divisions[idx].gun  = document.getElementById("subscribe-gun-"+id+_subs).text;
+    _sD[ldx].shooters_divisions[idx].gunId= document.getElementById("subscribe-gun-"+id+_subs).value;
     _sD[ldx].shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].duel= document.getElementById("subscribe-check-duel-"+id+_subs).checked;
@@ -485,6 +491,76 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
 
 }
 
+const promiseOfGetGunList = (shooterId, _divisionName)=>{
+    applySpinners(true);
+    return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}`, {
+            method: "GET"})
+            .then(response => response.json()) 
+            .then(json => {
+                return json;
+            })
+            .catch(err => console.log(`Error getting gunList: ${err}`))
+            .finally(()=> {applySpinners(false);enableShooterFields();});
+}
+
+function populateGunDropdown(shooterDivisions, _subs){
+
+    // populateGunDropdown(`subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}`, shooterDivisions[l].shooters_divisions[i].gun_det[0]._id);
+    let dropDown;
+    let value;
+    let divisionName;
+    let newOption = new Option('','');
+    if(gunList){
+
+        for(let l=0 ; l<shooterDivisions.length;l++){
+            
+            for(let i=0 ; i<shooterDivisions[l].shooters_divisions.length;i++){
+
+                dropDown= document.getElementById(`subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}`);
+                value= shooterDivisions[l].shooters_divisions[i].gunId?shooterDivisions[l].shooters_divisions[i].gunId:shooterDivisions[l].shooters_divisions[i].gun_det[0]._id;
+                divisionName= getDivisionName(shooterDivisions[l].shooters_divisions[i].divisionId).toLocaleLowerCase().trim();
+                newOption = new Option('','');
+
+                if(divisionName==="força livre"){
+                    for(let j=0;j<gunList.length;j++){
+                        newOption = new Option(gunList[j].alias,gunList[j]._id);
+                        if(gunList[j]._id===value)
+                            newOption.selected= true;
+                        
+                        if(divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
+                            dropDown.add(newOption);
+                    }
+            
+                    
+                        newOption = new Option('___________________________','');
+                        dropDown.add(newOption);
+                }
+
+                for(let j=0;j<gunList.length;j++){
+                    newOption = new Option(gunList[j].alias,gunList[j]._id);
+                    
+                    if(gunList[j]._id===value)
+                        newOption.selected= true;
+
+                    if(((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
+                        ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
+                        ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
+                        ||(divisionName==="armas curtas"
+                            &&(gunList[j].type.toLocaleLowerCase().trim()==="revolver"
+                               ||gunList[j].type.toLocaleLowerCase().trim()==="pistola" ) )){
+                            dropDown.add(newOption);
+                    }
+                }
+
+            }
+
+        }
+
+
+    }
+
+}
+
 // function getFullShooterDivision(eventConfig, userEmail){
 function popupSubscriptionModal(shooterDivisions){
 
@@ -586,27 +662,15 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
     let _disabled="";
     let isAdmin=true;
     
-
     isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
     isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1));
 
-    
-    
-    // if(!isAdmin){
-    //     _disabled="disabled"
-    // }
     gunsOfShooterDivisions=[];
 
     for(let l=0;l<shooterDivisions.length;l++){
         for(let i=0;i<shooterDivisions[l].shooters_divisions.length;i++){
-            gunsOfShooterDivisions.push(shooterDivisions[l]._id+shooterDivisions[l].divisionId+shooterDivisions[l].shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
-            // <td class="text-start d-none d-sm-table-cell">
-            // <img class="img-fluid rounded-circle mx-auto mx-lg-0 h-100 col-8 col-sm-6 col-md-4 col-lg-2 my-auto" style="margin-bottom: 1px !important;" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/${shooterDivisions.shooterId}?${encodeURI((new Date()).toISOString())}"  alt="..." />
-            // </td>
-            // <td class="text-start d-none d-sm-table-cell">
-            //     <small>${shooterDivisions.name}</small>
-            // </td>
-
+            // gunsOfShooterDivisions.push(shooterDivisions[l]._id+shooterDivisions[l].divisionId+shooterDivisions[l].shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
+            
             if(isAdmin||(loggedUser&&loggedUser.email.toLowerCase().trim()===shooterDivisions[l].email.toLowerCase().trim()))
                 nodisableClass='nodisable"';
             else
@@ -639,15 +703,16 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             <td class="text-start">
                 <div class="form-check form-switch">
                     <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" >
-                    <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><small class="text-muted">Relógio</small></label>
+                    <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Relógio</small></label>
                 </div>
                 <div class="form-check form-switch">
                     <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" > 
-                    <label class="form-check-label" for="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}"><small class="text-muted">Duelo</small></label>
+                    <label class="form-check-label" for="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none fas fa-holly-berry"></i><small class="d-none d-xl-block text-muted">Duelo</small></label>
                 </div>
             </td>
             <td class="text-end">
-                <input type="text" class="form-control form-control-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
+                <select  type="text" class="form-select form-select-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gunId?shooterDivisions[l].shooters_divisions[i].gunId:shooterDivisions[l].shooters_divisions[i].gun_det[0]._id}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
+                </select>
             </td>
             <td>
                 <div class="form-check"> <!--form-switch--> <!--role="switch" -->
@@ -659,8 +724,8 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 row+=`
                 <button onClick="promiseOfDeleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i},'${tb.id}')" class="btn btn-sm btn-danger rounded-circle ${nodisableClass} value="${shooterDivisions[l].shooters_divisions[i]._id}">-</button> `;
             }
-            row+=
-            `</td></tr>`;
+            row+=`</td></tr>`;
+            tb.innerHTML+= row;   
         }
     }
 
@@ -671,22 +736,14 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             _tb===null;
         }
         tb.innerHTML=row;
-
-        // row.data(json.data[0]);
-        //         sjobTable.draw(false);
-
-            _tb= new DataTable('#subscribe-table-subs-head');
-            _tb.draw(false);
-        // if()
-        // if ( $.fn.dataTable.isDataTable('#subscribe-table-subs-head') ) {
-        //     $('#subscribe-table-subs-head').DataTable().destroy();
-        //     // $('#subscribe-table-subs-head').empty();
-        //   }
-        // _tb= new DataTable('#subscribe-table-subs-head');
-        // _tb. draw();
+        
+        _tb= new DataTable('#subscribe-table-subs-head');
+        _tb.draw(false);
+    
     }
 
     tb.innerHTML=row;
+    populateGunDropdown(shooterDivisions, _subs);
 
 }
 
@@ -708,6 +765,7 @@ function subscribeNew(){
     nShooters_divisions.eventId=eventConfig._id;
     document.getElementById("subscribe-gun").value= document.getElementById("subscribe-gun").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     nShooters_divisions.gun= document.getElementById("subscribe-gun").value;
+    nShooters_divisions.gunId= document.getElementById("select-subscribe-gun").value;
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
@@ -737,10 +795,10 @@ const promiseOfPutShootersDivisions = (_eventId, _email, sD, modalId)=>{
 
     sD.eventId=_eventId;
     
-    if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0]._id+sD.shooters_divisions[0].divisionId+ sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";","").replaceAll('"','').replaceAll("'","").replaceAll('`',''))!==undefined){
-        alert(`A arma ${sD.shooters_divisions[0].gun} não pode ser inscrita mais de uma vez na divisão ${getDivisionName(sD.shooters_divisions[0].divisionId)}.`);
-        return 0;
-    }
+    // if(sD.shooters_divisions[0]._id==="" && gunsOfShooterDivisions.find((gun) => gun === sD.shooters_divisions[0]._id+sD.shooters_divisions[0].divisionId+ sD.shooters_divisions[0].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";","").replaceAll('"','').replaceAll("'","").replaceAll('`',''))!==undefined){
+    //     alert(`A arma ${sD.shooters_divisions[0].gun} não pode ser inscrita mais de uma vez na divisão ${getDivisionName(sD.shooters_divisions[0].divisionId)}.`);
+    //     return 0;
+    // }
 
     applySpinners(true);
     fetch('/.netlify/functions/shooters_divisions_v2?eventId='+_eventId, {
@@ -969,6 +1027,50 @@ function compareStrings(a, b) {
     return (a < b) ? -1 : (a > b) ? 1 : 0;
   }
 
+  document.getElementById("select-subscribe-division").addEventListener('change', function (ev) {
+    
+    let divisionName = "";
+    for(let i=0; i<ev.target.options.length;i++){
+        if(ev.target.options[i].selected)
+            divisionName= ev.target.options[i].text.toLocaleLowerCase().trim();
+    }
+
+    let shooterId= document.getElementById('subscribe-shooterId').value;
+
+    if(divisionName!=="" && gunList){
+        dropDown= document.getElementById(`select-subscribe-gun`);
+
+        while (dropDown.options.length > 0)
+            dropDown.remove(0);
+
+        let newOption = new Option('','');
+        dropDown.add(newOption);
+        if(divisionName==="força livre"){
+            for(let j=0;j<gunList.length;j++){
+                let newOption = new Option(gunList[j].alias,gunList[j]._id);
+                
+                if(divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
+                    dropDown.add(newOption);
+            }
+        
+            let newOption = new Option('___________________________','');
+            dropDown.add(newOption);
+        }
+
+        for(let j=0;j<gunList.length;j++){
+            newOption = new Option(gunList[j].alias,gunList[j]._id);
+
+            if(((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
+                ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
+                ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
+                ||(divisionName==="armas curtas"
+                    &&(gunList[j].type.toLocaleLowerCase().trim()==="revolver"
+                       ||gunList[j].type.toLocaleLowerCase().trim()==="pistola" ) )){
+                dropDown.add(newOption);
+            }
+        }
+    }
+  });
 
 document.getElementById("search-button-name").addEventListener('click', function (ev) {
     

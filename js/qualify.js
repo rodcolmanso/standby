@@ -39,14 +39,12 @@ document.getElementById('timeRecordTime').addEventListener('input', function(e) 
         });
 // ----------------
 
-// const promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId=6578ad76e53c8b23971032c4")
 const promiseOfEventConfig = (id) => {return fetch("/.netlify/functions/eventconfig?clock_duel=clock&eventId="+id)
     .then(r=>r.json())
     .then(data => {
     return data;
 })};
 
-// const promiseOfPlayers = fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
 const promiseOfPlayers = (id) => { return fetch("/.netlify/functions/shooters_divisions_v2?clock_duel=clock&eventId="+id)
     .then(r=>r.json())
     .then(data => {
@@ -666,15 +664,7 @@ function addTimeRecord(){
             buildTimeTable(idShooter,idDivision, idShooterDivision);
             
         })
-        // .then({
         
-        //     fetch("http://localhost:8888/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
-        //     .then(r=>r.json())
-        //     .then(data => {
-        //         playersArray=data;
-        //         buildPlayersTables(transformRegistrer(playersArray), eventConfig, idDivision);
-        //     })
-        // })
         .catch(err => console.log(err))
         .finally(()=> applySpinners(false));
 
@@ -835,7 +825,6 @@ function scoreCal(){
 }
 
 function updateShootersList(){
-    // fetch("/.netlify/functions/shooters_divisions?eventId=6578ad76e53c8b23971032c4")
     fetch("/.netlify/functions/shooters_divisions_v2?clock_duel=clock&eventId="+eventConfig._id)
             .then(r=>r.json())
             .then(data=>{

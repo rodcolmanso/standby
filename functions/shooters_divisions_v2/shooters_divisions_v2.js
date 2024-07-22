@@ -83,13 +83,7 @@ const handler = async (event, context)=>{
             isEventAdmin= (_e.length>0);
           }
 
-        // console.log(`JSON.stringify(user): ${JSON.stringify(user,null,2)}`);
-        // console.log(`user.user_metadata: ${user.user_metadata}`);
-        // console.log(`user.user_metadata.admin_events: ${user.user_metadata.admin_events}`);
-        // console.log(`user.user_metadata.admin_events: ${JSON.stringify(user.user_metadata.admin_events)}`);
-        // console.log(`is Admin: ${isAdmin}`);
-        // console.log(`is Event Admin: ${isEventAdmin}`);
-
+      
       if(p_eventId&&(p_email||p_docnum|| p_shooterId)){ // List shooter_division(inscriptions) detail
         
         console.log(`ENTROU NO EMAIL= ${p_email}`);
@@ -117,8 +111,17 @@ const handler = async (event, context)=>{
                   ,localField: "shooterId"
                   ,foreignField: "shooterId"
                   ,pipeline: [
-                      { $match: { eventId: p_eventId}}
-                      ]
+                       { $match: { eventId: p_eventId}}
+                      ,{ $addFields: {_gunId: { $toObjectId: "$gunId" }}}
+                      ,{ $lookup:
+                        {
+                            from: "guns"
+                            ,localField: "_gunId"
+                            ,foreignField: "_id"
+                            ,as: "gun_det"
+                        }
+                      }
+                  ]
                   ,as: "shooters_divisions"
               }
           }
@@ -128,23 +131,22 @@ const handler = async (event, context)=>{
           ]).toArray();
 
           console.log('Masking Docnun. isEventAdmin='+isEventAdmin);
-          if(!isAdmin&&!isEventAdmin)
+          
           for(let i=0;i<shootersDiv.length;i++){
+
+            for(let j=0; j<shootersDiv[i].shooters_divisions.length;j++){
+              if(shootersDiv[i].shooters_divisions[j].gun_det&&shootersDiv[i].shooters_divisions[j].gun_det.length>0)
+              shootersDiv[i].shooters_divisions[j].gun= shootersDiv[i].shooters_divisions[j].gun_det[0].factory+" "
+                                + shootersDiv[i].shooters_divisions[j].gun_det[0].model+" ("
+                                + shootersDiv[i].shooters_divisions[j].gun_det[0].caliber+")"
+            }
+            
+
+            if(!isAdmin&&!isEventAdmin)
             if(!user||user.email!==shootersDiv[i].email){
               
               shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
 
-              // const emailsize= shootersDiv[i].email.indexOf('@');
-              // if(emailsize<4){
-              //   shootersDiv[i].email='***'+  shootersDiv[i].email.substring(emailsize-1);
-              // }else{
-              //   let asterics='';
-              //   for(let i=0;i<emailsize-3;i++)
-              //     asterics+='*';
-
-              //   shootersDiv[i].email=  shootersDiv[i].email.substring(0,2)+ asterics + shootersDiv[i].email.substring(shootersDiv[i].email.indexOf('@')-1);
-
-              // }
             }
           }
 
@@ -191,30 +193,44 @@ const handler = async (event, context)=>{
                       }
                   }
                   ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
-              ]
+              
+                  ,{ $addFields: {_gunId: { $toObjectId: "$gunId" }}}
+                  ,{ $lookup:
+                      {
+                          from: "guns"
+                          ,localField: "_gunId"
+                          ,foreignField: "_id"
+                          ,as: "gun_det"
+                      }
+                  }
+
+                ]
               }
           }
           ,{$match: {registered: {$ne: []}}}
           ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
           ]).sort({"registered.score":1}).toArray();
+          
+          console.log('==================================');
+          
 
           let user= context.clientContext.user;
           for(let i=0;i<shootersDiv.length;i++){
-            if(!user||user.email!==shootersDiv[i].email){
+            console.log('=antes do if=');
+            // console.log(`shootersDiv[i].registered&& shootersDiv[i].registered.gun_det && shootersDiv[i].registered.gun_det.length= ${shootersDiv[i].registered} && ${shootersDiv[i].registered.gun_det} && ${shootersDiv[i].registered.gun_det.length}` );
+            if(shootersDiv[i].registered &&shootersDiv[i].registered.length>0&& shootersDiv[i].registered[0].gun_det && shootersDiv[i].registered[0].gun_det.length>0){
               
+              for(let j=0; j<shootersDiv[i].registered.length;j++){
+
+              shootersDiv[i].registered[j].gun= shootersDiv[i].registered[j].gun_det[0].factory+" "
+                        +shootersDiv[i].registered[j].gun_det[0].model+ " ("
+                        +shootersDiv[i].registered[j].gun_det[0].caliber+ ")";
+
+              console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
+              }
+            }
+            if(!user||user.email!==shootersDiv[i].email){
               shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
-
-              // const emailsize= shootersDiv[i].email.indexOf('@');
-              // if(emailsize<4){
-              //   shootersDiv[i].email='***'+  shootersDiv[i].email.substring(emailsize-1);
-              // }else{
-              //   let asterics='';
-              //   for(let i=0;i<emailsize-3;i++)
-              //     asterics+='*';
-
-              //   shootersDiv[i].email=  shootersDiv[i].email.substring(0,2)+ asterics + shootersDiv[i].email.substring(shootersDiv[i].email.indexOf('@')-1);
-
-              // }
             }
           }
 
@@ -335,7 +351,8 @@ const handler = async (event, context)=>{
                 { shooterId: shooterDivisions.shooters_divisions[i].shooterId
                     ,divisionId: shooterDivisions.shooters_divisions[i].divisionId
                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
-                    ,gun: shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','')
+                    ,gun: shooterDivisions.shooters_divisions[i].gun?shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):""
+                    ,gunId: shooterDivisions.shooters_divisions[i].gunId
                     ,optics: shooterDivisions.shooters_divisions[i].optics
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -348,14 +365,13 @@ const handler = async (event, context)=>{
                     
             }else{
               
-              
-
               new_record.updatedShooterDivisions.push(await cShooters_Divisions.updateOne(
                                                                 {_id: new ObjectId(shooterDivisions.shooters_divisions[i]._id)}
                                                             ,{$set:{ shooterId: shooterDivisions.shooters_divisions[i].shooterId
                                                                     ,divisionId: shooterDivisions.shooters_divisions[i].divisionId
                                                                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
-                                                                    ,gun: shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','')
+                                                                    ,gun: shooterDivisions.shooters_divisions[i].gun?shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):""
+                                                                    ,gunId: shooterDivisions.shooters_divisions[i].gunId
                                                                     ,optics: shooterDivisions.shooters_divisions[i].optics
                                                                     ,clock: shooterDivisions.shooters_divisions[i].clock
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -438,7 +454,7 @@ const handler = async (event, context)=>{
           shooter_division.shooterId=shooterId;
           shooter_division.divisionId= registered[i].divisionId;
           shooter_division.eventId=event_id;
-          shooter_division.gun= registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','');
+          shooter_division.gun= registered[i].gun?registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):"";
           shooter_division.optics= registered[i].optics;
           shooters_divisions.push(shooter_division);
         }

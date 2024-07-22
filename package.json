@@ -3,10 +3,10 @@
     "@cloudinary/url-gen": "^1.16.0",
     "dotenv": "^16.3.1",
     "mongodb": "^6.3.0",
-    "netlify-cli": "^17.28.0",
+    "netlify-cli": "^17.33.4",
     "netlify-plugin-cloudinary": "^1.16.0",
     "to": "^0.2.9",
-    "update": "^0.7.4",
+    "update": "^0.4.2",
     "upgrade": "^1.1.0"
   }
 }

@@ -13,7 +13,7 @@ const cOptics= 4;
 const cSeniors= 5;
 
 const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
-  return await cShooters_divisions.aggregate([
+  const _shooters_division= await cShooters_divisions.aggregate([
     {$match:{eventId: p_eventId //"661ab4f9c412f4a5f17f0624" //  p_eventId
             ,divisionId: p_divisionId //"00000000c412f4a5f17f0625"  //p_division 
             ,duel:true}}
@@ -55,7 +55,26 @@ const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
    }
    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
    ,{$project:{"time_records":0}}
+   ,{ $addFields: {_gunId: { $toObjectId: "$gunId" }}}
+   ,{ $lookup:
+       {
+           from: "guns"
+           ,localField: "_gunId"
+           ,foreignField: "_id"
+           ,as: "gun_det"
+       }
+   }
 ]).sort({"score":1,"tries":1, "datetime":1}).toArray();
+
+for(let i=0; i< _shooters_division.length;i++){
+
+  if(_shooters_division[i].gun_det&&_shooters_division[i].gun_det.length>0)
+  _shooters_division[i].gun=  _shooters_division[i].gun_det[0].factory+" "
+                           +  _shooters_division[i].gun_det[0].model+" ("
+                           +  _shooters_division[i].gun_det[0].caliber+")";
+}
+
+return _shooters_division;
 }
 
 const buildMatches = (shooters)=>{

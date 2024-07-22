@@ -26,9 +26,9 @@ const handler = async (event, context)=>{
         if(p_rank!==null){
 
           let _filter= {};
-          if(p_shooterId!==null){
-            _filter.shooterId= p_shooterId;
-          }
+          // if(p_shooterId!==null){
+          //   _filter.shooterId= p_shooterId;
+          // }
 
           const p_divisionName= event.queryStringParameters.divisionName?event.queryStringParameters.divisionName.toString():null;
           if(p_divisionName!==null){
@@ -89,20 +89,39 @@ const handler = async (event, context)=>{
                 ,localField: "_shooterDivisionId"
                 ,foreignField: "_id"
                 ,as: "shooter_division"
+                ,pipeline:[
+                    {$addFields:{_gunId:{ $toObjectId: "$gunId" }}}
+                    ,{$lookup:{
+                        from: "guns"
+                        ,localField: "_gunId"
+                        ,foreignField: "_id"
+                        ,as: "gun_det"
+                        ,pipeline:[
+                            {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}   
+                        ]
+                    }}
+                    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$gun_det", 0 ] }, "$$ROOT" ] } } }
+                    ,{$project: {gun_det:0, _gunId:0}}
+                    // ,{ $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
+                ]
             }}
             ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
             ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
             ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
             ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
+            ,{$addFields:{fixDivisionName:{ $replaceAll: { input: "$divisionName", find: "Armas curtas", replacement: "$type" } }}}
             ,{$group: {
-                _id: {divisionName: "$divisionName"
+                _id: {divisionName: "$fixDivisionName"
                      ,shooterId:"$shooterId"
                      ,eventId: "$eventId"
+                     ,divisionId: "$divisionId"
                      ,shooterName:"$shooterName"
                      ,eventName: "$eventName"
                      ,local: "$local"
                      ,clockDate: "$clockDate"
-                     ,gun: "$gun"
+                     ,gun: "$gunFullName"
+                     ,type: "$type"
+                     ,gunId: "$gunId"
                      ,optics: "$optics"}
                      ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
                 }
@@ -110,15 +129,31 @@ const handler = async (event, context)=>{
             ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
             ,{$project: {_id:0} }
             ,{$match: _filter}
-          ]).sort({ divisionName:1, shooterName:1, gun:1, optics:1, bestTime:1}).toArray();
-
-          for(let i=0; i<rank.length;i++){
-            rank[i].sortDivision= ""+rank[i].divisionName+Math.round(rank[i].bestTime*100+1000000);
-            rank[i].sortDivisionShooter= ""+rank[i].divisionName+rank[i].shooterId+Math.round(rank[i].bestTime*100+1000000);
-          }
+          ]).sort({ divisionName:1, bestTime:1, shooterName:1, gun:1, optics:1}).toArray();
 
           let _ret=[];
 
+          let _divisionName=""
+          let _pos=0;
+
+          for(let i=0; i<rank.length;i++){
+             if(_divisionName!==rank[i].divisionName){
+              _divisionName= rank[i].divisionName;
+              _pos=1;
+             }else{
+              _pos++;
+            }
+
+            if(p_shooterId===null || p_shooterId===rank[i].shooterId){
+              rank[i].position= _pos;
+              rank[i].sortDivision= ""+rank[i].divisionName+rank[i].gunId +Math.round(rank[i].bestTime*100+1000000);
+              rank[i].sortDivisionShooter= ""+rank[i].divisionName+rank[i].shooterId+rank[i].gunId+Math.round(rank[i].bestTime*100+1000000);
+              _ret.push(rank[i]);
+            }
+          }
+          rank= _ret;
+          
+          _ret=[];
           if(p_rank==="0"){ // mantem apenas o melhor tempo por divisão
             console.log('Entrou no rank 0');
 
@@ -145,45 +180,62 @@ const handler = async (event, context)=>{
                 }
               });
 
-            let _divisionName="";
-            let _shooterId="";
-            // let _gun="";
-            for(let i=0; i<rank.length;i++){ 
+              let _divisionName="";
+              let _shooterId="";
+              // let _gun="";
+              for(let i=0; i<rank.length;i++){ 
 
-              if(_divisionName!==rank[i].divisionName
-                || _shooterId!==rank[i].shooterId){
-                _divisionName=rank[i].divisionName;
-                _shooterId=rank[i].shooterId;
-                _ret.push(rank[i]);
+                  if(_divisionName!==rank[i].divisionName
+                    || _shooterId!==rank[i].shooterId){
+                    _divisionName=rank[i].divisionName;
+                    _shooterId=rank[i].shooterId;
+                    _ret.push(rank[i]);
+                  }
+                }
+
+            }else if(p_rank==="2"){ // mantem melhores tempos por divisao/atirador/arma
+
+              console.log('Entrou no rank 2');
+
+              let _divisionName="";
+              let _shooterId="";
+              // let _gun="";
+              let _gunId="";
+              let _optics="";
+
+              rank= rank.sort((a, b) => {
+                if (a.sortDivisionShooter < b.sortDivisionShooter) {
+                  return -1;
+                }
+              });
+
+              for(let i=0; i<rank.length;i++){
+
+                console.log(`==================================================================`);
+                console.log(rank[i].sortDivisionShooter);
+                console.log(` ---------------------------------------------------------------- `);
+                console.log(`_divisionName!==rank[i].divisionName.toLowerCase().trim() => ${_divisionName}!==${rank[i].divisionName.toLowerCase().trim()}`);
+                console.log(`_shooterId!==rank[i].shooterId => ${_shooterId}!==${rank[i].shooterId}`);
+                console.log(`_gunId!==rank[i]._gunId => ${_gunId}!==${rank[i].gunId}`);
+                console.log(`_optics!== rank[i].optics => ${_optics}!== ${rank[i].optics}`);
+                console.log(`==================================================================`);
+
+                if(_divisionName!==rank[i].divisionName.toLowerCase().trim()
+                  || _shooterId!==rank[i].shooterId
+                  // || _gun!==rank[i].gun
+                  || _gunId!==rank[i].gunId
+                  || _optics!== rank[i].optics){
+                  _divisionName=rank[i].divisionName.toLowerCase().trim();
+                  _shooterId=rank[i].shooterId;
+                  // _gun= rank[i].gun;
+                  _gunId= rank[i].gunId;
+                  _optics= rank[i].optics;
+                  _ret.push(rank[i]);
+                }
+
               }
 
-            }
-
-          }else if(p_rank==="2"){ // mantem melhores tempos por divisao/atirador/arma
-
-            console.log('Entrou no rank 2');
-
-            let _divisionName="";
-            let _shooterId="";
-            let _gun="";
-            let _optics="";
-
-            for(let i=0; i<rank.length;i++){
-
-              if(_divisionName!==rank[i].divisionName
-                || _shooterId!==rank[i].shooterId
-                || _gun!==rank[i].gun
-                || _optics!== rank[i].optics){
-                _divisionName=rank[i].divisionName;
-                _shooterId=rank[i].shooterId;
-                _gun= rank[i].gun;
-                _optics= rank[i].optics;
-                _ret.push(rank[i]);
-              }
-
-            }
-
-          } else{ //mantem todos os tempos por divisao/evento e arma
+            } else{ //mantem todos os tempos por divisao/evento e arma
             console.log('Entrou no rank xxxxx');
             _ret= rank;
           }

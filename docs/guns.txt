@@ -1,80 +1,161 @@
-Tipo	Marca	Modelo	Calibre	Funcionamento
-Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
-Pistola	Taurus	TH9	9mm	Semi-auto
-Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
+tipo	marca	modelo	calibre	funcionamento
+Pistola	Taurus	PT 59	.380 ACP	Semi-auto
+Pistola	Taurus	PT 638	.380 ACP	Semi-auto
+Pistola	Taurus	PT 58HC	.380 ACP	Semi-auto
+Pistola	Glock	G17	9mm	Semi-auto
+Pistola	Taurus	PT 838	.380 ACP	Semi-auto
+Pistola	Taurus	PT 845	.45 ACP	Semi-auto
+Pistola	Taurus	PT 917	9mm	Semi-auto
+Pistola	Taurus	PT 938	.380 ACP	Semi-auto
+Pistola	Taurus	PT 1911	.45 ACP	Semi-auto
+Pistola	Taurus	PT 1911	9mm	Semi-auto
+Pistola	Taurus	G2C	.38TPC	Semi-auto
+Pistola	Taurus	G2C	.40S&W	Semi-auto
+Pistola	Taurus	G2C	9mm	Semi-auto
+Pistola	Taurus	G3	9mm	Semi-auto
+Pistola	Taurus	G3C	9mm	Semi-auto
+Pistola	Taurus	GX4	9mm	Semi-auto
+Pistola	Taurus	GX4 Carry	.38TPC	Semi-auto
+Pistola	Taurus	GX4 Carry	9mm	Semi-auto
+Pistola	Taurus	PT101	.40S&W	Semi-auto
+Pistola	Taurus	PT100	.40S&W	Semi-auto
+Pistola	Taurus	PT 57	7.65mm	Semi-auto
+Pistola	Taurus	PT 92	9mm	Semi-auto
+Pistola	Taurus	TH10	10mm	Semi-auto
+Pistola	Taurus	TH380	.380 ACP	Semi-auto
+Carabina	Taurus	CTT-40	.40S&W	Semi-auto
+Pistola	Imbel	MD1	.380 ACP	Semi-auto
 Pistola	CZ	P10	9mm	Semi-auto
 Pistola	IWI	Masada	9mm	Semi-auto
 Carabina	Brigade	BM9	9mm	Semi-auto
-Pistola	Girsan	MC28	9mm	Semi-auto
+Pistola	Girsan	MC9	9mm	Semi-auto
 Pistola	Arex	Zero 1	9mm	Semi-auto
 Pistola	Beretta	APX	9mm	Semi-auto
-Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
+Pistola	Springfield	Hellcat	9mm	Semi-auto
+Shotgun	Hatsan	Escort	12GA	Semi-auto
 Carabina	FireEagle	FE-9	9mm	Semi-auto
-Shotgun	Stoeger	M3000	12GA	Repetição
+Shotgun	Stoeger	M3000	12GA	Semi-auto
 Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
-Pistola	Taurus	TH9	9mm	Semi-auto
-Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	Taurus	TH40	.40S&W	Semi-auto
+Pistola	Taurus	TH45	.45 ACP	Semi-auto
+Pistola	Imbel	MD2	.380 ACP	Semi-auto
 Pistola	CZ	SHADOW	9mm	Semi-auto
-Pistola	IWI	Masada	9mm	Semi-auto
-Pistola	Girsan	MC28	9mm	Semi-auto
-Pistola	Arex	Delta	9mm	Semi-auto
+Pistola	IWI	Jericho	9mm	Semi-auto
+Pistola	Girsan	MC1911	.45 ACP	Semi-auto
+Pistola	DFA	Arex Delta	9mm	Semi-auto
 Pistola	Beretta	PX4	9mm	Semi-auto
-Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
-Shotgun	Stoeger	STR-9	9mm	Repetição
-Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
+Pistola	Springfield	1911	.45 ACP	Semi-auto
+Pistola	Stoeger	STR-9	9mm	Semi-auto
+Pistola	Glock	G20	10mm	Semi-auto
 Pistola	Taurus	TH9	9mm	Semi-auto
-Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
+Pistola	Imbel	MD1	9mm	Semi-auto
 Pistola	CZ	SHADOW 2	9mm	Semi-auto
-Pistola	IWI	Masada	9mm	Semi-auto
 Pistola	Girsan	MC28	9mm	Semi-auto
 Pistola	Arex	Alpha	9mm	Semi-auto
 Pistola	Beretta	PX4	.40S&W	Semi-auto
-Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
-Shotgun	Stoeger	M3000	12GA	Semi-auto
-Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
-Pistola	Taurus	TH9	9mm	Semi-auto
-Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
+Carabina	Springfield	Saint	5.56	Semi-auto
+Shotgun	Stoeger	M3500	12GA	Semi-auto
+Pistola	Glock	G21	.45 ACP	Semi-auto
+Pistola	Imbel	MD6	.40S&W	Semi-auto
 Pistola	CZ	75	9mm	Semi-auto
-Pistola	IWI	Masada	9mm	Semi-auto
-Pistola	Girsan	MC28	9mm	Semi-auto
 Pistola	Arex	Zero 2	9mm	Semi-auto
 Pistola	Beretta	PX4	.45 ACP	Semi-auto
-Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
-Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
-Pistola	Taurus	TH9	9mm	Semi-auto
-Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
+Carabina	Springfield	M1A	.308 Win	Semi-auto
+Pistola	Glock	G22	.40S&W	Semi-auto
+Pistola	Imbel	MD7	.40S&W	Semi-auto
 Pistola	CZ	97	9mm	Semi-auto
-Pistola	IWI	Masada	9mm	Semi-auto
-Pistola	Girsan	MC28	9mm	Semi-auto
 Pistola	Beretta	950	6.35mm	Semi-auto
 Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
-Pistola	Glock	G19	9mm	Semi-auto
-Pistola	Taurus	TX 22	.22LR	Semi-auto
-Pistola	Taurus	TH9	9mm	Semi-auto
+Pistola	Glock	G23	.40S&W	Semi-auto
+Pistola	Imbel	MD2 45	.45 ACP	Semi-auto
+Pistola	Springfield	XD-M 40	.40S&W	Semi-auto
+Pistola	Glock	G25	.380 ACP	Semi-auto
+Pistola	Glock	G26	9mm	Semi-auto
+Pistola	Glock	G27	.40S&W	Semi-auto
+Pistola	Glock	G28	.380 ACP	Semi-auto
+Pistola	Glock	G29	10mm	Semi-auto
+Pistola	Glock	G30	.45 ACP	Semi-auto
+Pistola	Glock	G34	9mm	Semi-auto
+Pistola	Glock	G35	.40S&W	Semi-auto
+Pistola	Glock	G41	.45 ACP	Semi-auto
+Pistola	Glock	G42	.380 ACP	Semi-auto
+Pistola	Glock	G43	9mm	Semi-auto
+Pistola	Glock	G44	.22LR	Semi-auto
+Pistola	Glock	G45	9mm	Semi-auto
+Pistola	Glock	G48	9mm	Semi-auto
+Pistola	Imbel	MD6	9mm	Semi-auto
+Pistola	Imbel	MD6	.380 ACP	Semi-auto
+Pistola	Stoeger	STR-45	9mm	Semi-auto
 Pistola	Taurus	TS9	9mm	Semi-auto
-Carabina	Taurus	CTT	.40S&W	Semi-auto
-Pistola	Imbel	GC MD2	9mm	Semi-auto
-Pistola	IWI	Masada	9mm	Semi-auto
-Pistola	Girsan	MC28	9mm	Semi-auto
-Pistola	Springfield	XD-M	9mm	Semi-auto
-Shotgun	Hatsan	Escort	12GA	Repetição
+Revolver	Taurus	RT 096	.22LR	Repetição
+Revolver	Taurus	RT 942	.22LR	Repetição
+Revolver	Taurus	RT 970	.22LR	Repetição
+Revolver	Taurus	RT 064	.357Mag	Repetição
+Revolver	Taurus	RT 992	.22LR	Repetição
+Revolver	Taurus	RT 992	.22Mag	Repetição
+Revolver	Taurus	RT 357	.357Mag	Repetição
+Revolver	Taurus	RT 605	.357Mag	Repetição
+Revolver	Taurus	RT 608	.357Mag	Repetição
+Revolver	Taurus	RT 627	.357Mag	Repetição
+Revolver	Taurus	RT 66	.357Mag	Repetição
+Revolver	Taurus	RM64	.357Mag	Repetição
+Revolver	Taurus	RM64	.38 SPL	Repetição
+Revolver	Taurus	RT 856	.38 SPL	Repetição
+Revolver	Taurus	Imperador	.38 SPL	Repetição
+Revolver	Taurus	RT 817	.38 SPL	Repetição
+Revolver	Taurus	RT 38	.38 SPL	Repetição
+Revolver	Taurus	RT 82	.38 SPL	Repetição
+Revolver	Taurus	RT 838	.38 SPL	Repetição
+Revolver	Taurus	RT 85	.38 SPL	Repetição
+Revolver	Taurus	RT 88	.38 SPL	Repetição
+Carabina	CBC	7022	.22LR	Semi-auto
+Shotgun	Mossberg	500	12GA	Repetição
+Pistola	Sig Sauer	P365	9mm	Semi-auto
+Pistola	Sig Sauer	P320	9mm	Semi-auto
+Revolver	Smith & Wesson	686	.357Mag	Repetição
+Carabina	Rossi	Puma	.44Mag	Repetição
+Carabina	Rossi	Puma	.38 SPL	Repetição
+Shotgun	Remington	870	12GA	Repetição
+Revolver	Taurus	RT 889	.38 SPL	Repetição
+Revolver	Taurus	RP63	.38 SPL	Repetição
+Revolver	Taurus	RT 832	.38 SPL	Repetição
+Revolver	Taurus	RT 832	.380 ACP	Repetição
+Revolver	Taurus	Imperador	.45 Colt	Repetição
+Revolver	Taurus	RT 454	.454 Casull	Repetição
+Revolver	Taurus	RT 460	.454 Casull	Repetição
+Revolver	Taurus	RT 460	.460S&W	Repetição
+Revolver	Taurus	RT 460	.45 Colt	Repetição
+Revolver	Taurus	RT 410	36GA	Repetição
+Revolver	Taurus	RT 692	.357Mag	Repetição
+Shotgun	Mossberg	PT 940	12GA	Semi-auto
+Pistola	Sig Sauer	P230	9mm	Semi-auto
+Carabina	Rossi	Puma	.357Mag	Repetição
+Revolver	Taurus	RT 692	9mm	Repetição
+Carabina	CBC	Nylon 66	.22LR	Semi-auto
+Carabina	CBC	Delta 22	.22LR	Semi-auto
+Revolver	Taurus	RT 692	.38 SPL	Repetição
+Revolver	Taurus	RT 692	.380 ACP	Repetição
+Pistola	Taurus	TX22	.22LR	Semi-auto
+Carabina	Taurus	CT9	9mm	Semi-auto
+Carabina	Taurus	T9	9mm	Semi-auto
+Carabina	Rossi	Puma	.454 Casull	Repetição
+Revolver	Rossi	95	.38 SPL	Repetição
+Revolver	Rossi	RM66	.357Mag	Repetição
+Revolver	Rossi	RM66	.38 SPL	Repetição
+Carabina	CBC	Military 3.0	12GA	Repetição
+Carabina	FireEagle	FE-S	5.56	Semi-auto
+Carabina	FireEagle	FE-GS	5.56	Semi-auto
+Carabina	Taurus	T4	5.56	Semi-auto
+Carabina	Taurus	T4	.300BLK	Semi-auto
+Carabina	Taurus	SMT 9	9mm	Semi-auto
+Carabina	Taurus	T10	.308 Win	Semi-auto
+Carabina	Taurus	T10	7.62	Semi-auto
+Pistola	Chiappa	1911-22	.22LR	Semi-auto
+Revolver	Chiappa	Rhino	.357Mag	Repetição
+Shotgun	Typhoon	F12	12GA	Semi-auto
+Shotgun	Typhoon	PXII	12GA	Semi-auto
+Carabina	Kalashnikov	KR-9	9mm	Semi-auto
+Shotgun	Landor	LND	12GA	Semi-auto
+Revolver	Rossi	719	.38 SPL	Repetição
+Shotgun	Pardus	SBS13	12GA	Semi-auto
+Carabina	Ruger	PC9	9mm	Semi-auto
