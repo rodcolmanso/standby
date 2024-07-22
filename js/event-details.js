@@ -725,7 +725,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 <button onClick="promiseOfDeleteSub('${shooterDivisions[l].shooters_divisions[i]._id}',${l} ,${i},'${tb.id}')" class="btn btn-sm btn-danger rounded-circle ${nodisableClass} value="${shooterDivisions[l].shooters_divisions[i]._id}">-</button> `;
             }
             row+=`</td></tr>`;
-            tb.innerHTML+= row;   
+            // tb.innerHTML+= row;   
         }
     }
 
@@ -735,15 +735,15 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             // _tb.empty();
             _tb===null;
         }
-        tb.innerHTML=row;
-        
+    }
+    tb.innerHTML= row;
+    populateGunDropdown(shooterDivisions, _subs);
+
+    if(tb.id=== MODAL_TABLE_ALL_SUBS_ID){
         _tb= new DataTable('#subscribe-table-subs-head');
         _tb.draw(false);
     
     }
-
-    tb.innerHTML=row;
-    populateGunDropdown(shooterDivisions, _subs);
 
 }
 
@@ -1156,7 +1156,12 @@ document.getElementById("subscribe-name").addEventListener('keyup', function (ev
 });
 
 function selectShooter(_docnum, _name){
-    document.getElementById("subscribe-docnum").value= _docnum.replaceAll(".","").replaceAll("-",'').trim();
+    try{
+        document.getElementById("subscribe-docnum").value= (""+_docnum).replaceAll(".","").replaceAll("-",'').trim();
+    }catch(e){
+        document.getElementById("subscribe-docnum").value= "";
+    }
+    
     document.getElementById("search-button-name").style.display='none';
     // document.getElementById("search-button-name").style.visibility="hidden";
     document.getElementById('shooter-img').src="none";    
