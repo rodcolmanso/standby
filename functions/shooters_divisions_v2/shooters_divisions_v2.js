@@ -299,16 +299,21 @@ const handler = async (event, context)=>{
               statusCode: 401,
               body: `Unauthorized, User ${user.email} cannot update/insert the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
             };
-          }  
+          }
+
+          let _shooterUpsert= {
+            name: shooterDivisions.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
+            ,email: shooterDivisions.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
+            ,docnum: shooterDivisions.docnum
+            };
+          
+           if(shooterDivisions.category && shooterDivisions.category!==null){
+              _shooterUpsert.category= shooterDivisions.category;
+           }
             
           const new_record= await cShooters.updateOne(
                                             {email: shooterDivisions.email.toLowerCase().trim()}
-                                            ,{$set:{
-                                                    name: shooterDivisions.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
-                                                    ,category: shooterDivisions.category
-                                                    ,email: shooterDivisions.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
-                                                    ,docnum: shooterDivisions.docnum
-                                                    }}
+                                            ,{$set: _shooterUpsert}
                                             ,{upsert:true}
           
                                           );

@@ -36,8 +36,6 @@ function buildClassiication(rank){
         }else{
             rank[i].divisionCode="3333333333333333"+ zeroPad(rank[i].position,4);
         }
-        console.log(rank[i].divisionName);
-console.log(rank[i].divisionCode);
     }
 
     rank= rank.sort((a, b) => {
@@ -73,9 +71,7 @@ console.log(rank[i].divisionCode);
             _penal="";
             _time= naiveRound(parseFloat(rank[i].bestTime),2).toFixed(2);
         }
-
-
-        
+ 
         row+= `<tr>
               <td class="text-small text-sm-start nowrap"><b>${rank[i].divisionName}</b></td>
               <td class="text-end">${rank[i].position}º</td>
@@ -115,13 +111,13 @@ window.onload = async () => {
     let loggedUser= getSessionDbUser();
     const user= netlifyIdentity.currentUser();
 
-    console.log('==================NetlifyIdentity======================');
-    console.log(JSON.stringify(user,null,2));
-    console.log('=======================================================');
+    // console.log('==================NetlifyIdentity======================');
+    // console.log(JSON.stringify(user,null,2));
+    // console.log('=======================================================');
 
     applySpinners(false);
 
-    updater= (user&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+    let updater= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
 
     let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
     if(user&&user.token&&user.token.access_token){
@@ -148,10 +144,7 @@ window.onload = async () => {
                 alert(`Atirador não encontrado.`); window.location.href = window.location="/";}
             }
         ).catch(err => {console.log(`Error getting user: ${err}`); alert(`Erro ao localizar atirador.`); window.location.href = window.location="/";}
-        ).finally(()=> {applySpinners(false);disableShooterFields(updater);});
-
-
-        
+        ).finally(()=> {applySpinners(false);disableShooterFields(updater);});        
     
     }else{
         //sessionUser
@@ -175,8 +168,10 @@ window.onload = async () => {
     ).then(json => {
             if(json.length>0){
                 buildClassiication(json );
-            }else{ console.log(`Ranking não encontrado. id:${params.id}`);
-            alert(`Rank do atirador não encontrado.`); }
+            }else{ 
+            console.log(`Ranking não encontrado. id:${params.id}`);
+            // alert(`Rank do atirador não encontrado.`);
+             }
         }
     ).catch(err => {console.log(`Error getting user rank: ${err}`); alert(`Erro ao localizar ranking.`); }
     ).finally(()=> {applySpinners(false);});
@@ -469,9 +464,9 @@ function disableShooterFields(updater){
         
         if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
             if(updater)
-                btn.style.visibility = 'visible'//'visible'; //'hidden'
+                btn.style.display = '='//'visible'; //'hidden'
             else
-                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                btn.style.display = 'none'//'visible'; //'hidden'
         }
 
     });
@@ -481,9 +476,9 @@ function disableShooterFields(updater){
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hideshooter')>=0)){
             if(updater)
-                elem.style.visibility = 'visible'//'visible'; //'hidden'
+                elem.style.display = ''//'visible'; //'hidden'
             else
-                elem.style.visibility = 'hidden'//'visible'; //'hidden'
+                elem.style.display = 'none'//'visible'; //'hidden'
         }
 
     });
@@ -498,9 +493,9 @@ function disableShooterFields(updater){
             
             if((rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('hideshooter')>=0)){
                 if(updater)
-                    rdo.style.visibility = 'visible'//'visible'; //'hidden'
+                    rdo.style.display = ''//'visible'; //'hidden'
                 else
-                    rdo.style.visibility = 'hidden'//'visible'; //'hidden'
+                    rdo.style.display = 'none'//'visible'; //'hidden'
             }
         });
 
@@ -514,9 +509,9 @@ function disableShooterFields(updater){
 
             if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
                 if(updater)
-                    btn.style.visibility = 'visible'//'visible'; //'hidden'
+                    btn.style.display = ''//'visible'; //'hidden'
                 else
-                    btn.style.visibility = 'hidden'//'visible'; //'hidden'
+                    btn.style.display = 'none'//'visible'; //'hidden'
             }
         });
         document.getElementById('modalEmail').disabled=true;

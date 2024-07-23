@@ -532,7 +532,7 @@ function populateGunDropdown(shooterDivisions, _subs){
                     }
             
                     
-                        newOption = new Option('___________________________','');
+                        newOption = new Option('_______________','');
                         dropDown.add(newOption);
                 }
 
@@ -626,7 +626,7 @@ function populateNewShooter(_docnum){
     document.getElementById('shooter-img').src= uri;
     
 
-    shooterDivisions[0].category= 0;
+    shooterDivisions[0].category= null;
     shooterDivisions[0].shooterId= ""
     shooterDivisions[0].eventId= eventConfig._id;
     shooterDivisions[0].shooters_divisions= [];
@@ -776,7 +776,7 @@ function subscribeNew(){
     document.getElementById("search-button-name").style.display="none";
     // document.getElementById("search-button-name").style.visibility="hidden";
 
-    shooterDivisions[0].category= 0;
+    shooterDivisions[0].category= null;
 
     let uptShooterDiv= JSON.parse(JSON.stringify(shooterDivisions[0]));
     uptShooterDiv.shooters_divisions=[];
@@ -1053,7 +1053,7 @@ function compareStrings(a, b) {
                     dropDown.add(newOption);
             }
         
-            let newOption = new Option('___________________________','');
+            let newOption = new Option('_______________','');
             dropDown.add(newOption);
         }
 

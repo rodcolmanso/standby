@@ -138,7 +138,7 @@
       <!-- -- > <div class="tab-pane fade show active" id="nav-liOverall" role="tabpanel" aria-labelledby="liOverall" tabindex="0">
       <div id="scrollspyHeadingOverall" class="table-responsive small"> -->
       <!-- <div class="container-fluid"> -->
-      <div class="table-responsive">
+      <div class="table-responsive" id="refreshPage">
         <!-- <table class="table table-striped table-hover table-sm" > -->
         <!-- <table class="table table-striped table-hover dt-responsive table-sm display nowrap" cellspacing="0"> -->
         <table class="table table-striped table-hover table-sm nowrap" style="width:100%">
@@ -265,6 +265,66 @@
     <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js" type="text/javascript" defer></script>
   <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js" type="text/javascript" defer></script>
   </body>
+
+<!-- Modal Ranking -->
+ <!-- Button trigger modal -->
+<button style="display:none;" id="rankModalBtn" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rankingModal">
+  Launch ranking modal
+</button>
+<div class="modal fade" id="rankingModal" tabindex="-1" aria-labelledby="rankingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="rankingModalLabel">Colocação de <span id="rankingName"></span></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="btn" style="padding-right:1px !important;">
+              <label for="input-shooter-img" >
+                <img id="pic-profile-rank"  alt="Foto de Perfil" class="img-fluid mb-3" />
+              </label>
+            </div>
+            <div class="row text-center">
+              <div class="col">
+                <input type="radio" class="btn-check nodisable" disabled="true" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
+                <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
+
+                <input type="radio" class="btn-check nodisable" disabled="true" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
+                <label class="btn btn-outline-info" for="modalOption0">Overall</label>
+
+                <input type="radio" class="btn-check nodisable" disabled="true" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
+                <label class="btn btn-outline-success" for="modalOption5">Senior</label>
+              </div>
+            </div>
+          </div> 
+          <div class="col-md-8">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="text-start">Divisão</th>
+                  <th class="text-small text-sm-end">Posição</th>
+                  <th class="text-end">Tempo</th>
+                  <th class="text-start w-25">Arma</th>
+                  <th class="d-none d-xl-block text-start">Local</th>
+                  <th class="text-center">Data</th>
+                </tr>
+              </thead>
+              <tbody id="table-classification">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Modal -->
       
       <!--end modal-->

@@ -1,13 +1,15 @@
 - Urgente
-  - link dos atiradores vao para popup do Score do atirador (ou edição da inscrição)
-  - link de ancora no refresh
+  - Arma genérica outras, abrindo para digitar
+  - Inativar arma (nao listar)
   - opçao apra geraçao de chaves (todos contra todos, chaves com ou sem repescagem)
     - nao permitir guest de gerar chave
   - sanetizar base - shooters
   - Cruzamento de chaves na repescagem
   - incluir icone de senior, dama, overall na tabela contra o relogio
+  - incluir ranking de categoriassenior, dama, overall 
   - incluir ultimos tempos na tabela contra relogio
   - combo divisao. incluir na URL
+  - link de ancora no refresh
 
 - Shooter Home Page
     - Inscrever-se a evento
@@ -19,9 +21,6 @@
   - Cruzar na repescagem
   - Opção sem repescagem (com disputa de 3º)
 
-- Inscrição
-  - Lista de Armas e Calibres
-
   Melhorar a experiencia de cadastro e login
     - Ampulheta/ Loading cobrindo a págita toda em todas as telas
     - Sessão menu Home
@@ -30,6 +29,7 @@
     - Apagar aturadores de teste
 
 - Cadastro de Clubes
+
 
 
     Brean storming

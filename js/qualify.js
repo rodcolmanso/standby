@@ -408,23 +408,29 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 _rd= aPlayers[i].optics?`⦿`:""; //⨀
                 _rd_sm= aPlayers[i].optics?`⦿`:"";//⚬
 
-                row= `<tr>
+                let _style= ` style="display:none" `;
+                if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+                ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+                || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+                    _style= ``;
+                }
+// href="./shooter.html?id=${aPlayers[i].id}"
+                row= `
+                <tr>
                     <td class="align-middle text-small">${zeroPad(position,2)}º</td>
-                    <td class="align-middle text-start">
-                    <div class="row">
-                        <div class="col align-middle align-items-center" style="max-width: 40px !important;">
-                        <a href="./shooter.html?id=${aPlayers[i].id}" target="_new">
-                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
-                        </a>
-                        </div>
-                    <div class="col d-inline-block text-truncate">`;
-
-                    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-                    ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-                     || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
-                        row+= `<a href="#" onClick="goToSubscription('${aPlayers[i].id}')" >
-                                ${aPlayers[i].name}
-                               </a>
+                    <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <ul class="dropdown-menu">
+                            <!--<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rankingModal" ><i class="bi bi-list-ol"></i> Posição no Ranking</a></li>-->
+                            <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="bi bi-list-ol"></i> Posição no Ranking</a></li>
+                            <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i> Alterar Inscrição</a></li>
+                            <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar Atirador</a></li>
+                        </ul>
+                        <div class="row">
+                            <div class="col align-middle align-items-center" style="max-width: 40px !important;">
+                                <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
+                            </div>
+                            <div class="dropdown col d-inline-block text-truncate">`;
+                                row+= `${aPlayers[i].name}
                                 <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
                                   <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
                                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd}</span>
@@ -434,24 +440,14 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                                   <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel}
                                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
                                   </span>
-                                </p>`;
-                    }else{
-                        row+= `${aPlayers[i].name}
-                        <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
-                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
-                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd}</span>
-                                  </span>
                                 </p>
-                                <p class="d-xl-none" style="margin-bottom: 0 !important;">
-                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel}
-                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
-                                  </span>
-                                </p>`;
-                    }
+                            </div>
+                        </div>
+                    </td>`;
+                    
 
                     row+= `
-                     </td>
-                    <td class="align-middle text-start">
+                     <td class="align-middle text-start">
                         <span class="badge ${_gbColor}">${_time}
                             <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                         </span>
@@ -467,7 +463,8 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         </div>
                      </div>
                     </td>
-                </tr>`;
+                </tr>
+                `;
                 table.innerHTML+= row;
                 
             }
@@ -606,6 +603,141 @@ function goToSubscription(parms){
     }else parms='';
        window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):""); //->+getActiveCat();
 }
+
+function goToShooter(parms){
+    if(parms!==undefined && parms!==''){
+        parms= '?id='+parms;
+    }else parms='';
+    window.location="/shooter.html"+parms;
+}
+
+function showClassification(shooterId, shooterName, category, gunId, optic){
+    
+    document.getElementById('rankingName').innerText= shooterName;
+    document.getElementById('pic-profile-rank').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/"+shooterId+".jpg?"+uuidv4();
+    if(!category|| category===null)
+        category=0;
+
+    document.getElementById('modalOption0').checked = (category===0);
+    document.getElementById('modalOption2').checked = (category===2);
+    document.getElementById('modalOption5').checked = (category===5);
+
+// ------------------------------
+applySpinners(false);
+
+    const user= netlifyIdentity.currentUser();
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
+
+    fetch('/.netlify/functions/time-records?rank=2&shooterId='+ shooterId , {
+        method: "GET",
+        headers: _headers
+        }
+    ).then(response => response.json()
+    ).then(json => {
+            if(json.length>0){
+                buildClassiication(json,gunId,optic );
+            }else{ 
+                console.log(`Ranking não encontrado. id:${params.id}`);
+                document.getElementById("table-classification").innerHTML= "";
+            // alert(`Rank do atirador não encontrado.`);
+             }
+            var myModalBtn = document.getElementById('rankModalBtn'); 
+            myModalBtn.click();
+        }
+    ).catch(err => {console.log(`Error getting user rank: ${err}`); alert(`Erro ao localizar ranking.`); }
+    ).finally(()=> {applySpinners(false);});
+// ------------------------------
+    
+}
+function buildClassiication(rank, gunId, optic){
+
+    let badg=""
+    let row="";
+
+    for(let i=0; i<rank.length;i++){
+        if(rank[i].divisionName==="Pistola"){
+            rank[i].divisionCode="1111111111111111"+ zeroPad(rank[i].position,4);
+        }else if(rank[i].divisionName==="Revolver"){
+            rank[i].divisionCode="2222222222222222"+ zeroPad(rank[i].position,4);
+        }else{
+            rank[i].divisionCode="3333333333333333"+ zeroPad(rank[i].position,4);
+        }
+    }
+
+    rank= rank.sort((a, b) => {
+        if (a.divisionCode < b.divisionCode) {
+          return -1;
+        }
+      });
+
+      let _highlight="";
+    for(let i=0; i<rank.length;i++){
+
+        if(rank[i].optics===optic&&rank[i].gunId===gunId){
+            _highlight= `class="border border-warning border-3"`;
+        }else _highlight="";
+
+        if(rank[i].optics){
+            // badg=`<i class="bi bi-dot" style="color:red !important;"></i></span>`;
+            // badg_rd=`<span class="text-danger">⦿<span>`;
+            badg_rd=`⦿`; //⨀
+            badg_rd_sm=`⦿`;
+        }else{
+            badg_rd="";
+            badg_rd_sm=``;
+        }
+
+        let _penal="";
+        if(rank[i].bestTime>9999.99){ 
+                    
+            _timee= parseFloat(rank[i].bestTime.toString().slice(1)); 
+            _penall= rank[i].bestTime.toString().slice(0,1);
+            sScore=_timee +" +"+_penall;
+            _penal="+"+rank[i].bestTime.toString().slice(0,1);
+            _time= naiveRound(parseFloat(rank[i].bestTime.toString().slice(1)),2).toFixed(2);
+            
+
+        }else{
+            _timee= rank[i].bestTime;
+            sScore= ''+_timee;
+            _penal="";
+            _time= naiveRound(parseFloat(rank[i].bestTime),2).toFixed(2);
+        }
+ 
+        row+= `<tr ${_highlight}>
+              <td class="text-small text-sm-start nowrap"><b>${rank[i].divisionName}</b></td>
+              <td class="text-end">${rank[i].position}º</td>
+              <td class="text-end">
+                <p style="margin-bottom: 0 !important;">
+                  <span class="badge text-bg-warning" >${_time}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
+                  </span>
+                </p>
+              </td>
+              <td class="text-start nowrap">
+                <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                <span class="badge text-bg-secondary">${rank[i].gun}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd}</span>
+                </span>
+                </p>
+                <p class="d-xl-none" style="margin-bottom: 0 !important;">
+                <span class="badge text-bg-secondary">${rank[i].model} ${rank[i].caliber}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd_sm}</span>
+                </span>
+                </p>
+              </td>
+              <td class="text-truncate text-start "><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
+              <td class="text-small text-sm-center"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${(new Date(rank[i].clockDate)).toLocaleDateString()}</a></td>
+            </tr>`;
+    }
+
+    document.getElementById("table-classification").innerHTML= row;
+
+}
+
 
 function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivision, vlTime, vlPenal, pOpctic ){
     const selectedDivision= selectDivision= document.getElementById('selectDivision').value;
