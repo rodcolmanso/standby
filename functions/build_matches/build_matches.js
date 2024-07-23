@@ -69,9 +69,12 @@ const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
 for(let i=0; i< _shooters_division.length;i++){
 
   if(_shooters_division[i].gun_det&&_shooters_division[i].gun_det.length>0)
-  _shooters_division[i].gun=  _shooters_division[i].gun_det[0].factory+" "
-                           +  _shooters_division[i].gun_det[0].model+" ("
-                           +  _shooters_division[i].gun_det[0].caliber+")";
+  // _shooters_division[i].gun=  _shooters_division[i].gun_det[0].factory+" "
+  //                          +  _shooters_division[i].gun_det[0].model+" ("
+  //                          +  _shooters_division[i].gun_det[0].caliber+")";
+  _shooters_division[i].gunFactory=  _shooters_division[i].gun_det[0].factory;
+  _shooters_division[i].gunModel= _shooters_division[i].gun_det[0].model;
+  _shooters_division[i].gunCaliber= _shooters_division[i].gun_det[0].caliber;
 }
 
 return _shooters_division;
@@ -88,7 +91,7 @@ const buildMatches = (shooters)=>{
     let mainMatches=[];
     let recapMatches=[];
     let levelMatches=[];
-    let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:""};
+    let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
 
     //NIVEL 0: Caso exista participantes <>4,8,16,32, 64, etc, deve existir uma rodada preliminhar
     let poten=2;
@@ -98,11 +101,6 @@ const buildMatches = (shooters)=>{
         poten=poten*2;
     }
     let preKO=shooters.length*2-poten;
-
-    ////Reoredenar a lista, 
-    //       1. reservando os cabeças de chave
-    //       2.  intercalando os primeiros com os ultimos (até a podentica de 2)
-    //  [0],[1],[2],[3],[4]
 
     console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
     let _4Players=[];
@@ -115,9 +113,9 @@ const buildMatches = (shooters)=>{
     _midPlayer= _midPlayer.slice(0,_midPlayer.length-minNumAux);
     
 
-    console.log(`=========4Players: size:${_4Players.length} - ${JSON.stringify(_4Players,null,2)}=========`);
-    console.log(`=========_headPleayer. size:${_headPleayer.length} - ${JSON.stringify(_headPleayer,null,2)}=========`);
-    console.log(`=========_midPlayer size:${_midPlayer.length} - ${JSON.stringify(_midPlayer,null,2)}=========`);
+    // console.log(`=========4Players: size:${_4Players.length} - ${JSON.stringify(_4Players,null,2)}=========`);
+    // console.log(`=========_headPleayer. size:${_headPleayer.length} - ${JSON.stringify(_headPleayer,null,2)}=========`);
+    // console.log(`=========_midPlayer size:${_midPlayer.length} - ${JSON.stringify(_midPlayer,null,2)}=========`);
     
     levelMatches=[];
     _4Players.reverse();
@@ -356,7 +354,8 @@ const flatPlayesDivisions = (players, sort)=>{
     // aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
     //gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
     gun_rd= players[i].optics? players[i].gun : players[i].gun;
-    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId,'gun': gun_rd, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
+    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId
+      ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
     rP.push(aRow);  
   }
   // }

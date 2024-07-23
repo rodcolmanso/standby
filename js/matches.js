@@ -280,6 +280,10 @@ function addLevels(mainMatches, recapMatches, categ){
         
 }
 
+function showHeadToHead(){
+    //TBD
+}
+
 function addEventListenerShooterDiv(){
     
     const doppables= document.querySelectorAll('.droppable');
@@ -304,28 +308,13 @@ function addEventListenerShooterDiv(){
             const draggings= document.querySelectorAll('.dragging');
             draggings.forEach((dragging)=>{
 
-                // console.log('-----------------------------');
-                // console.log('SourceCard.id='+dragging.id);
-                // console.log('TargetCard.id='+targetCard.id);
-                
-                // console.log(e);
-                // console.log('-----------------------------');
-
                 const sourceId=dragging.id.split("-");
                 const targetId=targetCard.id.split("-");
-
-                // console.log('**************************************');
-                // console.log('sourceId[2].substring(0,sourceId[2].length-2)='+sourceId[2].substring(0,sourceId[2].length-2));
-                // console.log('targetId[2].substring(0,targetId[2].length-2)='+targetId[2].substring(0,targetId[2].length-2));
-                // console.log('**************************************');
 
                 if(sourceId[1]===targetId[1] &&sourceId[2].split(".")[0]===targetId[2].split(".")[0]
                 &&sourceId[2].substring(0,sourceId[2].length-2)!==targetId[2].substring(0,targetId[2].length-2)){
                     replaceShooter(sourceId[2], targetId[2], sourceId[1]);
                 }
-                // else{
-                //     // alert('Alteração não permitida');
-                // }
             });     
         });
     });
@@ -374,61 +363,57 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
             let s="";
             if(round>=has4play){
-                s= `
-                    <div class="ps-8">
-                    </div>`;
+                s= `<div class="ps-8"></div>`;
                 for(let k=0;k<=(round-has4play)*2;k++){
                     s+= `
-                    <div class="ps-50">
-                    </div>`;
+                    <div class="ps-50"></div>`;
                 }
                 space[0]=s;
             }
             
-            _rd= mainMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            _rd= mainMatches[round][match].shooterA.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
+
+            //->> let _admin= (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
+            // ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
+            // || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0)))
             
             droppable= '" draggable="false';
             if(mainMatches[round][match].v.id===null && mainMatches[round][match].shooterA.id!==null){
                 droppable= 'droppable" draggable="true';
             }
             matches+= s+`
-            <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
-                <div class="row g-0" >
-                    <div class="col-md-4 small-avatar-pic" >
-                        <!--<a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >-->
-                        <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">
-                            <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                        </a>
-                    </div>
-                    `;
+            <div class="dropdown">
+                <div  class="nodisable" data-bs-toggle="dropdown" aria-expanded="false">
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
+  <path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
+</svg> ${mainMatches[round][match].shooterA.name.substring(0,mainMatches[round][match].shooterA.name.indexOf(" "))} vs ${mainMatches[round][match].shooterB.name.substring(0,mainMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
+                    <li><a class="dropdown-item" onClick="goShot()" ><i class="bi bi-fire"></i> Atira</a></li>
+                    <li><a class="dropdown-item" onClick="goPrepare()" ><i class="bi bi-fast-forward-fill"></i></i> Prepara</a></li>
+                </ul>
 
-            if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-            ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-            || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
-                matches+=
-                        `<div class="col-md-6 col-card-match ">
-                        <div class="card-header-2">
-                        <h10 class="card-title text-truncate"><b> <a href="#" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" >
-                            ${mainMatches[round][match].shooterA.name}
-                        </a>`;
-            }else{
-                matches+=
-                `<div class="col-md-6 col-card-match text-truncate">
-                        <div class="card-header-2">
-                        <h10 class="card-title text-truncate"><b>  ${mainMatches[round][match].shooterA.name} `;
-            }
-            matches+=
-                    ` </b></h10>
-                        <p class="card-text" id="card-text-${mainMatches[round][match].id}-A"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][match].shooterA.gun}</span> ${_rd}</p>
+                <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
+                    <div class="row g-0" >
+                        <div class="col-md-4 small-avatar-pic" >
+                            <!--<a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterA.shooterId}" target="_new">-->
+                                <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                            <!--</a>-->
+                        </div>
+                        <div class="col-md-6 col-card-match text-truncate">
+                            <div class="card-header-2">
+                            <h10 class="card-title text-truncate"><b>  ${mainMatches[round][match].shooterA.name} </b></h10>
+                            <p class="card-text" id="card-text-${mainMatches[round][match].id}-A">
+                                <span class="badge text-bg-secondary d-inline-block text-truncate">${mainMatches[round][match].shooterA.gunModel} ${mainMatches[round][match].shooterA.gunCaliber}
+                                ${_rd}</span></p>
+                            </div>
+                        </div>
+                        <div class="row align-items-center col-card-check">
+                            <div class="form-check">
+                            <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${mainMatches[round][match].id}" value="${mainMatches[round][match].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[round][match].id}', this.value,  '${categ}')" >
+                            </div>
                         </div>
                     </div>
-                    <div class="row align-items-center col-card-check">
-                        <div class="form-check">
-                        <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${mainMatches[round][match].id}" value="${mainMatches[round][match].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[round][match].id}', this.value,  '${categ}')" >
-                        </div>
-                    </div>
-                </div>
-            </div>`;
+                </div>`;
         
             let iB=match;
             droppable= '" draggable="false';
@@ -436,35 +421,25 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 droppable= 'droppable" draggable="true';
             }
 
-            _rd= mainMatches[round][iB].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            // _rd= mainMatches[round][iB].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            _rd= mainMatches[round][iB].shooterB.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
             matches+= `<!---->
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.B">
                 <div class="row g-0 ">
                     <div class="col-md-4 small-avatar-pic" >
-                    <!--<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" data-bs-toggle="modal" data-bs-target="#exampleModal" aria-controls="offcanvasTop">-->
-                    <a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">
+                    <!--<a draggable="false" href="./shooter.html?id=${mainMatches[round][match].shooterB.shooterId}" target="_new">-->
                         <img  ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.B" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                        </a>
+                    <!--    </a>-->
                     </div>
                     <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b> `;
                         
-            if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-            ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-            || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
-                matches+=
-                        `<a href="#" onClick="goToSubscription('${mainMatches[round][iB].shooterB.shooterId}')" >
-                            ${mainMatches[round][iB].shooterB.name}
-                        </a>`;
-            }else{
-                matches+=
-                ` ${mainMatches[round][iB].shooterB.name} `;
-            }
+            matches+= ` ${mainMatches[round][iB].shooterB.name} `;
 
             matches+=  `    </b></h10>
-                        <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${mainMatches[round][iB].shooterB.gun}</span> ${_rd}</p>
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${mainMatches[round][iB].shooterB.gunModel} ${mainMatches[round][iB].shooterB.gunCaliber}${_rd}</span> </p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -474,6 +449,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
             <!--fim Partida-->
             <p class="ps-8"></p>
             <p class="ps-8"></p>`;
@@ -531,8 +508,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
             if(levelSpace.length-ls>=0){
                 matches+= levelSpace[levelSpace.length-ls][0];
             }
-            _rdA= recapMatches[round][match].shooterA.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
-            _rdB= recapMatches[round][match].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
+            _rdA= recapMatches[round][match].shooterA.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
+            _rdB= recapMatches[round][match].shooterB.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
 
             droppable= '" draggable="false';
             if(recapMatches[round][match].v.id===null && recapMatches[round][match].shooterA.id!==null){
@@ -543,14 +520,14 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.A" >
                 <div class="row g-0 " >
                     <div class="col-md-4 small-avatar-pic" >
-                    <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">
+                    <!--<a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterA.shooterId}" target="_new">-->
                         <img  ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                    </a>
+                    <!--</a>-->
                     </div>
                     <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterA.name}</b></h10>
-                        <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${recapMatches[round][match].shooterA.gun}</span> ${_rdA}</p>
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterA.gunModel} ${recapMatches[round][match].shooterA.gunCaliber}${_rdA}</span></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -570,14 +547,14 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+= `<div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.B">
                 <div class="row g-0" >
                     <div class="col-md-4 small-avatar-pic" >
-                    <a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">
+                    <!--<a draggable="false" href="./shooter.html?id=${recapMatches[round][match].shooterB.shooterId}" target="_new">-->
                         <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
-                    </a>
+                    <!--</a>-->
                     </div>
                     <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterB.name}</b></h10>
-                        <p class="card-text"><span class="badge rounded-pill text-bg-secondary">${recapMatches[round][match].shooterB.gun}</span> ${_rdB}</p>
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterB.gunModel} ${recapMatches[round][match].shooterB.gunCaliber}${_rdB}</span></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">

@@ -420,8 +420,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle text-small">${zeroPad(position,2)}º</td>
                     <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <ul class="dropdown-menu">
-                            <!--<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rankingModal" ><i class="bi bi-list-ol"></i> Posição no Ranking</a></li>-->
-                            <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="bi bi-list-ol"></i> Posição no Ranking</a></li>
+                            <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i> Alterar Inscrição</a></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar Atirador</a></li>
                         </ul>
