@@ -102,7 +102,7 @@ const buildMatches = (shooters)=>{
     }
     let preKO=shooters.length*2-poten;
 
-    console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
+    // console.log(`preKO = ${preKO} , poten= ${poten}  , preK= ${preKO} `);
     let _4Players=[];
     _4Players=shooters.slice(0,preKO);
     let _midPlayer=[];
@@ -135,7 +135,7 @@ const buildMatches = (shooters)=>{
         mainMatches.push(levelMatches);
       }
     
-    console.log(`4Plays done! mainMatches[0].length; `);
+    // console.log(`4Plays done! mainMatches[0].length; `);
 
     //-------- NIVEL 1: cria o segundo nível de partidas mesclando os vitoriosos das partidas priliminares ou 
     //---------cria o primeiro nível de partidas (root) quando não houver preliminares
@@ -146,11 +146,11 @@ const buildMatches = (shooters)=>{
       headMatches.unshift({id:"m."+mainMatches.length+"."+saveI, shooterA:_headPleayer[saveI], shooterB:mainMatches[0][saveI].v, v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"reorg" });
     }
 
-    console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
+    // console.log(`Head players done. _headPleayer.length=${_headPleayer.length} . saveI=${saveI} `)
 
     levelMatches=[];
 
-    console.log(`========+Building rest os duels. saveI=${saveI}, mainMatches.length=${mainMatches.length}`);
+    // console.log(`========+Building rest os duels. saveI=${saveI}, mainMatches.length=${mainMatches.length}`);
 
     //criando duelos para o resto das 4plays
     for(let i= saveI; mainMatches.length>0 && i<((mainMatches[0].length+saveI)/2);i++){
@@ -162,7 +162,7 @@ const buildMatches = (shooters)=>{
     }
 
 
-    console.log(`Head Plays done!`);
+    // console.log(`Head Plays done!`);
 
     // levelMatches=[];
     for(let i=0; i<_midPlayer.length/2;i++){ //melhores contra piores
@@ -171,7 +171,7 @@ const buildMatches = (shooters)=>{
       else
         levelMatches.unshift({id:"m."+mainMatches.length+"."+i, shooterA:_midPlayer[_midPlayer.length-i-1], shooterB:_midPlayer[i], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
     }
-    console.log(`Meddle Plays done! levelMatches.length = ${levelMatches.length}`);
+    // console.log(`Meddle Plays done! levelMatches.length = ${levelMatches.length}`);
 
     for(let i=0;i<headMatches.length;i++){
       if(i===0){
@@ -227,7 +227,7 @@ const buildMatches = (shooters)=>{
         }
     }
 
-    console.log(`Fim mainMatches. Inciando RECAP`);
+    // console.log(`Fim mainMatches. Inciando RECAP`);
 
     // 3. NIVEL RECAP: partidas de derrotados do main match
     // 3.1 root level
@@ -322,7 +322,7 @@ const buildMatches = (shooters)=>{
         }
         recapMatches.push(levelMatches);
     }
-    console.log('Aqui FIM!!!!!!!!!');
+    // console.log('Aqui FIM!!!!!!!!!');
     // 4. Super final com o ganhador do Main Matches com o campeao do Recap
     levelMatches=[];
     levelMatches.push({id:"r."+(mainMatches.length)+"."+levelMatches.length, shooterA:mainMatches[mainMatches.length-1][0].v
@@ -340,7 +340,7 @@ const flatPlayesDivisions = (players, sort)=>{
       // for(j=0;j<players[i].registered.length;j++){
   let gun_rd=""
   for(i=0;i<players.length;i++){
-    console.log(`players[i].event[0].randomDuel= ${players[i].event[0].randomDuel}`);
+    // console.log(`players[i].event[0].randomDuel= ${players[i].event[0].randomDuel}`);
     if(players[i].event[0].randomDuel || players[i].score===undefined||players[i].score===null||players[i].score===''){
         players[i].score=Math.floor(Math.random() * (9999 - 9900 + 1)) + 9900;//range 9900 - 9999;
         players[i].tries=0;
@@ -456,33 +456,33 @@ const handler = async (event, context)=>{
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-          console.log(`consultando: p_eventId=${p_eventId}, p_divisionId=${p_divisionId}, p_categ=${p_categ}`);
+          // console.log(`consultando: p_eventId=${p_eventId}, p_divisionId=${p_divisionId}, p_categ=${p_categ}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
           let _ret={};
           if(division_matches.length>0){
             if(p_categ===cAdvance && division_matches[0].advancedDoubleKOs && division_matches[0].advancedDoubleKOs.length>0){
                  _ret.advancedDoubleKOs=division_matches[0].advancedDoubleKOs;
-                console.log(`1. _ret.advancedDoubleKOs=${_ret.advancedDoubleKOs}`);
+                // console.log(`1. _ret.advancedDoubleKOs=${_ret.advancedDoubleKOs}`);
             }else if(p_categ===cLadies && division_matches[0].ladyDoubleKOs && division_matches[0].ladyDoubleKOs.length>0){
               _ret.ladyDoubleKOs=division_matches[0].ladyDoubleKOs;
-              console.log(`2. _ret.ladyDoubleKOs=${_ret.ladyDoubleKOs}`);
+              // console.log(`2. _ret.ladyDoubleKOs=${_ret.ladyDoubleKOs}`);
             }else if(p_categ===cOptics && division_matches[0].opticDoubleKOs && division_matches[0].opticDoubleKOs.length>0){
               _ret.opticDoubleKOs=division_matches[0].opticDoubleKOs;
-              console.log(`3. _ret.opticDoubleKOs=${_ret.opticDoubleKOs}`);
+              // console.log(`3. _ret.opticDoubleKOs=${_ret.opticDoubleKOs}`);
             }else if(p_categ===cSeniors && division_matches[0].seniorDoubleKOs && division_matches[0].seniorDoubleKOs.length>0){
               _ret.seniorDoubleKOs=division_matches[0].seniorDoubleKOs;
-              console.log(`4. _ret.seniorDoubleKOs=${_ret.seniorDoubleKOs}`);
+              // console.log(`4. _ret.seniorDoubleKOs=${_ret.seniorDoubleKOs}`);
             }else if((!p_categ||p_categ===cOverall) && division_matches[0].overallDoubleKOs!==undefined && division_matches[0].overallDoubleKOs.length>0){
               _ret.overallDoubleKOs=division_matches[0].overallDoubleKOs;
-              console.log(`5. _ret.overallDoubleKOs=${_ret.overallDoubleKOs}`);
+              // console.log(`5. _ret.overallDoubleKOs=${_ret.overallDoubleKOs}`);
             }else{
                _ret=null;
-               console.log(`Else. _ret=${_ret}`);
+              //  console.log(`Else. _ret=${_ret}`);
             }
 
           }else{
              _ret=null;
-             console.log(`Else division_matches.lenght <=0. _ret=${_ret}`);
+            //  console.log(`Else division_matches.lenght <=0. _ret=${_ret}`);
           }
         
           if(_ret!==null){
@@ -499,7 +499,7 @@ const handler = async (event, context)=>{
           }
 
         }else{ //list all
-          console.log("30");
+          // console.log("30");
           return  {
             statusCode:  404,
             body: `Infor eventId, divisionId and category`
@@ -520,7 +520,7 @@ const handler = async (event, context)=>{
 
         let ladyDoubleKOs=[];
         if(p_categ===cLadies && division[0].categories.ladies){
-          console.log('ladyDoubleKOs');
+          // console.log('ladyDoubleKOs');
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
             if (a.sort_idx > b.sort_idx) {
               return -1;
@@ -705,31 +705,31 @@ const handler = async (event, context)=>{
 
       case 'DELETE':
 
-console.log("0");
+// console.log("0");
         let eventId= event.queryStringParameters.eventId.toString();
         let divisionId= event.queryStringParameters.divisionId.toString();
         let categ= Number(event.queryStringParameters.category.toString());
     
-console.log("1");
-console.log(`${eventId}&&${divisionId}&&${categ}`);
+// console.log("1");
+// console.log(`${eventId}&&${divisionId}&&${categ}`);
         if(eventId&&divisionId){ //&&categ
-console.log("2");
+// console.log("2");
           let user= context.clientContext.user;
 
           let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
           let isEventAdmin=false;
-console.log("3");
+// console.log("3");
           if(!isAdmin&& user && user.email){
-console.log("4");
+// console.log("4");
             //check if the user is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(eventId);
-console.log("5");
+// console.log("5");
             const _e= await cEvent.aggregate( [
               {$match:{_id: f_id
                       , owners: user.email}}
             ]).toArray();
-console.log("6");
+// console.log("6");
             isEventAdmin= (_e.length>0);
           }
 
@@ -740,10 +740,10 @@ console.log("6");
               body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`
               };
           }
-console.log("7");
+// console.log("7");
         let _del={};
         if(categ===cAdvance){
-console.log("8");
+// console.log("8");
           _del.advancedDoubleKOs="";
         }else if(categ===cLadies){
           _del.ladyDoubleKOs="";
@@ -753,12 +753,12 @@ console.log("8");
           _del.seniorDoubleKOs="";
         }else if(categ===cOverall){
           _del.overallDoubleKOs="";
-console.log("9");
+// console.log("9");
         }else{
-console.log("10");
+// console.log("10");
           _del=null;
         }
-console.log("11");
+// console.log("11");
           // r_delete_shooter= await cKos.deleteMany({ eventId: eventId 
           //                                 ,divisionId: divisionId});
           if(_del!==null){
@@ -767,9 +767,9 @@ console.log("11");
                 ,divisionId: divisionId},
               { $unset: _del }
             );
-            console.log("12");
+            // console.log("12");
           }else{
-            console.log("13");
+            // console.log("13");
             return  {
               statusCode:  404,
               body: `Infor eventId, divisionId and category. Category not found:${categ} `
@@ -782,7 +782,7 @@ console.log("11");
             body: JSON.stringify(r_delete_shooter)
           };
       }else{
-        console.log("20");
+        // console.log("20");
         return  {
           statusCode:  404,
           body: `Infor eventId, divisionId and category`
