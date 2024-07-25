@@ -188,6 +188,17 @@ function getRandomDateTime() {
 
 function changeDivision(selectDivision){
     
+
+    // Construct URLSearchParams object instance from current URL querystring.
+    var queryParams = new URLSearchParams(window.location.search);
+
+    // Set new or modify existing parameter value. 
+    queryParams.set("divisionId", selectDivision.value);
+    // Replace current querystring with the new one.
+    // history.replaceState(null, null, "?"+queryParams.toString());
+    history.pushState(null, null, "?"+queryParams.toString());
+
+
     buildPlayersTables(transformRegistrer(playersArray), eventConfig, selectDivision.value);
     //-> buildCategory2(eventConfig, selectDivision.value);
     
@@ -436,7 +447,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                                   </span>
                                 </p>
                                 <p class="d-xl-none" style="margin-bottom: 0 !important;">
-                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel}
+                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel} ${aPlayers[i].gunCaliber}
                                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
                                   </span>
                                 </p>

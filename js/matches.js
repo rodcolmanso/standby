@@ -9,6 +9,8 @@ const cAdvance= 1;
 const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
+
+const catNames= ["Overall","Advance","Ladies","","Optics","Seniors"];
    
 let eventConfig=null;
 let playersArray;
@@ -591,9 +593,9 @@ function deleteKos(){
     if(loggedUser && loggedUser.token && loggedUser.token.access_token){
         _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
     }
-
+    const categ= getActiveCatNum();
     const selectDivisions= document.getElementById('selectDivision');
-    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}`, {
+    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}&category=${categ}`, {
         method: "DELETE",
         // body: JSON.stringify(body),
         headers: _header
@@ -602,68 +604,142 @@ function deleteKos(){
         .then(json => {
             //location.reload(true);
             // alert('Partidas Salvas');
-            changeDivision(selectDivisions);
+            document.getElementById(catNames[categ].toLocaleLowerCase()+"Levels").innerHTML="";
+            
+            if(KOs){
+                if(categ===cAdvance)
+                    KOs.advancedDoubleKOs=null;
+                
+                if(categ===cOverall)
+                    KOs.overallDoubleKOs=null;
+            
+                if(categ===cOptics)
+                    KOs.opticDoubleKOs=null;
+                
+                if(categ===cSeniors)
+                    KOs.seniorDoubleKOs=null;
+                
+                if(categ===cLadies)
+                    KOs.ladyDoubleKOs=null;
+            }
+            // getDivision(selectDivisions);
+            window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum();
         })
         .catch(err => console.log(`Error deleting matches. Error: ${err}`))
         .finally(()=> applySpinners(false));
 
 }
 
+function generateKos(){
+    
+
+    applySpinners(true);
+
+    loggedUser= netlifyIdentity.currentUser();
+    let _header= {"Content-type": "application/json; charset=UTF-8"}
+    if(loggedUser && loggedUser.token && loggedUser.token.access_token){
+        _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
+    }
+
+    let categ= getActiveCatNum();
+    const selectDivisions= document.getElementById('selectDivision').value;
+    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions}&category=${categ}`, {
+        method: "PUT",
+        // body: JSON.stringify(body),
+        headers: _header
+        })
+        // .then(response => response.json())
+        .then(function(response) {
+
+            if (!response.ok) {
+                var textDivision = document.getElementById('selectDivision').options[document.getElementById('selectDivision').selectedIndex].innerHTML;
+                if(response.status===410){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Damas]. Elimine essa categoria ou inscreva mais participantes.`);
+                } else if(response.status===411){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Seniores]. Elimine essa categoria ou inscreva mais participantes.`);
+                }else if(response.status===412){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Optics]. Elimine essa categoria ou inscreva mais participantes.`);
+                }else if(response.status===413){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Overall/Sport]. Elimine essa categoria ou inscreva mais participantes.`);
+                }else if(response.status===414){
+                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Avançados]. Elimine essa categoria ou inscreva mais participantes.`);
+                }
+                throw new Error("HTTP status " + response.status);
+            }else{
+                return response.json();
+            }
+        })
+        .then(json => {
+            KOs=json;
+            buildKOs(KOs);
+        })
+        .catch(err => console.log(`Error generating matches. Error: ${err}`))
+        .finally(()=> {
+            applySpinners(false);
+            document.getElementById('btn-closemodal-duel-gen').click();
+            disableInputs();
+            });
+
+}
+
 function saveDivision(){
     applySpinners(true);
+    let categ= getActiveCatNum();
     const selectDivisions= document.getElementById('selectDivision');
-        // KOs.advancedDoubleKOs
-        // KOs.overallDoubleKOs
-        // KOs.opticDoubleKOs
-        // KOs.seniorDoubleKOs
-        // KOs.ladyDoubleKOs
+        
+    const body= {"eventId":eventConfig._id, "divisionId":selectDivisions.value};
 
-        const body= {"eventId":eventConfig._id, "divisionId":selectDivisions.value
-                   ,"advancedDoubleKOs":KOs.advancedDoubleKOs
-                   ,"overallDoubleKOs":KOs.overallDoubleKOs
-                   ,"opticDoubleKOs":KOs.opticDoubleKOs
-                   ,"seniorDoubleKOs":KOs.seniorDoubleKOs
-                   ,"ladyDoubleKOs":KOs.ladyDoubleKOs};
+    if(categ===cAdvance)
+        body.advancedDoubleKOs=KOs.advancedDoubleKOs;
+    
+    if(categ===cOverall)
+        body.overallDoubleKOs=KOs.overallDoubleKOs;
+
+    if(categ===cOptics)
+        body.opticDoubleKOs=KOs.opticDoubleKOs;
+    
+    if(categ===cSeniors)
+        body.seniorDoubleKOs=KOs.seniorDoubleKOs;
+    
+    if(categ===cLadies)
+        body.ladyDoubleKOs=KOs.ladyDoubleKOs;
+    
+    loggedUser= netlifyIdentity.currentUser();
+    let _header= {"Content-type": "application/json; charset=UTF-8"}
+    if(loggedUser && loggedUser.token && loggedUser.token.access_token){
+        _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
+    }
         
-        loggedUser= netlifyIdentity.currentUser();
-        let _header= {"Content-type": "application/json; charset=UTF-8"}
-        if(loggedUser && loggedUser.token && loggedUser.token.access_token){
-            _header.Authorization= `Bearer ${loggedUser.token.access_token}`;
-        }
-        
-        fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}`, {
-            method: "PATCH",
-            body: JSON.stringify(body),
-            headers: _header
-            })
-            .then(response => response.json()) 
-            .then(json => {
-                //location.reload(true);
-                // alert('Partidas Salvas');
-            })
-            .catch(err => console.log(`Error updating matches. Error: ${err}`))
-            .finally(()=> applySpinners(false));
-}
+    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions.value}&category=${categ}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+        headers: _header
+        })
+        .then(response => response.json()) 
+        .then(json => {
+            console.log(`Matches updated.`);
+            //location.reload(true);
+            // alert('Partidas Salvas');
+        })
+        .catch(err => {console.log(`Error updating matches. Error: ${err}`);
+                        alert('Erro ao salvar duelo. Tente novamente!');})
+        .finally(()=> applySpinners(false));
+}//function saveDivision(){
 
 function changeDivision(selectDivision){
     
+    document.getElementById(catNames[getActiveCatNum()].toLocaleLowerCase()+"Levels").innerHTML="";
     if(selectDivision.value==='')
         return 0;
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum();
+}
 
+function getDuels(selectDivision){    
     applySpinners(true);
-    document.getElementById('liAdvance').style.display='none';
-    // document.getElementById('liOverall').style.display= 'none';
-    document.getElementById('liLadies').style.display='none';
-    document.getElementById('liOptics').style.display='none';
-    document.getElementById('liSeniors').style.display='none';
-    const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
-    bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
-    
     const idDivision= selectDivision.value;
-    var textDivision = selectDivision.options[selectDivision.selectedIndex].innerHTML;
     // selectDivision.disabled=true;
     
-    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${idDivision}`, {
+    fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${idDivision}&category=${getActiveCatNum()}&${uuidv4()}`, {
         method: "GET",
         headers: {"Content-type": "application/json; charset=UTF-8"}
         })
@@ -671,72 +747,97 @@ function changeDivision(selectDivision){
         .then(function(response) {
 
             if (!response.ok) {
-                if(response.status===410){
-                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Damas]. Elimine essa categoria ou inscreva mais participantes.`);
-                } else if(response.status===411){
-                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Seniores]. Elimine essa categoria ou inscreva mais participantes.`);
-                }if(response.status===412){
-                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Optics]. Elimine essa categoria ou inscreva mais participantes.`);
-                }if(response.status===413){
-                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Overall/Sport]. Elimine essa categoria ou inscreva mais participantes.`);
-                }if(response.status===414){
-                    alert(`Não é possível gerar duelos com menos de 3 atiradores.\n[${textDivision} - Avançados]. Elimine essa categoria ou inscreva mais participantes.`);
-                }
+                if(response.status===300){
+                    var textDivision = document.getElementById('selectDivision').options[document.getElementById('selectDivision').selectedIndex].innerHTML;
+                    if(isAdmin){
+                        document.getElementById('duelGenerateModalLabel').innerText=`Gerar duelos para ${textDivision} - ${catNames[getActiveCatNum()]}`;
+                        document.getElementById('duel-gen-body').innerHTML=`<h6>Escolha um opção de duelos</h6>
+                            <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="radioDoupleEliminiation" checked>
+                            <label class="form-check-label" for="radioDoupleEliminiation">
+                                Eliminatórias com repescagem (dupla eliminação)
+                            </label>
+                            </div>
+                            <div class="form-check">
+                            <input class="form-check-input nodisable" type="radio" name="flexRadioDefault" id="radioSingleEliminiation" disabled>
+                            <label class="form-check-label" for="radioSingleEliminiation">
+                                Eliminatórias simples (eliminação única)
+                            </label>
+                            </div>
+                            <div class="form-check">
+                            <input class="form-check-input nodisable" type="radio" name="flexRadioDefault" id="radioAllToAll" disabled>
+                            <label class="form-check-label" for="radioAllToAll">
+                                Todos contra todos;
+                            </label>
+                            </div>`;
+                    }else{
+                        document.getElementById('duel-gen-body').innerHTML=
+                            `<h3>Aguarde o Supervisor de prova gerar os duelos...</h3>`;
+                    }
 
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
+                    document.getElementById('btn-modal-duel-gen').click();
+                    throw new Error("HTTP status " + response.status);
+                }else{
+                    throw new Error("HTTP status " + response.status);
+                }
+            }else return response.json();
         })
         .then(kos=>{
-
-            KOs = kos;
-            
-            if(KOs.advancedDoubleKOs !==null && KOs.advancedDoubleKOs.length>0 &&  KOs.advancedDoubleKOs[0]!==null && KOs.advancedDoubleKOs[0].length>0){
-                addLevels(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
-                
-                addMainMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
-                updateAllMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
-
-                document.getElementById('liAdvance').style.display= '';
-            }
-            
-            if(KOs.overallDoubleKOs !==null && KOs.overallDoubleKOs.length>0 && KOs.overallDoubleKOs[0]!==null && KOs.overallDoubleKOs[0].length>0){
-                addLevels(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
-                addMainMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
-                updateAllMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
-
-                document.getElementById('liOverall').style.display= '';
-            }
-            
-            if(KOs.opticDoubleKOs !==null && KOs.opticDoubleKOs.length>0 && KOs.opticDoubleKOs !=="" && KOs.opticDoubleKOs[0]!==undefined && KOs.opticDoubleKOs[0].length>0){
-                addLevels(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
-                addMainMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
-                updateAllMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
-
-                document.getElementById('liOptics').style.display= '';
-            }
-            
-            if(KOs.seniorDoubleKOs !==null && KOs.seniorDoubleKOs.length>0 && KOs.seniorDoubleKOs[0]!==undefined && KOs.seniorDoubleKOs[0].length>0){
-                addLevels(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
-                addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
-                updateAllMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
-
-                document.getElementById('liSeniors').style.display= '';        
-            }
-            
-            if(KOs.ladyDoubleKOs !==null && KOs.ladyDoubleKOs.length>0 && KOs.ladyDoubleKOs[0]!==undefined && KOs.ladyDoubleKOs[0].length>0){
-                addLevels(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1],'ladies');
-                addMainMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
-                updateAllMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
-
-                document.getElementById('liLadies').style.display= '';
-            }
-            addEventListenerShooterDiv();
+            KOs=kos;
+            buildKOs(kos);
         } )
         .catch(err => console.log(`Error bringing knokouts: ${err}`))
-        .finally(()=> applySpinners(false));
-    disableInputs();
-};
+        .finally(()=> {
+            applySpinners(false);
+            disableInputs();
+        });
+    
+}; //function changeDivision(selectDivision){
+
+function buildKOs(KOs){
+    
+    if(KOs.advancedDoubleKOs && KOs.advancedDoubleKOs.length>0 &&  KOs.advancedDoubleKOs[0]!==null && KOs.advancedDoubleKOs[0].length>0){
+        addLevels(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
+        
+        addMainMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
+        updateAllMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
+
+        document.getElementById('liAdvance').style.display= '';
+    }
+    
+    if(KOs.overallDoubleKOs && KOs.overallDoubleKOs.length>0 && KOs.overallDoubleKOs[0]!==null && KOs.overallDoubleKOs[0].length>0){
+        addLevels(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
+        addMainMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
+        updateAllMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
+
+        document.getElementById('liOverall').style.display= '';
+    }
+    
+    if(KOs.opticDoubleKOs && KOs.opticDoubleKOs.length>0 && KOs.opticDoubleKOs !=="" && KOs.opticDoubleKOs[0]!==undefined && KOs.opticDoubleKOs[0].length>0){
+        addLevels(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
+        addMainMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
+        updateAllMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
+
+        document.getElementById('liOptics').style.display= '';
+    }
+    
+    if(KOs.seniorDoubleKOs && KOs.seniorDoubleKOs.length>0 && KOs.seniorDoubleKOs[0]!==undefined && KOs.seniorDoubleKOs[0].length>0){
+        addLevels(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
+        addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
+        updateAllMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
+
+        document.getElementById('liSeniors').style.display= '';        
+    }
+    
+    if(KOs.ladyDoubleKOs && KOs.ladyDoubleKOs.length>0 && KOs.ladyDoubleKOs[0]!==undefined && KOs.ladyDoubleKOs[0].length>0){
+        addLevels(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1],'ladies');
+        addMainMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
+        updateAllMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
+
+        document.getElementById('liLadies').style.display= '';
+    }
+    addEventListenerShooterDiv();
+}//function buildKOs(KOs){
 
 function hrefQualify(){
     const _tbord= params.tbord?"&tbord="+params.tbord:"";
@@ -745,7 +846,7 @@ function hrefQualify(){
 
 function hrefMatches(){
     const _tbord= params.tbord?"&tbord="+params.tbord:"";
-    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat()+_tbord;
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum()+_tbord;
 }
 
 
@@ -767,11 +868,11 @@ function goToSubscription(parms){
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
     }else parms='';
-    window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+parms+getActiveCat();
+    window.location="/event-details.html?inscription=duel&selected_division="+document.getElementById('selectDivision').value+parms+"&category="+getActiveCatNum();
 }
 
 function editInscriptions(){
-    window.location.href = window.location="/event-details.html?allInscriptions=duel&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    window.location.href = window.location="/event-details.html?allInscriptions=duel&event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum();
 }
 
 function getActiveCat(){
@@ -792,58 +893,80 @@ function getActiveCat(){
 }
 
 function shareEvent(){
-    const _link = 'https://'+window.location.host+"/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat();
+    const _link = 'https://'+window.location.host+"/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum();
      // Copy the text inside the text field
      navigator.clipboard.writeText(_link);
 }
 
+let isAdmin=false;
+let eventAdmin= false;
 window.onload = async () => {
 
-    await loadPage();
+    await loadPage();  //load event config
     document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
     
-    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
+    eventAdmin= (_eventConfig&&_eventConfig.owners&&user&&_eventConfig.owners.indexOf(user.email)>=0);
+    isAdmin= eventAdmin||(user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    
+
+    if(!isAdmin){
         document.getElementById('btn-reset').style.display='none';
         document.getElementById('btnRelPassadas').style.display='none';
     }else{
         document.getElementById('btn-reset').style.display='';
         document.getElementById('btnRelPassadas').style.display='';
     }
-        
-
 
     if(_eventConfig.clock)
         document.getElementById('btnOptClock').style.display='';
     else
         document.getElementById('btnOptClock').style.display='none';
     
-
     document.getElementById('btnAddShooter').style.display='';
     document.getElementById('nav-matches').classList.add('active');
 
-    document.getElementById('liAdvance').style.display='none';
-    document.getElementById('liOverall').style.display= 'none';
-    document.getElementById('liLadies').style.display='none';
-    document.getElementById('liOptics').style.display='none';
-    document.getElementById('liSeniors').style.display='none';
-    
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
-    // changeDivision(selectDivision);
+
     if(params.selected_division!==undefined){
-        document.getElementById('selectDivision').value=params.selected_division;
+        document.getElementById('selectDivision').value=params.selected_division;            
     }
-    changeDivision(document.getElementById('selectDivision'));
+    const dbCategs= getDivision(_eventConfig.divisions, document.getElementById('selectDivision').value).categories;
+        
+    document.getElementById('liAdvance').style.display=dbCategs.advance?'':'none';
+    document.getElementById('liOverall').style.display= '';
+    document.getElementById('liLadies').style.display=dbCategs.ladies?'':'none';
+    document.getElementById('liOptics').style.display=dbCategs.optics?'':'none';
+    document.getElementById('liSeniors').style.display=dbCategs.seniors?'':'none';
+    
+    if(params.category){ // categoria informada na url
+        let selectedCateg =params.category?Number(params.category.toString()):0;
+        // const triggerEl = document.querySelector(`#myTab button[data-bs-target="#nav-li${catNames[selectedCateg]}"]`)
+        const triggerEl = document.getElementById(`li${catNames[selectedCateg]}`)
+
+        if((selectedCateg===cAdvance && dbCategs.advance)
+          ||(selectedCateg===cLadies && dbCategs.ladies)
+          ||(selectedCateg===cOptics && dbCategs.optics)
+          ||(selectedCateg===cSeniors && dbCategs.seniors)){
+            // bootstrap.Tab.getInstance(triggerEl).show(); // Select tab by name
+            triggerEl.click();
+        } else document.getElementById(`li${catNames[cOverall]}`).click();
+
+    }else{
+        document.getElementById(`li${catNames[cOverall]}`).click();
+    }
+
+    // changeDivision(document.getElementById('selectDivision'));
+    // getDuels(document.getElementById('selectDivision'));
     applySpinners(false);
 
-    if(params.cat){
-        document.getElementById('liOverall').classList.remove('active');
-        document.getElementById(params.cat).classList.add('active');
-    }
+    // if(params.cat){
+    //     document.getElementById('liOverall').classList.remove('active');
+    //     document.getElementById(params.cat).classList.add('active');
+    // }
 
     if(params.rl){
     window.setTimeout( function() {
@@ -883,10 +1006,7 @@ function buildDivisions(eventDivisions){
     for(i=0;i<eventDivisions.length;i++){
         newOption = new Option(eventDivisions[i].name,eventDivisions[i]._id);
         selectDivisions.add(newOption,undefined);
-
     }
-
-    //selectDivisions.value= eventDivisions[0].id;
 
 }
 
@@ -894,8 +1014,70 @@ function buildDivisions(eventDivisions){
 function getDivision(eventDivisions, divisionID){
 
     for(let i=0; i<eventDivisions.length;i++){
-        if(eventDivisions[i]._id == divisionID){
+        if(eventDivisions[i]._id === divisionID){
             return eventDivisions[i];
         }
     }
 }
+
+
+// function getSelectedCat(){
+
+//     if(document.getElementById("liOverall").ariaSelected){
+//         return cOverall;
+//     }else if(document.getElementById("liAdvance").ariaSelected){
+//         return cAdvance;
+//     }else if(document.getElementById("liLadies").ariaSelected){
+//         return cLadies;
+//     }else if(document.getElementById("liOptics").ariaSelected){
+//         return cOptics;
+//     }else if(document.getElementById("liSeniors").ariaSelected){
+//         return cSeniors;
+//     }else{
+//         console.log('Categoria não encontrada!');
+//         return null;
+//     }
+
+// }
+function getActiveCatNum(){
+    let _cat=cOverall;
+
+    if(document.getElementById('liAdvance').getAttribute('class').indexOf('active')>=0)
+        _cat= cAdvance;
+
+    if(document.getElementById('liLadies').getAttribute('class').indexOf('active')>=0)
+        _cat= cLadies;
+
+    if(document.getElementById('liOptics').getAttribute('class').indexOf('active')>=0)
+        _cat= cOptics;
+
+    if(document.getElementById('liSeniors').getAttribute('class').indexOf('active')>=0)
+        _cat= cSeniors;
+
+    if(document.getElementById('liOverall').getAttribute('class').indexOf('active')>=0)
+        _cat= cOverall;
+    
+    return _cat;
+}
+
+const triggerTabList = document.querySelectorAll('#nav-tab button')
+triggerTabList.forEach(triggerEl => {
+  const tabTrigger = new bootstrap.Tab(triggerEl)
+
+  triggerEl.addEventListener('click', event => {
+    event.preventDefault();
+    
+    // Construct URLSearchParams object instance from current URL querystring.
+    var queryParams = new URLSearchParams(window.location.search);
+
+    // Set new or modify existing parameter value. 
+    queryParams.set("category", getActiveCatNum());
+
+    // Replace current querystring with the new one.
+    // history.replaceState(null, null, "?"+queryParams.toString());
+    history.pushState(null, null, "?"+queryParams.toString());
+    tabTrigger.show();
+    getDuels(document.getElementById('selectDivision'));
+    
+  })
+})

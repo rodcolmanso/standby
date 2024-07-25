@@ -1,8 +1,14 @@
 - Urgente
+    - Modal perguntando como gerar chave
+    - Retornar 40x caso Chaves ainda nao geradas e msg de aviso na tela;
+    - Gerar chave apos dialog e salvar automaticamente.
+    - nao permitir guest de gerar chave
+    - opçao apra geraçao de chaves (todos contra todos, chaves com ou sem repescagem)
+  
+  
+  
   - Arma genérica outras, abrindo para digitar
   - Inativar arma (nao listar)
-  - opçao apra geraçao de chaves (todos contra todos, chaves com ou sem repescagem)
-    - nao permitir guest de gerar chave
   - sanetizar base - shooters
   - Cruzamento de chaves na repescagem
   - incluir icone de senior, dama, overall na tabela contra o relogio

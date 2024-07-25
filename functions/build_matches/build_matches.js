@@ -212,7 +212,6 @@ const buildMatches = (shooters)=>{
       mainMatches.push(levelMatches);
     }
     
-    console.log(`Aquiiiiiii. mainMatches.lenght= ${mainMatches.length}`);
     for(let l=mainMatches.length-1 ; l<mainMatches.length; l++){
         levelMatches=[];
         hasMatches=false;
@@ -323,7 +322,7 @@ const buildMatches = (shooters)=>{
         }
         recapMatches.push(levelMatches);
     }
-    // console.log('Aqui FIM!!!!!!!!!');
+    console.log('Aqui FIM!!!!!!!!!');
     // 4. Super final com o ganhador do Main Matches com o campeao do Recap
     levelMatches=[];
     levelMatches.push({id:"r."+(mainMatches.length)+"."+levelMatches.length, shooterA:mainMatches[mainMatches.length-1][0].v
@@ -424,9 +423,9 @@ const getShootersByDivisionCategory = (players, divisionId, category)=>{
 
   for(let i=0; i< players.length;i++){
 
-  
       if(players[i].division===divisionId && players[i].category===category){
           ret.push(players[i]);
+    
       }
   
   }
@@ -444,135 +443,225 @@ const handler = async (event, context)=>{
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     const cShooters_divisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS_DIVISIONS);
     const cKos= database.collection(process.env.MONGODB_COLLECTION_KOS);
-    
+
     let shootersAux=[];
+
+    let p_eventId= event.queryStringParameters.eventId?event.queryStringParameters.eventId.toString():null;
+    let p_divisionId= event.queryStringParameters.divisionId?event.queryStringParameters.divisionId.toString():null;
+    let p_categ= event.queryStringParameters.category?Number(event.queryStringParameters.category.toString()):null;
     
     switch (event.httpMethod){
         
-        case 'GET': // update kos of a division
-        // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
-        let p_eventId= event.queryStringParameters.eventId.toString();
-        let p_divisionId= event.queryStringParameters.divisionId.toString();
+        case 'GET': // get kos of a division
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
 
-          console.log(`consultando p_eventId=${p_eventId}, p_divisionId:=${p_divisionId}`);
+          console.log(`consultando: p_eventId=${p_eventId}, p_divisionId=${p_divisionId}, p_categ=${p_categ}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
-        
+          let _ret={};
           if(division_matches.length>0){
+            if(p_categ===cAdvance && division_matches[0].advancedDoubleKOs && division_matches[0].advancedDoubleKOs.length>0){
+                 _ret.advancedDoubleKOs=division_matches[0].advancedDoubleKOs;
+                console.log(`1. _ret.advancedDoubleKOs=${_ret.advancedDoubleKOs}`);
+            }else if(p_categ===cLadies && division_matches[0].ladyDoubleKOs && division_matches[0].ladyDoubleKOs.length>0){
+              _ret.ladyDoubleKOs=division_matches[0].ladyDoubleKOs;
+              console.log(`2. _ret.ladyDoubleKOs=${_ret.ladyDoubleKOs}`);
+            }else if(p_categ===cOptics && division_matches[0].opticDoubleKOs && division_matches[0].opticDoubleKOs.length>0){
+              _ret.opticDoubleKOs=division_matches[0].opticDoubleKOs;
+              console.log(`3. _ret.opticDoubleKOs=${_ret.opticDoubleKOs}`);
+            }else if(p_categ===cSeniors && division_matches[0].seniorDoubleKOs && division_matches[0].seniorDoubleKOs.length>0){
+              _ret.seniorDoubleKOs=division_matches[0].seniorDoubleKOs;
+              console.log(`4. _ret.seniorDoubleKOs=${_ret.seniorDoubleKOs}`);
+            }else if((!p_categ||p_categ===cOverall) && division_matches[0].overallDoubleKOs!==undefined && division_matches[0].overallDoubleKOs.length>0){
+              _ret.overallDoubleKOs=division_matches[0].overallDoubleKOs;
+              console.log(`5. _ret.overallDoubleKOs=${_ret.overallDoubleKOs}`);
+            }else{
+               _ret=null;
+               console.log(`Else. _ret=${_ret}`);
+            }
+
+          }else{
+             _ret=null;
+             console.log(`Else division_matches.lenght <=0. _ret=${_ret}`);
+          }
+        
+          if(_ret!==null){
             return{
               statusCode: 200
-              ,body: JSON.stringify(division_matches[0])
-            }
-          }else{
-            const o_id = new ObjectId(p_divisionId);
-            const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
-            console.log('After division. division.lenght=' +division.length);
-            
-            const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
-            
-            let players= flatPlayesDivisions(shootersDivx, 1);
-            players= matchShootersCategories(players, division);  
-
-            let ladyDoubleKOsKOs=[];
-            if(division[0].categories.ladies){
-              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
-                if (a.sort_idx > b.sort_idx) {
-                return -1;
-                }
-            });
-
-            if(shootersAux.length<3)
-              return  {
-                statusCode:  410,
-                body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Damas). Elimine essa categoria ou inscreva mais participantes.`
-              };
-
-              ladyDoubleKOsKOs= buildMatches(shootersAux);
-            }
-            let seniorDoubleKOsKOs=[];
-
-            if(division[0].categories.seniors){
-              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
-              // seniorDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
-                if (a.sort_idx > b.sort_idx) {
-                return -1;
-                }
-              });
-
-              if(shootersAux.length<3)
-                return  {
-                  statusCode:  411,
-                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Seniores). Elimine essa categoria ou inscreva mais participantes.`
-                };
-              seniorDoubleKOsKOs= buildMatches(shootersAux);
+              ,body: JSON.stringify(_ret)
             }
 
-            let opticDoubleKOsKOs=[];
-            if(division[0].categories.optics){
-              // console.log(`DIVISAOOO OPTICS!!!!!!!`);
-              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
-              // opticDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
-                if (a.sort_idx > b.sort_idx) {
-                return -1;
-                }
-              });
-              
-              if(shootersAux.length<3)
-                return  {
-                  statusCode:  412,
-                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Optics). Elimine essa categoria ou inscreva mais participantes.`
-                };
-              opticDoubleKOsKOs= buildMatches(shootersAux);
+          }else{  // Ask to generate duels
+            return{
+              statusCode: 300
+              ,body: "need generate duels. Category: "+p_categ
             }
-
-            let overallDoubleKOsKOs=[];
-            if(division[0].categories.overall){
-              // console.log(`DIVISAOOO OVERALL!!!!!!!`);
-              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
-              // overallDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
-                if (a.sort_idx > b.sort_idx) {
-                return -1;
-                }
-              });
-              if(shootersAux.length<3)
-                return  {
-                  statusCode:  413,
-                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Overall/Sport). Elimine essa categoria ou inscreva mais participantes.`
-                };
-              overallDoubleKOsKOs= buildMatches(shootersAux);
-            }
-
-            let advancedDoubleKOsKOs=[];
-            if(division[0].categories.advance){
-              shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
-              // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
-                if (a.sort_idx > b.sort_idx) {
-                return -1;
-                }
-              });
-              if(shootersAux.length<3)
-                return  {
-                  statusCode:  414,
-                  body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Avançados). Elimine essa categoria ou inscreva mais participantes.`
-                };
-              advancedDoubleKOsKOs= buildMatches(shootersAux);
-            }
-
-            return  {
-              statusCode: 201,
-              body: JSON.stringify({"ladyDoubleKOs":ladyDoubleKOsKOs
-                                  ,"seniorDoubleKOs":seniorDoubleKOsKOs
-                                  ,"opticDoubleKOs":opticDoubleKOsKOs
-                                  ,"overallDoubleKOs":overallDoubleKOsKOs
-                                  ,"advancedDoubleKOs":advancedDoubleKOsKOs
-                                })
-            };
           }
 
         }else{ //list all
-          //TODO: 
+          console.log("30");
+          return  {
+            statusCode:  404,
+            body: `Infor eventId, divisionId and category`
+          };
       }
+
+      case 'PUT':
+
+        const o_id = new ObjectId(p_divisionId);
+        const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
+        
+        const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
+        
+        let players= flatPlayesDivisions(shootersDivx, 1);
+        players= matchShootersCategories(players, division);
+        let _ret={};
+
+
+        let ladyDoubleKOs=[];
+        if(p_categ===cLadies && division[0].categories.ladies){
+          console.log('ladyDoubleKOs');
+          shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
+            if (a.sort_idx > b.sort_idx) {
+              return -1;
+              }
+          });
+
+          if(shootersAux.length<3)
+            return  {
+              statusCode:  410,
+              body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Damas). Elimine essa categoria ou inscreva mais participantes.`
+            };
+
+          ladyDoubleKOs= buildMatches(shootersAux);
+          _ret.ladyDoubleKOs= ladyDoubleKOs;
+          cKos.updateOne({ eventId: p_eventId 
+                          ,divisionId: p_divisionId}
+                        ,{ $set: {
+                              eventId: p_eventId
+                              ,divisionId: p_divisionId
+                              ,ladyDoubleKOs: _ret.ladyDoubleKOs
+                              }
+                        }
+                        ,{ upsert: true });
+        }
+
+        let seniorDoubleKOs=[];
+
+        if(p_categ===cSeniors && division[0].categories.seniors){
+          shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
+          // seniorDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
+            if (a.sort_idx > b.sort_idx) {
+              return -1;
+            }
+          });
+
+          if(shootersAux.length<3)
+            return  {
+              statusCode:  411,
+              body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Seniores). Elimine essa categoria ou inscreva mais participantes.`
+            };
+            seniorDoubleKOs= buildMatches(shootersAux);
+
+          _ret.seniorDoubleKOs= seniorDoubleKOs;
+          cKos.updateOne({ eventId: p_eventId 
+                          ,divisionId: p_divisionId}
+                        ,{ $set: {
+                              eventId: p_eventId
+                              ,divisionId: p_divisionId
+                              ,seniorDoubleKOs: _ret.seniorDoubleKOs
+                              }
+                        }
+                        ,{ upsert: true });
+        }
+
+        let opticDoubleKOs=[];
+        if(p_categ===cOptics && division[0].categories.optics){
+          // console.log(`DIVISAOOO OPTICS!!!!!!!`);
+          shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
+          // opticDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
+            if (a.sort_idx > b.sort_idx) {
+            return -1;
+            }
+          });
+          
+          if(shootersAux.length<3)
+            return  {
+              statusCode:  412,
+              body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Optics). Elimine essa categoria ou inscreva mais participantes.`
+            };
+            opticDoubleKOs= buildMatches(shootersAux);
+          _ret.opticDoubleKOs= opticDoubleKOs;
+
+          cKos.updateOne({ eventId: p_eventId 
+                          ,divisionId: p_divisionId}
+          ,{ $set: {
+                    eventId: p_eventId
+                    ,divisionId: p_divisionId
+                    ,opticDoubleKOs: _ret.opticDoubleKOs
+                    }
+            }
+            ,{ upsert: true });
+        }
+
+        let overallDoubleKOs=[];
+        if(p_categ===cOverall && division[0].categories.overall){
+          // console.log(`DIVISAOOO OVERALL!!!!!!!`);
+          shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
+          // overallDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
+            if (a.sort_idx > b.sort_idx) {
+            return -1;
+            }
+          });
+          if(shootersAux.length<3)
+            return  {
+              statusCode:  413,
+              body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Overall/Sport). Elimine essa categoria ou inscreva mais participantes.`
+            };
+            overallDoubleKOs= buildMatches(shootersAux);
+          _ret.overallDoubleKOs= overallDoubleKOs;
+          
+          cKos.updateOne({ eventId: p_eventId 
+                         ,divisionId: p_divisionId}
+          ,{ $set: { 
+                    eventId: p_eventId
+                    ,divisionId: p_divisionId
+                    ,overallDoubleKOs: _ret.overallDoubleKOs
+                    }
+            }
+            ,{ upsert: true });
+        }
+
+        let advancedDoubleKOs=[];
+        if(p_categ===cAdvance && division[0].categories.advance){
+          shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
+          // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
+            if (a.sort_idx > b.sort_idx) {
+            return -1;
+            }
+          });
+          if(shootersAux.length<3)
+            return  {
+              statusCode:  414,
+              body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Avançados). Elimine essa categoria ou inscreva mais participantes.`
+            };
+            advancedDoubleKOs= buildMatches(shootersAux);
+          _ret.advancedDoubleKOs= advancedDoubleKOs;
+          cKos.updateOne({ eventId: p_eventId 
+            ,divisionId: p_divisionId}
+            ,{ $set: { 
+                  eventId: p_eventId
+                  ,divisionId: p_divisionId
+                  ,advancedDoubleKOs: _ret.advancedDoubleKOs
+                  }
+            }
+            ,{ upsert: true });
+        }
+
+        return  {
+          statusCode: 201,
+          body: JSON.stringify(_ret)
+        };
 
       case 'PATCH': // update kos of a division
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
@@ -607,16 +696,7 @@ const handler = async (event, context)=>{
     
         new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
                                           ,divisionId: matchesBody.divisionId}
-                                        ,{ $set: { 
-                                                  eventId: matchesBody.eventId
-                                                  ,divisionId: matchesBody.divisionId
-                                                  ,ladyDoubleKOs: matchesBody.ladyDoubleKOs
-                                                  ,seniorDoubleKOs: matchesBody.seniorDoubleKOs
-                                                  ,opticDoubleKOs: matchesBody.opticDoubleKOs
-                                                  ,overallDoubleKOs: matchesBody.overallDoubleKOs
-                                                  ,advancedDoubleKOs: matchesBody.advancedDoubleKOs
-                                                  }
-                                          }
+                                        ,{ $set: matchesBody}
                                           ,{ upsert: true });
         return  { 
           statusCode: 201,  
@@ -625,29 +705,31 @@ const handler = async (event, context)=>{
 
       case 'DELETE':
 
-      // console.log('Entrou no DELETE dos KOs');
+console.log("0");
         let eventId= event.queryStringParameters.eventId.toString();
         let divisionId= event.queryStringParameters.divisionId.toString();
-        
-        // console.log(`consultando eventId=${eventId}, divisionId:=${divisionId}`);
-
-        if(eventId!==null&&divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
-
+        let categ= Number(event.queryStringParameters.category.toString());
+    
+console.log("1");
+console.log(`${eventId}&&${divisionId}&&${categ}`);
+        if(eventId&&divisionId){ //&&categ
+console.log("2");
           let user= context.clientContext.user;
 
           let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
-            // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
           let isEventAdmin=false;
+console.log("3");
           if(!isAdmin&& user && user.email){
-
+console.log("4");
             //check if the user is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
-            const f_id= new ObjectId(eventId)
+            const f_id= new ObjectId(eventId);
+console.log("5");
             const _e= await cEvent.aggregate( [
               {$match:{_id: f_id
                       , owners: user.email}}
             ]).toArray();
-            
+console.log("6");
             isEventAdmin= (_e.length>0);
           }
 
@@ -658,15 +740,53 @@ const handler = async (event, context)=>{
               body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`
               };
           }
-
-          r_delete_shooter= await cKos.deleteMany({ eventId: eventId 
-                                          ,divisionId: divisionId});
+console.log("7");
+        let _del={};
+        if(categ===cAdvance){
+console.log("8");
+          _del.advancedDoubleKOs="";
+        }else if(categ===cLadies){
+          _del.ladyDoubleKOs="";
+        }else if(categ===cOptics){
+          _del.opticDoubleKOs="";
+        }else if(categ===cSeniors){
+          _del.seniorDoubleKOs="";
+        }else if(categ===cOverall){
+          _del.overallDoubleKOs="";
+console.log("9");
+        }else{
+console.log("10");
+          _del=null;
+        }
+console.log("11");
+          // r_delete_shooter= await cKos.deleteMany({ eventId: eventId 
+          //                                 ,divisionId: divisionId});
+          if(_del!==null){
+            r_delete_shooter= await cKos.updateOne(
+                { eventId: eventId 
+                ,divisionId: divisionId},
+              { $unset: _del }
+            );
+            console.log("12");
+          }else{
+            console.log("13");
+            return  {
+              statusCode:  404,
+              body: `Infor eventId, divisionId and category. Category not found:${categ} `
+            };
+          }
 
 
           return  { 
             statusCode: 201,  
             body: JSON.stringify(r_delete_shooter)
           };
+      }else{
+        console.log("20");
+        return  {
+          statusCode:  404,
+          body: `Infor eventId, divisionId and category`
+        };
       }
 
       default:

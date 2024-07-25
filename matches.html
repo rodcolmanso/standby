@@ -181,7 +181,7 @@
           <div class="tab-pane fade" id="nav-liSeniors" role="tabpanel" aria-labelledby="liSeniors" tabindex="0">
             <div id="scrollspyHeadingSeniors" class="table-responsive small">
               <div class="container-fluid">
-                <div id="seniorsLevelsX" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
+                <div id="seniorsLevels" class="scrolling-wrapper row flex-row flex-nowrap mt-4 pb-4 pt-2"> <!--Todos os níveis -->
                   <div class="col-5 col-matches"> <!------Nivel-->
                   </div>
                 </div>
@@ -229,6 +229,31 @@
     </div>
   </div>
 </div>
+
+<!--MODAL Gerar Duelos-->
+<!-- Modal -->
+<div class="modal fade" id="duelGenerateModal" tabindex="-1" aria-labelledby="duelGenerateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="duelGenerateModalLabel">Geração dos Duelos</h1>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="duel-gen-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary nodisable" id="btn-closemodal-duel-gen" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary hide" onclick="generateKos()">Gerar Duelos</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button trigger duelGenerateModal-->
+<button type="button" id="btn-modal-duel-gen" class="btn btn-primary d-none nodisable" data-bs-toggle="modal" data-bs-target="#duelGenerateModal">
+  Launch duel Generate Modal modal
+</button>
 
 </body>
 
