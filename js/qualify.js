@@ -193,7 +193,7 @@ function changeDivision(selectDivision){
     var queryParams = new URLSearchParams(window.location.search);
 
     // Set new or modify existing parameter value. 
-    queryParams.set("divisionId", selectDivision.value);
+    queryParams.set("selected_division", selectDivision.value);
     // Replace current querystring with the new one.
     // history.replaceState(null, null, "?"+queryParams.toString());
     history.pushState(null, null, "?"+queryParams.toString());
