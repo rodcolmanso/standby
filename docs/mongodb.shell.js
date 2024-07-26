@@ -1306,3 +1306,132 @@ db.time_records.aggregate([
     // ,{$match: _filter}
   ]).sort({ divisionName:1, bestTime:1, shooterName:1, gun:1, optics:1}).toArray();
 //   .sort({ divisionName:1, shooterName:1, gun:1, optics:1, bestTime:1}).toArray();
+
+
+
+
+// --=============================================
+db.kos.aggregate(
+    [//{$match:{eventId:"66958096492636e283f83f4c", divisionId:"00000000492636e283f83f4d"}},
+    {$lookup:
+        {
+            from: "shooters_divisions"
+            ,localField: "divisionId"
+            ,foreignField: "divisionId"
+            ,pipeline: [{$match:{shooterId:"668011c2c06847c9a6515a7b"}}]
+            ,as: "shooters_divisions"
+        }
+    }
+    ,{$match:{shooters_divisions:{$ne:[]}}}
+    ]).toArray();
+
+
+
+    db.time_records.aggregate(
+        [//{$match:{eventId:"66958096492636e283f83f4c", divisionId:"00000000492636e283f83f4d"}},
+        {$lookup:
+            {
+                from: "shooters_divisions"
+                ,localField: "divisionId"
+                ,foreignField: "divisionId"
+                ,let:{"p_shooterId":"$shooterId"}
+                ,pipeline: [{$match:{ $expr:{$and:[{$eq:["$$p_shooterId","$shooterId"]},{shooterId:"6680248cc06847c9a66248f3"}]}}}]
+                ,as: "shooters_divisions"
+            }
+        }
+        ,{$match:{shooters_divisions:{$ne:[]}}}
+        ]).toArray();
+
+
+        db.shooters_divisions.aggregate(
+            [{$match:{eventId:"66958096492636e283f83f4c",divisionId:"00000000492636e283f83f4d"}},
+             {$lookup:{
+                from: "kos"
+                ,localField: "divisionId"
+                ,foreignField: "divisionId"
+                ,as: "kos"
+             }}
+             ,{$match:{kos:{$ne:[]}}}
+
+            ]
+        ).toArray();
+
+
+
+        db.kos.aggregate([
+             {$match:{eventId:"66958096492636e283f83f4c",divisionId:"00000000492636e283f83f4d"}}
+             ,{$addFields:{eventId:{$toObjectId:"$eventId"}}}
+            ,{$lookup:{
+                from: "events"
+                ,localField: "eventId"
+                ,foreignField: "_id"
+                ,as: "events"
+             }}
+            ,{$match:{events:{$ne:[]}}}
+        ]);
+
+
+        db.duel_results.insertMany([{
+            "eventId": "66958096492636e283f83f4c",
+            "divisionId": "00000000492636e283f83f4d",
+            "_category": 0,
+            "duelDate": "2024-07-18T21:00:00.000Z",
+            "duelId": "r.4.0",
+            "shooterDivisionId": "66999869c320bcf6e804e264",
+            "v_shooterId": "6684825ec06847c9a6dd5fe5",
+            "v_shooterName": "Marcos Stolses",
+            "v_gun": "G17",
+            "v_optics": false,
+            "v_gunId": "669c8e49e5d894d10adf6933",
+            "v_gunModel": "G17",
+            "v_gunFactory": "Glock",
+            "d_shooterId": "66648fcdf4d045c776fa7937",
+            "d_shooterName": "Guilherme Rozzino",
+            "d_gun": "TS9",
+            "d_optics": false,
+            "d_gunId": "669c8e49e5d894d10adf6987",
+            "d_gunModel": "TS9",
+            "d_gunFactory": "Taurus",
+            "v_reward": "silver",
+            "d_reward": "bronze"
+          }]);
+
+
+
+// ============================================================
+,{$group: {
+    _id: {divisionName: "$fixDivisionName"
+         ,shooterId:"$shooterId"
+         ,eventId: "$eventId"
+         ,shooterName:"$shooterName"
+         ,eventName: "$eventName"
+         ,local: "$local"
+         ,clockDate: "$clockDate"
+         ,gunFullName: "$gunFullName"
+         ,type: "$type"
+         ,gunId: "$gunId"
+         ,optics: "$optics"}
+         ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
+    }
+
+"661be2184277ae7378717fe3"
+db.duel_results.aggregate([
+    {$group:{
+        _id:["$v_shooterId"
+            //  ,"$d_shooterId"
+             ,"$v_reward"
+            //  ,"$d_reward"
+            ]
+        ,count:{$count:{}}
+    }}
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$_id", 0 ] }, "$$ROOT" ] } } }
+    ,{$project: {_id:0} }
+]);
+
+
+"$group":
+                {
+                    _id:["$shooterId","$divisionId"],
+                    tries:{$count:{}},
+                    score:{$min:"$score"}
+                }}

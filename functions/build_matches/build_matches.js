@@ -448,7 +448,7 @@ const handler = async (event, context)=>{
 
     let p_eventId= event.queryStringParameters.eventId?event.queryStringParameters.eventId.toString():null;
     let p_divisionId= event.queryStringParameters.divisionId?event.queryStringParameters.divisionId.toString():null;
-    let p_categ= event.queryStringParameters.category?Number(event.queryStringParameters.category.toString()):null;
+    let p_categ= event.queryStringParameters.category?event.queryStringParameters.category.toString():null;
     
     switch (event.httpMethod){
         
@@ -460,19 +460,19 @@ const handler = async (event, context)=>{
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
           let _ret={};
           if(division_matches.length>0){
-            if(p_categ===cAdvance && division_matches[0].advancedDoubleKOs && division_matches[0].advancedDoubleKOs.length>0){
+            if(p_categ===""+cAdvance && division_matches[0].advancedDoubleKOs && division_matches[0].advancedDoubleKOs.length>0){
                  _ret.advancedDoubleKOs=division_matches[0].advancedDoubleKOs;
                 // console.log(`1. _ret.advancedDoubleKOs=${_ret.advancedDoubleKOs}`);
-            }else if(p_categ===cLadies && division_matches[0].ladyDoubleKOs && division_matches[0].ladyDoubleKOs.length>0){
+            }else if(p_categ===""+cLadies && division_matches[0].ladyDoubleKOs && division_matches[0].ladyDoubleKOs.length>0){
               _ret.ladyDoubleKOs=division_matches[0].ladyDoubleKOs;
               // console.log(`2. _ret.ladyDoubleKOs=${_ret.ladyDoubleKOs}`);
-            }else if(p_categ===cOptics && division_matches[0].opticDoubleKOs && division_matches[0].opticDoubleKOs.length>0){
+            }else if(p_categ===""+cOptics && division_matches[0].opticDoubleKOs && division_matches[0].opticDoubleKOs.length>0){
               _ret.opticDoubleKOs=division_matches[0].opticDoubleKOs;
               // console.log(`3. _ret.opticDoubleKOs=${_ret.opticDoubleKOs}`);
-            }else if(p_categ===cSeniors && division_matches[0].seniorDoubleKOs && division_matches[0].seniorDoubleKOs.length>0){
+            }else if(p_categ===""+cSeniors && division_matches[0].seniorDoubleKOs && division_matches[0].seniorDoubleKOs.length>0){
               _ret.seniorDoubleKOs=division_matches[0].seniorDoubleKOs;
               // console.log(`4. _ret.seniorDoubleKOs=${_ret.seniorDoubleKOs}`);
-            }else if((!p_categ||p_categ===cOverall) && division_matches[0].overallDoubleKOs!==undefined && division_matches[0].overallDoubleKOs.length>0){
+            }else if((!p_categ||p_categ===""+cOverall) && division_matches[0].overallDoubleKOs!==undefined && division_matches[0].overallDoubleKOs.length>0){
               _ret.overallDoubleKOs=division_matches[0].overallDoubleKOs;
               // console.log(`5. _ret.overallDoubleKOs=${_ret.overallDoubleKOs}`);
             }else{
@@ -519,7 +519,7 @@ const handler = async (event, context)=>{
 
 
         let ladyDoubleKOs=[];
-        if(p_categ===cLadies && division[0].categories.ladies){
+        if(p_categ===""+cLadies && division[0].categories.ladies){
           // console.log('ladyDoubleKOs');
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cLadies).sort((a, b) => {
             if (a.sort_idx > b.sort_idx) {
@@ -548,7 +548,7 @@ const handler = async (event, context)=>{
 
         let seniorDoubleKOs=[];
 
-        if(p_categ===cSeniors && division[0].categories.seniors){
+        if(p_categ===""+cSeniors && division[0].categories.seniors){
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
           // seniorDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cSeniors).sort((a, b) => {
             if (a.sort_idx > b.sort_idx) {
@@ -576,7 +576,7 @@ const handler = async (event, context)=>{
         }
 
         let opticDoubleKOs=[];
-        if(p_categ===cOptics && division[0].categories.optics){
+        if(p_categ===""+cOptics && division[0].categories.optics){
           // console.log(`DIVISAOOO OPTICS!!!!!!!`);
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
           // opticDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOptics).sort((a, b) => {
@@ -605,7 +605,7 @@ const handler = async (event, context)=>{
         }
 
         let overallDoubleKOs=[];
-        if(p_categ===cOverall && division[0].categories.overall){
+        if(p_categ===""+cOverall && division[0].categories.overall){
           // console.log(`DIVISAOOO OVERALL!!!!!!!`);
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
           // overallDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cOverall).sort((a, b) => {
@@ -633,7 +633,7 @@ const handler = async (event, context)=>{
         }
 
         let advancedDoubleKOs=[];
-        if(p_categ===cAdvance && division[0].categories.advance){
+        if(p_categ===""+cAdvance && division[0].categories.advance){
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
           // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
             if (a.sort_idx > b.sort_idx) {
@@ -708,7 +708,7 @@ const handler = async (event, context)=>{
 // console.log("0");
         let eventId= event.queryStringParameters.eventId.toString();
         let divisionId= event.queryStringParameters.divisionId.toString();
-        let categ= Number(event.queryStringParameters.category.toString());
+        let categ= event.queryStringParameters.category.toString();
     
 // console.log("1");
 // console.log(`${eventId}&&${divisionId}&&${categ}`);
@@ -742,16 +742,16 @@ const handler = async (event, context)=>{
           }
 // console.log("7");
         let _del={};
-        if(categ===cAdvance){
+        if(categ===""+cAdvance){
 // console.log("8");
           _del.advancedDoubleKOs="";
-        }else if(categ===cLadies){
+        }else if(categ===""+cLadies){
           _del.ladyDoubleKOs="";
-        }else if(categ===cOptics){
+        }else if(categ===""+cOptics){
           _del.opticDoubleKOs="";
-        }else if(categ===cSeniors){
+        }else if(categ===""+cSeniors){
           _del.seniorDoubleKOs="";
-        }else if(categ===cOverall){
+        }else if(categ===""+cOverall){
           _del.overallDoubleKOs="";
 // console.log("9");
         }else{
