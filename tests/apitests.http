@@ -58,11 +58,49 @@ GET http://localhost:8888/.netlify/functions/shooters_divisions?eventId=661ab4f9
 GET http://localhost:8888/.netlify/functions/guns
 
 
+###  &divisionId=000000006018d78882298a4c&category=5
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6667413bc1a9d669a8b4d7a2
+
+
+
 ###
-PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=66958096492636e283f83f4c&divisionId=00000000492636e283f83f4d&category=5
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6634cb8eca4cc35cc2bbed37
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6640c844109c47cb34890fae
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6667413bc1a9d669a8b4d7a2
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=66702937628fd8e349840a0a
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6670db0f75a075d179f41097
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=664e66ddfcfb516b8696925e
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=6681e5bce9cc6ac4c9e16d56
+###
+PATCH http://localhost:8888/.netlify/functions/duel_results?eventId=66958096492636e283f83f4c
+
+
+
+
+
+####
+PATCH http://tpmonline.com.br/.netlify/functions/duel_results?eventId=66958096492636e283f83f4c&divisionId=00000000492636e283f83f4
 
 ####
 GET http://localhost:8888/.netlify/functions/duel_results?eventId=66958096492636e283f83f4c&divisionId=00000000492636e283f83f4d&category=5
+
+
+
+
+#####
+GET http://localhost:8888/.netlify/functions/duel_results?shooterA=669988b5c320bcf6e804e250&shooterB=6699b788945fc3e02a61fa7f&divisioName=Pistola
+
+# /.netlify/functions/duel_results?shooterA=661ab6ae501fc2cd2ff558e1&shooterB=661be2184277ae7378717fe3&divisioName=Pistola
+
+
+
+
 
 ###
 GET http://localhost:8888/.netlify/functions/shooters_divisions_v2?eventId=661ab4f9c412f4a5f17f0624

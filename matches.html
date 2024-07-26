@@ -111,20 +111,16 @@
   <!-- Custom styles for this template -->
   <link href="/css/matches.css" rel="stylesheet">
 </head>
-
 <body>
-
   <header-component></header-component>
-
-      <main class="px-md-4">
-        
+    <main class="px-md-4">
         <!-- ----- justify-content-between-->
         <div class=""><!-- flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom-->
             <division-component></division-component>
             <nav class="navbar-fixed-top">
               <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nodisable nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
                 <button class="nodisable nav-link  active" id="liOverall" data-bs-toggle="tab" data-bs-target="#nav-liOverall" type="button" role="tab" aria-controls="nav-liOverall" aria-selected="true">Overall</button>
+                <button class="nodisable nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
                 <button class="nodisable nav-link "        id="liLadies" data-bs-toggle="tab" data-bs-target="#nav-liLadies" type="button" role="tab" aria-controls="nav-liLadies" aria-selected="false">Damas</button>
                 <button class="nodisable nav-link "        id="liOptics" data-bs-toggle="tab" data-bs-target="#nav-liOptics" type="button" role="tab" aria-controls="nav-liOptics" aria-selected="false">Optics</button>
                 <button class="nodisable nav-link "        id="liSeniors" data-bs-toggle="tab" data-bs-target="#nav-liSeniors" type="button" role="tab" aria-controls="nav-liSeniors" aria-selected="false">Seniors</button>
@@ -211,25 +207,6 @@
   <script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
   <script src="./js/matches.js" type="text/javascript" defer></script>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!--MODAL Gerar Duelos-->
 <!-- Modal -->
 <div class="modal fade" id="duelGenerateModal" tabindex="-1" aria-labelledby="duelGenerateModalLabel" aria-hidden="true">
@@ -252,6 +229,127 @@
 
 <!-- Button trigger duelGenerateModal-->
 <button type="button" id="btn-modal-duel-gen" class="btn btn-primary d-none nodisable" data-bs-toggle="modal" data-bs-target="#duelGenerateModal">
+  Launch duel Generate Modal modal
+</button>
+
+<!--MODAL Compere Shooters-->
+<!-- Modal -->
+<div class="modal fade modal-xl" id="duelCompareModal" tabindex="-1" aria-labelledby="duelCompareModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="duelCompareModalLabel">Shooter vs Shooter</h1>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="duel-compare-body">
+      <!---------->
+      <h4 class="text-center" id="compareDivisionName"></h4>
+        <div class="row ">
+          <div class="col-md-2 d-none d-xl-block ">
+            <div class="well ">
+              <span id="compareNameA"></span>
+              <img id="pic-profileCompareA"  alt="Foto de Perfil" class="img-fluid mb-3" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/663ee497653ca9fccd572c88.jpg?b4dae3c6-6d08-4565-83b8-646e65bf3c7e" />
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="vA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Vitórias</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="vB">12</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="dA">21</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Derrotas</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="dB">22</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="dvA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Confrontos Diretas</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="dvB">12</div>
+              </div>
+            </div>
+            <!--
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="ddA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Derroras Diretas</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="ddB">12</div>
+              </div>
+            </div>
+            -->
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="goldA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Ouros</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="goldB">12</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="silverA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Pratas</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="silverB">12</div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="well text-end" id="bronzeA">10</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well text-center">Bronzes</div>
+              </div>
+              <div class="col-md-4">
+                <div class="well" id="bronzeB">12</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 d-none d-xl-block">
+            <div class="well">
+              <span id="compareNameB"></span>
+              <img id="pic-profileCompareB"  alt="Foto de Perfil" class="img-fluid mb-3" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/663ee497653ca9fccd572c88.jpg?b4dae3c6-6d08-4565-83b8-646e65bf3c7e" />
+            </div>
+          </div>
+        </div>
+      <!---------->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary nodisable" id="btn-closemodal-duel-gen" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button trigger duelCompareModal-->
+<button type="button" id="btn-modal-compareduel" class="btn btn-primary d-none nodisable" data-bs-toggle="modal" data-bs-target="#duelCompareModal">
   Launch duel Generate Modal modal
 </button>
 

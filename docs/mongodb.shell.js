@@ -1435,3 +1435,34 @@ db.duel_results.aggregate([
                     tries:{$count:{}},
                     score:{$min:"$score"}
                 }}
+
+
+
+
+
+
+
+
+                db.duel_results.find({gundId:""})
+
+
+//====================================
+db.duel_results.updateMany({divisionName:{$regex:/força/i}}, {$set:{divisionName:"Força livre"}})
+
+//====================================
+countDocuments
+db.duel_results.find({ $and:[ {divisionName:"Pistola"} ,{$or:[{v_shooterId:{$in:["661ab6ae501fc2cd2ff558e1","661be2184277ae7378717fe3"]}},{d_shooterId:{$in:["661ab6ae501fc2cd2ff558e1","661be2184277ae7378717fe3"]}}]}]})
+                     {"$and":[{"divisionName":"661be2184277ae7378717fe3"},{"$or":[{"v_shooterId":{"$in":["661ab6ae501fc2cd2ff558e1","661be2184277ae7378717fe3"]}},{"d_shooterId":{"$in":["661ab6ae501fc2cd2ff558e1","661be2184277ae7378717fe3"]}}]}]}
+
+
+//====================================
+{"divisionId":"000000006018d78882298a4c","divisionName":"Pistola"
+,"shooterA":{"shooterId":"661ab6ae501fc2cd2ff558e1","victories":11,"defeats":10,"direct_victories":2,"direct_defeats":2,"gold_reward":1,"silver_reward":0,"bronze_reward":2}
+,"shooterB":{"shooterId":"661be2184277ae7378717fe3","victories":14,"defeats":12,"direct_victories":2,"direct_defeats":2,"gold_reward":1,"silver_reward":2,"bronze_reward":1}}
+                        
+db.duel_results.find({divisionName:"Pistola", v_shooterId:"661ab6ae501fc2cd2ff558e1"});
+db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661ab6ae501fc2cd2ff558e1"});
+
+
+db.duel_results.find({divisionName:"Pistola", v_shooterId:"661be2184277ae7378717fe3"});
+db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661be2184277ae7378717fe3"});

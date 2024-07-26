@@ -387,7 +387,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
             <div class="dropdown">
                 <div  class="nodisable" data-bs-toggle="dropdown" aria-expanded="false">
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
+                    <li><a class="dropdown-item" 
+                    onclick="compareShooters('${mainMatches[round][match].shooterA.shooterId}', '${mainMatches[round][match].shooterA.name}', '${mainMatches[round][match].shooterB.shooterId}', '${mainMatches[round][match].shooterB.name}', '')"
+                    ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
   <path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
 </svg> ${mainMatches[round][match].shooterA.name.substring(0,mainMatches[round][match].shooterA.name.indexOf(" "))} vs ${mainMatches[round][match].shooterB.name.substring(0,mainMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
                     <li><a class="dropdown-item" onClick="goShot()" ><i class="bi bi-fire"></i> Atira</a></li>
@@ -1020,7 +1022,6 @@ function getDivision(eventDivisions, divisionID){
     }
 }
 
-
 // function getSelectedCat(){
 
 //     if(document.getElementById("liOverall").ariaSelected){
@@ -1081,3 +1082,84 @@ triggerTabList.forEach(triggerEl => {
     
   })
 })
+
+function compareShooters(shooterIdA, shooterNameA, shooterIdB, shooterNameB, divisionName){
+
+    var sel = document.getElementById('selectDivision');
+    var divisionName= sel.options[sel.selectedIndex].text;
+    
+    document.getElementById('duelCompareModalLabel').innerText= shooterNameA + ' vs '+shooterNameB;
+    document.getElementById('compareDivisionName').innerText= divisionName;
+
+    document.getElementById('compareNameA').innerText= shooterNameA;
+    document.getElementById('compareNameB').innerText= shooterNameB;
+
+
+    document.getElementById('pic-profileCompareA').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/"+shooterIdA+".jpg?"+uuidv4();
+    document.getElementById('pic-profileCompareB').src="https://res.cloudinary.com/duk7tmek7/image/upload/c_limit/d_defaults:generic_avatar.jpg/profile/"+shooterIdB+".jpg?"+uuidv4();
+    
+// ------------------------------
+    applySpinners(false);
+
+    const user= netlifyIdentity.currentUser();
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
+    
+
+    fetch(`/.netlify/functions/duel_results?shooterA=${shooterIdA}&shooterB=${shooterIdB}&divisionName=${divisionName}` , {
+        method: "GET",
+        headers: _headers
+        }
+    ).then(response => response.json()
+    ).then(json => {
+            if(json){
+                
+                console.log(`JSON.stringify(json)= ${JSON.stringify(json)}`);
+
+                perVicA= (json.shooterA.victories+json.shooterA.defeats)>0?Math.round(json.shooterA.victories/(json.shooterA.victories+json.shooterA.defeats)*100) +'%':'';
+                perDefA= (json.shooterA.victories+json.shooterA.defeats)>0?Math.round(json.shooterA.defeats/(json.shooterA.victories+json.shooterA.defeats)*100) +'%':'';
+
+                perVicB= (json.shooterB.victories+json.shooterB.defeats)>0?Math.round(json.shooterB.victories/(json.shooterB.victories+json.shooterB.defeats)*100) +'%':'';
+                perDefB= (json.shooterB.victories+json.shooterB.defeats)>0?Math.round(json.shooterB.defeats/(json.shooterB.victories+json.shooterB.defeats)*100) +'%':'';
+
+
+                perDircVicA= (json.shooterA.direct_victories+json.shooterA.direct_defeats)>0?Math.round(json.shooterA.direct_victories/(json.shooterA.direct_victories+json.shooterA.direct_defeats)*100) +'%':'';
+                perDircVicB= (json.shooterB.direct_victories+json.shooterB.direct_defeats)>0?Math.round(json.shooterB.direct_victories/(json.shooterB.direct_victories+json.shooterB.direct_defeats)*100) +'%':'';
+
+                perDirecDefA= (json.shooterA.direct_victories+json.shooterA.direct_defeats)>0?Math.round(json.shooterA.direct_defeats/(json.shooterA.direct_victories+json.shooterA.direct_defeats)*100) +'%':'';
+                perDirecDefB= (json.shooterB.direct_victories+json.shooterB.direct_defeats)>0?Math.round(json.shooterB.direct_defeats/(json.shooterB.direct_victories+json.shooterB.direct_defeats)*100) +'%':'';
+
+
+                document.getElementById('vA').innerHTML= ` ${json.shooterA.victories}  <span class="text-small"> (${perVicA}) </span>`;
+                document.getElementById('vB').innerHTML= ` ${json.shooterB.victories}  <span class="text-small"> (${perVicB}) </span>`;
+                
+                document.getElementById('dA').innerHTML= ` ${json.shooterA.defeats}  <span class="text-small"> (${ perDefA}) </span>`;
+                document.getElementById('dB').innerHTML= ` ${json.shooterB.defeats}  <span class="text-small"> (${ perDefB}) </span>`;
+
+                document.getElementById('dvA').innerHTML= ` ${json.shooterA.direct_victories}  <span class="text-small"> (${ perDircVicA}) </span>`;
+                document.getElementById('dvB').innerHTML= ` ${json.shooterB.direct_victories}  <span class="text-small"> (${ perDircVicB}) </span>`;
+
+                // document.getElementById('ddA').innerHTML= ` ${json.shooterA.direct_defeats}  <span class="text-small"> (${perDirecDefA}) </span>`;
+                // document.getElementById('ddB').innerHTML= ` ${json.shooterB.direct_defeats}  <span class="text-small"> (${ perDirecDefB}) </span>`;
+
+                document.getElementById('goldA').innerHTML= json.shooterA.gold_reward;
+                document.getElementById('goldB').innerHTML= json.shooterB.gold_reward;
+                
+                document.getElementById('silverA').innerHTML= json.shooterA.silver_reward;
+                document.getElementById('silverB').innerHTML= json.shooterB.silver_reward;
+
+                document.getElementById('bronzeA').innerHTML= json.shooterA.bronze_reward;
+                document.getElementById('bronzeB').innerHTML= json.shooterB.bronze_reward;
+                document.getElementById('btn-modal-compareduel').click();
+
+            }else{ 
+                alert(`Não encontrado`);
+             }
+            
+        }
+    ).catch(err => {console.log(`Error getting user rank: ${err}`); alert(`Erro ao comparar atiradores.`); }
+    ).finally(()=> {applySpinners(false);});
+}
+// ------------------------------
