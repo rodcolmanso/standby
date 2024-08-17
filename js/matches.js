@@ -724,7 +724,9 @@ function saveDivision(){
             // alert('Partidas Salvas');
         })
         .catch(err => {console.log(`Error updating matches. Error: ${err}`);
-                        alert('Erro ao salvar duelo. Tente novamente!');})
+                        alert('Erro ao salvar duelo. Tente novamente!');
+                        window.location.reload();
+                    })
         .finally(()=> applySpinners(false));
 }//function saveDivision(){
 
