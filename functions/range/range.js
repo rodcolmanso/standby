@@ -30,7 +30,7 @@ const handler = async (event, context)=>{
 
           console.log('isAdmin='+isAdmin);
 
-            filter.$or=[{active:{$exists:isAdmin}, _id: new ObjectId(p_rangeId)},
+            filter.$or=[{active:{$exists:isAdmin}}, {_id: new ObjectId(p_rangeId)},
               {adm: {$eq:context.clientContext.user.email}}
             ];
 
