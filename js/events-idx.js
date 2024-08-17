@@ -16,6 +16,7 @@ const cAdvance= 1;
 const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
+let ranges=[];
 let loggedUser=null;
    
 let events;
@@ -26,6 +27,25 @@ let isAdmin=false;
 netlifyIdentity.on('close', () => {
     search();
 });
+
+const promiseOfRanges = (_rangeId, _identityUser)=>{
+    _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
+        
+    let _headers;
+    if(_identityUser!==null){
+        _headers= {"Content-type": "application/json; charset=UTF-8"
+                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
+    }else{
+        _headers= {"Content-type": "application/json; charset=UTF-8"}
+    }
+    return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
+        method: "GET",
+        // body: JSON.stringify(eventConfig),
+        headers: _headers}).then(r=>r.json())
+        .then(data => {
+                return data
+        })
+};
 
 window.onload = async () => {
 
@@ -39,6 +59,9 @@ window.onload = async () => {
             await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
         }
          isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+         applySpinners(true);
+        ranges = await promiseOfRanges(null,user);
+        applySpinners(false);
     }
     
     const url= window.location.toString();
@@ -53,6 +76,7 @@ window.onload = async () => {
         }
 
         applySpinners(true);
+
         fetch("/.netlify/functions/events?short_id="+args[0],
             {method: "GET"
             ,headers: _headers}
@@ -170,8 +194,8 @@ function buildEventsTable(events){
                         </div>
                     </div>`;
     
-    if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles 
-    &&(netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0 || netlifyIdentity.currentUser().app_metadata.roles.indexOf("super")>=0))
+    if(ranges.length>0|| (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles 
+    &&(netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0 || netlifyIdentity.currentUser().app_metadata.roles.indexOf("super")>=0)))
         document.getElementById('events-table').innerHTML+= newEvent;
 
     var utc = new Date();

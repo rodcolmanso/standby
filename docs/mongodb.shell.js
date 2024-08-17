@@ -1466,3 +1466,128 @@ db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661ab6ae501
 
 db.duel_results.find({divisionName:"Pistola", v_shooterId:"661be2184277ae7378717fe3"});
 db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661be2184277ae7378717fe3"});
+
+
+
+
+// ==================
+
+db.guns.insertOne({
+type: "Carabina"
+,factory: "Tippmann"
+,model: "CR2"
+,caliber: ".22LR"
+,operation: "Semi-auto"
+})
+
+
+
+//===================
+
+const clubs= [{ local: 'Assault',address: 'Estrada Velha do Mar, 3100 - Riacho Grande',city: 'São Bernardo do Campo',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'Naja',address: 'Rua do Manifesto, 1421 - Ipiranga - SP',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'CT Rangers',address: 'Rua Raphael Perissinoto, km 1 - Rural',city: 'Paulínia',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'CT Raposo',address: 'R. Ifema, 1166',city: 'Vargem Grande Paulista',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'CT São Roque',address: 'Estrada do Paraíso, 274',city: 'São Roque',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'CTR Rangers Paulínia',address: '',city: 'Paulínia',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'CTR Rangers Cosmópolis',address: '',city: 'Cosmópolis',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'Continental - SBC',address: '',city: 'SBC',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'OPS Adventure',address: 'Av. Dom Pedro I, 221 - Vila América',city: 'Santo André',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'Raid Alphaville ',address: 'Al. Araguaia, 401',city: 'Barueri ',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'The Continental', address: 'Av. Índico, 759', city: 'São Bernardo do Campo', state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'The Redneck Club',address: 'Av Pauliceia, 5049',city: 'Caieiras',state: 'SP', adm: ['pris.rocha@gmail.com']}
+,{ local: 'Typhoon',address: 'Rua João Rudge, 294 - Casa Verde',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com']}];
+db.ranges.insertMany(clubs);
+
+db.ranges.insertOne({ name: 'Opsrange',address: 'Av. Pedro Bueno, 690 - Aeroporto Congonhas',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com','rmanso@outlook.com'], active:true});
+
+
+db.events.aggregate([
+    {$group:{_id:{local:'$local', address:'$address', city:'$city', state:'$state'} }}
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$clube", 0 ] }, "$$ROOT" ] } } }
+])
+
+
+
+
+db.events.updateMany({local:{$regex:/assaul/i}}, {$set:{rangeId:'66bb69bb55b6d11c7ed7a60a'}});
+
+db.events.find({local:{$regex:/naja/i}, rangeId:{$exists:false}});
+db.events.updateMany({local:{$regex:/naja/i}, rangeId:{$exists:false}}, {$set:{rangeId:'66bb69bb55b6d11c7ed7a60b'}});
+
+db.events.find({local:{$regex:/raposo/i}});
+db.events.updateMany({local:{$regex:/raposo/i}}, {$set:{rangeId:'66bb69bb55b6d11c7ed7a60d'}});
+
+db.events.find({local:{$regex:/roque/i}, rangeId:{$exists:false}});
+db.events.updateMany({local:{$regex:/roque/i}, rangeId:{$exists:false}}, {$set:{rangeId:'66bb69bb55b6d11c7ed7a60e'}});
+
+
+db.events.find({rangeId:{$exists:false}});
+db.events.updateMany({rangeId:{$exists:false}}, {$set:{rangeId:'66bbd18655b6d11c7ed7a617'}});
+
+
+db.events.find({local:{$regex:/ct ct/i}, rangeId:{$exists:false}});
+db.events.updateMany({local:{$regex:/ct ct/i}, rangeId:{$exists:false}}, {$set:{rangeId:'66bbd18655b6d11c7ed7a617'}});
+
+db.ranges.find({name:{$regex:/tEST/i}, adm:{$eq:'rmanso@outlook.com'}});
+
+
+
+db.events.aggregate( [
+    // Stage 1: Filter
+    {
+       $match: {_id:ObjectId('66ac2ba6821d4b8174e46b8f')}
+    }
+    // Stage 1: Leftjoin with range
+    ,{ "$addFields": { "_rangeId": { "$toObjectId": "$rangeId" }}}
+    ,{$lookup: {from: "ranges"
+               ,localField: "_rangeId"
+               ,foreignField: "_id"
+               ,as: "range"
+    }
+
+    }
+    // Stage 2: Leftjoin with divisions
+    ,{ "$addFields": { "eventId": { "$toString": "$_id" }, "eventIdd": { "$toString": "$_id" }}}
+    ,{
+      $lookup:
+        {
+          from: "divisions",
+          localField: "eventId",
+          foreignField: "eventId",
+          as: "divisions"
+          ,pipeline:[
+            { "$addFields": { "divisionId": { "$toString": "$_id" }}}
+            ,{$lookup:{ from: "shooters_divisions"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "count_shooters_divisions"
+                      ,pipeline:[
+                        {$group: {_id: "$divisionId"
+                                  ,subscribers:{$sum:1}}}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$count_shooters_divisions", 0 ] }, "$$ROOT" ] } } }
+            ,{$lookup:{ from: "time_records"
+                      ,localField: "divisionId"
+                      ,foreignField: "divisionId"
+                      ,as: "best"
+                      ,pipeline:[
+                        { "$addFields": { "_penalty": {$sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}}}
+                        ,{$group: {_id: "$divisionId"
+                                  ,best_score:{$min:"$_penalty"}
+                        }}
+                      ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$best", 0 ] }, "$$ROOT" ] } } }
+          ]
+        }
+   }
+   ,{"$project":{"divisions.count_shooters_divisions":0, "divisions.best":0}}
+    // Stage 3: Sort events by event_date in descending order
+  ,{
+       $sort: { "date": 1 }
+    }
+  ] )

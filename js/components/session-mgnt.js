@@ -53,8 +53,8 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
             return null;
         })
     }
-    };
 
+};
 
 let dbUser={};
 // let loggedUser={};

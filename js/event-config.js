@@ -1,19 +1,3 @@
-// const urlSearchParams = new URLSearchParams(window.location.search);
-// const params = Object.fromEntries(urlSearchParams.entries());
-
-// const event_id = params.event_id;
-// let promiseOfEventConfig=null;
-//6578ad76e53c8b23971032c4
-
-// if(event_id!=='0'){
-//     console.log(`event_id= ${event_id}`);
-//     promiseOfEventConfig = fetch("/.netlify/functions/eventconfig?eventId="+event_id)
-//         .then(r=>r.json())
-//         .then(data => {
-//         return data;
-//     });
-// }
-
 const cOverall= 0;
 const cAdvance= 1;
 const cLadies= 2;
@@ -21,6 +5,7 @@ const cOptics= 4;
 const cSeniors= 5;
    
 let eventConfig=null;
+let ranges=null;
 
 function hrefQualify(){
     if(eventConfig._id!=0)
@@ -31,17 +16,65 @@ function hrefMatches(){
     if(eventConfig._id!=0)
         window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
+const promiseOfRanges = (_rangeId, _identityUser)=>{
+    _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
+        
+    let _headers;
+    if(_identityUser!==null){
+        _headers= {"Content-type": "application/json; charset=UTF-8"
+                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
+    }else{
+        _headers= {"Content-type": "application/json; charset=UTF-8"}
+    }
+    return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
+        method: "GET",
+        // body: JSON.stringify(eventConfig),
+        headers: _headers}).then(r=>r.json())
+        .then(data => {
+                return data
+        })
+};
+
+document.getElementById("event-local").addEventListener('change', function (ev) {
+    
+    document.getElementById('event-address').value='';
+    document.getElementById('event-city').value='';
+    document.getElementById('event-state').value='';
+
+    for(let r=0; ranges && r<ranges.length; r++){
+        if(ranges[r]._id===ev.target.value){
+            document.getElementById('event-address').value= ranges[r].address;
+            document.getElementById('event-city').value= ranges[r].city;
+            document.getElementById('event-state').value= ranges[r].state;
+        }
+    }
+
+  });
 
 async function loadPage(eId){
     loggedUser= netlifyIdentity.currentUser();
 
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(eId,loggedUser);
+
     applySpinners(false);
+    document.getElementById('event-address').disabled=true;
+    document.getElementById('event-city').disabled=true;
+    document.getElementById('event-state').disabled=true;
 
     if(eventConfig==null){ // New event
-        eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString()
+        eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString(), "rangeId":null
         ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0};
+    }
+
+    ranges = await promiseOfRanges(eventConfig.rangeId?eventConfig.rangeId:null,loggedUser);
+
+    if(ranges.length>1)
+        document.getElementById('event-local').add(new Option("",""),undefined);
+
+    for(let i=0; i< ranges.length;i++){
+        newOption = new Option(ranges[i].name,ranges[i]._id);
+        document.getElementById('event-local').add(newOption,undefined);
     }
 
     eventConfig.imgChanged=false;
@@ -80,7 +113,8 @@ async function loadPage(eId){
     document.getElementById('event-date').disabled= !eventConfig.clock;
     document.getElementById('event-date-duel').disabled= !eventConfig.duel;
 
-    document.getElementById('event-local').value= eventConfig.local;
+    // document.getElementById('event-local').value= eventConfig.local;
+    document.getElementById('event-local').value= eventConfig.rangeId;
     
     document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_450,w_600/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
     
@@ -106,6 +140,9 @@ async function loadPage(eId){
 
     buildDivisionTable(eventConfig);
     applySpinners(false);
+    document.getElementById('event-address').disabled=true;
+    document.getElementById('event-city').disabled=true;
+    document.getElementById('event-state').disabled=true;
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     
@@ -203,7 +240,12 @@ function loadTriesReport(_event){
                 
             })
             .catch(err => console.log(`Error getting, logged user: ${err}`))
-            .finally(()=> applySpinners(false));
+            .finally(()=> {
+                applySpinners(false);
+                document.getElementById('event-address').disabled=true;
+                document.getElementById('event-city').disabled=true;
+                document.getElementById('event-state').disabled=true;
+            });
     }
     
 }
@@ -211,7 +253,7 @@ function loadTriesReport(_event){
 window.onload = async () => {
 
     await loadPage(null);
-
+    
     if(params.rel)
         document.getElementById('btn-relat-tries').click();
     
@@ -273,6 +315,7 @@ function updateEventConfig(){
     }
     
     eventConfig.local= document.getElementById('event-local').value;
+    eventConfig.rangeId= document.getElementById('event-local').value;
     eventConfig.note= document.getElementById('event-note').value;
     // eventConfig.img= document.getElementById('event-img').value;
     eventConfig.owners= document.getElementById('event-owners').value.toLowerCase().replace(/\s/g, '').split(";");
@@ -357,7 +400,12 @@ function updateEventConfig(){
                         // location.reload(true);
                     })
                     .catch(err => console.log(`Error adding, updating eventConfig: ${err}`))
-                    .finally(()=> applySpinners(false));
+                    .finally(()=> {
+                        applySpinners(false);
+                        document.getElementById('event-address').disabled=true;
+                        document.getElementById('event-city').disabled=true;
+                        document.getElementById('event-state').disabled=true;
+                    });
 
 }
 
@@ -513,37 +561,6 @@ function deleteDivision(_idIndex){
     buildDivisionTable(eventConfig);
 }
 
-// function applySpinners(onoff){
-
-//     let _button = document.querySelectorAll("button");
-//     [].forEach.call(_button,btn=>{
-//         btn.disabled=onoff;
-
-//         if(btn.getAttribute('class'!=null)&&(btn.getAttribute('class').includes("btn-danger")
-//             ||btn.getAttribute('class').includes("btn-secondary")
-//             // ||btn.getAttribute('class').includes("btn-info")
-//             ||btn.getAttribute('class').includes("btn-primary"))) {
-
-//             if(onoff)
-//                 btn.innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-//             else
-//                 btn.innerHTML= `<span>${btn.getAttribute('value')}</span>`;
-//         }
-
-//         spans= btn.querySelectorAll("span");
-//         [].forEach.call(spans,span=>{
-//             if(span.getAttribute('class').includes("spinner")){
-//                 if(onoff){
-//                     span.style.visibility = 'visible'//'visible'; //'hidden'
-//                 }else{
-//                     span.style.visibility = 'hidden'//'visible'; //'hidden'
-//                 }
-//             }
-//             }
-//                     );
-//     });
-// }
-
 function disableInputsHere(onOff){
 
     let _button = document.querySelectorAll("button");
@@ -574,7 +591,11 @@ function disableInputsHere(onOff){
         btn.disabled=onOff;        
         });
 
-        document.getElementById('btn-salvar-geral').disabled=onOff;
+    document.getElementById('btn-salvar-geral').disabled=onOff;
+
+    document.getElementById('event-address').disabled=true;
+    document.getElementById('event-city').disabled=true;
+    document.getElementById('event-state').disabled=true;
 
 }
 

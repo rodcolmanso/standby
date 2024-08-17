@@ -26,9 +26,6 @@ const handler = async (event, context) => {
     switch (event.httpMethod){
       case 'GET':
         
-        // const subject = event.queryStringParameters.name || 'World'
-        // const p_eventId= event.queryStringParameters.eventId.toString();
-        
         let p_event_date_from="2021-12-31";
         let p_event_date_to="2099-12-31";
         let p_split_duels="0";
@@ -90,14 +87,20 @@ const handler = async (event, context) => {
 
         
         let events= await cEvents.aggregate( [
-          // Stage 1: Filter pizza events by date range
+          // Stage 1: Filter
           {
              $match: mMatch
           }
+          // Stage 1: Leftjoin with range
+          ,{ "$addFields": { "_rangeId": { "$toObjectId": "$rangeId" }}}
+          ,{$lookup: {from: "ranges"
+                    ,localField: "_rangeId"
+                    ,foreignField: "_id"
+                    ,as: "range"}
+          }
+          // Stage 2: Leftjoin with divisions
           ,{ "$addFields": { "eventId": { "$toString": "$_id" }, "eventIdd": { "$toString": "$_id" }}}
-          // Stage 1: Leftjoin with divisions
-          ,{
-            $lookup:
+          ,{$lookup:
               {
                 from: "divisions",
                 localField: "eventId",
@@ -142,6 +145,15 @@ const handler = async (event, context) => {
         const z= events.length;
 
         for(let i=0;i<z;i++){
+
+          events[i].address= events[i].range[0].address;
+          events[i].city= events[i].range[0].city;
+          events[i].state= events[i].range[0].state;
+          events[i].local= events[i].range[0].name;
+          events[i].owners= events[i].owners.concat(events[i].range[0].adm);
+          events[i].owners= [...new Set(events[i].owners)];
+          events[i].owners= events[i].owners.reduce((acc, i) => i ? [...acc, i] : acc, []);
+          // console.log('events[i].owners= '+ JSON.stringify(events[i].owners));
 
           if(events[i].clock && events[i].duel){
             events[i].subTitle="Contra o relógio + Duelos"
@@ -189,15 +201,6 @@ const handler = async (event, context) => {
               }
             });
           }
-
-        // const res = new Response();
-        // res.statusCode=200;
-        // res.body= JSON.stringify(events);
-        // res.headers.set("Access-Control-Allow-Origin", "*");
-        // res.headers.append("Access-Control-Allow-Headers", "*");
-        // res.headers.append("Access-Control-Allow-Methods", "*");
-
-        // return res;
 
         return {
           statusCode: 200,

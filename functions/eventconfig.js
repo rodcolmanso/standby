@@ -16,9 +16,6 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 const handler = async (event, context)=>{
-  // const rawNetlifyContext = context.clientContext.custom.netlify;
-  // const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-  // const { identity, user } = JSON.parse(netlifyContext);
   const user= context.clientContext.user;
 
   try {
@@ -32,6 +29,8 @@ const handler = async (event, context)=>{
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cDivisions= database.collection(process.env.MONGODB_COLLECTION_DIVISIONS);
     const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+    const cRanges= database.collection(process.env.MONGODB_COLLECTION_RANGES);
+
     let o_id = null;
     // if(p_eventId!=='0'||p_eventId!==''){
     try{
@@ -55,6 +54,16 @@ const handler = async (event, context)=>{
 
         let updatedEvent=null;
         if(!isAdmin){
+
+          const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:user.email}}).toArray();
+
+          if( rangeAdm.length<=0){
+            return  {
+              statusCode: 401,
+                body: `Unauthorized, User ${user.email} cannot update/insert events for this shooting range!`
+              };
+          }
+
           console.log('Nao eh adm 0');
           // filter.owners=user.email;
           event_config.owners.push(user.email);
@@ -77,14 +86,15 @@ const handler = async (event, context)=>{
               ,date: new Date(event_config.date)
               //,dateDuel: (event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel)
               ,dateDuel: new Date((event_config.dateDuel===null||event_config.dateDuel===undefined||event_config.dateDuel===''?event_config.date:event_config.dateDuel))
-              ,local: event_config.local
+              // ,rangeId: event_config.local
+              ,rangeId: event_config.rangeId
               ,img: ''
               ,note: event_config.note
               // ,owners:event_config.owners
               ,owners: clearOwners
-              ,address: event_config.address
-              ,city: event_config.city
-              ,state: event_config.state
+              // ,address: event_config.address
+              // ,city: event_config.city
+              // ,state: event_config.state
               ,public: event_config.public
               ,clock: event_config.clock
               ,duel: event_config.duel
@@ -99,9 +109,10 @@ const handler = async (event, context)=>{
             let filter={ "_id" : o_id};
             if(!isAdmin){
               console.log('Nao eh adm');
-              filter.owners=user.email;
+              // filter.owners=user.email;
               event_config.owners.push(user.email);
               event_config.owners = [...new Set(event_config.owners)];
+              event_config.owners= event_config.owners.reduce((acc, i) => i ? [...acc, i] : acc, []);
               console.log('event_config.owners'+event_config.owners);
             }
             
@@ -124,14 +135,15 @@ const handler = async (event, context)=>{
                                                     ,dateDuel: new Date(event_config.dateDuel)
                                                     // ,date: event_config.date
                                                     // ,dateDuel: event_config.dateDuel
-                                                    ,local: event_config.local
+                                                    // ,rangeId: event_config.local
+                                                    ,rangeId: event_config.rangeId
                                                     ,img: ''
                                                     ,note: event_config.note
                                                     // ,owners: event_config.owners
                                                     ,owners: clearOwners
-                                                    ,address: event_config.address
-                                                    ,city: event_config.city
-                                                    ,state: event_config.state
+                                                    // ,address: event_config.address
+                                                    // ,city: event_config.city
+                                                    // ,state: event_config.state
                                                     ,public: event_config.public
                                                     ,clock: event_config.clock
                                                     ,duel: event_config.duel
@@ -144,7 +156,10 @@ const handler = async (event, context)=>{
                                                   // ,{ upsert: true }
                                                   );
             
-              
+              console.log('=============================================');
+              console.log('filter= '+JSON.stringify(filter));
+              console.log('updatedEvent= '+JSON.stringify(updatedEvent));
+              console.log('=============================================');
 
               } catch (e) {
                 // print(e);
@@ -152,25 +167,25 @@ const handler = async (event, context)=>{
               }
         }
 
-        console.log('0 Atualizou evento:'+ event_config.name);
-        console.log('updatedEvent.insertedId:'+ updatedEvent.insertedId);
+        // console.log('0 Atualizou evento:'+ event_config.name);
+        // console.log('updatedEvent.insertedId:'+ updatedEvent.insertedId);
         if(updatedEvent.insertedId!==null&&updatedEvent.insertedId!==undefined){
-          console.log('updatedEvent.insertedId.toString():'+ updatedEvent.insertedId.toString());
+          // console.log('updatedEvent.insertedId.toString():'+ updatedEvent.insertedId.toString());
           event_config._id= updatedEvent.insertedId.toString();
         }else{
           updatedEvent.insertedId= event_config._id;
         }
 
-        console.log('event_config.imgChanged='+event_config.imgChanged);
+        // console.log('event_config.imgChanged='+event_config.imgChanged);
         if(event_config.imgChanged){
-          console.log('Uploading img to cloudinary. img='+event_config.img);
+          // console.log('Uploading img to cloudinary. img='+event_config.img);
           
           cloudinary.uploader.upload(event_config.img,
               { public_id: event_config._id 
                 ,invalidate:true
               }, 
               function(error, result) {
-                // console.log(result);
+                console.log(result);
               });
         }
 
@@ -242,6 +257,16 @@ const handler = async (event, context)=>{
 
         events[0].divisions= divisions;
 
+        const ranges= await cRanges.find({_id:new ObjectId(events[0].rangeId)}).toArray();
+
+        if(ranges.length>0){
+          events[0].ranges= ranges;
+          events[0].local= ranges[0].name;
+          events[0].rangeId= ranges[0]._id;
+          events[0].address= ranges[0].address;
+          events[0].city= ranges[0].city;
+          events[0].state= ranges[0].state;
+        }
         
         return{
           statusCode: 200
