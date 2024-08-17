@@ -24,14 +24,16 @@ const handler = async (event, context)=>{
           let v_name=new RegExp(p_name,"i");
           filter.name= {$regex:v_name};
         }
-
+        console.log('Antes do filter updater!!!!!!!!!!!!!');
         if(p_updater&&context.clientContext.user&&context.clientContext.user.email){
           const isAdmin= (context.clientContext.user&&context.clientContext.user.app_metadata.roles!==undefined &&!(context.clientContext.user.app_metadata.roles.indexOf("admin")<0));
 
-            filter.$or=[{_id:{$exists:isAdmin}, _id: new ObjectId(p_rangeId)},
+          console.log('isAdmin='+isAdmin);
+
+            filter.$or=[{active:{$exists:isAdmin}, _id: new ObjectId(p_rangeId)},
               {adm: {$eq:context.clientContext.user.email}}
             ];
-            
+
             // filter.adm= {$eq:context.clientContext.user.email};
             console.log('entrou no updater. filter='+JSON.stringify(filter));
 
