@@ -69,6 +69,11 @@ async function loadPage(eId){
 
     ranges = await promiseOfRanges(eventConfig.rangeId?eventConfig.rangeId:null,loggedUser);
 
+    dropDown= document.getElementById('event-local');
+
+        while (dropDown.options.length > 0)
+            dropDown.remove(0);
+
     if(ranges.length>1)
         document.getElementById('event-local').add(new Option("",""),undefined);
 
@@ -258,21 +263,6 @@ window.onload = async () => {
         document.getElementById('btn-relat-tries').click();
     
 }
-
-    // location.reload(true);
-    // netlifyIdentity.on('login', user => {
-
-    //     let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
-    //     if(event_id!==0&&event_id!=="0"&&eventConfig!==undefined&&user!==null&&(isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
-    //         disableInputs(false);
-    //     }
-    //     console.log('login', user);
-    // });
-    
-    // netlifyIdentity.on('logout', () => {
-    //     disableInputs(true);
-    //     console.log('Logged out');
-    // });
 
     netlifyIdentity.on('close', () => {
         const user= netlifyIdentity.currentUser();
