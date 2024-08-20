@@ -333,30 +333,57 @@ const buildMatches = (shooters)=>{
 }
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 
-const flatPlayesDivisions = (players, sort)=>{
+const flatPlayesDivisions = (players, sort, light)=>{
   let rP= [];
   let aRow= '';
   // for(i=0;i<players.length;i++){
       // for(j=0;j<players[i].registered.length;j++){
-  let gun_rd=""
+  let gun_rd="";
+
+  console.log('================datetime=====================');
   for(i=0;i<players.length;i++){
     // console.log(`players[i].event[0].randomDuel= ${players[i].event[0].randomDuel}`);
     if(players[i].event[0].randomDuel || players[i].score===undefined||players[i].score===null||players[i].score===''){
         players[i].score=Math.floor(Math.random() * (9999 - 9900 + 1)) + 9900;//range 9900 - 9999;
         players[i].tries=0;
         players[i].datetime="2099-01-01T00:00:00."+zeroPad(i,3)+"Z";
+    }else{
+      players[i].datetime= new Date(players[i].datetime).toISOString();
     }
-
+    
     score_idx= zeroPad((""+(Math.round(players[i].score*1000))),7);
     // 0999900 003 2099-01-01T00:00:00.
     sort_idx= ''+score_idx+zeroPad(players[i].tries,4)+players[i].datetime;
     // aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'gun':players[i].gun,'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId };
     //gun_rd= players[i].optics? players[i].gun+" (RD)" : players[i].gun;
     gun_rd= players[i].optics? players[i].gun : players[i].gun;
-    aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId
-      ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
+
+    if(light){
+      aRow= {'division':players[i].divisionId
+        ,'category':players[i].category
+        // ,'name':players[i].name
+        // ,'email':players[i].email
+        ,'id':players[i].shooterDivisionId
+        // ,'gun': gun_rd
+        // , 'gunId':players[i].gunId
+        // , 'gunModel':players[i].gunModel
+        // , 'gunFactory':players[i].gunFactory
+        // , 'gunCaliber':players[i].gunCaliber
+        // , 'optics':players[i].optics
+        // ,'score':players[i].score
+        // ,'tries':players[i].tries
+        , 'sort_idx':sort_idx
+        // , 'shooterDivisionId': players[i].shooterDivisionId
+        // , "eventId": players[i].eventId
+        // ,'shooterId':players[i].shooterId
+      };
+    }else{
+      aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId
+        ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
+    }
     rP.push(aRow);  
   }
+  console.log('================datetime=====================');
   // }
 
   if (sort>0){
@@ -423,9 +450,8 @@ const getShootersByDivisionCategory = (players, divisionId, category)=>{
 
   for(let i=0; i< players.length;i++){
 
-      if(players[i].division===divisionId && players[i].category===category){
-          ret.push(players[i]);
-    
+      if(players[i].division.toString()===divisionId.toString() && players[i].category.toString()===category.toString()){
+          ret.push(players[i]);  
       }
   
   }
@@ -455,6 +481,50 @@ const handler = async (event, context)=>{
         case 'GET': // get kos of a division
         
         if(p_eventId!==null&&p_divisionId!==null){ //listing all shooters in a eventId, with their best time for each division
+
+          if(event.queryStringParameters.players && event.queryStringParameters.players.toString()==='1'){
+            const o_id = new ObjectId(p_divisionId);
+            const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
+            const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
+            console.log('shootersDivx.lenght='+shootersDivx.length);
+
+            let players= flatPlayesDivisions(shootersDivx, 1);
+            console.log('Flated Players.lenght='+players.length);
+
+            players= matchShootersCategories(players, division);
+            console.log('Players by category.lenght='+players.length);
+
+            if(players.length>0){
+
+              if(p_categ!==null){
+
+                return{
+                  statusCode: 200
+                  ,body: JSON.stringify(
+                    getShootersByDivisionCategory(players, p_divisionId, p_categ).sort((a, b) => {
+                      if (a.sort_idx > b.sort_idx) {
+                        return -1;
+                        }
+                    })
+                  )
+                }
+                
+
+              } else{
+
+                return{
+                  statusCode: 200
+                  ,body: JSON.stringify(players)
+                }
+
+              }
+              
+            }else{
+              return {statusCode: 404
+                ,body: JSON.stringify({ message:'Players not found' ,eventId: p_eventId, divisionId: p_divisionId})};
+            }
+
+          }
 
           // console.log(`consultando: p_eventId=${p_eventId}, p_divisionId=${p_divisionId}, p_categ=${p_categ}`);
           const division_matches= await cKos.find({eventId:p_eventId, divisionId:p_divisionId }).toArray();
@@ -513,7 +583,7 @@ const handler = async (event, context)=>{
         
         const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
         
-        let players= flatPlayesDivisions(shootersDivx, 1);
+        let players= flatPlayesDivisions(shootersDivx, 1,true);
         players= matchShootersCategories(players, division);
         let _ret={};
 
@@ -678,9 +748,23 @@ const handler = async (event, context)=>{
             //check if the user is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(matchesBody.eventId)
+            // const _e= await cEvent.aggregate( [
+            //   {$match:{_id: f_id
+            //           , owners: user.email}}
+            // ]).toArray();
             const _e= await cEvent.aggregate( [
-              {$match:{_id: f_id
-                      , owners: user.email}}
+              { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+              ,{$lookup:{
+                  from: "ranges"
+                  ,localField: "_rangeId"
+                  ,foreignField: "_id"
+                  ,as: "range"
+              }}
+              ,{$match:{_id: f_id
+                       ,$or:[ {owners: user.email}
+                       , {'range.adm': user.email}]
+                      }
+                  }
             ]).toArray();
             
             isEventAdmin= (_e.length>0);
@@ -725,9 +809,25 @@ const handler = async (event, context)=>{
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(eventId);
 // console.log("5");
+
+            // const _e= await cEvent.aggregate( [
+            //   {$match:{_id: f_id
+            //           , owners: user.email}}
+            // ]).toArray();
+
             const _e= await cEvent.aggregate( [
-              {$match:{_id: f_id
-                      , owners: user.email}}
+              { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+              ,{$lookup:{
+                  from: "ranges"
+                  ,localField: "_rangeId"
+                  ,foreignField: "_id"
+                  ,as: "range"
+              }}
+              ,{$match:{_id: f_id
+                       ,$or:[ {owners: user.email}
+                       , {'range.adm': user.email}]
+                      }
+                  }
             ]).toArray();
 // console.log("6");
             isEventAdmin= (_e.length>0);

@@ -75,9 +75,23 @@ const handler = async (event, context)=>{
             //check if the user is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(p_eventId)
+            // const _e= await cEvent.aggregate( [
+            //   {$match:{_id: f_id
+            //           , owners: user.email}}
+            // ]).toArray();
             const _e= await cEvent.aggregate( [
-              {$match:{_id: f_id
-                      , owners: user.email}}
+              { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+              ,{$lookup:{
+                  from: "ranges"
+                  ,localField: "_rangeId"
+                  ,foreignField: "_id"
+                  ,as: "range"
+              }}
+              ,{$match:{_id: f_id
+                       ,$or:[ {owners: user.email}
+                       , {'range.adm': user.email}]
+                      }
+                  }
             ]).toArray();
             
             isEventAdmin= (_e.length>0);
@@ -284,9 +298,24 @@ const handler = async (event, context)=>{
             //check if the user is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(p_eventId)
+            // const _e= await cEvent.aggregate( [
+            //   {$match:{_id: f_id
+            //           , owners: user.email}}
+            // ]).toArray();
+
             const _e= await cEvent.aggregate( [
-              {$match:{_id: f_id
-                      , owners: user.email}}
+              { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+              ,{$lookup:{
+                  from: "ranges"
+                  ,localField: "_rangeId"
+                  ,foreignField: "_id"
+                  ,as: "range"
+              }}
+              ,{$match:{_id: f_id
+                       ,$or:[ {owners: user.email}
+                       , {'range.adm': user.email}]
+                      }
+                  }
             ]).toArray();
             
             isEventAdmin= (_e.length>0);
@@ -543,7 +572,31 @@ const handler = async (event, context)=>{
               ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
               ]).toArray();
 
+              let _e= [];
+
               if(autorized_shooters_divisions.length<1){
+
+                const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
+                const f_id= new ObjectId(event.queryStringParameters.eventId.toString());
+
+                _e= await cEvent.aggregate( [
+                  { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+                  ,{$lookup:{
+                      from: "ranges"
+                      ,localField: "_rangeId"
+                      ,foreignField: "_id"
+                      ,as: "range"
+                  }}
+                  ,{$match:{_id: f_id
+                          ,$or:[ {owners: user.email}
+                          , {'range.adm': user.email}]
+                          }
+                      }
+                ]).toArray();
+
+              }
+
+              if(autorized_shooters_divisions.length<1 &&_e.length<1){
                 console.log(`Unauthorized! User ${user.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`);
                 return  {
                   statusCode: 401,
@@ -554,16 +607,26 @@ const handler = async (event, context)=>{
               filter_Ids= [new ObjectId("000000000000000000000000")];
               let filterStringIds= ["000000000000000000000000"];
               
-              for(let i=0; i< autorized_shooters_divisions.length;i++){
-                filter_Ids.push(autorized_shooters_divisions[i]._id);
-                filterStringIds.push(autorized_shooters_divisions[i]._id.toString());
+              // for(let i=0; i< autorized_shooters_divisions.length;i++){
+              //   filter_Ids.push(autorized_shooters_divisions[i]._id);
+              //   filterStringIds.push(autorized_shooters_divisions[i]._id.toString());
+              // }
+
+              for(let i=0; i< shooterDivisions.shooters_divisions.length;i++){
+                filter_Ids.push(new ObjectId(shooterDivisions.shooters_divisions[i]._id));
+                filterStringIds.push(shooterDivisions.shooters_divisions[i]._id.toString());
               }
+
+              console.log('shooterDivisions.shooters_divisions.length='+shooterDivisions.shooters_divisions.length);
+
+              console.log('filter_Ids='+JSON.stringify(filter_Ids));
+              console.log('filterStringIds='+JSON.stringify(filterStringIds));
 
           }
 
           
           let r_delete_divisions= await cShooters_Divisions.deleteMany({_id: { $in: filter_Ids }});
-          console.log(`Deleto divisões: r_delete_divisions.toString() ${r_delete_divisions.toString()}`);
+          console.log(`Deleto divisões: r_delete_divisions.toString() ${JSON.stringify(r_delete_divisions,null,2)}`);
 
           const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
           r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
@@ -576,7 +639,7 @@ const handler = async (event, context)=>{
             body: JSON.stringify(r_delete_divisions)
           };
         }catch(error){
-          console.log("Error delleting shooter_divisions: "+error.toString());
+          console.log("Error deleting shooter_divisions: "+error.toString());
           return  {
             statusCode: 510,
             body: error.toString()

@@ -120,9 +120,24 @@ const handler = async (event, context)=>{
           //check if the user is admin of the event:
           const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
           const f_id= new ObjectId(event.queryStringParameters.eventId)
+          
+          // const _e= await cEvent.aggregate( [
+          //   {$match:{_id: f_id
+          //           , owners: user.email}}
+          // ]).toArray();
           const _e= await cEvent.aggregate( [
-            {$match:{_id: f_id
-                    , owners: user.email}}
+            { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+            ,{$lookup:{
+                from: "ranges"
+                ,localField: "_rangeId"
+                ,foreignField: "_id"
+                ,as: "range"
+            }}
+            ,{$match:{_id: f_id
+                     ,$or:[ {owners: user.email}
+                     , {'range.adm': user.email}]
+                    }
+                }
           ]).toArray();
           
           isEventAdmin= (_e.length>0);

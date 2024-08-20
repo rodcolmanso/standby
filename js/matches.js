@@ -11,7 +11,9 @@ const cOptics= 4;
 const cSeniors= 5;
 
 const catNames= ["Overall","Advance","Ladies","","Optics","Seniors"];
-   
+
+let dbPlayers= [];
+
 let eventConfig=null;
 let playersArray;
 let timeRecords;
@@ -672,7 +674,8 @@ function generateKos(){
             }
         })
         .then(json => {
-            KOs=json;
+            // KOs=json;
+            KOs=loadDuelsDetails(json);
             buildKOs(KOs);
         })
         .catch(err => console.log(`Error generating matches. Error: ${err}`))
@@ -684,6 +687,51 @@ function generateKos(){
 
 }
 
+function getLightShooter(_shooter){
+    delete _shooter.name;
+    delete _shooter.email;
+    delete _shooter.gun;
+    delete _shooter.gunId;
+    delete _shooter.gunModel;
+    delete _shooter.gunFactory;
+    delete _shooter.gunCaliber;
+    delete _shooter.optics;
+    delete _shooter.score;
+    delete _shooter.tries;
+    delete _shooter.shooterDivisionId;
+    delete _shooter.eventId;
+    delete _shooter.shooterId;
+    return _shooter;
+}
+
+function lightDuelsPayload(_CatKos_ref){
+
+    _CatKos= JSON.parse(JSON.stringify(_CatKos_ref));
+    
+    for(let MainRecap=0;MainRecap<_CatKos.length;MainRecap++){
+        for(let level=0; level<_CatKos[MainRecap].length; level++){
+
+            for(let duel=0; duel<_CatKos[MainRecap][level].length; duel++){
+
+                if(_CatKos[MainRecap][level][duel].shooterA.id!==null)
+                    _CatKos[MainRecap][level][duel].shooterA= getLightShooter(_CatKos[MainRecap][level][duel].shooterA);
+                
+                if(_CatKos[MainRecap][level][duel].shooterB.id!==null)
+                    _CatKos[MainRecap][level][duel].shooterB= getLightShooter(_CatKos[MainRecap][level][duel].shooterB);
+
+                if(_CatKos[MainRecap][level][duel].v.id!==null)
+                    _CatKos[MainRecap][level][duel].v= getLightShooter(_CatKos[MainRecap][level][duel].v);
+                
+                if(_CatKos[MainRecap][level][duel].d.id!==null)
+                    _CatKos[MainRecap][level][duel].d= getLightShooter(_CatKos[MainRecap][level][duel].d);
+            }
+        }
+    }
+
+    return _CatKos;
+
+}
+
 function saveDivision(){
     applySpinners(true);
     let categ= getActiveCatNum();
@@ -692,19 +740,19 @@ function saveDivision(){
     const body= {"eventId":eventConfig._id, "divisionId":selectDivisions.value};
 
     if(categ===cAdvance)
-        body.advancedDoubleKOs=KOs.advancedDoubleKOs;
+        body.advancedDoubleKOs=lightDuelsPayload(KOs.advancedDoubleKOs);
     
     if(categ===cOverall)
-        body.overallDoubleKOs=KOs.overallDoubleKOs;
+        body.overallDoubleKOs=lightDuelsPayload(KOs.overallDoubleKOs);
 
     if(categ===cOptics)
-        body.opticDoubleKOs=KOs.opticDoubleKOs;
+        body.opticDoubleKOs=lightDuelsPayload(KOs.opticDoubleKOs);
     
     if(categ===cSeniors)
-        body.seniorDoubleKOs=KOs.seniorDoubleKOs;
+        body.seniorDoubleKOs=lightDuelsPayload(KOs.seniorDoubleKOs);
     
     if(categ===cLadies)
-        body.ladyDoubleKOs=KOs.ladyDoubleKOs;
+        body.ladyDoubleKOs=lightDuelsPayload(KOs.ladyDoubleKOs);
     
     loggedUser= netlifyIdentity.currentUser();
     let _header= {"Content-type": "application/json; charset=UTF-8"}
@@ -787,8 +835,8 @@ function getDuels(selectDivision){
             }else return response.json();
         })
         .then(kos=>{
-            KOs=kos;
-            buildKOs(kos);
+            KOs=loadDuelsDetails(kos);
+            buildKOs(KOs);
         } )
         .catch(err => console.log(`Error bringing knokouts: ${err}`))
         .finally(()=> {
@@ -853,6 +901,25 @@ function hrefMatches(){
     window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum()+_tbord;
 }
 
+const promiseOfGetDivisionPlayers = (_eventId, _divisionId)=>{
+
+        let _headers;
+        if(netlifyIdentity.currentUser()!==null){
+            _headers= {"Content-type": "application/json; charset=UTF-8"
+                    ,"Authorization":`Bearer ${netlifyIdentity.currentUser().token.access_token}`}
+        }else{
+            _headers= {"Content-type": "application/json; charset=UTF-8"}
+        }
+        return fetch("/.netlify/functions/build_matches?players=1&eventId="+_eventId+"&divisionId="+_divisionId, {
+        method: "GET",
+        // body: JSON.stringify(eventConfig),
+        headers: _headers}).then(r=>r.json())
+        .then(data => {
+            return data;
+        });
+
+};
+
 
 async function loadPage(){
     loggedUser= netlifyIdentity.currentUser();
@@ -863,6 +930,71 @@ async function loadPage(){
         alert(`Evento não encontrado`);
         window.location.href = window.location="/index.html";
     }
+}
+
+function getDbShooter(_shooterDivisionId){
+
+    for(let i=0;i<dbPlayers.length ;i++){
+        if(dbPlayers[i].shooterDivisionId===_shooterDivisionId)
+            return dbPlayers[i];
+    }
+
+    return {id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
+
+     
+}
+
+function loadDuelsDetails(_kos){
+
+    if(_kos.overallDoubleKOs){
+        _kos.overallDoubleKOs= loadDuelsDetailsCat(_kos.overallDoubleKOs);   
+    }
+
+    if(_kos.advancedDoubleKOs){
+        _kos.advancedDoubleKOs= loadDuelsDetailsCat(_kos.advancedDoubleKOs);   
+    }
+
+    if(_kos.ladyDoubleKOs){
+        _kos.ladyDoubleKOs= loadDuelsDetailsCat(_kos.ladyDoubleKOs);   
+    }
+
+    if(_kos.seniorDoubleKOs){
+        _kos.seniorDoubleKOs= loadDuelsDetailsCat(_kos.seniorDoubleKOs);   
+    }
+
+    if(_kos.opticDoubleKOs){
+        _kos.opticDoubleKOs= loadDuelsDetailsCat(_kos.opticDoubleKOs);   
+    }
+
+    return _kos;
+
+}
+
+function loadDuelsDetailsCat(_CatKos){
+    
+    for(let MainRecap=0;MainRecap<_CatKos.length;MainRecap++){
+        for(let level=0; level<_CatKos[MainRecap].length; level++){
+
+            for(let duel=0; duel<_CatKos[MainRecap][level].length; duel++){
+
+
+                if(_CatKos[MainRecap][level][duel].shooterA.id!==null)
+                    _CatKos[MainRecap][level][duel].shooterA= getDbShooter(_CatKos[MainRecap][level][duel].shooterA.id);
+                
+                if(_CatKos[MainRecap][level][duel].shooterB.id!==null)
+                    _CatKos[MainRecap][level][duel].shooterB= getDbShooter(_CatKos[MainRecap][level][duel].shooterB.id);
+
+                if(_CatKos[MainRecap][level][duel].v.id!==null)
+                    _CatKos[MainRecap][level][duel].v= getDbShooter(_CatKos[MainRecap][level][duel].v.id);
+                
+                if(_CatKos[MainRecap][level][duel].d.id!==null)
+                    _CatKos[MainRecap][level][duel].d= getDbShooter(_CatKos[MainRecap][level][duel].d.id);
+            }
+        }
+    }
+
+    return _CatKos;
+
 }
 
 netlifyIdentity.on('close', () => {
@@ -939,6 +1071,10 @@ window.onload = async () => {
         document.getElementById('selectDivision').value=params.selected_division;            
     }
     const dbCategs= getDivision(_eventConfig.divisions, document.getElementById('selectDivision').value).categories;
+
+    applySpinners(true);
+    dbPlayers = await promiseOfGetDivisionPlayers(eventConfig._id,document.getElementById('selectDivision').value);
+    applySpinners(false);
         
     document.getElementById('liAdvance').style.display=dbCategs.advance?'':'none';
     document.getElementById('liOverall').style.display= '';

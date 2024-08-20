@@ -1591,3 +1591,75 @@ db.events.aggregate( [
        $sort: { "date": 1 }
     }
   ] )
+
+
+
+
+
+
+
+
+
+
+
+//   ----------------------------------
+
+
+
+
+
+  db.shooters_divisions.aggregate([
+    {$match:{eventId: "66958096492636e283f83f4c" //"66958096492636e283f83f4c" //  p_eventId
+            ,divisionId: "00000000492636e283f83f4d" //"00000000492636e283f83f4d"  //p_division 
+            ,duel:true}}
+    ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
+    ,{$lookup:
+      {    from: "events"
+      ,localField: "eventId"
+      ,foreignField: "_id"
+      ,as:"event" }}
+    ,{ $addFields: { "_shooterId": { $toObjectId: "$shooterId" }}}   
+    ,{$lookup:
+        {    from: "shooters"
+            ,localField: "_shooterId"
+            ,foreignField: "_id"
+            ,as:"shooter" //"shooters"
+        }
+    } 
+    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }           
+    ,{$project:{"_shooterId":0,"shooter":0}}
+    /// Stage time records
+    ,{ "$addFields": { "shooterDivisionId": { "$toString": "$_id" }}}
+    ,{ $lookup:
+        {from: "time_records"
+        ,localField:"shooterDivisionId"
+        ,foreignField: "shooterDivisionId"
+        ,as:"time_records"
+        ,pipeline:[
+          {$project:{
+                "score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]}
+                ,datetime:1
+            }}
+          ,{$group:
+              { _id:["$shooterDivisionId"],
+                 tries:{$count:{}},
+                  score:{$min:"$score"},
+                  datetime:{$min:"$datetime"}
+              }
+          }]}
+   }
+   ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
+   ,{$project:{"time_records":0}}
+   ,{ $addFields: {_gunId: { $toObjectId: "$gunId" }}}
+   ,{ $lookup:
+       {
+           from: "guns"
+           ,localField: "_gunId"
+           ,foreignField: "_id"
+           ,as: "gun_det"
+       }
+   }
+]).sort({"score":1,"tries":1, "datetime":1}).toArray();
+
+
+
