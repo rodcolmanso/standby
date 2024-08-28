@@ -105,6 +105,7 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
         document.getElementById(`btn-subscriptionsModal`).click();
     }else if(_reload){
         clearSessionEventConfig();
+        promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
         // location.reload(true);
         window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
     }

@@ -9,6 +9,9 @@
 
 // const { parse } = require("dotenv");
 
+                // document.getElementById('btnModalSpinner').click();
+
+              
 const SESSION_DBUSER="tpm-session-dbuser";
 const SESSION_EVENT_CONFIG="tpm-session-event-config";
 
@@ -320,7 +323,7 @@ function clearSessionDbUser(){
 }
 
 function clearSessionEventConfig(){
-    setCookie(SESSION_EVENT_CONFIG, null, 0.006);
+    setCookie(SESSION_EVENT_CONFIG, "", 0.006);
 }
 
 function setSessionDbUser(dbUserJson){
@@ -369,7 +372,7 @@ function setSessionEventConfig(ec){
 }
 function getSessionEventConfig(){
     let ec= getCookie(SESSION_EVENT_CONFIG);
-    if(ec===null || ec===undefined ||ec===""){
+    if(ec===null || ec===undefined ||ec===""||ec==="null"){
         return null;
     }else{
         try{
@@ -550,16 +553,29 @@ function setCookie(cname, cvalue, exdays) {
         }
 
     });
+}//function disableInputs(){
+
+function pageLoading(){
+    const spinnerWrapperEl= document.querySelector('.spinner-wrapper');
+    spinnerWrapperEl.style.opacity=0.8;
+    spinnerWrapperEl.style.display='';
+}
+
+function pageLoadingDone(){
+    const spinnerWrapperEl= document.querySelector('.spinner-wrapper');
+    spinnerWrapperEl.style.opacity=0;
+    setTimeout(()=>{
+        spinnerWrapperEl.style.display='none';
+    },200);
+
 }
 
 function applySpinners(onoff){
 
-    if(onoff){
-        // Set the cursor ASAP to "Wait"
-        document.body.style.cursor='wait';
-    }else{// When the window has finished loading, set it back to default...
-        document.body.style.cursor='default';
-    }
+    if(!onoff)
+        pageLoadingDone();
+    else
+        pageLoading();
 
     let _spinner= document.getElementById('spinner');
     if(_spinner){
@@ -622,7 +638,14 @@ function applySpinners(onoff){
     // });
 
     disableInputs();
-    
+    if(onoff){
+        // Set the cursor ASAP to "Wait"
+        document.body.style.cursor='wait';
+        // document.getElementById('btnModalSpinner').click();
+    }else{// When the window has finished loading, set it back to default...
+        // document.getElementById('btnCloseModalSpinner').click();
+        document.body.style.cursor='default';
+    }
 }
 
 function validaCPF(cpf) {
@@ -646,3 +669,8 @@ function validaCPF(cpf) {
   
     return true;
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // document.getElementById('btnCloseModalSpinner').click();
+    // console.log('FECHANDO O SPPPIIINNNEEERRRRRR');
+}, false);

@@ -117,7 +117,8 @@ window.onload = async () => {
 
     applySpinners(false);
 
-    let updater= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+    let updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0));
+    disableShooterFields(updater);
 
     let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
     if(user&&user.token&&user.token.access_token){
@@ -155,6 +156,7 @@ window.onload = async () => {
 
     // =============Classification ===================
     applySpinners(false);
+    disableShooterFields(updater);
 
     let _shooterId=params.id;
     if(!_shooterId)
@@ -174,7 +176,7 @@ window.onload = async () => {
              }
         }
     ).catch(err => {console.log(`Error getting user rank: ${err}`); alert(`Erro ao localizar ranking.`); }
-    ).finally(()=> {applySpinners(false);});
+    ).finally(()=> {applySpinners(false);disableShooterFields(updater);});
     //================================================
 
     disableShooterFields(updater);
@@ -259,10 +261,11 @@ function saveShooter(){
                 // buildShooterForm();
             }
             alert('Atirador'+_a+' '+json.name+' atualizad'+_oa+' com sucesso.');
+            disableShooterFields(updater);
             
         })
         .catch(err => console.log(`Error updating atirador, error: ${err.toString()} `))
-        .finally(()=> {applySpinners(false);disableShooterFields(updater)});
+        .finally(()=> {applySpinners(false);disableShooterFields(updater);});
 }
 
 function buildShooterForm(){
@@ -423,6 +426,7 @@ async function loadPage(){
         document.getElementById('nav-qualify').style.display='none';
     }
     applySpinners(false);
+    disableShooterFields(updater);
 
     // if(eventConfig===null){
     //     alert(`Evento não encontrado`);
@@ -440,8 +444,6 @@ function disableShooterFields(updater){
         
         if(
         (btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0)
-        // &&(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0)
-        // &&(btn.getAttribute('type')&&btn.getAttribute('type').indexOf('search')<0)
         ){
             btn.disabled=!updater;
         }

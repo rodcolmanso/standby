@@ -56,7 +56,7 @@ async function loadPage(eId){
 
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(eId,loggedUser);
-
+    
     applySpinners(false);
     document.getElementById('event-address').disabled=true;
     document.getElementById('event-city').disabled=true;

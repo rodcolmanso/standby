@@ -1473,12 +1473,12 @@ db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661be218427
 // ==================
 
 db.guns.insertOne({
-type: "Carabina"
-,factory: "Tippmann"
-,model: "CR2"
-,caliber: ".22LR"
-,operation: "Semi-auto"
-})
+type: "Revolver"
+,factory: "Taurus"
+,model: "RT 837"
+,caliber: ".38 SPL"
+,operation: "Repetição"
+});
 
 
 
@@ -1663,3 +1663,113 @@ db.events.aggregate( [
 
 
 
+
+
+
+db.events.aggregate( [
+    { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+    ,{$lookup:{
+        from: "ranges"
+        ,localField: "_rangeId"
+        ,foreignField: "_id"
+        ,as: "range"
+    }}
+    ,{$match:{_id: ObjectId('66958096492636e283f83f4c')
+             ,$or:[ {owners: 'cleiadba@gmail.com'}
+             , {'range.adm': 'cleiadba@gmail.com'}]
+            }
+        }
+  ])
+
+
+  db.shooters_divisions.aggregate( [
+    {$match:{_id: { $in: [ObjectId("669988b5c320bcf6e804e250")]} }}
+    ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
+    ,{ $lookup:{ from: "events"
+            ,localField: "eventId"
+            ,foreignField: "_id"
+            ,as: "events_adm"
+            ,pipeline:[
+                {$match:{"owners": "rmanso@outlook.com"}}
+            ]
+    }}
+    ,{ $addFields: { "shooterId": { $toObjectId: "$shooterId" }}}
+    ,{$lookup:{ from: "shooters"
+        ,localField: "shooterId"
+        ,foreignField: "_id"
+        ,as: "shooters"
+        ,pipeline:[
+            {$match:{"email": "rmanso@outlook.com"}}
+        ]
+    }}
+    ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
+    ])
+
+
+    const _e= await cEvent.aggregate( [
+        { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+        ,{$lookup:{
+            from: "ranges"
+            ,localField: "_rangeId"
+            ,foreignField: "_id"
+            ,as: "range"
+        }}
+        ,{$match:{_id: f_id
+                 ,$or:[ {owners: user.email}
+                 , {'range.adm': user.email}]
+                }
+            }
+      ]).toArray();
+
+const 
+      {}
+
+
+
+    //   =========================
+
+    //>  mongoexport --db=standby --collection=shooters --type=csv --out=shooters.txt --fields=_id,name,email,category,docnum --uri="mongodb+srv://cluster0.dmdaadr.mongodb.net/" --username=exporter-user-rl
+    //>  mongoexport --db=standby --collection=shooters_divisions --type=csv --out=shooters_divisions.txt --fields=_id,shooterId,divisionId,eventId,optics,clock,duel,gunId,gun --uri="mongodb+srv://cluster0.dmdaadr.mongodb.net/" --username=exporter-user-rl
+
+
+
+    {$or:[{_id:ObjectId('661ab680b99563a97948e2cc')},{_id:ObjectId('6635b721653ca9fccd411627')},{_id:ObjectId('663bf283653ca9fccdf363e3')},{_id:ObjectId('663ed77c653ca9fccd516d7f')},{_id:ObjectId('663f7e39a48de60c8cb69f25')},{_id:ObjectId('663fee03a48de60c8ce23871')},{_id:ObjectId('664365dff0bacfe9bc0933f3')},{_id:ObjectId('66436dd3f0bacfe9bc0cab52')},{_id:ObjectId('6643ff6ff0bacfe9bc4bce83')},{_id:ObjectId('664e4afef0bacfe9bcd406c6')},{_id:ObjectId('664e7c8ef0bacfe9bceda2a5')},{_id:ObjectId('664e7f47f0bacfe9bcef6180')},{_id:ObjectId('664e80e0f0bacfe9bcf06482')},{_id:ObjectId('666f0ab0f4d045c776ebdcaf')},{_id:ObjectId('666f0b34f4d045c776ec2495')},{_id:ObjectId('666f0b55f4d045c776ec353c')},{_id:ObjectId('666f0c94f4d045c776ece0d1')}] }
+
+
+    
+
+// select 
+// s.name Atirador
+// , d.name Divisão
+// , concat(g.factory,' ',g.model,'(',g.caliber,')') Arma
+// , t.sTime Tempo
+// , t.datetime 'Data_Hora'
+// , r.name Clube
+// from
+// (SELECT m_t.shooterId
+//    ,min(m_t.sTime) min_time
+// FROM `tpmonline_time_records` m_t
+// inner join `tpmonline_events` e on m_t.eventId= e._id
+// where 1
+// and e.rangeId in ('66bb69bb55b6d11c7ed7a615', '66bb69bb55b6d11c7ed7a60d', '66bb69bb55b6d11c7ed7a60e') -- <-- Clubes do Chico
+// and m_t.penalties<1
+// and STR_TO_DATE(LEFT(m_t.datetime,10),'%Y-%m-%d')> STR_TO_DATE('2024-07-31','%Y-%m-%d')  -- <-- Somente tempos no mês de agosto
+// and STR_TO_DATE(LEFT(m_t.datetime,10),'%Y-%m-%d')< STR_TO_DATE('2024-09-01','%Y-%m-%d')  -- <-- Somente tempos no mês de agosto
+// group by m_t.shooterId)
+// m_t inner join `tpmonline_time_records` t on m_t.shooterId = t.shooterId
+//                                            and m_t.min_time = t.sTime
+//                                         and t.penalties<1
+//                                         and STR_TO_DATE(LEFT(t.datetime,10),'%Y-%m-%d')> STR_TO_DATE('2024-07-31','%Y-%m-%d') 
+//                                         and STR_TO_DATE(LEFT(t.datetime,10),'%Y-%m-%d')< STR_TO_DATE('2024-09-01','%Y-%m-%d')
+// inner join `tpmonline_events` e on t.eventId= e._id
+// inner join `tpmonline_shooters` s on t.shooterId = s._id
+// inner join `tpmonline_divisions` d on t.divisionId = d._id
+// inner join `tpmonline_shooters_divisions` sd on t.shooterdivisionId = sd._id
+// inner join `tpmonline_guns` g on sd.gunId = g._id
+// inner join `tpmonline_ranges` r on e.rangeId = r._id
+// where 1
+// and e.rangeId in ('66bb69bb55b6d11c7ed7a615', '66bb69bb55b6d11c7ed7a60d', '66bb69bb55b6d11c7ed7a60e')
+// order by Tempo;
+
+// https://tpmonline.com.br/event-details.html?inscription=clock&selected_division=00000000c7ac9ee6445d0166&shooterId=66816e4bc06847c9a611bde8&tbord=W1swLCJhc2MiXV0=
+//  http://localhost:8888  /event-details.html?inscription=clock&selected_division=00000000c7ac9ee6445d0166&shooterId=66816e4bc06847c9a611bde8&tbord=W1swLCJhc2MiXV0=

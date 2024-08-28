@@ -6,7 +6,7 @@ PUT http://localhost:8888/.netlify/functions/build_matches?eventId=6578ad76e53c8
 
 
 ###
-GET http://localhost:8888/.netlify/functions/build_matches?eventId=66958096492636e283f83f4c&divisionId=00000000492636e283f83f4d&players=1&category=0
+GET http://localhost:8888/.netlify/functions/build_matches?eventId=66958096492636e283f83f4c&divisionId=00000000492636e283f83f4d&players=1
 
 
 

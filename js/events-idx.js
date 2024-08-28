@@ -102,7 +102,7 @@ window.onload = async () => {
     document.getElementById('date').value= dDate.toDateString();//.toLocaleDateString();
 
     search();
-
+    
 }
 
 function search() {

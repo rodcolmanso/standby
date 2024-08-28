@@ -110,7 +110,7 @@ const handler = async (event, context)=>{
 
 
       // const user= context.clientContext.user;
-      let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0;
+      let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
       
       if(!isAdmin){ //mask sensitivy data
 
@@ -184,8 +184,9 @@ const handler = async (event, context)=>{
           //  console.log('user.app_metadata.roles: '+user.app_metadata.roles)
           //  console.log('user.app_metadata.roles.indexOf("admin")<0: '+user.app_metadata.roles.indexOf("admin")<0);
 
-          if(!user|| !shooterData.email ||!user.app_metadata|| (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&user.app_metadata.roles.indexOf("admin")<0){
+          if(!user|| !shooterData.email ||!user.app_metadata|| (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&(user.app_metadata.roles.indexOf("admin")<0&&user.app_metadata.roles.indexOf("super")<0)){
               console.log(`Unauthorized, User not logged!`);
+              console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
               return  {
                 statusCode: 401,
                 body: `Unauthorized, User not logged!`
