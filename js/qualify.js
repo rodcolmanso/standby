@@ -51,6 +51,10 @@ const promiseOfPlayers = (id) => { return fetch("/.netlify/functions/shooters_di
     return data;
 })};
 
+function autoRefresh(){
+    window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"")+"&rl=2";
+}
+
 function hrefQualify(){
     window.location.href = "/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):"");//->+getActiveCat();
 }
@@ -157,10 +161,32 @@ window.onload = async () => {
         document.getElementById(params.cat).classList.add('active');
     }
 
-    if(params.rl){
-        window.setTimeout( function() {
-            window.location.reload();
-          }, params.rl*1000);
+    if(params.rl& params.rl>=1){
+
+        var counter = 0;
+        var i = setInterval(async function () {
+            applySpinners(true);
+
+            // eventConfig = await promiseOfEventConfig;
+            // getDuels(document.getElementById('selectDivision'));
+            playersArray = await promiseOfPlayers(eventConfig._id);
+            changeDivision(document.getElementById('selectDivision'));
+            spinner.style.visibility = 'hidden'//'visible'; //'hidden'
+            applySpinners(false);
+            disableInputs();
+            console.log('Reloaded!');
+
+            counter++;
+            if (counter === params.rl) {
+                clearInterval(i);
+            }
+        }, params.rl * 10000);
+        
+        // window.setTimeout( function() {
+        //     // window.location.reload();
+            
+        //   }, params.rl*1000);
+        
     }
 
     // document.getElementById('liOverall').classList.add('active')
@@ -955,13 +981,11 @@ function deleteTime(idTimeRecord, idShooter, idDivision, idShooterDivision){
             .finally(()=> applySpinners(false));
     }
 
-
 }
 
 function scoreCal(){
 
     for(let i=0;i<timeRecords.length;i++){
-
         
         //timeRecords[i].score= Math.round(((timeRecords[i].sTime+timeRecords[i].penalties) + Number.EPSILON) * 100) / 100
         timeRecords[i].score= timeRecords[i].penalties*1000 + timeRecords[i].sTime;

@@ -891,6 +891,11 @@ function buildKOs(KOs){
     addEventListenerShooterDiv();
 }//function buildKOs(KOs){
 
+function autoRefresh(){
+    const _tbord= params.tbord?"&tbord="+params.tbord:"";
+    window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum()+_tbord+"&rl=2";
+}
+
 function hrefQualify(){
     const _tbord= params.tbord?"&tbord="+params.tbord:"";
     window.location.href = window.location="/qualify.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+getActiveCat()+_tbord;
@@ -1108,10 +1113,26 @@ window.onload = async () => {
     //     document.getElementById(params.cat).classList.add('active');
     // }
 
-    if(params.rl){
-    window.setTimeout( function() {
-        window.location.reload();
-      }, params.rl*1000);
+    if(params.rl& params.rl>=1){
+
+        var counter = 0;
+        var i = setInterval(async function () {
+            applySpinners(true);
+            getDuels(document.getElementById('selectDivision'));
+            applySpinners(false);
+            console.log('Reloaded!');
+
+            counter++;
+            if (counter === params.rl) {
+                clearInterval(i);
+            }
+        }, params.rl * 10000);
+        
+        // window.setTimeout( function() {
+        //     // window.location.reload();
+            
+        //   }, params.rl*1000);
+        
     }
     
 }
