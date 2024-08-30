@@ -181,7 +181,7 @@
               <div class="row justify-content-center">
                 <div class="modal-body">
                     <!-- Project details-->
-                    <span class="text-truncate" id="event-name"></span><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                    <h6 class="text-truncate" id="event-name"></h6><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
                     <input type="hidden" class="nodisable" id="event-public">
                     <input type="hidden" class="nodisable" id="event-owners">
                     <hr /> 
@@ -193,28 +193,27 @@
                             <div> <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
                               <div class="card" >
                                 <div class="row gy-2 gx-3" >
-                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:10px !important;"> 
-                                    <div class="d-none d-xl-block" disabled style="padding-right:1px !important;"> 
-                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:150px !important; max-width:100px !important; padding-right:1px !important; margin-bottom: 0 !important; " class=" img-fluid rounded-start" alt="..." />
+                                  <div class="col-auto" > 
+                                    <div class="d-none d-xl-block" disabled > 
+                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="margin-bottom:0px !important; max-height:150px !important; max-width:100px !important; " class=" img-fluid rounded-start" alt="..." />
                                     </div>
                                   </div>
                                   
-                                  <div class="card-body col-auto" style="padding-left:8px !important;">
+                                  <div class="card-body col-auto" >
                                     <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
                                     <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">  
                                     <div class="input-group">
-                                      <img id="shooter-img2" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" class="d-xl-none small-profile-avatar-pic-2 rounded-circle" alt="..." />
-                                      <div class="form-floating">
+                                      <img id="shooter-img2" style="margin-right:6px !important;" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" class="d-xl-none small-profile-avatar-pic-2 rounded-circle" alt="..." />
+                                      <div class="form-floating" style="margin-bottom:10px !important;">
                                         <input disabled type="number" pattern="\d*" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
                                         <label for="subscribe-docnum" >CPF</label>
                                       </div>
                                     </div>
                                     <div class="input-group">
-                                      <div class="form-floating">
+                                      <div class="form-floating" style="margin-bottom:8px !important;">
                                         <input disabled type="text" required class="form-control" id="subscribe-name" list="shooter-list" autocomplete="off">
                                           <label for="subscribe-name" >Atirador</label>
                                       </div>
-                                        <!-- <button style="display: none;" id="search-button-name" type="button" class="btn btn-primary"> -->
                                       <div class="dropup-center dropdown" style="display: none;" id="search-button-name">
                                         <button  class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">      
                                           <i class="fas fa-search"></i>
@@ -234,43 +233,58 @@
                           <!-- <form class=""> -->
                             <div class="card" >
                               <div class="row gy-2 gx-3">
-                                <div class=" card-body col-auto" style="padding-right:1px !important;" >
-                                  <div class="form-floating " > <!--col-md-2-->
-                                    <select class="form-select form-control nodisable" required id="select-subscribe-division" aria-label="Floating label select example">
-                                      <option selected></option>
-                                    </select>
-                                    <label for="select-subscribe-division">Divisão</label>
+                                <div class=" card-body col-auto"  >
+                                  <div class="input-group">
+                                    <div class="form-floating " > <!--col-md-2-->
+                                      <select class="form-select form-control nodisable " required id="select-subscribe-division" aria-label="Floating label select example">
+                                        <option selected></option>
+                                      </select>
+                                      <label for="select-subscribe-division">Divisão</label>
+                                    </div>
+                                    <div class="p-2">
+                                      <div class="form-check form-switch justify-content-start d-flex"  >
+                                        <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
+                                        <!-- <label class="form-check-label" for="subscribe-check-clock"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Contra-Relógio</small></label> -->
+                                        <label class="form-check-label justify-content-start" for="subscribe-check-clock">
+                                          <div class="input-group justify-content-start"><i style="margin-left:6px !important;margin-right:4px !important;" class="bi bi-stopwatch"></i><small class="d-xl-none text-muted justify-content-start">Relógio</small><small class="d-none d-xl-block text-muted">Contra-Relógio</small></label>
+                                          </div>
+                                      </div>
+                                      <div class="form-check form-switch justify-content-start d-flex" >
+                                        <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> 
+                                        <!-- <label class="form-check-label" for="subscribe-check-duel"><i class="d-xl-none fas fa-holly-berry"></i><small class="d-none d-xl-block text-muted">Duelo</small></label> -->
+                                        <label class="form-check-label justify-content-start" for="subscribe-check-duel">
+                                          <div class="input-group justify-content-start">
+                                            <i style="margin-left:6px !important;margin-right:4px !important;" class="fas fa-holly-berry"></i><small class="text-muted">Duelo</small></label>
+                                          </div>
+                                      </div>
+                                    </div>
+
+
+                                    <!-- ----------------------- -->
                                   </div>
                                   <div class="col-auto" >
 
-                                    <div class="form-floating " > <!--col-md-2-->
-                                      <select class="form-select form-control form-select-sm nodisable" required id="select-subscribe-gun" aria-label="Floating label select example">
-                                        <option selected>(selecione divisão)</option>
-                                      </select>
-                                      <label for="select-subscribe-gun">Arma</label>
+                                    <div class="input-group">
+                                      <div class="form-floating " > <!--col-md-2-->
+                                        <select class="form-select form-control form-select-sm nodisable" required id="select-subscribe-gun" aria-label="Floating label select example">
+                                          <option selected>(selecione divisão)</option>
+                                        </select>
+                                        <label for="select-subscribe-gun">Arma</label>
+                                      </div>
+                                      <div class="p-2">
+                                        <div>
+                                          <label for="subscribe-optic"><small class="d-none d-xl-block text-muted">Com Red Dot?</small><small class="d-xl-none text-muted">Red Dot?</small></label>
+                                        </div>
+                                        <div class="form-check "> <!--form-switch--><!--role="switch"-->
+                                          <input class="form-check-input " type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
+                                        </div>
+                                      </div>
+                                      <!-- ----------- -->
                                     </div>
-
-                                     <!-- <div class="form-floating "> -->
+                                     <div class="form-floating text-center">
                                       <input type="text" class="form-control form-control-sm nodisable" style="display:none;" id="subscribe-gun">
-                                       <!-- <label for="subscribe-gun">Arma</label>  -->
-                                    <!-- </div>    -->
-                                  </div>
-                                </div> <!--min-width: 150px;-->
-                                <!-- <div class="card-body col-auto" style="padding-left:8px !important;"> -->
-                                <div class="card-body col-auto" style=" padding-left:4px !important; padding-right:8px !important; padding-top:20px !important; text-align: start;">
-                                  <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-clock" checked onchange="checkClock(this, document.getElementById('subscribe-check-duel'))">
-                                    <label class="form-check-label" for="subscribe-check-clock"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Relógio</small></label>
-                                  </div>
-                                  <div class="form-check form-switch" style="max-width: 70px !important;" >
-                                    <input class="form-check-input " type="checkbox" role="switch" id="subscribe-check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(document.getElementById('subscribe-check-clock'),this)"> <!--if(this.checked) this.style='background-color:goldenrod'; else this.style='background-color:';-->
-                                    <label class="form-check-label" for="subscribe-check-duel"><i class="d-xl-none fas fa-holly-berry"></i><small class="d-none d-xl-block text-muted">Duelo</small></label>
-                                  </div>
-                                  <div>
-                                    <label style="padding-top: 8px !important;" for="subscribe-optic"><small class="text-muted">Red dot</small></label>
-                                  </div>
-                                  <div class="form-check "> <!--form-switch--><!--role="switch"-->
-                                    <input class="form-check-input " type="checkbox"  id="subscribe-optic" value="" aria-label="..." onchange="if(this.checked) this.style='background-color:red'; else this.style='background-color:';"> 
+                                       <label for="subscribe-gun" id="subscribe-gun-label" style="display:none;">Outra Arma</label>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -331,7 +345,7 @@
                       <!-- <div class="col-lg-8"> -->
                 <div class="modal-body">
                     <!-- Project details-->
-                    <span class="text-truncate" id="event-name-subs"></span><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                    <h6 class="text-truncate" id="event-name-subs"></h6><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
                     <hr /> 
                     <span class="text-truncate" >Inscrições</span>
                     <!-- <h3 class="">Inscreva-se</h2> -->

@@ -1128,8 +1128,10 @@ function compareStrings(a, b) {
 document.getElementById("select-subscribe-gun").addEventListener('change', function (ev) {
     if(ev.target.value===gunOthers._id){
         document.getElementById('subscribe-gun').style.display='';
+        document.getElementById('subscribe-gun-label').style.display='';
     }else{
         document.getElementById('subscribe-gun').style.display='none';
+        document.getElementById('subscribe-gun-label').style.display='none';
         document.getElementById('subscribe-gun').value='';
     }
 });
@@ -1137,6 +1139,7 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
   document.getElementById("select-subscribe-division").addEventListener('change', function (ev) {
 
     document.getElementById('subscribe-gun').style.display='none';
+    document.getElementById('subscribe-gun-label').style.display='none';
     document.getElementById('subscribe-gun').value='';
     
     let divisionName = "";

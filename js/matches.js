@@ -272,7 +272,6 @@ function addLevels(mainMatches, recapMatches, categ){
     levels+= `<div id="${categ}LevelM${i}" class="col-5 ${col_matches}">
             </div>
             <div class="col-5 col-matches-rule" id="${categ}RuleLevelM${i}">
-                
             </div>`;
     }
 
