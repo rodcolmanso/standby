@@ -21,6 +21,15 @@ let modalChanged;
 let language="pt-br";
 let loggedUser;
 
+const gunOthers= {
+    _id: '66cfb8ee0badeb112d52d3c1'
+    ,type: "Outras"
+    ,factory: "Outras"
+    ,model: "Outras"
+    ,caliber: "."
+    ,operation: "Outras"
+    };
+
 let mouseDown = false;
 let startX, scrollLeft;
 const slider = document.querySelector('.scrolling-wrapper');
@@ -375,7 +384,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 space[0]=s;
             }
             
-            _rd= mainMatches[round][match].shooterA.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
+            _rd= mainMatches[round][match].shooterA.optics?`<span class="text-danger">⦿</span>`:"";
 
             //->> let _admin= (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
             // ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
@@ -385,6 +394,14 @@ function addMainMatches(mainMatches, recapMatches, categ){
             if(mainMatches[round][match].v.id===null && mainMatches[round][match].shooterA.id!==null){
                 droppable= 'droppable" draggable="true';
             }
+
+            if(!mainMatches[round][match].shooterA.gun&&mainMatches[round][match].shooterA.gunModel){
+                mainMatches[round][match].shooterA.gun= mainMatches[round][match].shooterA.gunFactory+' '+mainMatches[round][match].shooterA.gunModel+' ('+mainMatches[round][match].shooterA.gunCaliber+')';
+            }
+            if(!mainMatches[round][match].shooterB.gun&&mainMatches[round][match].shooterB.gunModel){
+                mainMatches[round][match].shooterB.gun= mainMatches[round][match].shooterB.gunFactory+' '+mainMatches[round][match].shooterB.gunModel+' ('+mainMatches[round][match].shooterB.gunCaliber+')';
+            }
+
             matches+= s+`
             <div class="dropdown">
                 <div  class="nodisable" data-bs-toggle="dropdown" aria-expanded="false">
@@ -409,7 +426,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                             <div class="card-header-2">
                             <h10 class="card-title text-truncate"><b>  ${mainMatches[round][match].shooterA.name} </b></h10>
                             <p class="card-text" id="card-text-${mainMatches[round][match].id}-A">
-                                <span class="badge text-bg-secondary d-inline-block text-truncate">${mainMatches[round][match].shooterA.gunModel} ${mainMatches[round][match].shooterA.gunCaliber}
+                                <!--<span class="badge text-bg-secondary d-inline-block text-truncate">${mainMatches[round][match].shooterA.gunModel} ${mainMatches[round][match].shooterA.gunCaliber}-->
+                                <span class="badge text-bg-secondary d-inline-block text-truncate">${mainMatches[round][match].shooterA.gun}
                                 ${_rd}</span></p>
                             </div>
                         </div>
@@ -428,7 +446,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
 
             // _rd= mainMatches[round][iB].shooterB.optics?`<i class="bi bi-dot" style="color:red !important;"></i>`:"";
-            _rd= mainMatches[round][iB].shooterB.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
+            _rd= mainMatches[round][iB].shooterB.optics?`<span class="text-danger">⦿</span>`:"";
             matches+= `<!---->
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.B">
                 <div class="row g-0 ">
@@ -445,7 +463,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+= ` ${mainMatches[round][iB].shooterB.name} `;
 
             matches+=  `    </b></h10>
-                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${mainMatches[round][iB].shooterB.gunModel} ${mainMatches[round][iB].shooterB.gunCaliber}${_rd}</span> </p>
+                        <!--<p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${mainMatches[round][iB].shooterB.gunModel} ${mainMatches[round][iB].shooterB.gunCaliber}${_rd}</span> </p>-->
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${mainMatches[round][iB].shooterB.gun}${_rd}</span> </p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -514,12 +533,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
             if(levelSpace.length-ls>=0){
                 matches+= levelSpace[levelSpace.length-ls][0];
             }
-            _rdA= recapMatches[round][match].shooterA.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
-            _rdB= recapMatches[round][match].shooterB.optics?`<span class="position-absolute translate-middle badge bg-danger rounded-pill">⦿</span>`:"";
+            _rdA= recapMatches[round][match].shooterA.optics?`<span class="text-danger">⦿</span>`:"";
+            _rdB= recapMatches[round][match].shooterB.optics?`<span class="text-danger">⦿</span>`:"";
 
             droppable= '" draggable="false';
             if(recapMatches[round][match].v.id===null && recapMatches[round][match].shooterA.id!==null){
                 droppable= 'droppable" draggable="true';
+            }
+
+            if(!recapMatches[round][match].shooterA.gun&&recapMatches[round][match].shooterA.gunModel){
+                recapMatches[round][match].shooterA.gun= recapMatches[round][match].shooterA.gunFactory+' '+recapMatches[round][match].shooterA.gunModel+' ('+recapMatches[round][match].shooterA.gunCaliber+')';
+            }
+            if(!recapMatches[round][match].shooterB.gun&&recapMatches[round][match].shooterB.gunModel){
+                recapMatches[round][match].shooterB.gun= recapMatches[round][match].shooterB.gunFactory+' '+recapMatches[round][match].shooterB.gunModel+' ('+recapMatches[round][match].shooterB.gunCaliber+')';
             }
 
             matches+= `
@@ -533,7 +559,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterA.name}</b></h10>
-                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterA.gunModel} ${recapMatches[round][match].shooterA.gunCaliber}${_rdA}</span></p>
+                        <!--<p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterA.gunModel} ${recapMatches[round][match].shooterA.gunCaliber}${_rdA}</span></p>-->
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterA.gun} ${_rdA}</span></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">
@@ -560,7 +587,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-6 col-card-match text-truncate">
                         <div class="card-header-2" >
                         <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterB.name}</b></h10>
-                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterB.gunModel} ${recapMatches[round][match].shooterB.gunCaliber}${_rdB}</span></p>
+                        <!---<p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterB.gunModel} ${recapMatches[round][match].shooterB.gunCaliber}${_rdB}</span></p>-->
+                        <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterB.gun} ${_rdB}</span></p>
                         </div>
                     </div>
                     <div class="row align-items-center col-card-check">

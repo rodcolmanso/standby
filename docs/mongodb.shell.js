@@ -348,6 +348,7 @@ db.time_records.aggregate([
 //   db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1}, { "unique": true } );
   db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1, "gun":1}, { "unique": true } );
   db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1, "gunId":1}, { "unique": true } );
+  db.shooters_divisions.createIndex( {"shooterId":1, "divisionId":1, "gunId":1, "gun":1}, { "unique": true } );
 
 
 
@@ -1473,9 +1474,10 @@ db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661be218427
 // ==================
 
 db.guns.insertOne({
-type: "Revolver"
-,factory: "Taurus"
-,model: "RT 837"
+_id: '66cfb8ee0badeb112d52d3c1'
+,type: "Outros"
+,factory: "Outros"
+,model: "Outros"
 ,caliber: ".38 SPL"
 ,operation: "Repetição"
 });

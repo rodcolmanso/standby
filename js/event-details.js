@@ -9,8 +9,16 @@ let eventConfig=null;
 let shooterDivisions=null;
 let allShootersDivisions=null;
 let gunsOfShooterDivisions=[];
-let _tb= null;;
+let _tb= null;
 
+const gunOthers= {
+    _id: '66cfb8ee0badeb112d52d3c1'
+    ,type: "Outras"
+    ,factory: "Outras"
+    ,model: "Outras"
+    ,caliber: "."
+    ,operation: "Outras"
+    };
 
 const MODAL_TABLE_SUB_ID= 'subscribe-table';
 const MODAL_TABLE_ALL_SUBS_ID= 'subscribe-table-subs';
@@ -286,6 +294,7 @@ $(function() {
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
+            document.getElementById('shooter-img2').src="none";
         }
 
         // if(!this.checkValidity()){
@@ -297,12 +306,14 @@ $(function() {
             document.getElementById('subscribe-email').value="";
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
+            document.getElementById('shooter-img2').src="none";
 
             // this.focus();
         }else if (this.value!=="") {
             // alert('Vai submeter busca de shooter');
             // getFullShooterDivision(eventConfig, this.value);
             document.getElementById('shooter-img').src="none";
+            document.getElementById('shooter-img2').src="none";
             document.getElementById("search-button-name").style.display='none';
             // document.getElementById("search-button-name").style.visibility="hidden";
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
@@ -373,6 +384,21 @@ function changeSub(id, ldx ,idx, elem, _subs){
         if(elem.checked) elem.style='background-color:red'; else elem.style='background-color:';
     }
 
+    if(document.getElementById("subscribe-gun-"+id+_subs).value!==gunOthers._id){
+        document.getElementById("other-subscribe-gun-"+id+_subs).value  = document.getElementById("subscribe-gun-"+id+_subs).options[document.getElementById("subscribe-gun-"+id+_subs).selectedIndex].text;
+    }
+
+    if(elem.id.substring(0,14)==="subscribe-gun-"){
+        if(elem.value!==gunOthers._id){
+            document.getElementById("other-subscribe-gun-"+id+_subs).style.display='none';
+        }else{
+            document.getElementById("other-subscribe-gun-"+id+_subs).value='';
+            document.getElementById("other-subscribe-gun-"+id+_subs).style.display='';
+            document.getElementById("other-subscribe-gun-"+id+_subs).focus();
+            return 0;
+        }
+    }
+
     let _sD=[];
     let _tableId="";
     if(_subs!==null && _subs===""){
@@ -384,7 +410,14 @@ function changeSub(id, ldx ,idx, elem, _subs){
     }
 
     // document.getElementById("subscribe-gun-"+id+_subs).value= document.getElementById("subscribe-gun-"+id+_subs).value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
-    _sD[ldx].shooters_divisions[idx].gun  = document.getElementById("subscribe-gun-"+id+_subs).text;
+    if(document.getElementById("subscribe-gun-"+id+_subs).value===gunOthers._id
+       && document.getElementById("other-subscribe-gun-"+id+_subs).value === "" ){
+        alert('Informe a arma.');
+        document.getElementById("other-subscribe-gun-"+id+_subs).focus();
+        return 0;
+    }
+    
+    _sD[ldx].shooters_divisions[idx].gun  = document.getElementById("other-subscribe-gun-"+id+_subs).value;
     _sD[ldx].shooters_divisions[idx].gunId= document.getElementById("subscribe-gun-"+id+_subs).value;
     _sD[ldx].shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id+_subs).checked;
@@ -528,7 +561,7 @@ function populateGunDropdown(shooterDivisions, _subs){
                         if(gunList[j]._id===value)
                             newOption.selected= true;
                         
-                        if(divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
+                        if(gunList[j]._id!==gunOthers._id && divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
                             dropDown.add(newOption);
                     }
             
@@ -543,7 +576,7 @@ function populateGunDropdown(shooterDivisions, _subs){
                     if(gunList[j]._id===value)
                         newOption.selected= true;
 
-                    if(((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
+                    if(gunList[j]._id!==gunOthers._id && ((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
                         ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
                         ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
                         ||(divisionName==="armas curtas"
@@ -552,11 +585,14 @@ function populateGunDropdown(shooterDivisions, _subs){
                             dropDown.add(newOption);
                     }
                 }
-
+                newOption = new Option(gunOthers.model,gunOthers._id);    
+                if(gunOthers._id===value)
+                    newOption.selected= true;
+                dropDown.add(newOption);
+                
             }
 
         }
-
 
     }
 
@@ -591,8 +627,11 @@ function popupSubscriptionModal(shooterDivisions){
         // document.getElementById('input-shooter-img').disabled=true;
     }
     
-    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
+    // const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
+    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_89,h_131/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
+    const uri2= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
     document.getElementById('shooter-img').src= uri;
+    document.getElementById('shooter-img2').src= uri2;
     
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
     // new DataTable('#subscribe-table-subs-head');
@@ -624,7 +663,9 @@ function populateNewShooter(_docnum){
     document.getElementById("subscribe-check-duel").disabled= (!eventConfig.clock||!eventConfig.duel);
 
     const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_85,h_135/defaults/generic_avatar.jpg`;
+    const uri2= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar.jpg`;
     document.getElementById('shooter-img').src= uri;
+    document.getElementById('shooter-img2').src= uri2;
     
 
     shooterDivisions[0].category= null;
@@ -655,6 +696,15 @@ function getChecked(b, color){
      else return ' style="background-color:" ';
 }
 
+function exitOtherGun(el){
+    if(el.value.trim()===''){
+        alert('Informe a arma!');
+        el.focus();
+        return 0;
+    }
+
+}
+
 // function buildSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
@@ -678,15 +728,23 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 nodisableClass='" disabled ';
 
             row+=`<tr>`;
+
+            let classGunSmall='';
+            let classGunLarge='';
+            let hiddeGunsmall=`style="display:none"`;
             
             if(tb.id=== MODAL_TABLE_ALL_SUBS_ID){
+
+                classGunSmall='d-xl-none';
+                classGunLarge='d-none d-xl-block';
+                hiddeGunsmall=`style="display:"`;
 
                 _subs='-subs';
                 row+=
                 `
-                <td class="align-middle text-end">
+                <td class="d-none d-xl-block align-middle text-end">
                     <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_new">
-                    <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?'${uuidv4()}'" class="small-profile-avatar-pic rounded-circle" alt="...">
+                    <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?" class="small-profile-avatar-pic rounded-circle" alt="...">
                     </a>
                 </td>
                 <td class="text-start">
@@ -697,26 +755,48 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 </td>`
             }
 
+            // testing if neets to show other guns 
+            let otherGunDisplay='none';
+            if (shooterDivisions[l].shooters_divisions[i].gunId === gunOthers._id){
+                otherGunDisplay='';
+            }
+
             row+=
             `<td class="text-start">
                 <small>${getDivisionName(shooterDivisions[l].shooters_divisions[i].divisionId)}</small>
             </td>
-            <td class="text-start">
+            `;
+            row+=
+            `<td class="text-start">
                 <div class="form-check form-switch">
                     <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" >
                     <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Relógio</small></label>
                 </div>
-                <div class="form-check form-switch">
+            `;
+            row+=
+            `   <div class="form-check form-switch">
                     <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].duel  , 'goldenrod')};" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')" > 
                     <label class="form-check-label" for="subscribe-check-duel-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none fas fa-holly-berry"></i><small class="d-none d-xl-block text-muted">Duelo</small></label>
                 </div>
             </td>
-            <td class="text-end">
-                <select  type="text" class="form-select form-select-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gunId?shooterDivisions[l].shooters_divisions[i].gunId:shooterDivisions[l].shooters_divisions[i].gun_det[0]._id}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
+            `;
+            row+=
+            `<td class="text-end text-truncate">
+                <select class="${classGunLarge} form-select form-select-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gunId?shooterDivisions[l].shooters_divisions[i].gunId:shooterDivisions[l].shooters_divisions[i].gun_det[0]._id}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
                 </select>
+                
+                `;
+            row+=
+            `<div class="${classGunLarge}">
+                <input style="display:${otherGunDisplay}" type="text" class="form-control form-control-sm ${nodisableClass} id="other-subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun?shooterDivisions[l].shooters_divisions[i].gun:shooterDivisions[l].shooters_divisions[i].gun_det[0].model}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"
+                onfocusout="exitOtherGun(this)" > 
+            </div>
+                <small ${hiddeGunsmall} class="${classGunSmall} text-truncate ">${shooterDivisions[l].shooters_divisions[i].gun}</small>
             </td>
-            <td>
-                <div class="form-check"> <!--form-switch--> <!--role="switch" -->
+            `;
+            row+=
+            `<td class="text-start">
+                <div class="" class="form-check"> 
                     <input class="form-check-input ${nodisableClass} type="checkbox" id="subscribe-optic-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="" aria-label="..." ${getChecked(shooterDivisions[l].shooters_divisions[i].optics, 'red')} onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this, '${_subs}')">
                 </div>
             </td>
@@ -757,6 +837,15 @@ function subscribeNew(){
         return 0
 
     }
+
+    if(document.getElementById("select-subscribe-gun").value===gunOthers._id && document.getElementById('subscribe-gun').value===''){
+        alert('Informe a arma');
+        document.getElementById('subscribe-gun').focus();
+        return 0
+    }
+
+    document.getElementById("subscribe-gun").value
+
     let nShooters_divisions= {};
     
     // nShooters_divisions._id=document.getElementById("subscribe-shooterId").value;
@@ -771,6 +860,10 @@ function subscribeNew(){
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
     nShooters_divisions.docnum= document.getElementById('subscribe-docnum').value
+    
+    if(!nShooters_divisions.gun){
+        nShooters_divisions.gun= document.getElementById("select-subscribe-gun").options[document.getElementById("select-subscribe-gun").selectedIndex].text;
+    }
 
     document.getElementById("subscribe-name").value= document.getElementById("subscribe-name").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     shooterDivisions[0].name= document.getElementById("subscribe-name").value;
@@ -1028,7 +1121,19 @@ function compareStrings(a, b) {
     return (a < b) ? -1 : (a > b) ? 1 : 0;
   }
 
+document.getElementById("select-subscribe-gun").addEventListener('change', function (ev) {
+    if(ev.target.value===gunOthers._id){
+        document.getElementById('subscribe-gun').style.display='';
+    }else{
+        document.getElementById('subscribe-gun').style.display='none';
+        document.getElementById('subscribe-gun').value='';
+    }
+});
+
   document.getElementById("select-subscribe-division").addEventListener('change', function (ev) {
+
+    document.getElementById('subscribe-gun').style.display='none';
+    document.getElementById('subscribe-gun').value='';
     
     let divisionName = "";
     for(let i=0; i<ev.target.options.length;i++){
@@ -1050,7 +1155,7 @@ function compareStrings(a, b) {
             for(let j=0;j<gunList.length;j++){
                 let newOption = new Option(gunList[j].alias,gunList[j]._id);
                 
-                if(divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
+                if(gunList[j]._id!==gunOthers._id && divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
                     dropDown.add(newOption);
             }
         
@@ -1061,7 +1166,7 @@ function compareStrings(a, b) {
         for(let j=0;j<gunList.length;j++){
             newOption = new Option(gunList[j].alias,gunList[j]._id);
 
-            if(((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
+            if(gunList[j]._id!==gunOthers._id &&((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
                 ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
                 ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
                 ||(divisionName==="armas curtas"
@@ -1070,6 +1175,8 @@ function compareStrings(a, b) {
                 dropDown.add(newOption);
             }
         }
+        newOption = new Option(gunOthers.model,gunOthers._id);
+        dropDown.add(newOption);
     }
   });
 
@@ -1166,6 +1273,7 @@ function selectShooter(_docnum, _name){
     document.getElementById("search-button-name").style.display='none';
     // document.getElementById("search-button-name").style.visibility="hidden";
     document.getElementById('shooter-img').src="none";    
+    document.getElementById('shooter-img2').src="none";    
     promiseOfGetShootersDivisions(eventConfig._id, document.getElementById("subscribe-docnum").value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
 
 }

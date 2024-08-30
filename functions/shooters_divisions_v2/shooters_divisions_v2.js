@@ -149,10 +149,12 @@ const handler = async (event, context)=>{
           for(let i=0;i<shootersDiv.length;i++){
 
             for(let j=0; j<shootersDiv[i].shooters_divisions.length;j++){
-              if(shootersDiv[i].shooters_divisions[j].gun_det&&shootersDiv[i].shooters_divisions[j].gun_det.length>0)
-              shootersDiv[i].shooters_divisions[j].gun= shootersDiv[i].shooters_divisions[j].gun_det[0].factory+" "
+              if((!shootersDiv[i].shooters_divisions[j].gun || shootersDiv[i].shooters_divisions[j].gun==='') && shootersDiv[i].shooters_divisions[j].gun_det&&shootersDiv[i].shooters_divisions[j].gun_det.length>0){
+                console.log('Entrou editando gun.'+shootersDiv[i].shooters_divisions[j].gun);
+                shootersDiv[i].shooters_divisions[j].gun= shootersDiv[i].shooters_divisions[j].gun_det[0].factory+" "
                                 + shootersDiv[i].shooters_divisions[j].gun_det[0].model+" ("
                                 + shootersDiv[i].shooters_divisions[j].gun_det[0].caliber+")";
+              }
               shootersDiv[i].shooters_divisions[j].gunModel= shootersDiv[i].shooters_divisions[j].gun_det[0].model;
               shootersDiv[i].shooters_divisions[j].gunCaliber= shootersDiv[i].shooters_divisions[j].gun_det[0].caliber;
               shootersDiv[i].shooters_divisions[j].gunFactory= shootersDiv[i].shooters_divisions[j].gun_det[0].factory;
@@ -238,15 +240,16 @@ const handler = async (event, context)=>{
             if(shootersDiv[i].registered &&shootersDiv[i].registered.length>0&& shootersDiv[i].registered[0].gun_det && shootersDiv[i].registered[0].gun_det.length>0){
               
               for(let j=0; j<shootersDiv[i].registered.length;j++){
+                if(!shootersDiv[i].registered[j].gun){
+                  shootersDiv[i].registered[j].gun= shootersDiv[i].registered[j].gun_det[0].factory+" "
+                            +shootersDiv[i].registered[j].gun_det[0].model+ " ("
+                            +shootersDiv[i].registered[j].gun_det[0].caliber+ ")";
+                }
+                shootersDiv[i].registered[j].gunModel= shootersDiv[i].registered[j].gun_det[0].model;
+                shootersDiv[i].registered[j].gunCaliber= shootersDiv[i].registered[j].gun_det[0].caliber;
+                shootersDiv[i].registered[j].gunFactory= shootersDiv[i].registered[j].gun_det[0].factory;
 
-              shootersDiv[i].registered[j].gun= shootersDiv[i].registered[j].gun_det[0].factory+" "
-                        +shootersDiv[i].registered[j].gun_det[0].model+ " ("
-                        +shootersDiv[i].registered[j].gun_det[0].caliber+ ")";
-              shootersDiv[i].registered[j].gunModel= shootersDiv[i].registered[j].gun_det[0].model;
-              shootersDiv[i].registered[j].gunCaliber= shootersDiv[i].registered[j].gun_det[0].caliber;
-              shootersDiv[i].registered[j].gunFactory= shootersDiv[i].registered[j].gun_det[0].factory;
-
-              console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
+                console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
               }
             }
             if(!user||user.email!==shootersDiv[i].email){
@@ -442,7 +445,7 @@ const handler = async (event, context)=>{
             let gun= error.toString().slice(-1*error.toString().indexOf('gun: "'));
             return  {
               statusCode:  409,
-              body: `E11000. Cannot subscribe a gun twice in a same division. { ${gun} `
+              body: JSON.stringify(`E11000. Cannot subscribe a gun twice in a same division. { ${gun} `)
             };
             }
 

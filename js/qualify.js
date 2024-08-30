@@ -467,14 +467,9 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             </div>
                             <div class="dropdown col d-inline-block text-truncate">`;
                                 row+= `${aPlayers[i].name}
-                                <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                                <p class="text-truncate" style="margin-bottom: 0 !important;">
                                   <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
-                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd}</span>
-                                  </span>
-                                </p>
-                                <p class="d-xl-none" style="margin-bottom: 0 !important;">
-                                  <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gunModel} ${aPlayers[i].gunCaliber}
-                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rd_sm}</span>
+                                    <span class="text-danger">${_rd}</span>
                                   </span>
                                 </p>
                             </div>
@@ -754,14 +749,9 @@ function buildClassiication(rank, gunId, optic){
                 </p>
               </td>
               <td class="text-start nowrap">
-                <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
+                <p class="" style="margin-bottom: 0 !important;">
                 <span class="badge text-bg-secondary">${rank[i].gun}
-                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd}</span>
-                </span>
-                </p>
-                <p class="d-xl-none" style="margin-bottom: 0 !important;">
-                <span class="badge text-bg-secondary">${rank[i].model} ${rank[i].caliber}
-                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd_sm}</span>
+                    <span class="text-danger">${badg_rd}</span>
                 </span>
                 </p>
               </td>
@@ -795,7 +785,7 @@ function timeTrack(idShooter, nameShooter, gunShooter, bestScore,idShooterDivisi
     }
 
     let gunBadge= `<span class="badge text-bg-secondary">${gunShooter}
-                                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_rdBedge}</span>
+                                    <span class="text-danger">${_rdBedge}</span>
                                   </span>`
                                 
     document.getElementById('timeShooterGun').innerHTML= gunBadge;
