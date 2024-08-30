@@ -376,7 +376,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
             let s="";
             if(round>=has4play){
-                s= `<div class="ps-8"></div>`;
+                s= `<div class=" ps-8"></div>`;
                 for(let k=0;k<=(round-has4play)*2;k++){
                     s+= `
                     <div class="ps-50"></div>`;
@@ -501,7 +501,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
         document.getElementById(categ+'LevelM'+round).innerHTML= matches;
         matches="";
 
-        divRule=`<p class="ps-50"></p>
+        divRule=`<p class=" vr ps-50"></p>
         <div class="d-flex align-items-center" style="height: 136px;">
             <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
         </div>

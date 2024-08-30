@@ -83,9 +83,9 @@ return _shooters_division;
 const buildMatches = (shooters)=>{
   
   // console.log(`------------------------------------------------`);
-    for(let i=0; i<shooters.length;i++){
+    // for(let i=0; i<shooters.length;i++){
       // console.log(`|       shooters[${i}]= ${shooters[i].name} ${shooters[i].gun}`);
-    }
+    // }
     // console.log(`------------------------------------------------`);
 
     let mainMatches=[];
@@ -340,7 +340,7 @@ const flatPlayesDivisions = (players, sort, light)=>{
       // for(j=0;j<players[i].registered.length;j++){
   let gun_rd="";
 
-  console.log('================datetime=====================');
+  // console.log('================datetime=====================');
   for(i=0;i<players.length;i++){
     // console.log(`players[i].event[0].randomDuel= ${players[i].event[0].randomDuel}`);
     if(players[i].event[0].randomDuel || players[i].score===undefined||players[i].score===null||players[i].score===''){
@@ -383,7 +383,7 @@ const flatPlayesDivisions = (players, sort, light)=>{
     }
     rP.push(aRow);  
   }
-  console.log('================datetime=====================');
+  // console.log('================datetime=====================');
   // }
 
   if (sort>0){
@@ -486,13 +486,13 @@ const handler = async (event, context)=>{
             const o_id = new ObjectId(p_divisionId);
             const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
             const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
-            console.log('shootersDivx.lenght='+shootersDivx.length);
+            // console.log('shootersDivx.lenght='+shootersDivx.length);
 
             let players= flatPlayesDivisions(shootersDivx, 1);
-            console.log('Flated Players.lenght='+players.length);
+            // console.log('Flated Players.lenght='+players.length);
 
             players= matchShootersCategories(players, division);
-            console.log('Players by category.lenght='+players.length);
+            // console.log('Players by category.lenght='+players.length);
 
             if(players.length>0){
 

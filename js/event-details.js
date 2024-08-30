@@ -627,9 +627,9 @@ function popupSubscriptionModal(shooterDivisions){
         // document.getElementById('input-shooter-img').disabled=true;
     }
     
-    // const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_8${getRandomInt(0,9)},h_13${getRandomInt(0,9)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
-    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_89,h_131/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
-    const uri2= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
+    const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_9${getRandomInt(0,5)},h_14${getRandomInt(0,5)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
+    // const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_95,h_145/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
+    const uri2= `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
     document.getElementById('shooter-img').src= uri;
     document.getElementById('shooter-img2').src= uri2;
     
@@ -699,7 +699,7 @@ function getChecked(b, color){
 function exitOtherGun(el){
     if(el.value.trim()===''){
         alert('Informe a arma!');
-        el.focus();
+        // el.focus();
         return 0;
     }
 
@@ -821,7 +821,11 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
     populateGunDropdown(shooterDivisions, _subs);
 
     if(tb.id=== MODAL_TABLE_ALL_SUBS_ID){
-        _tb= new DataTable('#subscribe-table-subs-head');
+        _tb= new DataTable('#subscribe-table-subs-head', 
+            { paging: false
+            ,responsive: false
+            ,oLanguage: {sSearch: "Buscar:"}
+            });
         _tb.draw(false);
     
     }

@@ -177,13 +177,11 @@
     <div class="portfolio-modal modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
             <div class="container">
               <div class="row justify-content-center">
-                      <!-- <div class="col-lg-8"> -->
                 <div class="modal-body">
                     <!-- Project details-->
-                    <h5 class="" id="event-name"></h5>
+                    <span class="text-truncate" id="event-name"></span><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
                     <input type="hidden" class="nodisable" id="event-public">
                     <input type="hidden" class="nodisable" id="event-owners">
                     <hr /> 
@@ -192,23 +190,24 @@
                     <form action="javascript:subscribeNew();">
                       <div class="row gy-2 gx-3" >
                         <div class="col-md-6">
-                            <div   > <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
+                            <div> <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
                               <div class="card" >
                                 <div class="row gy-2 gx-3" >
-                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:1px !important;"> 
-                                    <div class="" disabled style="padding-right:1px !important;"> 
-                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:131px !important; max-width:80px !important; padding-right:1px !important; margin-bottom: 0 !important; " class="d-none d-xl-block img-fluid rounded-start" alt="..." />
-                                        <img id="shooter-img2" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" class="d-xl-none small-profile-avatar-pic rounded-circle" alt="..." />
-                                      </label>
+                                  <div class="col-auto" style="padding-right:1px !important; margin-top: 1px important; padding-left:10px !important;"> 
+                                    <div class="d-none d-xl-block" disabled style="padding-right:1px !important;"> 
+                                        <img id="shooter-img" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" style="max-height:150px !important; max-width:100px !important; padding-right:1px !important; margin-bottom: 0 !important; " class=" img-fluid rounded-start" alt="..." />
                                     </div>
                                   </div>
                                   
                                   <div class="card-body col-auto" style="padding-left:8px !important;">
-                                    <div class="form-floating">
-                                      <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
-                                      <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">
-                                      <input disabled type="number" pattern="\d*" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
-                                      <label for="subscribe-docnum" >CPF</label>
+                                    <input type="hidden" class="form-control nodisable" id="subscribe-shooterId">
+                                    <input disabled type="hidden" required placeholder="" class="form-control " id="subscribe-email">  
+                                    <div class="input-group">
+                                      <img id="shooter-img2" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar'" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar" class="d-xl-none small-profile-avatar-pic-2 rounded-circle" alt="..." />
+                                      <div class="form-floating">
+                                        <input disabled type="number" pattern="\d*" required placeholder="" class="form-control no-validate" id="subscribe-docnum">
+                                        <label for="subscribe-docnum" >CPF</label>
+                                      </div>
                                     </div>
                                     <div class="input-group">
                                       <div class="form-floating">
@@ -327,15 +326,14 @@
     <div class="portfolio-modal modal fade" id="subscriptionsModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
-            <div class="container">
+          <div class="container">
               <div class="row justify-content-center">
                       <!-- <div class="col-lg-8"> -->
                 <div class="modal-body">
                     <!-- Project details-->
-                    <h5 class="" id="event-name-subs"></h5>
+                    <span class="text-truncate" id="event-name-subs"></span><div class="close-modal" data-bs-dismiss="modal"><button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button></div>
                     <hr /> 
-                    <h4 class="" >Inscrições</h4>
+                    <span class="text-truncate" >Inscrições</span>
                     <!-- <h3 class="">Inscreva-se</h2> -->
                     <br>
                     <div class="table-responsive">

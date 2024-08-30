@@ -32,9 +32,9 @@ const handler = async (event, context)=>{
 
         const user= context.clientContext.user;
 
-        if(!user){
-          console.log(`User not logged!`);
-        }else console.log(`User logged!`);
+        // if(!user){
+        //   console.log(`User not logged!`);
+        // }else console.log(`User logged!`);
 
         p_eventId=null;
         p_email=null;
@@ -44,26 +44,26 @@ const handler = async (event, context)=>{
 
         if(event.queryStringParameters.eventId!==undefined&&event.queryStringParameters.eventId!==null&&event.queryStringParameters.eventId!==""){
           p_eventId= event.queryStringParameters.eventId.toString();
-          console.log(`p_eventId= ${p_eventId}`);
+          // console.log(`p_eventId= ${p_eventId}`);
         }
         if(event.queryStringParameters.email!==undefined&&event.queryStringParameters.email!==null&&event.queryStringParameters.email!==""){
           p_email= event.queryStringParameters.email.toLowerCase();
-          console.log(`p_email= ${p_email}`);
+          // console.log(`p_email= ${p_email}`);
         }
         
         if(event.queryStringParameters.clock_duel!==undefined&&event.queryStringParameters.clock_duel!==null&&event.queryStringParameters.clock_duel!==""){
           p_clockDuel= event.queryStringParameters.clock_duel.toLowerCase();
-          console.log(`p_clockDuel= ${p_clockDuel}`);
+          // console.log(`p_clockDuel= ${p_clockDuel}`);
         }
 
         if(event.queryStringParameters.docnum&&event.queryStringParameters.docnum!==""){
           p_docnum= event.queryStringParameters.docnum.toLowerCase();
-          console.log(`p_docnum= ${p_docnum}`);
+          // console.log(`p_docnum= ${p_docnum}`);
         }
 
         if(event.queryStringParameters.shooterId&&event.queryStringParameters.shooterId!==""){
           p_shooterId= event.queryStringParameters.shooterId.trim();
-          console.log(`p_shooterId= ${p_shooterId}`);
+          // console.log(`p_shooterId= ${p_shooterId}`);
         }
 
         // console.log(`user.email: ${user.email}`);
@@ -100,7 +100,7 @@ const handler = async (event, context)=>{
       
       if(p_eventId&&(p_email||p_docnum|| p_shooterId)){ // List shooter_division(inscriptions) detail
         
-        console.log(`ENTROU NO EMAIL= ${p_email}`);
+        // console.log(`ENTROU NO EMAIL= ${p_email}`);
         
         let fEmail= {};
 
@@ -113,7 +113,7 @@ const handler = async (event, context)=>{
         }else{
           fEmail= {"email": p_email};
         }
-        console.log('[shooters_divisions_v2] fEmail='+JSON.stringify(fEmail,null,2));
+        // console.log('[shooters_divisions_v2] fEmail='+JSON.stringify(fEmail,null,2));
 
         const shootersDiv= await cShooters.aggregate([
           { "$addFields": { 
@@ -144,13 +144,13 @@ const handler = async (event, context)=>{
           ,{$project:{"eventId":0}}
           ]).toArray();
 
-          console.log('Masking Docnun. isEventAdmin='+isEventAdmin);
+          // console.log('Masking Docnun. isEventAdmin='+isEventAdmin);
           
           for(let i=0;i<shootersDiv.length;i++){
 
             for(let j=0; j<shootersDiv[i].shooters_divisions.length;j++){
               if((!shootersDiv[i].shooters_divisions[j].gun || shootersDiv[i].shooters_divisions[j].gun==='') && shootersDiv[i].shooters_divisions[j].gun_det&&shootersDiv[i].shooters_divisions[j].gun_det.length>0){
-                console.log('Entrou editando gun.'+shootersDiv[i].shooters_divisions[j].gun);
+                // console.log('Entrou editando gun.'+shootersDiv[i].shooters_divisions[j].gun);
                 shootersDiv[i].shooters_divisions[j].gun= shootersDiv[i].shooters_divisions[j].gun_det[0].factory+" "
                                 + shootersDiv[i].shooters_divisions[j].gun_det[0].model+" ("
                                 + shootersDiv[i].shooters_divisions[j].gun_det[0].caliber+")";
@@ -175,7 +175,7 @@ const handler = async (event, context)=>{
           };
 
       }else if(p_eventId!==null){ //listing all shooters in a eventId, with their best time for each division
-        console.log(`ENTROU NO ENVENTO= ${p_eventId}`);
+        // console.log(`ENTROU NO ENVENTO= ${p_eventId}`);
         let _match={"eventId": p_eventId};
 
         if(p_clockDuel==='clock'){
@@ -230,12 +230,12 @@ const handler = async (event, context)=>{
           ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
           ]).sort({"registered.score":1}).toArray();
           
-          console.log('==================================');
+          // console.log('==================================');
           
 
           let user= context.clientContext.user;
           for(let i=0;i<shootersDiv.length;i++){
-            console.log('=antes do if=');
+            // console.log('=antes do if=');
             // console.log(`shootersDiv[i].registered&& shootersDiv[i].registered.gun_det && shootersDiv[i].registered.gun_det.length= ${shootersDiv[i].registered} && ${shootersDiv[i].registered.gun_det} && ${shootersDiv[i].registered.gun_det.length}` );
             if(shootersDiv[i].registered &&shootersDiv[i].registered.length>0&& shootersDiv[i].registered[0].gun_det && shootersDiv[i].registered[0].gun_det.length>0){
               
@@ -249,7 +249,7 @@ const handler = async (event, context)=>{
                 shootersDiv[i].registered[j].gunCaliber= shootersDiv[i].registered[j].gun_det[0].caliber;
                 shootersDiv[i].registered[j].gunFactory= shootersDiv[i].registered[j].gun_det[0].factory;
 
-                console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
+                // console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
               }
             }
             if(!user||user.email!==shootersDiv[i].email){
@@ -275,25 +275,25 @@ const handler = async (event, context)=>{
             }else{
               p_eventId= shooterDivisions.eventId;
             }
-            console.log(`p_eventId= ${p_eventId}`);
+            // console.log(`p_eventId= ${p_eventId}`);
 
         try{
-          console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
+          // console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
 
-          console.log(JSON.stringify(context, null, 2))
+          // console.log(JSON.stringify(context, null, 2))
           let user= context.clientContext.user;
 
           if(!user){
-            console.log(`Unauthorized, User not logged!`);
+            // console.log(`Unauthorized, User not logged!`);
             return  {
               statusCode: 401,
               body: `Unauthorized, User not logged!`
             }; 
           }
 
-          console.log(`user.email: ${user.email}`);
+          // console.log(`user.email: ${user.email}`);
           let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-          console.log(`is Admin: ${isAdmin}`);
+          // console.log(`is Admin: ${isAdmin}`);
 
           let isEventAdmin=false;
           if(!isAdmin){
@@ -350,11 +350,11 @@ const handler = async (event, context)=>{
           
                                           );
                                         
-          console.log('');
-          console.log('==============new_record===================');
-          console.log(JSON.stringify(new_record,null,2));
-          console.log('===========================================');
-          console.log('');
+          // console.log('');
+          // console.log('==============new_record===================');
+          // console.log(JSON.stringify(new_record,null,2));
+          // console.log('===========================================');
+          // console.log('');
           if(shooterDivisions.shooterId===null||shooterDivisions.shooterId===""||shooterDivisions.shooterId===undefined){
 
             if(new_record.upsertedId!==null && new_record.upsertedId!==undefined){
@@ -424,7 +424,7 @@ const handler = async (event, context)=>{
                   }
           } //for
 
-          console.log('shooterDivisions.imgChanged='+shooterDivisions.imgChanged);
+          // console.log('shooterDivisions.imgChanged='+shooterDivisions.imgChanged);
           if(shooterDivisions.imgChanged){
             console.log('Uploading shooter img to cloudinary. img='+shooterDivisions._id);
             
@@ -486,7 +486,7 @@ const handler = async (event, context)=>{
                                                  });
           // console.log(`Updated!: ${new_record.toString()}, Name: ${shooter.name}`);
           new_record.shooterId= new_record;
-          console.log(`Done!`);
+          // console.log(`Done!`);
         }
 
         let shooter_division= {};
@@ -515,7 +515,7 @@ const handler = async (event, context)=>{
 
 
       try{
-          console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
+          // console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
           let shooterDivisions= JSON.parse(event.body);
         
           let user= context.clientContext.user;
@@ -528,7 +528,7 @@ const handler = async (event, context)=>{
           }
 
           let isAdmin= (user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
-          console.log(`is Admin: ${isAdmin}`);
+          // console.log(`is Admin: ${isAdmin}`);
 
           
           let filter_Ids= [new ObjectId("000000000000000000000000")];
@@ -548,10 +548,10 @@ const handler = async (event, context)=>{
             3. The substriber itself
             This logic will ignore the unautorized records, deletting only the autorized ones.  
             */
-            console.log(``);
-            console.log(`=================================================`);
-            console.log(`filter ids: ${JSON.stringify(filter_Ids,null,2) }`);
-            console.log(`=================================================`);
+            // console.log(``);
+            // console.log(`=================================================`);
+            // console.log(`filter ids: ${JSON.stringify(filter_Ids,null,2) }`);
+            // console.log(`=================================================`);
             let autorized_shooters_divisions= await cShooters_Divisions.aggregate( [
               {$match:{_id: { $in: filter_Ids} }}
               ,{ $addFields: { "eventId": { $toObjectId: "$eventId" }}}
@@ -620,21 +620,21 @@ const handler = async (event, context)=>{
                 filterStringIds.push(shooterDivisions.shooters_divisions[i]._id.toString());
               }
 
-              console.log('shooterDivisions.shooters_divisions.length='+shooterDivisions.shooters_divisions.length);
+              // console.log('shooterDivisions.shooters_divisions.length='+shooterDivisions.shooters_divisions.length);
 
-              console.log('filter_Ids='+JSON.stringify(filter_Ids));
-              console.log('filterStringIds='+JSON.stringify(filterStringIds));
+              // console.log('filter_Ids='+JSON.stringify(filter_Ids));
+              // console.log('filterStringIds='+JSON.stringify(filterStringIds));
 
           }
 
           
           let r_delete_divisions= await cShooters_Divisions.deleteMany({_id: { $in: filter_Ids }});
-          console.log(`Deleto divisões: r_delete_divisions.toString() ${JSON.stringify(r_delete_divisions,null,2)}`);
+          // console.log(`Deleto divisões: r_delete_divisions.toString() ${JSON.stringify(r_delete_divisions,null,2)}`);
 
           const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
           r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
           
-          console.log(`Deleted objects:  ${JSON.stringify(r_delete_divisions,null,2)}`);
+          // console.log(`Deleted objects:  ${JSON.stringify(r_delete_divisions,null,2)}`);
 
 
           return  { 
