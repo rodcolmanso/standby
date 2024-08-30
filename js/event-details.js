@@ -742,17 +742,19 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 _subs='-subs';
                 row+=
                 `
-                <td class="d-none d-xl-block align-middle text-end">
+                <td class="text-start text-truncate align-middle">
+                <div class="input-group align-middle">
+                  <div style="margin-right:8px !important;" class="d-none d-xl-block align-middle text-start">
                     <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_new">
                     <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?" class="small-profile-avatar-pic rounded-circle" alt="...">
                     </a>
-                </td>
-                <td class="text-start">
-                    <!--<a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_blank">-->
-                    <a href="#" onClick="goToSubscription('${shooterDivisions[l].shooterId}')" >
-                        <small>${shooterDivisions[l].name}</small>
+                  </div>
+                  <div>
+                    <a  href="#" onClick="goToSubscription('${shooterDivisions[l].shooterId}')" >
+                        <small >${shooterDivisions[l].name}</small>
                     </a>
-                </td>`
+                  </div>
+                </div></td>`
             }
 
             // testing if neets to show other guns 
@@ -770,7 +772,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             `<td class="text-start">
                 <div class="form-check form-switch">
                     <input class="form-check-input ${nodisableClass} type="checkbox" role="switch" id="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" ${getChecked(shooterDivisions[l].shooters_divisions[i].clock, '')}  onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l} , ${i}, this,'${_subs}')" >
-                    <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Relógio</small></label>
+                    <label class="form-check-label" for="subscribe-check-clock-${shooterDivisions[l].shooters_divisions[i]._id}"><i class="d-xl-none bi bi-stopwatch"></i><small class="d-none d-xl-block text-muted">Contra-Relógio</small></label>
                 </div>
             `;
             row+=
@@ -781,7 +783,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             </td>
             `;
             row+=
-            `<td class="text-end text-truncate">
+            `<td class="text-start text-truncate">
                 <select class="${classGunLarge} form-select form-select-sm ${nodisableClass} id="subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gunId?shooterDivisions[l].shooters_divisions[i].gunId:shooterDivisions[l].shooters_divisions[i].gun_det[0]._id}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"> 
                 </select>
                 
@@ -790,8 +792,16 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
             `<div class="${classGunLarge}">
                 <input style="display:${otherGunDisplay}" type="text" class="form-control form-control-sm ${nodisableClass} id="other-subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" value="${shooterDivisions[l].shooters_divisions[i].gun?shooterDivisions[l].shooters_divisions[i].gun:shooterDivisions[l].shooters_divisions[i].gun_det[0].model}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')"
                 onfocusout="exitOtherGun(this)" > 
-            </div>
-                <small ${hiddeGunsmall} class="${classGunSmall} text-truncate ">${shooterDivisions[l].shooters_divisions[i].gun}</small>
+            `;
+            
+            let _shortTextGun= shooterDivisions[l].shooters_divisions[i].gunModel+' ('+shooterDivisions[l].shooters_divisions[i].gunCaliber+')';
+            if(shooterDivisions[l].shooters_divisions[i].gunId===gunOthers._id){
+                _shortTextGun= shooterDivisions[l].shooters_divisions[i].gun;
+            }
+
+            row+=
+            `</div>
+                <small ${hiddeGunsmall} class="${classGunSmall} text-truncate ">${_shortTextGun}</small>
             </td>
             `;
             row+=
@@ -819,10 +829,11 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
     }
     tb.innerHTML= row;
     populateGunDropdown(shooterDivisions, _subs);
-
+    let _ord=[[0, 'asc']];
     if(tb.id=== MODAL_TABLE_ALL_SUBS_ID){
         _tb= new DataTable('#subscribe-table-subs-head', 
-            { paging: false
+            { order: _ord
+            , paging: false
             ,responsive: false
             ,oLanguage: {sSearch: "Buscar:"}
             });
