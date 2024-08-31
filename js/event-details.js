@@ -744,7 +744,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 `
                 <td class="text-start text-truncate align-middle">
                 <div class="input-group align-middle">
-                  <div style="margin-right:8px !important;" class="d-none d-xl-block align-middle text-start">
+                  <div style="margin-right:8px !important;" class="d-none d-sm-block align-middle text-start">
                     <a href="./shooter.html?id=${shooterDivisions[l].shooterId}" target="_new">
                     <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${shooterDivisions[l].shooterId}.jpg?" class="small-profile-avatar-pic rounded-circle" alt="...">
                     </a>
