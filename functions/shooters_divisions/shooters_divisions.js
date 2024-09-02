@@ -131,6 +131,99 @@ const handler = async (event, context)=>{
           }
 
       case 'PATCH': // associates divisions with a shooter
+        
+      // console.log('entrou');
+        let user= context.clientContext.user;
+
+        if(!user){
+          console.log('user not logged');
+          return  {
+            statusCode: 401,
+            body: `Unauthorized, User (not logged)!`
+          }; 
+
+        }
+
+        // console.log('user logado');
+
+        let isAdmin= (user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
+
+        // console.log('user admin? '+isAdmin);
+
+        let _body= JSON.parse(event.body);
+
+        // console.log('_body= '+JSON.stringify(_body));
+
+        if(!_body||!_body.shooterDivisionId || _body.pauseResume===undefined || _body.pauseResume==='' || _body.pauseResume=== null){
+          console.log('ERROR 401= Informe shooterDivisionId and pauseResume value');
+        return  {
+            statusCode: 401,
+            body: JSON.stringify({message: "Informe shooterDivisionId and pauseResume value."})
+          };
+        }
+
+        if(!isAdmin){
+          // console.log('Will find shooter_division. _body.shooterDivisionId='+_body.shooterDivisionId);
+          const _r_sd= await cShooters_Divisions.aggregate([
+            {$addFields: {"_shooterDivisionId": { $toString: "$_id" }
+                        ,"_eventId": { $toObjectId: "$eventId" }
+                        ,"_shooterId": { $toObjectId: "$shooterId" }}}
+            ,{$match:{"_shooterDivisionId":_body.shooterDivisionId}}
+            ,{$lookup:{ from: 'shooters'
+                      ,foreignField: '_id'
+                      ,localField: '_shooterId'
+                      ,as: 'shooter'
+            }}
+            ,{$lookup:{ from:"events"
+                      ,localField:'_eventId'
+                      ,foreignField:'_id'
+                      ,as: 'events'
+                      ,pipeline:[
+                        {$addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+                        ,{$lookup:{ from: 'ranges'
+                                  ,localField: '_rangeId'
+                                  ,foreignField: '_id'
+                                  ,as: 'range'
+                        }}
+                      ]
+            }}
+          ]).toArray();
+
+          // console.log('aggregate='+JSON.stringify(_r_sd,null,2));
+
+          if(_r_sd.length<1){
+             console.log('ShooterDivisionId='+_body.shooterDivisionId+' not found.');
+            return  {
+              statusCode: 401,
+              body: JSON.stringify({message: `ShooterDivisionId ${_body.shooterDivisionId} not found.`})
+            };
+          }
+
+          const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== user.email 
+                               ||_r_sd[0].events[0].owners.indexOf(user.email.toLowerCase().trim())>-1
+                               ||_r_sd[0].events[0].gange[0].adm.indexOf(user.email.toLowerCase().trim())>-1 );
+          if(!_authorized){
+            console.log(`Unauthorized, User ${user.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`);
+            return  {
+              statusCode: 401,
+              body: `Unauthorized, User ${user.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`
+            };
+          }
+
+        }
+
+        // console.log('Will update shooter_division');        
+        await cShooters_Divisions.updateOne({_id:new ObjectId(_body.shooterDivisionId)}
+                                           ,{ $set: {order_aux : _body.pauseResume}}
+        );
+
+        return  {
+          statusCode: 201,
+          body: JSON.stringify({message: `Updated. shooterDivisionId:${_body.shooterDivisionId} .order_aux:${_body.pauseResume}`})
+        };
+        
+
+      case 'PUT': // associates divisions with a shooter
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
         let shooter= JSON.parse(event.body);
         let registered= shooter.registered;

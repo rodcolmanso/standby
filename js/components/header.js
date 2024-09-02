@@ -89,8 +89,6 @@ class Header extends HTMLElement {
             
           <div class="text-truncate " >
             <h6 class=" text-small text-truncate" id="eventTitle" style="max-width: 180px;"></h6>
-            <div class="vr d-none d-lg-flex h-100 mx-lg-2 "></div>
-            <hr class="d-lg-none my-2 text-white-50" />
           </div>
           
           
@@ -143,7 +141,7 @@ class Header extends HTMLElement {
                 <li class="nav-item dropdown">
                   <button class="nodisable btn btn-link nav-link py-2 px-0 px-lg-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (auto)">
                     <svg class="bi my-1 theme-icon-active"><use href="#circle-half"></use></svg>
-                    <span class=" ms-2" id="bd-theme-text">Toggle theme</span>
+                    <span class=" ms-2" id="bd-theme-text"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
                     <li>

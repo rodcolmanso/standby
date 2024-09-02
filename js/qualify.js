@@ -259,6 +259,7 @@ function transformRegistrer(players){
             
             aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
                   ,'gunModel':players[i].registered[j].gunModel , 'gunFactory':players[i].registered[j].gunFactory, 'gunCaliber':players[i].registered[j].gunCaliber, 'gunId':players[i].registered[j].gunId
+                  ,'order_aux':players[i].registered[j].order_aux
             };
             
             rP.push(aRow);  
@@ -448,15 +449,22 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 let _style= ` style="display:none" `;
                 if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                 ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-                || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
+                || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))
+                || (aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim())){
                     _style= ``;
                 }
-// href="./shooter.html?id=${aPlayers[i].id}"
+                let _txtFila= 'Sair da fila';
+                let _iconFila='<i class="bi bi-pause-circle-fill"></i>';
+                if(aPlayers[i].order_aux>0){
+                     _txtFila= 'Retornar à fila';
+                     _iconFila='<i class="bi bi-play-circle-fill"></i>';
+                }
                 row= `
                 <tr>
                     <td class="align-middle text-small">${zeroPad(position,2)}º</td>
                     <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <ul class="dropdown-menu">
+                            <li ${_style} ><a class="dropdown-item" onClick="pauseResumeQueue('${aPlayers[i].shooter_division}',${aPlayers[i].order_aux})" >${_iconFila} ${_txtFila}</a></li>    
                             <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i> Alterar Inscrição</a></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar Atirador</a></li>
@@ -486,13 +494,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle align-items-center align-items-center">
                       <div class="row">
                         <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
-                          ${sTries} <span style="display:none">${aPlayers[i].datetime}</span>
+                         <span style="display:none">${aPlayers[i].order_aux}</span>${sTries} <span style="display:none">${aPlayers[i].datetime}</span>
                         </div>
                         <div class="col">
-                         <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
-                         </button>
+                          <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                          </button>
                         </div>
-                     </div>
+                      </div>
                     </td>
                 </tr>
                 `;
@@ -500,12 +508,6 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 
             }
         }
-
-        // if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-        // ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-        //  || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))){
-        //     _ord=[[3, 'asc']];
-        //  }
 
          if(table){
             _tb= new DataTable(table.parentNode, 
@@ -524,34 +526,11 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
 
 function buildCategory2(eConfig, selectDivision){
 
-    
     document.getElementById('liAdvance').style.display='none';
-    // document.getElementById('liAdvance').classList.remove('active');
-    // document.getElementById('liAdvance').ariaSelected= false;
-
-    // document.getElementById('liOverall').style.display= 'none';
-    // document.getElementById('liOverall').classList.remove('active');
-    // document.getElementById('liOverall').ariaSelected= false;
-
     document.getElementById('liLadies').style.display='none';
-    // document.getElementById('liLadies').classList.remove('active');
-    // document.getElementById('liLadies').ariaSelected= false;
-
     document.getElementById('liOptics').style.display='none';
-    // document.getElementById('liOptics').classList.remove('active');
-    // document.getElementById('liOptics').ariaSelected= false;
-
     document.getElementById('liSeniors').style.display='none';
-    // document.getElementById('liSeniors').classList.remove('active');
-    // document.getElementById('liSeniors').ariaSelected= false;
     
-    // document.getElementById('liOverall').classList.add('active');
-    // document.getElementById('liOverall').ariaSelected= true;
-
-    // const triggerEl = document.querySelector('#nav-tab button[data-bs-target="#nav-liOverall"]')
-    // bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
-
-
      let divisionIndex=-1;
      for(let i=0; i< eConfig.divisions.length; i++){
          if(selectDivision==eConfig.divisions[i]._id){
@@ -569,10 +548,6 @@ function buildCategory2(eConfig, selectDivision){
             
         }
         
-        // if(categories.overall){
-        //     document.getElementById('liOverall').style.display='';
-       
-        // }
         if(categories.ladies){
             document.getElementById('liLadies').style.display='';
             
@@ -599,8 +574,7 @@ function buildDivisions(eventDivisions){
         selectDivisions.remove(0);
 
     let newOption = new Option('<<selecione>>','-1');
-    //selectDivisions.add(newOption,undefined);
-
+    
     for(i=0;i<eventDivisions.length;i++){
         newOption = new Option(eventDivisions[i].name,eventDivisions[i]._id);
         selectDivisions.add(newOption,undefined);
@@ -626,6 +600,47 @@ function getDivision(eventDivisions, divisionID){
             return eventDivisions[i];
         }
     }
+}
+
+function pauseResumeQueue(shooterDivisionId, pauseResume){
+
+    pauseResume=pauseResume===0?9:0;
+    applySpinners(true);
+
+    const user= netlifyIdentity.currentUser();
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
+
+    let _body= {'shooterDivisionId':shooterDivisionId ,'pauseResume':pauseResume};
+
+    fetch('/.netlify/functions/shooters_divisions' , {
+        method: "PATCH",
+        headers: _headers,
+        body: JSON.stringify(_body)
+        }
+    )
+    // .then(response => response.json()
+    .then(function(response) {
+        console.log(response.status); // Will show you the status
+
+        if (!response.ok) {
+            // if(response.status===409){
+                console.log(`Não é possível pausar/resumir fila.`+shooterDivisionId);
+            // }
+            throw new Error("HTTP status " + response.status);
+        }
+        return response.json();
+    }
+    ).then(json => {
+        updateShootersList();
+        }
+    ).catch(err => {console.log(`Error pausing/resuming queue: ${err}`); }
+    ).finally(()=> {applySpinners(false);});
+// ------------------------------
+
+
 }
 
 function goToSubscription(parms){
