@@ -453,11 +453,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 || (aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim())){
                     _style= ``;
                 }
+                let _badgePause=''
                 let _txtFila= 'Sair da fila';
                 let _iconFila='<i class="bi bi-pause-circle-fill"></i>';
                 if(aPlayers[i].order_aux>0){
                      _txtFila= 'Retornar à fila';
                      _iconFila='<i class="bi bi-play-circle-fill"></i>';
+                     _badgePause='<i class="bi bi-pause-circle-fill"> </i> '
                 }
                 row= `
                 <tr>
@@ -474,7 +476,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                                 <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                             </div>
                             <div class="dropdown col d-inline-block text-truncate">`;
-                                row+= `${aPlayers[i].name}
+                                row+=  _badgePause+ `${aPlayers[i].name}
                                 <p class="text-truncate" style="margin-bottom: 0 !important;">
                                   <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
                                     <span class="text-danger">${_rd}</span>
