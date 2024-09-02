@@ -627,12 +627,25 @@ const handler = async (event, context)=>{
 
           }
 
+          //test if has time recorded. Do not delete inscription if it has time recorded
+          const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
+          const r_time_Records= await cTime_Records.find({shooterDivisionId:{$in: filterStringIds }}).toArray();
+        
+          if(r_time_Records.length>0){
+
+            return  { 
+              statusCode: 409,  
+              body: `Cannot delete inscription with time recorded!`
+            };
+
+          }
+
           
           let r_delete_divisions= await cShooters_Divisions.deleteMany({_id: { $in: filter_Ids }});
           // console.log(`Deleto divisões: r_delete_divisions.toString() ${JSON.stringify(r_delete_divisions,null,2)}`);
 
-          const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
-          r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
+          // const cTime_Records= database.collection(process.env.MONGODB_COLLECTION_TIME_RECORDS);
+          // r_delete_divisions.time_records_deleted= await cTime_Records.deleteMany({shooterDivisionId:{$in: filterStringIds }});
           
           // console.log(`Deleted objects:  ${JSON.stringify(r_delete_divisions,null,2)}`);
 

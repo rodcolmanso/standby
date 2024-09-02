@@ -449,8 +449,7 @@ const promiseOfDeleteSub = (id, ldx, idx, _tableId)=>{
         return 0;
     }
 
-    if( confirm(`Desinscrever ${_sD[ldx].shooters_divisions[idx].gun} da divisão ${getDivisionName(_sD[ldx].shooters_divisions[idx].divisionId)}?
-(tempos registrados anteriormente serão excluídos)`)){
+    if( confirm(`Desinscrever ${_sD[ldx].shooters_divisions[idx].gun} da divisão ${getDivisionName(_sD[ldx].shooters_divisions[idx].divisionId)}?`)){
                 applySpinners(true);
                  fetch('/.netlify/functions/shooters_divisions_v2?eventId='+eventConfig._id, {
                     method: "DELETE",
@@ -460,7 +459,19 @@ const promiseOfDeleteSub = (id, ldx, idx, _tableId)=>{
                        ,"Authorization":`Bearer ${loggedUser.token.access_token}`
                     }
                     })
-                    .then(response => response.json()) 
+                    // .then(response => response.json()) 
+                    .then(function(response) {
+                        console.log(response.status); // Will show you the status
+            
+                        if (!response.ok) {
+                            if(response.status===409){
+                                alert(`Não é possível deletar inscrição com tempos registrados. Apague os tempo dessa inscrição e tente novamente.`);
+                            }
+                            throw new Error("HTTP status " + response.status);
+                        }
+                        return response.json();
+                    })
+
                     .then(json => {
                         // console.log(JSON.stringify(json, null, 2));
 
