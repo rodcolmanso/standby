@@ -369,8 +369,8 @@ const flatPlayesDivisions = (players, sort, light)=>{
         // , 'gunModel':players[i].gunModel
         // , 'gunFactory':players[i].gunFactory
         // , 'gunCaliber':players[i].gunCaliber
-        // , 'optics':players[i].optics
-        // ,'score':players[i].score
+        , 'optics':players[i].optics
+        ,'score':players[i].score
         // ,'tries':players[i].tries
         , 'sort_idx':sort_idx
         // , 'shooterDivisionId': players[i].shooterDivisionId
@@ -424,17 +424,21 @@ const matchShootersCategories = (players, divisions)=>{
               divPosition++;
               players[i].qualify_position= divPosition;
           
-              if(divisions[c].categories.optics && players[i].optics){
-                  players[i].category= cOptics;
-  
-              }else if( players[i].category===cLadies && divisions[c].categories.ladies){
+              if( players[i].category===cLadies && divisions[c].categories.ladies){
                 players[i].category= cLadies;
-              }else if( players[i].category===cSeniors && divisions[c].categories.seniors){
-                players[i].category= cSeniors;
+
               }else if(divisions[c].categories.advance &&
-                  ((players[i].score<1000&&players[i].score<divisions[c].advanceLimit.passingScore) ||
-                  divPosition<= divisions[c].advanceLimit.topBestOf )){
-                    players[i].category= cAdvance;
+                ((players[i].score<1000&&players[i].score<divisions[c].advanceLimit.passingScore) ||
+                divPosition<= divisions[c].advanceLimit.topBestOf )){
+                  players[i].category= cAdvance;
+
+              }else if( players[i].category===cSeniors && divisions[c].categories.seniors){
+
+                players[i].category= cSeniors;
+                
+              }else if(divisions[c].categories.optics && players[i].optics){
+                players[i].category= cOptics;
+
               }else{
                 players[i].category= cOverall;
               }
@@ -704,6 +708,7 @@ const handler = async (event, context)=>{
 
         let advancedDoubleKOs=[];
         if(p_categ===""+cAdvance && division[0].categories.advance){
+          console.log('GOT INTO DIVISION ADVANCE');
           shootersAux=  getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
           // advancedDoubleKOsKOs=  buildMatches(getShootersByDivisionCategory(players, p_divisionId, cAdvance).sort((a, b) => {
             if (a.sort_idx > b.sort_idx) {
