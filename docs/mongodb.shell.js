@@ -1775,3 +1775,76 @@ const
 
 // https://tpmonline.com.br/event-details.html?inscription=clock&selected_division=00000000c7ac9ee6445d0166&shooterId=66816e4bc06847c9a611bde8&tbord=W1swLCJhc2MiXV0=
 //  http://localhost:8888  /event-details.html?inscription=clock&selected_division=00000000c7ac9ee6445d0166&shooterId=66816e4bc06847c9a611bde8&tbord=W1swLCJhc2MiXV0=
+
+
+
+db.shooters.aggregate([
+    { "$addFields": {"shooterId": { "$toString": "$_id" }}}
+    ,{$lookup:{
+        from: "shooters_divisions"
+        ,localField: "shooterId"
+        ,foreignField: "shooterId"
+        ,as: "registered"
+        ,pipeline:[
+            // {$match:{eventId: p_eventId}}
+            {$match:{"eventId": '66bccf75b133f973d29ae656', clock:true}}
+            ,{ "$addFields": {"shooterDivisionId": { "$toString": "$_id" }}}
+            ,{ $lookup:
+                {
+                    from: "time_records"
+                    ,localField: "shooterDivisionId"
+                    ,foreignField: "shooterDivisionId"
+                    ,as: "time_records"
+                    ,pipeline:[
+                        {$project:{"score":{  $sum:[ {$multiply:[1000,"$penalties"]},"$sTime"]},datetime:1, penalties:1}}
+                        ,{$group:{ _id:["$shooterDivisionId"], tries:{$count:{}}, score:{$min:"$score"}, datetime:{$max:"$datetime"}, penalties:{$min:"$penalties"}}}
+                    ]
+                }
+            }
+            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$time_records", 0 ] }, "$$ROOT" ] } } }
+        
+            ,{ $addFields: {_gunId: { $toObjectId: "$gunId" }}}
+            ,{ $lookup:
+                {
+                    from: "guns"
+                    ,localField: "_gunId"
+                    ,foreignField: "_id"
+                    ,as: "gun_det"
+                }
+            }
+
+          ]
+        }
+    }
+    ,{$match: {registered: {$ne: []}}}
+    ,{$project:{eventId:0, _id:0 ,"registered.shooterId":0 ,"registered.time_records":0 }}
+    ]).sort({"registered.score":1}).toArray();
+
+
+    db.shooters_divisions.updateMany({},{$set:{'order_aux':0}});
+
+
+   db.shooters_divisions.aggregate([
+        {$addFields: {"_shooterDivisionId": { $toString: "$_id" }
+                     ,"_eventId": { $toObjectId: "$eventId" }
+                     ,"_shooterId": { $toObjectId: "$shooterId" }}}
+        ,{$match:{"_shooterDivisionId":"66d32ee070e72584e6773baa"}}
+        ,{$lookup:{ from: 'shooters'
+                   ,foreignField: '_id'
+                   ,localField: '_shooterId'
+                   ,as: 'shooter'
+        }}
+        ,{$lookup:{ from:"events"
+                   ,localField:'_eventId'
+                   ,foreignField:'_id'
+                   ,as: 'events'
+                   ,pipeline:[
+                    {$addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
+                    ,{$lookup:{ from: 'ranges'
+                               ,localField: '_rangeId'
+                               ,foreignField: '_id'
+                               ,as: 'range'
+                    }}
+                   ]
+        }}
+    ]);
