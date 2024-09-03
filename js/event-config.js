@@ -354,6 +354,12 @@ function updateEventConfig(){
                 eventConfig.divisions[i].categories.seniors= document.getElementById(eventConfig.divisions[i]._id+'Check'+cSeniors).checked;
                 eventConfig.divisions[i].categories.optics= document.getElementById(eventConfig.divisions[i]._id+'Check'+cOptics).checked;
                 eventConfig.divisions[i].categories.advance= document.getElementById(eventConfig.divisions[i]._id+'Check'+cAdvance).checked;
+
+                if(eventConfig.divisions[i].categories.advance){
+                    eventConfig.randomDuel=false;
+                    document.getElementById('event-random-duel1').checked=false;
+                    document.getElementById('event-random-duel2').checked=true;
+                }
                 
                 if(""+document.getElementById(eventConfig.divisions[i]._id+'SelectAdvance').value==="1"){
                     eventConfig.divisions[i].advanceLimit.passingScore= document.getElementById(eventConfig.divisions[i]._id+'IndexAdvance').value;

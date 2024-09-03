@@ -471,17 +471,30 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i> Alterar Inscrição</a></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar Atirador</a></li>
                         </ul>
-                        <div class="row">
-                            <div class="col align-middle align-items-center" style="max-width: 40px !important;">
+                        <div class="row  text-start">
+                            <div class="col" style="max-width: 40px !important;">
                                 <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${aPlayers[i].id}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" alt="...">
                             </div>
-                            <div class="dropdown col d-inline-block text-truncate">`;
+                            <div class=" dropdown col d-inline-block text-truncate">`;
+
+                                let _badgeCat='<span class="fst-italic text-muted text-small badge bg-info-subtle rounded-pill">overall</span>';
+
+                                if(aPlayers[i].category===cLadies){
+                                    _badgeCat='<span class="fst-italic text-muted text-small badge bg-danger-subtle rounded-pill">dama</span>';
+                                }else if(aPlayers[i].category===cSeniors){
+                                    _badgeCat='<span class=" fst-italic text-muted text-small badge bg-success-subtle rounded-pill">senior</span>';
+
+                                }
+
                                 row+=  _badgePause+ `${aPlayers[i].name}
                                 <p class="text-truncate" style="margin-bottom: 0 !important;">
                                   <span class="badge text-bg-secondary  d-inline-block text-truncate">${aPlayers[i].gun}
                                     <span class="text-danger">${_rd}</span>
                                   </span>
                                 </p>
+                            </div>
+                            <div class="d-none d-sm-block col text-start">
+                                ${_badgeCat}
                             </div>
                         </div>
                     </td>`;

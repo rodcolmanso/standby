@@ -12,6 +12,12 @@ const cLadies= 2;
 const cOptics= 4;
 const cSeniors= 5;
 
+
+const cDuolDuels= 0;
+const cSingleDuels= 1;
+const cAllToAll= 2;
+
+
 const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
   const _shooters_division= await cShooters_divisions.aggregate([
     {$match:{eventId: p_eventId //"661ab4f9c412f4a5f17f0624" //  p_eventId
@@ -79,6 +85,26 @@ for(let i=0; i< _shooters_division.length;i++){
 
 return _shooters_division;
 }
+
+const buildMatches_all_w_all = (shooters)=>{
+
+  let mainMatches=[];
+  let levelMatches=[];
+  let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
+
+  for(let a=0; a<shooters.length;a++){
+    for(let b=a; b<shooters.length;b++){
+      if(shooters[a].shooterId!==shooters[b].shooterId){ //shooters[a].id!==shooters[b].id && 
+        levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA:shooters[a], shooterB:shooters[b], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });
+      }
+    }
+  }
+
+  // shuffle(levelMatches);
+  mainMatches.push(levelMatches);
+  return [mainMatches,[]];
+  
+}//const buildMatches_all_w_all = (shooters)=>{
 
 const buildMatches = (shooters)=>{
   
@@ -375,7 +401,7 @@ const flatPlayesDivisions = (players, sort, light)=>{
         , 'sort_idx':sort_idx
         // , 'shooterDivisionId': players[i].shooterDivisionId
         // , "eventId": players[i].eventId
-        // ,'shooterId':players[i].shooterId
+        ,'shooterId':players[i].shooterId
       };
     }else{
       aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email,'id':players[i].shooterDivisionId
@@ -401,6 +427,22 @@ const flatPlayesDivisions = (players, sort, light)=>{
   }
 
   return rP;
+}
+
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
 }
 
 const matchShootersCategories = (players, divisions)=>{
@@ -462,8 +504,6 @@ const getShootersByDivisionCategory = (players, divisionId, category)=>{
   return ret;
 
 }
-
-
 
 ////////////////////////////////----------
 const handler = async (event, context)=>{
@@ -584,6 +624,7 @@ const handler = async (event, context)=>{
 
         const o_id = new ObjectId(p_divisionId);
         const division= await cDivisions.find({_id:o_id}).limit(10).toArray();
+        const p_kos_type= event.queryStringParameters.kos_type;
         
         const shootersDivx= await shootersDiv(cShooters_divisions, p_eventId, p_divisionId);
         
@@ -607,14 +648,22 @@ const handler = async (event, context)=>{
               body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Damas). Elimine essa categoria ou inscreva mais participantes.`
             };
 
-          ladyDoubleKOs= buildMatches(shootersAux);
-          _ret.ladyDoubleKOs= ladyDoubleKOs;
+            console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
+          if(p_kos_type.toString()===cAllToAll.toString()){
+            ladyDoubleKOs= buildMatches_all_w_all(shootersAux, p_kos_type);
+          }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
+          }else
+            ladyDoubleKOs= buildMatches(shootersAux);
+          
+            _ret.ladyDoubleKOs= ladyDoubleKOs;
           cKos.updateOne({ eventId: p_eventId 
                           ,divisionId: p_divisionId}
                         ,{ $set: {
                               eventId: p_eventId
                               ,divisionId: p_divisionId
                               ,ladyDoubleKOs: _ret.ladyDoubleKOs
+                              ,lady_kos_type:p_kos_type
                               }
                         }
                         ,{ upsert: true });
@@ -635,7 +684,16 @@ const handler = async (event, context)=>{
               statusCode:  411,
               body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Seniores). Elimine essa categoria ou inscreva mais participantes.`
             };
-            seniorDoubleKOs= buildMatches(shootersAux);
+            // seniorDoubleKOs= buildMatches(shootersAux);
+            console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
+            if(p_kos_type.toString()===cAllToAll.toString()){
+              seniorDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+              seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else{
+              seniorDoubleKOs= buildMatches(shootersAux);
+            }
+            
 
           _ret.seniorDoubleKOs= seniorDoubleKOs;
           cKos.updateOne({ eventId: p_eventId 
@@ -644,6 +702,7 @@ const handler = async (event, context)=>{
                               eventId: p_eventId
                               ,divisionId: p_divisionId
                               ,seniorDoubleKOs: _ret.seniorDoubleKOs
+                              ,senior_kos_type:p_kos_type
                               }
                         }
                         ,{ upsert: true });
@@ -664,7 +723,14 @@ const handler = async (event, context)=>{
               statusCode:  412,
               body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Optics). Elimine essa categoria ou inscreva mais participantes.`
             };
-            opticDoubleKOs= buildMatches(shootersAux);
+
+            if(p_kos_type.toString()===cAllToAll.toString()){
+              opticDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+              opticDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else
+              opticDoubleKOs= buildMatches(shootersAux);
+
           _ret.opticDoubleKOs= opticDoubleKOs;
 
           cKos.updateOne({ eventId: p_eventId 
@@ -673,6 +739,7 @@ const handler = async (event, context)=>{
                     eventId: p_eventId
                     ,divisionId: p_divisionId
                     ,opticDoubleKOs: _ret.opticDoubleKOs
+                    ,optic_kos_type:p_kos_type
                     }
             }
             ,{ upsert: true });
@@ -692,7 +759,14 @@ const handler = async (event, context)=>{
               statusCode:  413,
               body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Overall/Sport). Elimine essa categoria ou inscreva mais participantes.`
             };
-            overallDoubleKOs= buildMatches(shootersAux);
+            
+            if(p_kos_type.toString()===cAllToAll.toString()){
+              overallDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+              overallDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else
+              overallDoubleKOs= buildMatches(shootersAux);
+
           _ret.overallDoubleKOs= overallDoubleKOs;
           
           cKos.updateOne({ eventId: p_eventId 
@@ -701,6 +775,7 @@ const handler = async (event, context)=>{
                     eventId: p_eventId
                     ,divisionId: p_divisionId
                     ,overallDoubleKOs: _ret.overallDoubleKOs
+                    ,overall_kos_type:p_kos_type
                     }
             }
             ,{ upsert: true });
@@ -720,7 +795,14 @@ const handler = async (event, context)=>{
               statusCode:  414,
               body: `Não é possível gerar duelos com menos de 3 atiradores. (Categoria Avançados). Elimine essa categoria ou inscreva mais participantes.`
             };
-            advancedDoubleKOs= buildMatches(shootersAux);
+
+            if(p_kos_type.toString()===cAllToAll.toString()){
+              advancedDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+              advancedDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else
+              advancedDoubleKOs= buildMatches(shootersAux);
+
           _ret.advancedDoubleKOs= advancedDoubleKOs;
           cKos.updateOne({ eventId: p_eventId 
             ,divisionId: p_divisionId}
@@ -728,6 +810,7 @@ const handler = async (event, context)=>{
                   eventId: p_eventId
                   ,divisionId: p_divisionId
                   ,advancedDoubleKOs: _ret.advancedDoubleKOs
+                  ,advanced_kos_type:p_kos_type
                   }
             }
             ,{ upsert: true });
