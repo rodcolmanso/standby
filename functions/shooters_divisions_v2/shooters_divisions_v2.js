@@ -399,6 +399,7 @@ const handler = async (event, context)=>{
                     ,optics: shooterDivisions.shooters_divisions[i].optics
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
+                    ,order_aux: 0
                     }));
 
                     if(new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==null && new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==undefined)
@@ -418,6 +419,7 @@ const handler = async (event, context)=>{
                                                                     ,optics: shooterDivisions.shooters_divisions[i].optics
                                                                     ,clock: shooterDivisions.shooters_divisions[i].clock
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
+                                                                    ,order_aux: 0
                                                                     }}
                                                               ,{upsert:true}
                                                             ));
@@ -499,6 +501,7 @@ const handler = async (event, context)=>{
           shooter_division.eventId=event_id;
           shooter_division.gun= registered[i].gun?registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):"";
           shooter_division.optics= registered[i].optics;
+          shooter_division.order_aux= 0;
           shooters_divisions.push(shooter_division);
         }
         await cShooters_Divisions.deleteMany({"shooterId":shooterId});

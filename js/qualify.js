@@ -287,6 +287,44 @@ function naiveRound(num, decimalPlaces = 0) {
 let _tb;
 
 function buildPlayersTables(aPlayers, eventConfig, selectDivision){
+
+    
+    for(let i=0; i< aPlayers.length ; i++){
+        aPlayers[i].tries= aPlayers[i].tries===undefined?0:aPlayers[i].tries;
+        aPlayers[i].aux_order_tries_dt= ''+aPlayers[i].order_aux+ aPlayers[i].tries+ aPlayers[i].datetime.toString();
+    }
+
+    //--------------- aPlayers.sort((a, b) => a.order_aux - b.order_aux || a.tries - b.tries || a.datetime - b.datetime);
+
+    aPlayers= aPlayers.sort((a, b) => {
+        if (a.aux_order_tries_dt < b.aux_order_tries_dt) {
+            return -1;
+        }
+    });
+
+    let iAux=0;
+
+    for(let i=0; i< aPlayers.length && iAux<3; i++){
+
+        if(aPlayers[i].division === selectDivision){
+            if(iAux===0){
+                aPlayers[i].labelQueue='<i class="bi bi-1-circle-fill"></i> ';
+            }else if(iAux===1){
+                aPlayers[i].labelQueue='<i class="bi bi-2-circle-fill"></i> ';
+            }else if(iAux===2){
+                aPlayers[i].labelQueue='<i class="bi bi-3-circle-fill"></i> ';
+            }
+
+            iAux++;
+
+        }
+    }
+
+    aPlayers= aPlayers.sort((a, b) => {
+        if (a.sort_idx < b.sort_idx) {
+            return -1;
+        }
+    });
     
     var row= "";
     spinner.style.visibility = 'visible'//'visible'; //'hidden'
@@ -453,7 +491,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 || (aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim())){
                     _style= ``;
                 }
-                let _badgePause=''
+                let _badgePause= aPlayers[i].labelQueue===undefined?'':aPlayers[i].labelQueue;
                 let _txtFila= 'Sair da fila';
                 let _iconFila='<i class="bi bi-pause-circle-fill"></i>';
                 if(aPlayers[i].order_aux>0){
