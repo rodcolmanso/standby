@@ -1,5 +1,4 @@
 - Urgente
-    - Arma outras
     - cadastrar acerto (com sigma, craf, etc)
     - em selecionar armas, listar primeiro o proprio acervo
     - gerar certificado de participação
@@ -13,16 +12,11 @@
     - Carrocel em lista de eventos
 
   
-  
-  - Arma genérica outras, abrindo para digitar
   - Inativar arma (nao listar)
-  - sanetizar base - shooters
+  
   - Cruzamento de chaves na repescagem
-  - incluir icone de senior, dama, overall na tabela contra o relogio
   - incluir ranking de categoriassenior, dama, overall 
   - incluir ultimos tempos na tabela contra relogio
-  - combo divisao. incluir na URL
-  - link de ancora no refresh
 
 - Shooter Home Page
     - Inscrever-se a evento
@@ -32,10 +26,8 @@
 
 - Duelos
   - Cruzar na repescagem
-  - Opção sem repescagem (com disputa de 3º)
 
   Melhorar a experiencia de cadastro e login
-    - Ampulheta/ Loading cobrindo a págita toda em todas as telas
     - Sessão menu Home
     - Sessao menu Ranking
     - Mudar todos os emails sem login para @tpmonline.com.br

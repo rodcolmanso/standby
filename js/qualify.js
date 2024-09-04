@@ -488,7 +488,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                 ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
                 || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))
-                || (aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim())){
+                || (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&(aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim()))){
                     _style= ``;
                 }
                 let _badgePause= aPlayers[i].labelQueue===undefined?'':aPlayers[i].labelQueue;
