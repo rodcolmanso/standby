@@ -100,13 +100,18 @@ const buildMatches_all_w_all = (shooters)=>{
     }
   }
 
-  // shuffle(levelMatches);
+  levelMatches= shuffle(levelMatches);
+  for(let i=0 ; i<levelMatches.length;i++){
+    levelMatches[i].id="m.0."+i;
+  }
+
+
   mainMatches.push(levelMatches);
   return [mainMatches,[]];
   
 }//const buildMatches_all_w_all = (shooters)=>{
 
-const buildMatches = (shooters)=>{
+const buildMatches = (shooters, kos_type)=>{
   
   // console.log(`------------------------------------------------`);
     // for(let i=0; i<shooters.length;i++){
@@ -355,9 +360,45 @@ const buildMatches = (shooters)=>{
                     , shooterB:recapMatches[recapMatches.length-1][0].v, v:shootersTBD, d:shootersTBD, parentA:mainMatches[mainMatches.length-1][0].id, parentB:recapMatches[recapMatches.length-1][0].id });
     //  mainMatches.push(levelMatches);
 
+    if(kos_type.toString() ==='1'&& mainMatches[mainMatches.length-2][0]
+      && mainMatches[mainMatches.length-2][0].d
+      && mainMatches[mainMatches.length-2][1]
+      && mainMatches[mainMatches.length-2][1].d
+      && mainMatches[mainMatches.length-2][0].id
+      && mainMatches[mainMatches.length-2][1].id){ // Single eliminations. dispute of semifinals to define 3º and 4º.
+      console.log('Got into Single elimination!!!!!!!');
+      levelMatches=[];
+      levelMatches.push({id:"r.0.0", shooterA:mainMatches[mainMatches.length-2][0].d
+        , shooterB:mainMatches[mainMatches.length-2][1].d, v:shootersTBD, d:shootersTBD, parentA:mainMatches[mainMatches.length-2][0].id, parentB:mainMatches[mainMatches.length-2][1].id });
+
+        recapMatches=[];
+        recapMatches.push(levelMatches);
+    }
+
     return [mainMatches,recapMatches];
 }
 const zeroPad = (num, places) => String(num).padStart(places, '0');
+const shuffle = (array) => {
+
+  console.log('Got into shuffle');
+
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
 
 const flatPlayesDivisions = (players, sort, light)=>{
   let rP= [];
@@ -427,22 +468,6 @@ const flatPlayesDivisions = (players, sort, light)=>{
   }
 
   return rP;
-}
-
-function shuffle(array) {
-  let currentIndex = array.length;
-
-  // While there remain elements to shuffle...
-  while (currentIndex != 0) {
-
-    // Pick a remaining element...
-    let randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
 }
 
 const matchShootersCategories = (players, divisions)=>{
@@ -651,10 +676,10 @@ const handler = async (event, context)=>{
             console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
           if(p_kos_type.toString()===cAllToAll.toString()){
             ladyDoubleKOs= buildMatches_all_w_all(shootersAux, p_kos_type);
-          }else if(p_kos_type.toString()===cSingleDuels.toString()){
-            ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
+          // }else if(p_kos_type.toString()===cSingleDuels.toString()){
+          //   ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
           }else
-            ladyDoubleKOs= buildMatches(shootersAux);
+            ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
           
             _ret.ladyDoubleKOs= ladyDoubleKOs;
           cKos.updateOne({ eventId: p_eventId 
@@ -688,10 +713,10 @@ const handler = async (event, context)=>{
             console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
             if(p_kos_type.toString()===cAllToAll.toString()){
               seniorDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            }else if(p_kos_type.toString()===cSingleDuels.toString()){
-              seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            //   seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }else{
-              seniorDoubleKOs= buildMatches(shootersAux);
+              seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }
             
 
@@ -726,10 +751,11 @@ const handler = async (event, context)=>{
 
             if(p_kos_type.toString()===cAllToAll.toString()){
               opticDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            //   opticDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else{
               opticDoubleKOs= buildMatches(shootersAux,p_kos_type);
-            }else
-              opticDoubleKOs= buildMatches(shootersAux);
+            }
 
           _ret.opticDoubleKOs= opticDoubleKOs;
 
@@ -762,10 +788,11 @@ const handler = async (event, context)=>{
             
             if(p_kos_type.toString()===cAllToAll.toString()){
               overallDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            //   overallDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else{
               overallDoubleKOs= buildMatches(shootersAux,p_kos_type);
-            }else
-              overallDoubleKOs= buildMatches(shootersAux);
+            }
 
           _ret.overallDoubleKOs= overallDoubleKOs;
           
@@ -798,10 +825,11 @@ const handler = async (event, context)=>{
 
             if(p_kos_type.toString()===cAllToAll.toString()){
               advancedDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
+            //   advancedDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else{
               advancedDoubleKOs= buildMatches(shootersAux,p_kos_type);
-            }else
-              advancedDoubleKOs= buildMatches(shootersAux);
+            }
 
           _ret.advancedDoubleKOs= advancedDoubleKOs;
           cKos.updateOne({ eventId: p_eventId 

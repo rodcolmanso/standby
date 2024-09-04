@@ -202,11 +202,15 @@ table {
 }
 
 .col-card-match{
-  width: 145px !important;
+  width: 155px !important;
 }
 
 .col-card-check{
-  width:30px !important; 
+  width:45px !important; 
+}
+
+.col-card-check-B{
+  width:45px !important; 
 }
 
 .col-matches{
@@ -214,6 +218,8 @@ table {
   width: 230px !important;
   padding: 5px !important;
   height: auto !important;
+
+  min-height: 300px !important;
   /* background-color: burlywood; */
 }
 
@@ -239,7 +245,8 @@ table {
 
 .col-matches-final-All2All{
   
-   width: 500px !important;
+   min-width: 520px !important;
+   max-width: 520px !important;
   
 }
 
