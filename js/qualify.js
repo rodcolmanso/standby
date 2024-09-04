@@ -161,14 +161,12 @@ window.onload = async () => {
         document.getElementById(params.cat).classList.add('active');
     }
 
-    if(params.rl& params.rl>=1){
+    if(params.rl&& Number(params.rl)>=1){
 
         var counter = 0;
         var i = setInterval(async function () {
             applySpinners(true);
 
-            // eventConfig = await promiseOfEventConfig;
-            // getDuels(document.getElementById('selectDivision'));
             playersArray = await promiseOfPlayers(eventConfig._id);
             changeDivision(document.getElementById('selectDivision'));
             spinner.style.visibility = 'hidden'//'visible'; //'hidden'
@@ -177,10 +175,10 @@ window.onload = async () => {
             console.log('Reloaded!');
 
             counter++;
-            if (counter === params.rl) {
+            if (counter === Number(params.rl)) {
                 clearInterval(i);
             }
-        }, params.rl * 10000);
+        }, Number(params.rl) * 10000);
         
         // window.setTimeout( function() {
         //     // window.location.reload();

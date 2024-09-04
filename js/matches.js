@@ -1425,10 +1425,11 @@ window.onload = async () => {
     //     document.getElementById(params.cat).classList.add('active');
     // }
 
-    if(params.rl& params.rl>=1){
+    if(params.rl&& Number(params.rl)>=1){
 
         var counter = 0;
         var i = setInterval(async function () {
+            
             applySpinners(true);
             getDuels(document.getElementById('selectDivision'));
             applySpinners(false);
@@ -1438,12 +1439,8 @@ window.onload = async () => {
             if (counter === params.rl) {
                 clearInterval(i);
             }
-        }, params.rl * 10000);
+        }, Number(params.rl) * 10000);
         
-        // window.setTimeout( function() {
-        //     // window.location.reload();
-            
-        //   }, params.rl*1000);
         
     }
     
