@@ -163,7 +163,7 @@ window.onload = async () => {
 
     if(params.rl&& Number(params.rl)>=1){
 
-        var counter = 0;
+        // var counter = 0;
         var i = setInterval(async function () {
             applySpinners(true);
 
@@ -174,10 +174,10 @@ window.onload = async () => {
             disableInputs();
             console.log('Reloaded!');
 
-            counter++;
-            if (counter === Number(params.rl)) {
-                clearInterval(i);
-            }
+            // counter++;
+            // if (counter === Number(params.rl)) {
+            //     clearInterval(i);
+            // }
         }, Number(params.rl) * 10000);
         
         // window.setTimeout( function() {
