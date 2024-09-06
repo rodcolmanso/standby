@@ -117,7 +117,7 @@ window.onload = async () => {
 
     applySpinners(false);
 
-    let updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0));
+    updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0));
     disableShooterFields(updater);
 
     let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
