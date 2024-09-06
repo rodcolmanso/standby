@@ -78,7 +78,8 @@ async function loadingUserSession(user){
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
-                        ,Authorization:`Bearer ${user.token.access_token}` }
+                        // ,Authorization:`Bearer ${user.token.access_token}` 
+                    }
                 }
             ).then( function (response) {
                  responseClone = response.clone(); // 2
