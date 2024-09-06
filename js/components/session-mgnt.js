@@ -73,7 +73,7 @@ async function loadingUserSession(user){
 
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
-            var responseClone; // 1
+            let responseClone; // 1
             await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
@@ -82,7 +82,11 @@ async function loadingUserSession(user){
                     }
                 }
             ).then( function (response) {
-                 responseClone = response.clone(); // 2
+                 try{
+                    responseClone = response.clone(); // 2
+                 }catch(e){
+                    console.warn('error cloning respose');
+                 }
                  return response.json();
                 }
 
