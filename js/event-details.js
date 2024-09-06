@@ -1222,7 +1222,7 @@ document.getElementById("search-button-name").addEventListener('click', function
     }
     applySpinners(true);
 
-    fetch('/.netlify/functions/shooters?regex=1&name='+document.getElementById("subscribe-name").value+'&eventId='+eventConfig._id, {
+    fetch('/.netlify/functions/shooters_v2?regex=1&name='+document.getElementById("subscribe-name").value+'&eventId='+eventConfig._id, {
         method: "GET",
         headers: _headers
         }

@@ -73,7 +73,7 @@ async function loadingUserSession(user){
 
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
-            await fetch('/.netlify/functions/shooters?logged', {
+            await fetch('/.netlify/functions/shooters_v2?logged', {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
                         ,"Authorization":`Bearer ${user.token.access_token}` }
@@ -211,7 +211,7 @@ btnSaveDocnum.addEventListener('click', function(e) {
     document.getElementById('btnSaveDocnum').disabled=true
     document.getElementById('btnSaveDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
     document.getElementById('btnCloseDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-    fetch('/.netlify/functions/shooters?replace=1', {
+    fetch('/.netlify/functions/shooters_v2?replace=1', {
         method: "PATCH",
         body: JSON.stringify(_userDb),
         headers: {
