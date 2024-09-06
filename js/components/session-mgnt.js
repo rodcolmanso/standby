@@ -73,13 +73,19 @@ async function loadingUserSession(user){
 
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
+            var responseClone; // 1
             await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
                         ,"Authorization":`Bearer ${user.token.access_token}` }
                 }
-            ).then(response => response.json()
-            ).then(json => {
+            ).then( function (response) {
+                 responseClone = response.clone(); // 2
+                 return response.json();
+                }
+
+
+            ).then( function (json){
                     if(json.length>0){
                         dbUser= json[0];
                         console.log(`DbUser logged. Name:${dbUser._id}`);
@@ -98,9 +104,17 @@ async function loadingUserSession(user){
                     }
                     setAvatarPic();
                     
+                }, function (rejectionReason) { // 3
+                    console.log('Error parsing JSON from response:', rejectionReason, responseClone); // 4
+                    responseClone.text() // 5
+                    .then(function (bodyText) {
+                        console.log('Received the following instead of valid JSON:', bodyText); // 6
+                    });
                 }
-            ).catch(err => {
-                console.log(`Error getting, logged user: ${err}`);
+            ) //.catch(e=>{console.warn(e); return null;})
+            .catch(err => {
+                console.warn(`Error getting, logged user: ${err}`);
+                return null
             }
             ).finally(()=> {
                 applySpinners(false);

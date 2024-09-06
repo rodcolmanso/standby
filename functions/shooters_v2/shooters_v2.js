@@ -178,11 +178,8 @@ const handler = async (event, context)=>{
           statusCode: 200,
           body: JSON.stringify(retShooters)
         };
-      }catch(error){
-        return  {
-          statusCode: 400,
-          body: "Error GETting shooters_v2. error: "+error.toString()
-        };
+      }catch(_error){
+        return res.status(400).json({ success: false, errors: _error.array() });
       }
 
       case 'PATCH':
