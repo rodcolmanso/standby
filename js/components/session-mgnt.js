@@ -73,7 +73,7 @@ async function loadingUserSession(user){
 
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
-            await fetch('/.netlify/functions/shooters_v2?logged', {
+            await fetch('/.netlify/functions/shooters_v2?logged&'+uuidv4(), {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
                         ,"Authorization":`Bearer ${user.token.access_token}` }
@@ -102,7 +102,9 @@ async function loadingUserSession(user){
             ).catch(err => {
                 console.log(`Error getting, logged user: ${err}`);
             }
-            ).finally(()=> {});
+            ).finally(()=> {
+                applySpinners(false);
+            });
         }else{
             setAvatarPic();
         }

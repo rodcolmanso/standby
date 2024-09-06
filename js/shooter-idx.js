@@ -131,7 +131,7 @@ window.onload = async () => {
         
         applySpinners(true);
 
-        await fetch('/.netlify/functions/shooters?id='+params.id, {
+        await fetch('/.netlify/functions/shooters_v2?id='+params.id, {
             method: "GET",
             headers: _headers
             }
@@ -219,7 +219,7 @@ function saveShooter(){
 
     // alert(JSON.stringify(_UshooterData,null,2));
     applySpinners(true);
-    fetch('/.netlify/functions/shooters?id='+_UshooterData._id, {
+    fetch('/.netlify/functions/shooters_v2?id='+_UshooterData._id, {
         method: "PATCH",
         body: JSON.stringify(_UshooterData),
         headers: {
