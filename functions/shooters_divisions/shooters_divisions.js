@@ -214,7 +214,10 @@ const handler = async (event, context)=>{
 
         // console.log('Will update shooter_division');        
         await cShooters_Divisions.updateOne({_id:new ObjectId(_body.shooterDivisionId)}
-                                           ,{ $set: {order_aux : _body.pauseResume}}
+                                           ,{ $set: {
+                                            order_aux : _body.pauseResume
+                                            ,subscribe_date: new Date()
+                                          }}
         );
 
         return  {

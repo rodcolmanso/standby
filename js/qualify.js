@@ -245,7 +245,8 @@ function transformRegistrer(players){
             if(players[i].registered[j].score===undefined||players[i].registered[j].score===null||players[i].registered[j].score===''){
                 players[i].registered[j].score=9999;
                 players[i].registered[j].tries=0;
-                players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
+                // players[i].registered[j].datetime="2099-01-01T00:00:00.000Z";
+                players[i].registered[j].datetime=players[i].registered[j].subscribe_date;
             }
 
             score_idx= zeroPad((""+(Math.round(players[i].registered[j].score*1000))),7);
@@ -257,7 +258,7 @@ function transformRegistrer(players){
             
             aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
                   ,'gunModel':players[i].registered[j].gunModel , 'gunFactory':players[i].registered[j].gunFactory, 'gunCaliber':players[i].registered[j].gunCaliber, 'gunId':players[i].registered[j].gunId
-                  ,'order_aux':players[i].registered[j].order_aux
+                  ,'order_aux':players[i].registered[j].order_aux, 'subscribe_date':players[i].registered[j].subscribe_date
             };
             
             rP.push(aRow);  
@@ -289,28 +290,33 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     
     for(let i=0; i< aPlayers.length ; i++){
         aPlayers[i].tries= aPlayers[i].tries===undefined?0:aPlayers[i].tries;
-        aPlayers[i].aux_order_tries_dt= ''+aPlayers[i].order_aux+ aPlayers[i].tries+ aPlayers[i].datetime.toString();
+        aPlayers[i].aux_order_tries_dt= ''+aPlayers[i].order_aux+ aPlayers[i].tries+ aPlayers[i].datetime&&aPlayers[i].datetime>aPlayers[i].subscribe_date?aPlayers[i].datetime.toString():aPlayers[i].subscribe_date.toString();
+        aPlayers[i].aux_order_queue= aPlayers[i].datetime&&aPlayers[i].datetime>aPlayers[i].subscribe_date?  ''+aPlayers[i].order_aux+aPlayers[i].datetime.replaceAll("-","").replaceAll("T","").replaceAll(":","").replaceAll(".","").replaceAll("Z","") :''+aPlayers[i].order_aux+aPlayers[i].subscribe_date.replaceAll("-","").replaceAll("T","").replaceAll(":","").replaceAll(".","").replaceAll("Z","");
+        
     }
 
     //--------------- aPlayers.sort((a, b) => a.order_aux - b.order_aux || a.tries - b.tries || a.datetime - b.datetime);
 
     aPlayers= aPlayers.sort((a, b) => {
-        if (a.aux_order_tries_dt < b.aux_order_tries_dt) {
+        if (a.aux_order_queue < b.aux_order_queue) {
             return -1;
         }
     });
 
     let iAux=0;
 
-    for(let i=0; i< aPlayers.length && iAux<3; i++){
+    for(let i=0; i< aPlayers.length ; i++){//&& iAux<3
 
         if(aPlayers[i].division === selectDivision){
+            aPlayers[i].queue=i+1;
             if(iAux===0){
-                aPlayers[i].labelQueue='<i class="bi bi-1-circle-fill"></i> ';
+                aPlayers[i].labelQueue='<i class="fa-solid fa-gun"></i> ';
             }else if(iAux===1){
-                aPlayers[i].labelQueue='<i class="bi bi-2-circle-fill"></i> ';
+                aPlayers[i].labelQueue='<i class="bi bi-2-circle-fill"></i> '; //<i class="bi bi-1-circle-fill"></i> 
             }else if(iAux===2){
                 aPlayers[i].labelQueue='<i class="bi bi-3-circle-fill"></i> ';
+            }else if(iAux===3){
+                aPlayers[i].labelQueue='<i class="bi bi-4-circle-fill"></i> ';
             }
 
             iAux++;
@@ -538,15 +544,18 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     
 
                     row+= `
-                     <td class="align-middle text-start">
+                    <td class="align-middle text-start">
                         <span class="badge ${_gbColor}">${_time}
                             <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
                         </span>
                     </td>
+                    <td class="align-middle text-start text-small text-muted">
+                        <span class="d-none d-sm-block ">${aPlayers[i].queue}º</span>
+                    </td>
                     <td class="align-middle align-items-center align-items-center">
                       <div class="row">
                         <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
-                         <span style="display:none">${aPlayers[i].order_aux}</span>${sTries} <span style="display:none">${aPlayers[i].datetime}</span>
+                         ${sTries} 
                         </div>
                         <div class="col">
                           <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>

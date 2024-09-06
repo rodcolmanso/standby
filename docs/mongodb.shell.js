@@ -1822,6 +1822,8 @@ db.shooters.aggregate([
 
 
     db.shooters_divisions.updateMany({},{$set:{'order_aux':0}});
+    db.shooters_divisions.updateMany({},{$set:{'subscribe_date':new Date()}});
+    subscribe_date
 
 
    db.shooters_divisions.aggregate([
@@ -1848,3 +1850,41 @@ db.shooters.aggregate([
                    ]
         }}
     ]);
+
+
+
+    // ---------------------
+
+
+
+    db.events.createIndex( { owners : 1 } );
+
+    db.events.createIndex( { date : 1, public:1 } );
+
+    db.events.createIndex( { date : 1, public:1, owners : 1  } );
+    
+    db.shooters.createIndex( { name : 1 } );
+
+    db.shooters_divisions.createIndex( { eventId : 1 } );
+
+    db.shooters_divisions.createIndex( { eventId : 1, shooterId : 1 } );
+
+
+    db.time_records.createIndex( { shooterDivisionId : 1 } );
+
+
+    db.divisions.createIndex( { eventId : 1 } );
+
+
+    db.kos.createIndex( { eventId : 1, divisionId:1 } );
+
+
+    db.time_records.createIndex( { eventId : 1 } );
+
+    db.time_records.createIndex( { eventId : 1,divisionId:1 } );
+
+    db.time_records.createIndex( { eventId : 1,divisionId:1,shooterId:1 } );
+
+    db.time_records.createIndex( { eventId : 1,divisionId:1,shooterId:1 ,shooterDivisionId:1 } );
+
+    
