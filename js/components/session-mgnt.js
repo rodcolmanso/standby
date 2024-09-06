@@ -76,8 +76,9 @@ async function loadingUserSession(user){
             var responseClone; // 1
             await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
-                headers: {"Content-type": "application/json; charset=UTF-8"
-                        ,"Authorization":`Bearer ${user.token.access_token}` }
+                headers: {"Content-Type": "application/json"
+                        ,Accept: 'application/json'
+                        ,Authorization:`Bearer ${user.token.access_token}` }
                 }
             ).then( function (response) {
                  responseClone = response.clone(); // 2
