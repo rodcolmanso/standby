@@ -88,7 +88,7 @@ class Header extends HTMLElement {
           
             
           <div class="text-truncate " >
-            <h6 class=" text-small text-truncate" id="eventTitle" style="max-width: 180px;"></h6>
+            <h6 class=" text-small text-truncate" id="eventTitle" style="max-width: 170px;"></h6>
           </div>
           
           

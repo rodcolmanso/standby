@@ -419,7 +419,8 @@ function getCodeImg() {
 function setAvatarPic(){
     const _dbUser= getSessionDbUser();
     const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;
-    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?"+uuidv4();
+    const _date= new Date();
+    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes()).padStart(2,'0').substring(0,1);   //uuidv4();
     // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
 
     document.getElementById("loggedin").style.display =  (netlifyIdentity.currentUser()===null?'none':'');

@@ -38,6 +38,7 @@ const handler = async (event, context)=>{
         }
 
       }else{ 
+        console.log(`Got into shooter?logged`);
         
         if(event.queryStringParameters.email!==undefined){
           filter.email= event.queryStringParameters.email;
@@ -65,6 +66,7 @@ const handler = async (event, context)=>{
         }
 
       }
+      console.log(`Got into shooter?logged. filter=${JSON.stringify(filter,null,2)}`);
         
       // console.log("filter="+JSON.stringify(filter,null,2));
       const retShooters = await cShooters.find(filter).toArray();

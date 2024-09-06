@@ -164,8 +164,9 @@ table {
 
 
 .small-profile-avatar-pic{
-  height:35px !important;
-  max-width: 35px !important;
+  height:45px !important;
+  max-width: 45px !important;
+  /* margin-bottom: 1px !important; */
 }
 
 .spinner-wrapper{

@@ -57,19 +57,6 @@
         overflow-x: hidden;
     }
 
-    /* li {
-    border-top: 1px solid #ccc;
-    cursor: pointer;
-    }
-
-    ul ul {
-        text-indent: 1em;
-    }
-
-    ul ul ul {
-        text-indent: 2em;
-    } */
-
     .form-control.no-validate:valid {
       border-color: #ced4da;
       padding-right: .75rem;
@@ -176,11 +163,10 @@
 
   <header-component></header-component>
 <!-- Modal Subscribe -->
-  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
     <div class="portfolio-modal modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-            <!-- <div class="container"> -->
+
               <div class="row justify-content-center">
                 <div class="modal-body">
                     <!-- Project details-->
@@ -188,12 +174,12 @@
                     <input type="hidden" class="nodisable" id="event-public">
                     <input type="hidden" class="nodisable" id="event-owners">
                     <hr /> 
-                    <!-- <h3 class="">Inscreva-se</h2> -->
+
                     <br>
                     <form action="javascript:subscribeNew();">
                       <div class="row gy-2 gx-3" >
                         <div class="col-md-6">
-                            <div> <!--class="form-floating col-md-6"-->  <!-- class="form-floating mb-3 col-md-12 d-flex justify-content-center" -->
+                            <div> 
                               <div class="card" >
                                 <div class="row gy-2 gx-3" >
                                   <div class="col-auto" > 
@@ -261,12 +247,9 @@
                                           </div>
                                       </div>
                                     </div>
-
-
                                     <!-- ----------------------- -->
                                   </div>
                                   <div class="col-auto" >
-
                                     <div class="input-group">
                                       <div class="form-floating " > <!--col-md-2-->
                                         <select class="form-select form-control form-select-sm nodisable" required id="select-subscribe-gun" aria-label="Floating label select example">
@@ -308,19 +291,13 @@
                       <table class="table align-middle table-sm rounded">
                         <thead>
                           <tr>
-                            <!-- <th scope="col" class="w-5">#</th> -->
-                            <!-- <th scope="col" class="text-start d-none d-sm-table-cell"></th>
-                            <th scope="col" class="text-start d-none d-sm-table-cell">Atirador</th> -->
                             <th scope="col" colspan="2" class="text-start">Divisão</th>
-                            <!-- <th scope="col"></th> -->
                             <th scope="col" class="w-50 text-start">Arma</th>
                             <th scope="col" class="w-10 text-start"><small>RD?</small></th>
                             <th scope="col" class="w-10"></th>
                           </tr>
                         </thead>
                         <tbody class="table-group-divider" id="subscribe-table">
-                          
-                          
                         </tbody>
                       </table>
                     </div>
@@ -331,8 +308,6 @@
                   </button>
                 </div>
               </div>
-                  <!-- </div> -->
-            <!-- </div> -->
           </div>
       </div>
   </div>
@@ -357,8 +332,6 @@
                       <table class="table align-middle table-sm rounded" id="subscribe-table-subs-head" style="width:100% !important;">
                         <thead>
                           <tr>
-                            <!-- <th scope="col" class="w-5">#</th> -->
-                            <!-- <th scope="col" class="w-05 d-none d-xl-block align-middle text-end"></th> -->
                             <th scope="col" class="w-20 text-start">Atirador</th>
                             <th scope="col"  class="w-20 text-start">Divisão</th> <!--colspan="2"-->
                             <th scope="col" class="w-20" ></th>
@@ -368,8 +341,6 @@
                           </tr>
                         </thead>
                         <tbody class="table-group-divider" id="subscribe-table-subs">
-                          
-                          
                         </tbody>
                       </table>
                     </div>
@@ -392,9 +363,7 @@
 <header class="masthead" id="event-bg-img" >
   <div class="container">
       <div class="masthead-heading" id="masthead-event-name"></div>
-      <!-- <div class="masthead-subheading">Pistola, Força livre e Revolver</div> -->
       <div class="masthead-subheading" id="event-local"></div>
-      <!-- <a class="btn btn-warning btn-xl text-uppercase" style="color: white;" href="#services">Inscreva-se</a> -->
       <button type="button" class="btn btn-warning btn-xl text-white text-uppercase nodisable" id="btn-modal-inscrevase" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Inscreva-se
       </button>      
@@ -407,7 +376,6 @@
           <h2 class="section-heading" id="event-divisions-summary"></h2>
           <h5 class="section-subheading text-muted" id="event-date"></h5>
           <h5 class="section-subheading text-muted" id="event-date-duel"></h5>
-          <!-- <h5 class="section-subheading text-muted">&nbsp;</h5> -->
       </div> 
      
        <div class="row text-center">
@@ -430,7 +398,6 @@
               </span>
               <h4 class="text-white">Contra o relógio</h4>
             </button>
-              <!-- <p class="text-muted">Acompanhe as tomadas de tempo por divisão</p> -->
               <p class="text-muted" >Melhores tempos até o momento:</p>
               <div class="" id="display-best-times"></div>
           </div>
@@ -444,16 +411,24 @@
             </button>
               <p class="text-muted">Acompanhe as chaves e resultados por modalidade</p>
           </div>
+          <div class="btn col-md-4" style="display: none;">
+            <button type="button" class="btn btn-warning btn-lg nodisable">
+              <span class="fa-stack fa-4x"  onclick="hrefMatches()">
+                  <i class="fas fa-circle fa-stack-2x text-warning"></i>
+                  <i class="fas fa-gift fa-stack-1x fa-inverse"></i>
+              </span>
+              <h4 class="text-white">Sorteio</h4>
+            </button>
+              <p class="text-muted">1 Caixa de munição</p>
+              <p class="text-muted">Vencedor: João</p>
+          </div>
       </div>
       <br/>
       <div class="row text-center">
-        <!-- <div class="btn col-md-4"></div> -->
         <div class="btn col-md-4 text-center">
           <span>Link para inscrição:</span>
         </div>
         <div class="btn col-md-4 text-center">
-          <!-- The text field -->
-          <!-- <label for="myInput" >Compartilhar</label> -->
           <input type="text"  class="form-control nodisable" value="" id="eventShortURL">
 <!-- The button used to copy the text -->
         </div>

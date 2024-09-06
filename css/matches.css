@@ -192,7 +192,7 @@ table {
 .small-profile-avatar-pic{
   height:45px !important;
   max-width: 45px !important;
-  margin-bottom: 1px !important;
+  /* margin-bottom: 1px !important; */
 }
 
 .small-profile-avatar-pic-2{

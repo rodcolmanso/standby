@@ -1427,13 +1427,18 @@ window.onload = async () => {
 
     if(params.rl&& Number(params.rl)>=1){
 
+        // var counter = 0;
         var i = setInterval(async function () {
-
+            
             applySpinners(true);
             getDuels(document.getElementById('selectDivision'));
             applySpinners(false);
             console.log('Reloaded!');
 
+            // counter++;
+            // if (counter === params.rl) {
+            //     clearInterval(i);
+            // }
         }, Number(params.rl) * 10000);
         
         
