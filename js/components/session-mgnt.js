@@ -99,7 +99,9 @@ async function loadingUserSession(user){
                     setAvatarPic();
                     
                 }
-            ).catch(err => console.log(`Error getting, logged user: ${err}`)
+            ).catch(err => {
+                console.log(`Error getting, logged user: ${err}`);
+            }
             ).finally(()=> {});
         }else{
             setAvatarPic();
