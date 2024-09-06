@@ -73,7 +73,7 @@ async function loadingUserSession(user){
 
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
-            await fetch('/.netlify/functions/shooters_v2?logged&'+uuidv4(), {
+            await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-type": "application/json; charset=UTF-8"
                         ,"Authorization":`Bearer ${user.token.access_token}` }
