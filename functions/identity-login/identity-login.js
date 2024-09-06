@@ -58,14 +58,15 @@ exports.handler = async (event, context) => {
   }else console.log('There is NO privider avatar.');
 
   const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
-  let events= await cEvents.aggregate(
-     [
-      {$match: {owners: user.email}}
-      // {$match: {owners: 'pris.rocha@gmail.com'}}
-     ,{$addFields:{"eventId": { "$toString": "$_id" }}}
-     ,{$group:{_id:null, array:{$push:"$eventId"}}}
-     ,{$project:{array:true,_id:false}}
-     ]).toArray();
+  let events= [];
+  // let events= await cEvents.aggregate(
+  //    [
+  //     {$match: {owners: user.email}}
+  //     // {$match: {owners: 'pris.rocha@gmail.com'}}
+  //    ,{$addFields:{"eventId": { "$toString": "$_id" }}}
+  //    ,{$group:{_id:null, array:{$push:"$eventId"}}}
+  //    ,{$project:{array:true,_id:false}}
+  //    ]).toArray();
      
      let r_events=[];
      if(events&&events.length&&events.length>0&&events[0]&&events[0].array)
