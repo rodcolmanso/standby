@@ -131,6 +131,8 @@ const handler = async (event, context)=>{
             ]).toArray();
             
             isEventAdmin= (_e.length>0);
+
+            console.log('isEventAdmin=',isEventAdmin);
           }
 
           if(!isEventAdmin)
@@ -169,7 +171,15 @@ const handler = async (event, context)=>{
 
         try{
 
-          if(!user|| !shooterData.email ||!user.app_metadata|| (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&(user.app_metadata.roles.indexOf("admin")<0&&user.app_metadata.roles.indexOf("super")<0)){
+          console.log('shooterData.eventOwners=',shooterData.eventOwners);
+          
+
+          if(!user|| !shooterData.email ||!user.app_metadata|| 
+            (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())
+             &&((!user.app_metadata.roles || user.app_metadata.roles.indexOf("admin")<0)
+             && (!user.app_metadata.roles || user.app_metadata.roles.indexOf("super")<0)
+             && (!shooterData.eventOwners || shooterData.eventOwners.length<1|| shooterData.eventOwners.indexOf(user.email.toLowerCase().trim())<0))
+            ){
               console.log(`Unauthorized, User not logged!`);
               console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
               return  {
@@ -177,6 +187,9 @@ const handler = async (event, context)=>{
                 body: `Unauthorized, User not logged!`
               }; 
           }
+
+          console.log('after cheking auth!');
+
           let retShooterUpdate=null;
 
           if(!shooterData._id||shooterData._id===null||shooterData._id===0||shooterData._id===""||shooterData._id==="new"){
@@ -189,17 +202,38 @@ const handler = async (event, context)=>{
               }
             );
 
+            console.log('GOT in INSERTTTT!');
+
             shooterData._id= retShooterUpdate.insertedId;
 
           }else{
-            // console.log(`[Shooters] Updating shooter:${shooterData.email.toLowerCase().trim()}, id:${shooterData._id}, docnum:${shooterData.docnum}`);
+            console.log(`[Shooters] Updating shooter:${shooterData.email.toLowerCase().trim()}, id:${shooterData._id}, docnum:${shooterData.docnum}`);
+
+            let _shooterUpd= {
+              //  email: shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
+              // ,docnum: shooterData.docnum
+                name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
+                ,category: shooterData.category
+              };
+
+              console.log('First _shooterUpd', _shooterUpd);
+
+              if(shooterData.email&&shooterData.email.indexOf('*')<0){
+                _shooterUpd.email= shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','');
+              }
+
+              console.log('ater testing email. _shooterUpd', _shooterUpd);
+
+              if(shooterData.docnum && shooterData.docnum.indexOf('**')<0){
+                _shooterUpd.docnum= shooterData.docnum;
+              }
+
+              console.log('ater testing docnum. _shooterUpd', _shooterUpd);
+
+
             retShooterUpdate = await cShooters.updateOne(
               { _id : new ObjectId(shooterData._id) }
-             ,{ $set: { email: shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
-                      ,docnum: shooterData.docnum
-                      ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
-                      ,category: shooterData.category
-                      }
+             ,{ $set: _shooterUpd
               }
             );
 
@@ -210,11 +244,14 @@ const handler = async (event, context)=>{
             console.log('Uploading shooter img to cloudinary. img='+shooterData._id);
             console.log('Uploading shooter img to cloudinary. shooterData.imgChanged='+shooterData.imgChanged);
             
-            cloudinary.uploader.upload(shooterData.img,
+            await cloudinary.uploader.upload(shooterData.img,
                 { public_id: "profile/"+shooterData._id
                   ,invalidate: true
                  })
-                .then(result=>console.log(result));
+                .then(result=>console.log(result))
+                .catch( (error) => {
+                  console.log("error", JSON.stringify(error,null,2));
+                });
           }
 
           shooterData.dbReturn= retShooterUpdate;
@@ -225,6 +262,7 @@ const handler = async (event, context)=>{
           };
     
         }catch(error){
+          console.log('GOT error updating Shooter. error=',error);
           console.log("Error patching shooter: "+error.toString());
           if(error.code.toString()==="11000"){
             

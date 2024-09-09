@@ -117,7 +117,8 @@ window.onload = async () => {
 
     applySpinners(false);
 
-    updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0));
+    updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0)
+             ||(user && user.email && eventConfig!==null && eventConfig.owners && eventConfig.owners.length>0 && eventConfig.owners.indexOf(user.email)>-1 ) );
     disableShooterFields(updater);
 
     let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
@@ -171,7 +172,7 @@ window.onload = async () => {
             if(json.length>0){
                 buildClassiication(json );
             }else{ 
-            console.log(`Ranking não encontrado. id:${params.id}`);
+            console.log(`Ranking não encontrado. `);
             // alert(`Rank do atirador não encontrado.`);
              }
         }
@@ -195,7 +196,7 @@ function saveShooter(){
     _UshooterData.docnum= document.getElementById('docnum').value.replaceAll('.','').replaceAll('-','');
 
     
-    if (!validaCPF(_UshooterData.docnum)) {
+    if (!updater && !validaCPF(_UshooterData.docnum)) {
       alert('CPF inválido. Verifique o número digitado.');
       document.getElementById('docnum').focus();
       return 0;
@@ -217,6 +218,15 @@ function saveShooter(){
     _UshooterData.img= document.getElementById('pic-profile').src;
     _UshooterData.imgChanged= (document.getElementById('imgChanged').value||document.getElementById('imgChanged').value==='true');
 
+    if(eventConfig!==null){
+        if(eventConfig._id!==null){
+           _UshooterData.eventId=eventConfig._id;
+        }
+        if(eventConfig.owners!==null){
+            _UshooterData.eventOwners=eventConfig.owners;
+         }
+    }
+
     // alert(JSON.stringify(_UshooterData,null,2));
     applySpinners(true);
     fetch('/.netlify/functions/shooters_v2?id='+_UshooterData._id, {
@@ -235,13 +245,13 @@ function saveShooter(){
                 if(response.status===409){
                     alert(`ERRO! CPF já cadastrado para outro Atirador.`);
                     document.getElementById('docnum').value= shooterData.docnum;
-                }
-                if(response.status===408){
+                }else if(response.status===408){
                     alert(`ERRO! Email já cadastrado para outro Atirador.`);
                     document.getElementById('modalEmail').value= shooterData.email;
-                }
-                if(response.status===401){
+                }else if(response.status===401){
                     alert(`ERRO! Você não tem permissão para executar essa ação.`);
+                } else{
+                    alert(`ERRO! Algo deu errado na atualização do atirador. Tente novamente mais tarde.`);
                 }
                 throw new Error("HTTP status " + response.status);
             }
@@ -409,7 +419,7 @@ function hrefQualify(){
 function hrefMatches(){
     window.location.href = window.location="/matches.html";
 }
-
+let eventConfig;
 async function loadPage(){
     
     loggedUser= netlifyIdentity.currentUser();
@@ -517,4 +527,8 @@ function disableShooterFields(updater){
             }
         });
         document.getElementById('modalEmail').disabled=true;
+        if(document.getElementById('docnum').value.indexOf('**')>-1){
+            document.getElementById('docnum').disabled==true;
+        }
+
 }
