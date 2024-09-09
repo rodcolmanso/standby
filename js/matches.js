@@ -459,8 +459,6 @@ function addMainMatches(mainMatches, recapMatches, categ){
         </svg> ${mainMatches[round][match].shooterA.name.substring(0,mainMatches[round][match].shooterA.name.indexOf(" "))} vs ${mainMatches[round][match].shooterB.name.substring(0,mainMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
                     <li><a class="dropdown-item" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${mainMatches[round][match].shooterA.name}</a></li>
                     <li><a class="dropdown-item" onClick="goToSubscription('${mainMatches[round][match].shooterB.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${mainMatches[round][match].shooterB.name}</a></li>
-                    <!--<li><a class="dropdown-item" onClick="goShot()" ><i class="bi bi-fire"></i> Atira</a></li>
-                    <li><a class="dropdown-item" onClick="goPrepare()" ><i class="bi bi-fast-forward-fill"></i></i> Prepara</a></li>-->
                 </ul>
                 ${roundNum}
                 <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
@@ -1308,9 +1306,19 @@ function loadDuelsDetailsCat(_CatKos){
 }
 
 netlifyIdentity.on('close', () => {
-loadPage();
+    loadPage();
 });
 function goToSubscription(parms){
+
+    const user= netlifyIdentity.currentUser();
+    const _eventConfig= getSessionEventConfig();
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email)>=0);
+
+    if(!isAdmin && !isEventAdmin && user&&user.email){
+        parms='&email='+user.email;
+    }
+
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
     }else parms='';

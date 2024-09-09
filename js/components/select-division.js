@@ -27,7 +27,7 @@ class Division extends HTMLElement {
             <button class="btn btn-secondary dropdown-toggle nodisable" type="button" data-bs-toggle="dropdown" aria-expanded="false">      
             Opções</button>
             <ul class="dropdown-menu">
-                <li id="btnAddShooter" style="display:none" ><a class="dropdown-item" onclick="goToSubscription('');" ><i class="bi bi-person-plus-fill"></i> Adicionar Atirador/Arma</a></li>
+                <li id="btnAddShooter" style="display:none" ><a class="dropdown-item" onclick="goToSubscription('');" ><i class="bi bi-person-plus-fill"></i> Adicionar Inscrição</a></li>
                 <li><a class="dropdown-item" onClick="editInscriptions()" ><i class="bi bi-pencil-fill"></i> Editar Inscrições</a></li>
                 <li id="btn-reset" style="display:none" ><a  class="dropdown-item" onclick="deleteKos();" ><i class="bi bi-recycle"></i> Recriar Duelos</a></li>
                 <li >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;___________________</li>
