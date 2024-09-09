@@ -78,13 +78,15 @@ const handler = async (event, context)=>{
         // console.log("filter="+JSON.stringify(filter,null,2));
         const retShooters = await cShooters.find(filter).toArray();
 
-  
-        if(event.queryStringParameters.id && retShooters.length>0 
+        console.log('retShooters.length', retShooters.length);
+        if(retShooters.length>0 && retShooters[0]._id
           &&user.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
           &&user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
 
+          console.log('Vai consultar img', retShooters[0]._id);
+
           let _hasImg= false;
-          await cloudinary.api.resource("profile/"+event.queryStringParameters.id)
+          await cloudinary.api.resource("profile/"+retShooters[0]._id)
           .then(result =>{
             _hasImg=true;
             console.log(result);
@@ -97,7 +99,7 @@ const handler = async (event, context)=>{
           if(!_hasImg){
           console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! avatar_url=',avatar_url);
           await cloudinary.uploader.upload(user.user_metadata.avatar_url,
-              { public_id: "profile/"+event.queryStringParameters.id
+              { public_id: "profile/"+retShooters[0]._id
                 ,overwrite: false
                 })
               .then(result=>console.log(result));
