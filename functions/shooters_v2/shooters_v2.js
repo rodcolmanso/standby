@@ -81,30 +81,30 @@ const handler = async (event, context)=>{
 
 
   
-    if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+        // if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+          
+        //   const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
+        //   const shooters= await cShooters.aggregate(
+        //     [
+        //     {$match: {email: user.email}}
+        //     ]).toArray();
+          
+        //   if(shooters && shooters.length && shooters.length>0){
+        //     // if(shooterData.imgChanged===true || shooterData.imgChanged==='true' || shooterData.imgChanged){
+
+        //     console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! PQ? avatar_url=',avatar_url);
+        //     cloudinary.uploader.upload(user.user_metadata.avatar_url,
+        //       // cloudinary.uploader.upload(testProvidedImg,
+        //         { public_id: "profile/"+shooters[0]._id
+        //           ,overwrite: false
+        //           })
+        //         .then(result=>console.log(result));
+
       
-      const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
-      const shooters= await cShooters.aggregate(
-        [
-        {$match: {email: user.email}}
-        ]).toArray();
-      
-      if(shooters && shooters.length && shooters.length>0){
-        // if(shooterData.imgChanged===true || shooterData.imgChanged==='true' || shooterData.imgChanged){
+        //   }
 
-        console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! PQ?');
-        cloudinary.uploader.upload(user.user_metadata.avatar_url,
-          // cloudinary.uploader.upload(testProvidedImg,
-            { public_id: "profile/"+shooters[0]._id
-              ,overwrite: false
-              })
-            .then(result=>console.log(result));
-
-  
-      }
-
-    }
-       let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
+        // }
+        let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
         
         if(!isAdmin){ //mask sensitivy data
 

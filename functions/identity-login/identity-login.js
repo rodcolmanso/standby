@@ -26,7 +26,6 @@ exports.handler = async (event, context) => {
   // const testProvidedImg= 'https://lh3.googleusercontent.com/a/ACg8ocKWUCCEL1qobxrjqmQAHsT2rNlJ4XSVJaOvyoJ7uxBxNO4Prw=s96-c'; //'https://www.imfdb.org/images/d/d6/YG2_012.jpg';
   // const testemail= 'luccamangamer@gmail.com';
 
-
   if(user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
     // if(testProvidedImg){
     console.log('YES, provider avatar='+user.user_metadata.avatar_url+'. Getting dbUser._id...  user.email='+ user.email);
@@ -38,13 +37,26 @@ exports.handler = async (event, context) => {
       {$match: {email: user.email}}
       // {$match: {email: testemail}}
       ]).toArray();
+
+
+    let _hasImg= false;
+    await cloudinary.api.resource("profile/"+shooters[0]._id)
+    .then(result =>{ 
+      _hasImg=true;
+      console.log(result);
+    })
+    .catch(error =>{
+      console.error(error);
+      _hasImg=false;
+  
+    });
     
-    if(shooters && shooters.length && shooters.length>0){
+    if(shooters && shooters.length && shooters.length>0 && !_hasImg){
       console.log('dbUser._id= '+ shooters[0]._id);
       
       console.log('          uploading provider avatar on Cloudinay....... dbUser._id= '+ shooters[0]._id);
       
-      cloudinary.uploader.upload(user.user_metadata.avatar_url,
+      await cloudinary.uploader.upload(user.user_metadata.avatar_url,
         // cloudinary.uploader.upload(testProvidedImg,
           { public_id: "profile/"+shooters[0]._id
             ,overwrite: false
@@ -56,6 +68,7 @@ exports.handler = async (event, context) => {
     }else console.log('dbUser not found. user.email='+ user.email);
 
   }else console.log('There is NO privider avatar.');
+
 
   const cEvents= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
   let events= [];
