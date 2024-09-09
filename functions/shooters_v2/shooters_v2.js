@@ -78,32 +78,33 @@ const handler = async (event, context)=>{
         // console.log("filter="+JSON.stringify(filter,null,2));
         const retShooters = await cShooters.find(filter).toArray();
 
-
-
   
-        // if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+        if(event.queryStringParameters.id && retShooters.length>0 
+          &&user.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
+          &&user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+
+          let _hasImg= false;
+          await cloudinary.api.resource("profile/"+event.queryStringParameters.id)
+          .then(result =>{
+            _hasImg=true;
+            console.log(result);
+          })
+          .catch(error =>{
+            console.error(error);
+            _hasImg=false;
+          });
           
-        //   const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
-        //   const shooters= await cShooters.aggregate(
-        //     [
-        //     {$match: {email: user.email}}
-        //     ]).toArray();
-          
-        //   if(shooters && shooters.length && shooters.length>0){
-        //     // if(shooterData.imgChanged===true || shooterData.imgChanged==='true' || shooterData.imgChanged){
+          if(!_hasImg){
+          console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! avatar_url=',avatar_url);
+          await cloudinary.uploader.upload(user.user_metadata.avatar_url,
+              { public_id: "profile/"+event.queryStringParameters.id
+                ,overwrite: false
+                })
+              .then(result=>console.log(result));
+          }
 
-        //     console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! PQ? avatar_url=',avatar_url);
-        //     cloudinary.uploader.upload(user.user_metadata.avatar_url,
-        //       // cloudinary.uploader.upload(testProvidedImg,
-        //         { public_id: "profile/"+shooters[0]._id
-        //           ,overwrite: false
-        //           })
-        //         .then(result=>console.log(result));
+        }
 
-      
-        //   }
-
-        // }
         let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
         
         if(!isAdmin){ //mask sensitivy data
