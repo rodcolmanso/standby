@@ -308,7 +308,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
     for(let i=0; i< aPlayers.length ; i++){//&& iAux<3
 
         if(aPlayers[i].division === selectDivision){
-            aPlayers[i].queue=i+1;
+            
             if(iAux===0){
                 aPlayers[i].labelQueue='<i class="fa-solid fa-gun"></i> ';
             }else if(iAux===1){
@@ -320,6 +320,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
             }
 
             iAux++;
+            aPlayers[i].queue=iAux;
 
         }
     }
@@ -550,7 +551,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         </span>
                     </td>
                     <td class="align-middle text-start text-small text-muted">
-                        <span class="d-none d-sm-block ">${aPlayers[i].queue}º</span>
+                        <span class="d-none d-sm-block ">${zeroPad(aPlayers[i].queue,2)}º</span>
                     </td>
                     <td class="align-middle align-items-center align-items-center">
                       <div class="row">
