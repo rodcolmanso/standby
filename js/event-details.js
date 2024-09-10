@@ -577,7 +577,7 @@ function populateGunDropdown(shooterDivisions, _subs){
                     }
             
                     
-                        newOption = new Option('_______________','');
+                        newOption = new Option("_______________","");
                         dropDown.add(newOption);
                 }
 
@@ -855,6 +855,15 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 }
 
 function subscribeNew(){
+
+    if(document.getElementById('select-subscribe-gun').value.trim()==""){
+
+        alert('informe uma arma');
+        document.getElementById('select-subscribe-gun').focus();
+        return 0
+        
+    }
+
 
     if(!validaCPF(document.getElementById('subscribe-docnum').value)){
 
@@ -1178,7 +1187,7 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
         while (dropDown.options.length > 0)
             dropDown.remove(0);
 
-        let newOption = new Option('','');
+        let newOption = new Option("",);
         dropDown.add(newOption);
         if(divisionName==="força livre"){
             for(let j=0;j<gunList.length;j++){
@@ -1188,7 +1197,7 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
                     dropDown.add(newOption);
             }
         
-            let newOption = new Option('_______________','');
+            let newOption = new Option("_______________","");
             dropDown.add(newOption);
         }
 
