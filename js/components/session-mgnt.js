@@ -76,7 +76,7 @@ let dbUser={};
         // clearSessionEventConfig();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
             let responseClone; // 1
-            fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
+            fetch('https://tpmonline.com.br/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
