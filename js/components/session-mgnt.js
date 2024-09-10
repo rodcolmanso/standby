@@ -84,7 +84,7 @@ async function loadingUserSession(user){
             ).then( function (response) {
                 console.log('response.status=',response.status); // Will show you the status
                 if (!response.ok) {
-                        console.log(`Não é possível consultar atirador no servidor.`+shooterDivisionId);
+                        console.log(`Não é possível consultar atirador no servidor.`);
                     throw new Error("HTTP status " + response.status);
                 }
 

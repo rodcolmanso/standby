@@ -20,13 +20,23 @@ var ObjectId = require('mongodb').ObjectId;
 const handler = async (event, context)=>{
   try {
 
+    console.log(`Starting shooter_v2?`);
+
+
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
+    console.log(`got database`);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
+    console.log(`got cShooters`);
     
     const user= context.clientContext.user;
+    console.log(`got user`);
+
+    console.log(`user.email=`, user.email);
 
     switch (event.httpMethod){
       case 'GET':
+
+      console.log(`getting into de GET phethod`);
 
       try{
         console.log(`Got into shooter_v2?logged=${event.queryStringParameters.logged}`);
