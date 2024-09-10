@@ -82,6 +82,12 @@ async function loadingUserSession(user){
                     }
                 }
             ).then( function (response) {
+                console.log('response.status=',response.status); // Will show you the status
+                if (!response.ok) {
+                        console.log(`Não é possível consultar atirador no servidor.`+shooterDivisionId);
+                    throw new Error("HTTP status " + response.status);
+                }
+
                  try{
                     responseClone = response.clone(); // 2
                  }catch(e){

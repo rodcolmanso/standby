@@ -58,7 +58,7 @@ window.onload = async () => {
         if(user.token.expires_at< exipre_compare){
             await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
         }
-         isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+         isAdmin= (user&& user.app_metadata && user.app_metadata.roles &&!(user.app_metadata.roles.indexOf("admin")<0));
          applySpinners(true);
         ranges = await promiseOfRanges(null,user);
         applySpinners(false);
@@ -140,6 +140,10 @@ function search() {
         .then(data => {
         // return data;
         buildEventsTable(data);
+        })
+        .catch((error)=>{
+            console.log('error quering events. error=',error);
+            window.location.href = window.location="/";
         })
         .finally( applySpinners(false));
     //some other stuff...
