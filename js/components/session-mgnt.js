@@ -74,7 +74,7 @@ async function loadingUserSession(user){
         let sdbu=getSessionDbUser();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
             let responseClone; // 1
-            await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
+            fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
