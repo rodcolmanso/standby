@@ -62,25 +62,25 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 let dbUser={};
 // let loggedUser={};
 
- function loadingUserSession(user){
+ async function loadingUserSession(user){
     
     
     user= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
         if(user.token.expires_at< exipre_compare){
-             netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
+             await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
         }
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-        if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
+        if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email){ //sem _id no cookie
             let responseClone; // 1
             fetch('https://tpmonline.com.br/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
-                        ,Authorization:`Bearer ${user.token.access_token}` 
+                        ,Authorization:`Bearer ${netlifyIdentity.currentUser().token.access_token}` 
                     }
                 }
             )
