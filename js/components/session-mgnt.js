@@ -64,6 +64,7 @@ let dbUser={};
 
 async function loadingUserSession(user){
     
+    
     // loggedUser= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
@@ -72,6 +73,7 @@ async function loadingUserSession(user){
         }
 
         let sdbu=getSessionDbUser();
+        clearSessionEventConfig();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
             let responseClone; // 1
             fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
