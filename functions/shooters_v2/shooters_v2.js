@@ -31,7 +31,8 @@ const handler = async (event, context)=>{
     const user= context.clientContext.user;
     console.log(`got user`);
 
-    console.log(`user.email=`, user.email);
+    console.log(`user=`, user);
+    console.log(`user.email=`, user?user.email:'user undefined');
 
     switch (event.httpMethod){
       case 'GET':
