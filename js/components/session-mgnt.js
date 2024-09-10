@@ -74,13 +74,12 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-        
-        setCookie('nf_jwt', "", 0.6);
+        // setCookie('nf_jwt', "", 0.6);
 
         /////////////
         if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email){ //sem _id no cookie
             let responseClone; // 1
-            fetch('https://tpmonline.com.br/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
+           await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
@@ -91,8 +90,18 @@ let dbUser={};
             .then( function (response) {
                 console.log('response.status=',response.status); // Will show you the status
                 if (!response.ok) {
-                        console.log(`Não é possível consultar atirador no servidor.`);
-                    throw new Error("HTTP status " + response.status);
+                        console.log(`Não é possível consultar atirador no servidor. email= `, netlifyIdentity.currentUser().email);
+                        if(response.status===500){
+                            if(netlifyIdentity.currentUser().app_metadata && netlifyIdentity.currentUser().app_metadata.provider==='google'){
+                                alert(`Não foi possível registrar-se com sua conta google ${netlifyIdentity.currentUser().email}. Por favor, cadastre uma senha de acesso.`);
+                            }else{
+                                alert(`Não foi possível registrar-se com o email ${netlifyIdentity.currentUser().email}. Por favor, informe um novo email de acesso.`);
+                            }
+                            netlifyIdentity.logout();
+                            netlifyIdentity.open('signup');
+                        }else{
+                            throw new Error("HTTP status " + response.status);
+                        }
                 }
 
                  try{
