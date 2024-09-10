@@ -65,7 +65,7 @@ let dbUser={};
  function loadingUserSession(user){
     
     
-    // loggedUser= netlifyIdentity.currentUser();
+    user= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
         if(user.token.expires_at< exipre_compare){
@@ -83,7 +83,8 @@ let dbUser={};
                         ,Authorization:`Bearer ${user.token.access_token}` 
                     }
                 }
-            ).then( function (response) {
+            )
+            .then( function (response) {
                 console.log('response.status=',response.status); // Will show you the status
                 if (!response.ok) {
                         console.log(`Não é possível consultar atirador no servidor.`);
@@ -330,7 +331,6 @@ netlifyIdentity.on('login', user => {
     }
     applySpinners(true);
     loadingUserSession(user);
-    configPermissions(true);
     applySpinners(false);
     // console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
     // console.log(`user.user_metadata.admin_events= ${user.user_metadata.admin_events}`);
@@ -340,14 +340,9 @@ netlifyIdentity.on('login', user => {
 netlifyIdentity.on('logout', () => {
     clearSessionDbUser();
     clearSessionEventConfig()
-    configPermissions(false);
     console.log('got logout on SESSION-MGNT');
 
 });
-
-function configPermissions(onoff){
-
-}
 
 function clearSessionDbUser(){
     setCookie(SESSION_DBUSER, null, 0.006);
