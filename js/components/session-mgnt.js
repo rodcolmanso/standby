@@ -62,14 +62,14 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 let dbUser={};
 // let loggedUser={};
 
-async function loadingUserSession(user){
+ function loadingUserSession(user){
     
     
     // loggedUser= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
         if(user.token.expires_at< exipre_compare){
-            await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
+             netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
         }
 
         let sdbu=getSessionDbUser();
