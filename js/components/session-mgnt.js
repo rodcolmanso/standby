@@ -73,7 +73,7 @@ let dbUser={};
         }
 
         let sdbu=getSessionDbUser();
-        clearSessionEventConfig();
+        // clearSessionEventConfig();
         if(sdbu===null||sdbu.email!==user.email){ //sem _id no cookie
             let responseClone; // 1
             fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
