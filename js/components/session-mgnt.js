@@ -74,7 +74,7 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-        nf_jwt
+        
         setCookie('nf_jwt', "", 0.6);
 
         /////////////
