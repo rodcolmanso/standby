@@ -74,6 +74,10 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
+        nf_jwt
+        setCookie('nf_jwt', "", 0.6);
+
+        /////////////
         if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email){ //sem _id no cookie
             let responseClone; // 1
             fetch('https://tpmonline.com.br/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
