@@ -76,7 +76,14 @@ const handler = async (event, context)=>{
         console.log(`Got into shooter_v2?logged. filter=${JSON.stringify(filter,null,2)}`);
           
         // console.log("filter="+JSON.stringify(filter,null,2));
-        const retShooters = await cShooters.find(filter).toArray();
+
+        let retShooters;
+        try{
+          retShooters = await cShooters.find(filter).toArray();
+        }catch(error){
+          console.log('Error finding shooter!');
+          return res.status(400).json({ success: false, errors: _error.array() });
+        }
 
         console.log('retShooters.length', retShooters.length);
         if(retShooters.length>0 && retShooters[0]._id
