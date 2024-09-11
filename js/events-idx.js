@@ -168,6 +168,12 @@ function exlcuir(id, name){
         }
 }
 
+const days = ['Domingo','2ª-feira','3ª-feira','4ª-feira','5ª-feira','6ª-feira','Sábado'];
+const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// var day = days[ now.getDay() ];
+// var month = months[ now.getMonth() ];
+
 function buildEventsTable(events){
     if(events===undefined){
         return 0;
@@ -222,9 +228,17 @@ function buildEventsTable(events){
         // https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_210,w_280/d_defaults:tmpyellow.jpg/
         row=`<div class="col" >
         <div class="card h-100" >
-          <a data-toggle="modal" data-target="#exampleModal" href="./event-details.html?event_id=${events[i]._id}" >
+            <div class="dropup-center dropup">
+            <a data-toggle="modal" data-target="#exampleModal" data-bs-toggle="dropdown" > <!--href="./event-details.html?event_id=${events[i]._id}" -->
             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_pad,h_388,w_517/d_defaults:tmpyellow.jpg/${events[i]._id}.jpg?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
             </a>
+            <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
+                        <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
+                        <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
+                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
+                        
+                    </ul>
             <div class="card-body" >
               <div class="d-inline-block d-flex justify-content-between">
                 <div> <h5 class="card-title">${events[i].name}</h5></div>
@@ -232,8 +246,10 @@ function buildEventsTable(events){
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">      
                     </button>
                     <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
                         <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
                         <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
+                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurações</a></li>
                         <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
                     </ul>
@@ -241,8 +257,9 @@ function buildEventsTable(events){
               </div>
               <p class="card-text">Local: ${events[i].local}</p>
             </div>
+            </div>
             <div class="card-footer">
-              <small class="text-body-secondary">Quando: ${events[i].date.toLocaleDateString().substring(0,5)} as ${events[i].hour }h</small>
+              <small class="text-body-secondary">Quando: ${days[ events[i].date.getDay()]}, ${events[i].date.toLocaleDateString().substring(0,5)} as ${events[i].hour }h</small>
             </div>
           
         </div>

@@ -209,7 +209,7 @@
         <!-- <div class="d-flex justify-content-center"> -->
             <div class="btn nodisable">
               <label for="event-img">
-                <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/defaults/tmpyellow'" src="..."
+                <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_225,w_300/defaults/tmpyellow'" src="..."
                   class="img-fluid" alt="example placeholder" />
                   </label>
                 <input type="file" class="form-control d-none nodisable" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
@@ -381,12 +381,10 @@
           <span class="visually-hidden">Carregando...</span>
         </div> -->
           <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary hide" data-bs-toggle="modal" data-bs-target="#importModal">
-          Importar Inscrições
-        </button>
-        <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="location='/'"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Fechar</button>
+        
         <!-- <button type="button" class="btn btn-success" value="Salvar" onclick="updateEventConfig()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button> -->
         <button type="submit" class="btn btn-success nodisable " value="Salvar" id="btn-salvar-geral"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+        <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="history.back()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Voltar</button>
       </div>
     </form>
     
