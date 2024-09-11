@@ -911,8 +911,11 @@ function subscribeNew(){
     uptShooterDiv.shooters_divisions=[];
     uptShooterDiv.shooters_divisions.push(nShooters_divisions);
 
-    document.getElementById("select-subscribe-division").value="";
+    // document.getElementById("select-subscribe-division").value="";
     document.getElementById("subscribe-gun").value="";
+    document.getElementById("select-subscribe-gun").value="";
+    document.getElementById("subscribe-opticN").checked=false;
+    document.getElementById("subscribe-optic").checked=false;
 
     _reload=true;
     promiseOfPutShootersDivisions(eventConfig._id, uptShooterDiv.email, uptShooterDiv, MODAL_TABLE_SUB_ID);
@@ -1172,6 +1175,8 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
     document.getElementById('subscribe-gun').style.display='none';
     document.getElementById('subscribe-gun-label').style.display='none';
     document.getElementById('subscribe-gun').value='';
+    document.getElementById("subscribe-opticN").checked=false;
+    document.getElementById("subscribe-optic").checked=false;
     
     let divisionName = "";
     for(let i=0; i<ev.target.options.length;i++){
@@ -1271,14 +1276,7 @@ document.getElementById("search-button-name").addEventListener('click', function
     ).catch(err => {console.log(`Error getting user: ${err}`); alert(`Erro ao localizar atirador.`); }
     ).finally(()=> {
         applySpinners(false);
-        // document.getElementById("subscribe-gun").focus();
-        // document.getElementById("subscribe-name").focus();
-        // _dataList.classList.toggle("show");
     });
-
-    // document.getElementById("subscribe-name").focus();
-    // document.getElementById("subscribe-name").click();
-    // _dataList.classList.toggle("show");
 
 });
 
