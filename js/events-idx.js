@@ -226,6 +226,19 @@ function buildEventsTable(events){
 
         //<i class="bi bi-bullseye"></i>
         // https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_210,w_280/d_defaults:tmpyellow.jpg/
+
+        let _hideClock= `style="display:none"`;
+        let _hideDuel= `style="display:none"`;
+
+        if(events[i].clock===true){
+            _hideClock='';
+        }
+
+        if(events[i].duel===true){
+            _hideDuel='';
+        }
+
+
         row=`<div class="col" >
         <div class="card h-100" >
             <div class="dropup-center dropup">
@@ -234,8 +247,8 @@ function buildEventsTable(events){
             </a>
             <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
-                        <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
-                        <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
+                        <li ${_hideClock}><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
+                        <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
                         <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
                         
                     </ul>
@@ -247,8 +260,8 @@ function buildEventsTable(events){
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
-                        <li><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
-                        <li><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
+                        <li ${_hideClock}><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
+                        <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
                         <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurações</a></li>
                         <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>

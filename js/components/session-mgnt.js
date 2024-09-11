@@ -159,6 +159,8 @@ netlifyIdentity.on('open', function() {
     var iframe = document.getElementById("netlify-identity-widget");
     if (iframe) {
       var iOSfix = iframe.contentWindow.document.createElement("style");
+      iframe.contentWindow.document.getElementsByName('email')[0].autocomplete="username";
+    //   alert('password.autocomplete=' +iframe.contentWindow.document.getElementsByName('password')[0].autocomplete);
       iOSfix.innerText = "input { font-size: 16px!important }";
       iframe.contentWindow.document.body.appendChild(iOSfix);
     }
