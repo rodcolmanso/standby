@@ -229,7 +229,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
                 let _dbUser= getSessionDbUser();
 
                 if( !_dbUser || _dbUser===null || !_dbUser.docnum || _dbUser.docnum===null){
-                    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist";
+                    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=clockduel";
                 }
 
                 promiseOfGetShootersDivisions(eventConfig._id, _dbUser.docnum, MODAL_TABLE_SUB_ID);
