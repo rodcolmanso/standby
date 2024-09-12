@@ -272,11 +272,11 @@ btnSaveDocnum.addEventListener('click', function(e) {
             if (!response.ok) {
                 if(response.status===409){
                     alert(`ERRO! CPF já cadastrado para outro Atirador.`);
-                    document.getElementById('docnum').value= shooterData.docnum;
+                    // document.getElementById('docnum').value= shooterData.docnum;
                 }
                 if(response.status===408){
                     alert(`ERRO! Email já cadastrado para outro Atirador.`);
-                    document.getElementById('modalEmail').value= shooterData.email;
+                    // document.getElementById('modalEmail').value= shooterData.email;
                 }
                 if(response.status===401){
                     alert(`ERRO! Você não tem permissão para executar essa ação.`);
