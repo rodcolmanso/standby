@@ -227,6 +227,11 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             }else if(params.selected_division===undefined){
                 // promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
                 let _dbUser= getSessionDbUser();
+
+                if( !_dbUser || _dbUser===null || !_dbUser.docnum || _dbUser.docnum===null){
+                    window.location="/event-details.html?event_id="+eventConfig._id+"&inscription=sublist";
+                }
+
                 promiseOfGetShootersDivisions(eventConfig._id, _dbUser.docnum, MODAL_TABLE_SUB_ID);
             }
         }
