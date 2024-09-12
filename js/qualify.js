@@ -96,7 +96,8 @@ async function loadPage(){
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
     applySpinners(false);
 
-    // document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small">${eventConfig.name}</span></h5>`;
+    document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
+    // document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     applySpinners(false);
 

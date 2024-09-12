@@ -61,8 +61,8 @@ function enableShooterFields(){
         document.getElementById('subscribe-gun').classList.add('nodisable');
         document.getElementById('subscribe-gun').disabled=false;
 
-        document.getElementById('select-subscribe-division').classList.add('nodisable');
-        document.getElementById('select-subscribe-division').disabled=false;
+        // document.getElementById('select-subscribe-division').classList.add('nodisable');
+        // document.getElementById('select-subscribe-division').disabled=false;
 
         document.getElementById('subscribe-name').classList.add('nodisable');
         document.getElementById('subscribe-name').disabled=false;
@@ -112,13 +112,23 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
         document.getElementById(`subscrive-close-btn`).click();
         document.getElementById(`btn-subscriptionsModal`).click();
     }else if(_reload){
-        clearSessionEventConfig();
-        promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
-        // location.reload(true);
-        window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
+        
+        // ->>promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
+        // -->  window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
+        console.log('will refreshed');
+        silentRefreshPage();
     }
     
   })
+
+  async function silentRefreshPage(){
+    console.log('will refreshed async');
+    clearSessionEventConfig();
+    _reload=true;
+    eventConfig= await promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
+    buildEventDetailsPage(eventConfig);
+    console.log('page refreshed');
+    }
 
 subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
     // shooterDivisions=[];
@@ -131,7 +141,9 @@ subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
     }else if(_reload){
         clearSessionEventConfig();
         // location.reload(true);
-        window.location="/event-details.html?event_id="+eventConfig._id;
+        // window.location="/event-details.html?event_id="+eventConfig._id;
+        console.log('will refreshed');
+        silentRefreshPage();
     }
     
 })
@@ -171,7 +183,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             netlifyIdentity.open('signup');
         }else{
             // document.getElementById("subscrive-close-btn").click();
-            window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
+            //--> window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
         }
     }else{
 
@@ -180,13 +192,13 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             // document.getElementById('subscribe-email').disabled=false;
             document.getElementById('subscribe-docnum').disabled=false;
             document.getElementById('subscribe-name').disabled=false;
-            document.getElementById('select-subscribe-division').disabled=false;
+            // document.getElementById('select-subscribe-division').disabled=false;
             
             // document.getElementById('subscribe-name').disabled=false;
         }else{
             document.getElementById('subscribe-email').disabled=true;
             document.getElementById('subscribe-docnum').disabled=true;
-            document.getElementById('select-subscribe-division').disabled=true;
+            // document.getElementById('select-subscribe-division').disabled=true;
         }
         
         if(params.selected_division!==undefined){
@@ -194,6 +206,8 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             var event = new Event('change');
             document.getElementById('select-subscribe-division').dispatchEvent(event);
         }
+
+        console.log('1');
         
         //-> if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
         if(params.docnum&&params.docnum!=='' ){ //editing inscription
@@ -207,6 +221,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             document.getElementById('subscribe-shooterId').value= params.shooterId;
             promiseOfGetShootersDivisions(eventConfig._id, params.shooterId, MODAL_TABLE_SUB_ID);
         }else{
+            console.log('shooterDivisions.lenght', shooterDivisions?shooterDivisions.length:'null');
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
             }else if(params.selected_division===undefined){
@@ -612,6 +627,8 @@ function populateGunDropdown(shooterDivisions, _subs){
 // function getFullShooterDivision(eventConfig, userEmail){
 function popupSubscriptionModal(shooterDivisions){
 
+    console.log('popupSubscriptionModal 1');
+
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
     document.getElementById('subscribe-email').placeholder= loggedUser.email;
@@ -624,7 +641,7 @@ function popupSubscriptionModal(shooterDivisions){
     // document.getElementById("search-button-name").style.visibility="hidden";
 
     if(shooterDivisions.email!==loggedUser.email){
-        
+        console.log('popupSubscriptionModal 2');
         enableShooterFields();
 
         //-> if(shooterDivisions.name!==""){
@@ -633,10 +650,11 @@ function popupSubscriptionModal(shooterDivisions){
 
         // document.getElementById('input-shooter-img').disabled=true;
 
-    }else{
+    }
+    // else{
         //-> document.getElementById('subscribe-name').disabled=false;
         // document.getElementById('input-shooter-img').disabled=true;
-    }
+    // }
     
     const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_9${getRandomInt(0,5)},h_14${getRandomInt(0,5)}/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?${uuidv4()}`;
     // const uri= `https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,w_95,h_145/d_defaults:generic_avatar.jpg/profile/${shooterDivisions.shooterId}.jpg?`;
@@ -644,6 +662,7 @@ function popupSubscriptionModal(shooterDivisions){
     document.getElementById('shooter-img').src= uri;
     document.getElementById('shooter-img2').src= uri2;
     
+    console.log('Before populateSubscriptionModalTable');
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
     // new DataTable('#subscribe-table-subs-head');
 
@@ -683,6 +702,7 @@ function populateNewShooter(_docnum){
     shooterDivisions[0].shooterId= ""
     shooterDivisions[0].eventId= eventConfig._id;
     shooterDivisions[0].shooters_divisions= [];
+    console.log('will populateSubscriptionModalTable');
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
 }
 
@@ -716,8 +736,11 @@ function exitOtherGun(el){
 
 }
 
-// function buildSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
+
+    if(shooterDivisions && !shooterDivisions.length){
+        shooterDivisions= [shooterDivisions];
+    }
 
     let row='';
     let _subs="";
@@ -917,8 +940,8 @@ function subscribeNew(){
     document.getElementById("subscribe-opticN").checked=false;
     document.getElementById("subscribe-optic").checked=false;
 
-    _reload=true;
     promiseOfPutShootersDivisions(eventConfig._id, uptShooterDiv.email, uptShooterDiv, MODAL_TABLE_SUB_ID);
+    _reload=true;
 
 }
 

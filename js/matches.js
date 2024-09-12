@@ -1095,7 +1095,7 @@ function getDuels(selectDivision){
                             <div class="form-check">
                             <input class="form-check-input" type="radio" name="flexRadioKosType" id="radioDoupleEliminiation" value=0 checked>
                             <label class="form-check-label" for="radioDoupleEliminiation">
-                                Eliminatórias com repescagem (dupla eliminação):<li> ${qtdShooters*2-3} duelos.</li><p></p>
+                                Eliminatórias com repescagem (dupla eliminação):<li> ${((qtdShooters*2-3)<0?0:(qtdShooters*2-3))} duelos.</li><p></p>
                             </label>
                             </div>
                             <div class="form-check">
@@ -1364,7 +1364,7 @@ let eventAdmin= false;
 window.onload = async () => {
 
     await loadPage();  //load event config
-    document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
+    document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
     
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();

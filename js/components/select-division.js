@@ -42,15 +42,6 @@ class Division extends HTMLElement {
         </div>
       </div>
       
-      <!--<nav class="navbar-fixed-top">
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nodisable nav-link "        id="liAdvance" data-bs-toggle="tab" data-bs-target="#nav-liAdvance" type="button" role="tab" aria-controls="nav-liAdvance" aria-selected="false">Avançado</button>
-            <button class="nodisable nav-link  active" id="liOverall" data-bs-toggle="tab" data-bs-target="#nav-liOverall" type="button" role="tab" aria-controls="nav-liOverall" aria-selected="true">Overall</button>
-            <button class="nodisable nav-link "        id="liLadies" data-bs-toggle="tab" data-bs-target="#nav-liLadies" type="button" role="tab" aria-controls="nav-liLadies" aria-selected="false">Damas</button>
-            <button class="nodisable nav-link "        id="liOptics" data-bs-toggle="tab" data-bs-target="#nav-liOptics" type="button" role="tab" aria-controls="nav-liOptics" aria-selected="false">Optics</button>
-            <button class="nodisable nav-link "        id="liSeniors" data-bs-toggle="tab" data-bs-target="#nav-liSeniors" type="button" role="tab" aria-controls="nav-liSeniors" aria-selected="false">Seniors</button>
-          </div>
-      </nav>-->
     </div>
       `;
     }
