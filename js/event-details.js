@@ -173,10 +173,9 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
 subscribeModal.addEventListener('shown.bs.modal', () => {
 
     loggedUser= netlifyIdentity.currentUser();
+
+    let _dbUser= getSessionDbUser();
     
-    if( !eventConfig || eventConfig===null || !eventConfig._id || eventConfig._id===null || !_dbUser || _dbUser===null || !_dbUser.docnum || _dbUser.docnum===null){
-        location.reload();
-    }
     
     if(!loggedUser){
         
@@ -191,6 +190,10 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             //--> window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
         }
     }else{
+
+        if( !eventConfig || eventConfig===null || !eventConfig._id || eventConfig._id===null || !_dbUser || _dbUser===null || !_dbUser.docnum || _dbUser.docnum===null){
+            location.reload();
+        }
 
         let isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
         if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
@@ -231,7 +234,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
                 popupSubscriptionModal(shooterDivisions[0]);
             }else if(params.selected_division===undefined){
                 // promiseOfGetShootersDivisions(eventConfig._id, loggedUser.email, MODAL_TABLE_SUB_ID);
-                let _dbUser= getSessionDbUser();
+                _dbUser= getSessionDbUser();
 
                 promiseOfGetShootersDivisions(eventConfig._id, _dbUser.docnum, MODAL_TABLE_SUB_ID);
             }
