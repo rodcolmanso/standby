@@ -55,7 +55,7 @@ const handler = async (event, context)=>{
         let updatedEvent=null;
         if(!isAdmin){
 
-          const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:user.email}}).toArray();
+          const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:user.email.toLowerCase().trim()}}).toArray();
 
           if( rangeAdm.length<=0){
             return  {
@@ -66,7 +66,7 @@ const handler = async (event, context)=>{
 
           console.log('Nao eh adm 0');
           // filter.owners=user.email;
-          event_config.owners.push(user.email);
+          event_config.owners.push(user.email.toLowerCase().trim());
           console.log('Nao eh adm 1');
           event_config.owners = [...new Set(event_config.owners)];
           console.log('event_config.owners'+event_config.owners);
@@ -110,7 +110,7 @@ const handler = async (event, context)=>{
             if(!isAdmin){
               console.log('Nao eh adm');
               // filter.owners=user.email;
-              event_config.owners.push(user.email);
+              event_config.owners.push(user.email.toLowerCase().trim());
               event_config.owners = [...new Set(event_config.owners)];
               event_config.owners= event_config.owners.reduce((acc, i) => i ? [...acc, i] : acc, []);
               console.log('event_config.owners'+event_config.owners);

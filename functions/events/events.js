@@ -59,7 +59,7 @@ const handler = async (event, context) => {
         let mMatch=  {
           "date": { $gte: new Date(p_event_date_from.replace(/-/g, '\/'))
                    , $lt: new Date(p_event_date_to.replace(/-/g, '\/')) }
-          , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
+          , $or:[{"public":true}, {"owners":user.email.toLowerCase().trim()}, {"public":!isAdmin}]
        };
 
         
@@ -78,7 +78,7 @@ const handler = async (event, context) => {
           }
 
           mMatch=  {"_id": o_id
-                   , $or:[{"public":true}, {"owners":user.email}, {"public":!isAdmin}]
+                   , $or:[{"public":true}, {"owners":user.email.toLowerCase().trim()}, {"public":!isAdmin}]
                    };
         }
 

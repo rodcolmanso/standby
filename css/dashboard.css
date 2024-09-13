@@ -167,7 +167,20 @@ table {
   height:45px !important;
   max-width: 45px !important;
   /* margin-bottom: 1px !important; */
+  z-index: 10;
 }
+
+.bi {
+  vertical-align: -.125em;
+  /* fill: currentColor; */
+  /* z-index: 9999; */
+}
+
+  .queue {
+    /* z-index: 9998; */
+    margin-left: 1px;
+    color: #198754;
+  }
 
 .spinner-wrapper{
   background-color: #000;

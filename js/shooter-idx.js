@@ -118,7 +118,7 @@ window.onload = async () => {
     applySpinners(false);
 
     updater= (user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0)
-             ||(user && user.email && eventConfig!==null && eventConfig.owners && eventConfig.owners.length>0 && eventConfig.owners.indexOf(user.email)>-1 ) );
+             ||(user && user.email && eventConfig!==null && eventConfig.owners && eventConfig.owners.length>0 && eventConfig.owners.indexOf(user.email.toLowerCase().trim())>-1 ) );
     disableShooterFields(updater);
 
     let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
@@ -192,7 +192,7 @@ function saveShooter(){
     let _UshooterData={};
     _UshooterData._id= document.getElementById('_id').value;
     document.getElementById('modalEmail').value= document.getElementById('modalEmail').value.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','');
-    _UshooterData.email= document.getElementById('modalEmail').value;
+    _UshooterData.email= document.getElementById('modalEmail').value.toLowerCase().trim();
     _UshooterData.docnum= document.getElementById('docnum').value.replaceAll('.','').replaceAll('-','');
 
     
@@ -247,7 +247,7 @@ function saveShooter(){
                     document.getElementById('docnum').value= shooterData.docnum;
                 }else if(response.status===408){
                     alert(`ERRO! Email já cadastrado para outro Atirador.`);
-                    document.getElementById('modalEmail').value= shooterData.email;
+                    document.getElementById('modalEmail').value= shooterData.email.toLowerCase().trim();
                 }else if(response.status===401){
                     alert(`ERRO! Você não tem permissão para executar essa ação.`);
                 } else{
@@ -265,7 +265,7 @@ function saveShooter(){
                 _oa='a';
             }
 
-            if(netlifyIdentity.currentUser().email===json.email){
+            if(netlifyIdentity.currentUser().email.toLowerCase().trim()===json.email.toLowerCase().trim()){
                 setSessionDbUser(_UshooterData);
                 loadingUserSession(netlifyIdentity.currentUser());
                 // buildShooterForm();
@@ -286,7 +286,7 @@ function buildShooterForm(){
         document.getElementById('imgChanged').value=false;
 
         document.getElementById('_id').value= shooterData._id;
-        document.getElementById('modalEmail').value= shooterData.email;
+        document.getElementById('modalEmail').value= shooterData.email.toLowerCase().trim();
         document.getElementById('modalEmail').disabled=true;
         document.getElementById('docnum').value= formatCpf(shooterData.docnum,false);
         document.getElementById('modalName').value= shooterData.name;

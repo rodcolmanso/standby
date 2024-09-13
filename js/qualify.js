@@ -124,7 +124,7 @@ window.onload = async () => {
     const _eventConfig= getSessionEventConfig();
     
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email)>=0);
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email.toLowerCase().trim())>=0);
     
     if(isAdmin || isEventAdmin){
         document.getElementById('btnRelPassadas').style.display='';
@@ -257,7 +257,7 @@ function transformRegistrer(players){
             sort_idx= ''+score_idx+zeroPad(players[i].registered[j].tries,4)+players[i].registered[j].datetime;
             
             
-            aRow= {'email':players[i].email,'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
+            aRow= {'email':players[i].email.toLowerCase().trim(),'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
                   ,'gunModel':players[i].registered[j].gunModel , 'gunFactory':players[i].registered[j].gunFactory, 'gunCaliber':players[i].registered[j].gunCaliber, 'gunId':players[i].registered[j].gunId
                   ,'order_aux':players[i].registered[j].order_aux, 'subscribe_date':players[i].registered[j].subscribe_date
             };
@@ -311,13 +311,13 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
         if(aPlayers[i].division === selectDivision){
             
             if(iAux===0){
-                aPlayers[i].labelQueue='<i class="fa-solid fa-gun"></i> ';
+                aPlayers[i].labelQueue='<i class="fa-solid fa-gun queue"></i> ';
             }else if(iAux===1){
-                aPlayers[i].labelQueue='<i class="bi bi-2-circle-fill"></i> '; //<i class="bi bi-1-circle-fill"></i> 
+                aPlayers[i].labelQueue='<i class="bi bi-2-circle-fill queue"></i> '; //<i class="bi bi-1-circle-fill"></i> 
             }else if(iAux===2){
-                aPlayers[i].labelQueue='<i class="bi bi-3-circle-fill"></i> ';
+                aPlayers[i].labelQueue='<i class="bi bi-3-circle-fill queue"></i> ';
             }else if(iAux===3){
-                aPlayers[i].labelQueue='<i class="bi bi-4-circle-fill"></i> ';
+                aPlayers[i].labelQueue='<i class="bi bi-4-circle-fill queue"></i> ';
             }
 
             iAux++;
@@ -493,7 +493,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 let _style= ` style="display:none" `;
                 if(netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
                 ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-                || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0))
+                || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email.toLowerCase().trim())>=0))
                 || (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&(aPlayers[i].email.toLowerCase().trim()=== netlifyIdentity.currentUser().email.toLowerCase().trim()))){
                     _style= ``;
                 }
@@ -710,10 +710,10 @@ function goToSubscription(parms){
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email)>=0);
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email.toLowerCase().trim())>=0);
 
     if(!isAdmin && !isEventAdmin && user&&user.email){
-        parms='&email='+user.email;
+        parms='&email='+user.email.toLowerCase().trim();
     }
 
     if(parms!==undefined && parms!==''){

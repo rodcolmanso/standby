@@ -47,7 +47,7 @@ const handler = async (event, context)=>{
           // console.log(`p_eventId= ${p_eventId}`);
         }
         if(event.queryStringParameters.email!==undefined&&event.queryStringParameters.email!==null&&event.queryStringParameters.email!==""){
-          p_email= event.queryStringParameters.email.toLowerCase();
+          p_email= event.queryStringParameters.email.toLowerCase().trim();
           // console.log(`p_email= ${p_email}`);
         }
         
@@ -88,8 +88,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email}
-                       , {'range.adm': user.email}]
+                       ,$or:[ {owners: user.email.toLowerCase().trim()}
+                       , {'range.adm': user.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -162,7 +162,7 @@ const handler = async (event, context)=>{
             
 
             if(!isAdmin&&!isEventAdmin)
-            if(!user||user.email!==shootersDiv[i].email){
+            if(!user||!user.email||!shootersDiv[i].email||user.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
               
               shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
 
@@ -252,7 +252,7 @@ const handler = async (event, context)=>{
                 // console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
               }
             }
-            if(!user||user.email!==shootersDiv[i].email){
+            if(!user||user.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
               shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
             }
           }
@@ -283,7 +283,7 @@ const handler = async (event, context)=>{
           // console.log(JSON.stringify(context, null, 2))
           let user= context.clientContext.user;
 
-          if(!user){
+          if(!user||!user.email){
             // console.log(`Unauthorized, User not logged!`);
             return  {
               statusCode: 401,
@@ -315,8 +315,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email}
-                       , {'range.adm': user.email}]
+                       ,$or:[ {owners: user.email.toLowerCase().trim()}
+                       , {'range.adm': user.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -566,7 +566,7 @@ const handler = async (event, context)=>{
                       ,foreignField: "_id"
                       ,as: "events_adm"
                       ,pipeline:[
-                          {$match:{"owners": user.email}}
+                          {$match:{"owners": user.email.toLowerCase().trim()}}
                       ]
               }}
               ,{ $addFields: { "shooterId": { $toObjectId: "$shooterId" }}}
@@ -575,7 +575,7 @@ const handler = async (event, context)=>{
                   ,foreignField: "_id"
                   ,as: "shooters"
                   ,pipeline:[
-                      {$match:{"email": user.email}}
+                      {$match:{"email": user.email.toLowerCase().trim()}}
                   ]
               }}
               ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
@@ -597,8 +597,8 @@ const handler = async (event, context)=>{
                       ,as: "range"
                   }}
                   ,{$match:{_id: f_id
-                          ,$or:[ {owners: user.email}
-                          , {'range.adm': user.email}]
+                          ,$or:[ {owners: user.email.toLowerCase().trim()}
+                          , {'range.adm': user.email.toLowerCase().trim()}]
                           }
                       }
                 ]).toArray();

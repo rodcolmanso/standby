@@ -151,7 +151,7 @@ async function loadPage(eId){
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
     
-    if(eventConfig._id!==""&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email)<0)))){
+    if(eventConfig._id!==""&&(user===null||(!isAdmin&&(eventConfig.owners.indexOf(user.email.toLowerCase().trim())<0)))){
         disableInputsHere(true);
     }
     
@@ -269,7 +269,7 @@ window.onload = async () => {
 
         let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
         
-        if(eventConfig!==null && eventConfig!==undefined && user!==null && (isAdmin||(eventConfig.owners.indexOf(user.email)<0))){
+        if(eventConfig!==null && eventConfig!==undefined && user!==null && (isAdmin||(eventConfig.owners.indexOf(user.email.toLowerCase().trim())<0))){
             disableInputsHere(false);
         }else{
             disableInputsHere(true);

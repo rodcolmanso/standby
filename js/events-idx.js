@@ -246,11 +246,10 @@ function buildEventsTable(events){
             <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_pad,h_388,w_517/d_defaults:tmpyellow.jpg/${events[i]._id}.jpg?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
             </a>
             <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhe</a></li>
                         <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
                         <li ${_hideClock}><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
                         <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
-                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
-                        
                     </ul>
             <div class="card-body" >
               <div class="d-inline-block d-flex justify-content-between">
@@ -262,7 +261,7 @@ function buildEventsTable(events){
                         <li><a class="dropdown-item" href="/event-details.html?inscription=clockduel&event_id=${events[i]._id}" ><i class="bi bi-person-plus-fill"></i> Inscrever-se</a></li>
                         <li ${_hideClock}><a class="dropdown-item" href="/qualify.html?event_id=${events[i]._id}"><i class="bi bi-stopwatch"></i> Contra o Relógio</a></li>
                         <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
-                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhes</a></li>
+                        <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhe</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurações</a></li>
                         <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
                     </ul>

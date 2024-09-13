@@ -56,7 +56,7 @@ function hrefMatches(){
 // });
 function enableShooterFields(){
     
-    if(loggedUser && document.getElementById('subscribe-email').value===loggedUser.email){
+    if(loggedUser && document.getElementById('subscribe-email').value===loggedUser.email.toLowerCase().trim()){
         
         document.getElementById('subscribe-gun').classList.add('nodisable');
         document.getElementById('subscribe-gun').disabled=false;
@@ -196,7 +196,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
         }
 
         let isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
-        if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1)){
+        if(loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email.toLowerCase().trim()))>-1)){
             // document.getElementById('subscribe-email').disabled=false;
             document.getElementById('subscribe-docnum').disabled=false;
             document.getElementById('subscribe-name').disabled=false;
@@ -223,7 +223,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             document.getElementById('subscribe-docnum').value= params.ducnum,false;
             document.getElementById('subscribe-docnum').dispatchEvent(new Event("change"));
         }else if(params.email&&params.email!==''){ //editing inscription
-            document.getElementById('subscribe-email').value= params.email;
+            document.getElementById('subscribe-email').value= params.email.toLowerCase().trim();
             document.getElementById('subscribe-email').dispatchEvent(new Event("change"));
         }else if(params.shooterId&&params.shooterId!==''){ //editing inscription
             document.getElementById('subscribe-shooterId').value= params.shooterId;
@@ -640,7 +640,7 @@ function popupSubscriptionModal(shooterDivisions){
 
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
-    document.getElementById('subscribe-email').placeholder= loggedUser.email;
+    document.getElementById('subscribe-email').placeholder= loggedUser.email.toLowerCase().trim();
     //-> document.getElementById('subscribe-docnum').value= formatCpf(shooterDivisions.docnum,false);
     document.getElementById('subscribe-docnum').value= shooterDivisions.docnum;
 
@@ -649,7 +649,7 @@ function popupSubscriptionModal(shooterDivisions){
     document.getElementById("search-button-name").style.display="none";
     // document.getElementById("search-button-name").style.visibility="hidden";
 
-    if(shooterDivisions.email!==loggedUser.email){
+    if(shooterDivisions.email.toLowerCase().trim()!==loggedUser.email.toLowerCase().trim()){
         console.log('popupSubscriptionModal 2');
         enableShooterFields();
 
@@ -684,7 +684,7 @@ function populateNewShooter(_docnum){
     // shooterDivisions[0].email= _docnum.toString().toLowerCase().trim();
     shooterDivisions[0].email= _docnum.replace(/\D+/g, '').trim()+'@tpmonline.com.br';
     shooterDivisions[0].docnum= _docnum.replace(/\D+/g, '').trim();
-    shooterDivisions[0].name= loggedUser.email===shooterDivisions[0].email?loggedUser.user_metadata.full_name:document.getElementById("subscribe-name").value;//"";
+    shooterDivisions[0].name= loggedUser.email.toLowerCase().trim()===shooterDivisions[0].email.toLowerCase().trim()?loggedUser.user_metadata.full_name:document.getElementById("subscribe-name").value;//"";
     // document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/profile/nonononono";
     document.getElementById("subscribe-name").value=shooterDivisions[0].name;
     document.getElementById("search-button-name").style.display="none";
@@ -757,7 +757,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
     let isAdmin=true;
     
     isAdmin= (loggedUser && loggedUser.app_metadata.roles!==undefined &&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
-    isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email))>-1));
+    isAdmin= (loggedUser&&(isAdmin||(eventConfig.owners.indexOf(loggedUser.email.toLowerCase().trim()))>-1));
 
     gunsOfShooterDivisions=[];
 
@@ -1315,7 +1315,7 @@ document.getElementById("search-button-name").addEventListener('click', function
 document.getElementById("subscribe-name").addEventListener('keyup', function (ev) {
 
     const _isAdmin= (loggedUser && loggedUser.app_metadata&& loggedUser.app_metadata.roles && loggedUser.app_metadata.roles.indexOf("admin")>=0);
-    const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email)>=0);
+    const _isEventAdmin= (loggedUser&&loggedUser.email&&eventConfig.owners&&eventConfig.owners.indexOf(loggedUser.email.toLowerCase().trim())>=0);
 
     if(!_isAdmin && !_isEventAdmin){
         return 0;

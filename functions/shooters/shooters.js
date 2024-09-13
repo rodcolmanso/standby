@@ -32,7 +32,7 @@ const handler = async (event, context)=>{
       if(event.queryStringParameters.logged!==undefined){
 
         if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
-          filter.email= context.clientContext.user.email;
+          filter.email= context.clientContext.user.email.toLowerCase().trim();
         }else{
           filter.email= (Math.random()*1000000).toString();
         }
@@ -41,7 +41,7 @@ const handler = async (event, context)=>{
         console.log(`Got into shooter?logged`);
         
         if(event.queryStringParameters.email!==undefined){
-          filter.email= event.queryStringParameters.email;
+          filter.email= event.queryStringParameters.email.toLowerCase().trim();
         }
 
         if(event.queryStringParameters.name!==undefined){
@@ -87,7 +87,7 @@ const handler = async (event, context)=>{
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     const shooters= await cShooters.aggregate(
       [
-      {$match: {email: user.email}}
+      {$match: {email: user.email.toLowerCase().trim()}}
       // {$match: {email: testemail}}
       ]).toArray();
     
@@ -136,8 +136,8 @@ const handler = async (event, context)=>{
                 ,as: "range"
             }}
             ,{$match:{_id: f_id
-                     ,$or:[ {owners: user.email}
-                     , {'range.adm': user.email}]
+                     ,$or:[ {owners: user.email.toLowerCase().trim()}
+                     , {'range.adm': user.email.toLowerCase().trim()}]
                     }
                 }
           ]).toArray();

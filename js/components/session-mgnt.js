@@ -77,7 +77,7 @@ let dbUser={};
         // setCookie('nf_jwt', "", 0.6);
 
         /////////////
-        if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email){ //sem _id no cookie
+        if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email.toLowerCase().trim()){ //sem _id no cookie
             let responseClone; // 1
            await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
                 method: "GET",
@@ -158,10 +158,16 @@ let dbUser={};
 netlifyIdentity.on('open', function() {
     var iframe = document.getElementById("netlify-identity-widget");
     if (iframe) {
+
+      var iOSfixJS = iframe.contentWindow.document.createElement("script");
+      iOSfixJS.innerText = `for(let i= 0; i< document.getElementsByType('email').length;i++){document.getElementsByName('email')[i].autocomplete="username";console.log('Executou autocomplete '+i);}`;
+    iframe.contentWindow.document.body.appendChild(iOSfixJS);
+    //   for(let i= 0; i< iframe.contentWindow.document.getElementsByName('email').length;i++){
+    //     iframe.getElementsByName('email')[i].autocomplete="username";      
+    //   }
+        
       var iOSfix = iframe.contentWindow.document.createElement("style");
-      iframe.contentWindow.document.getElementsByName('email')[0].autocomplete="username";
-    //   alert('password.autocomplete=' +iframe.contentWindow.document.getElementsByName('password')[0].autocomplete);
-      iOSfix.innerText = "input { font-size: 16px!important }";
+      iOSfix.innerText = `input { font-size: 16px!important }input[type='email']{text-transform: lowercase;}`;
       iframe.contentWindow.document.body.appendChild(iOSfix);
     }
 
@@ -246,7 +252,7 @@ btnSaveDocnum.addEventListener('click', function(e) {
     let _userDb= getSessionDbUser();
     if(!_userDb){
         _userDb={};
-        _userDb.email= netlifyIdentity.currentUser().email;
+        _userDb.email= netlifyIdentity.currentUser().email.toLowerCase().trim();
         _userDb.name= netlifyIdentity.currentUser().user_metadata.full_name;
         _userDb.category=0;
     }
@@ -462,7 +468,7 @@ function setAvatarPic(){
     const _dbUser= getSessionDbUser();
     const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;
     const _date= new Date();
-    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes());   //uuidv4();
+    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar_old.jpg/profile/"+_id+".jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes());   //uuidv4();
     // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
 
     document.getElementById("loggedin").style.display =  (netlifyIdentity.currentUser()===null?'none':'');
@@ -499,7 +505,7 @@ function setCookie(cname, cvalue, exdays) {
     const _eventConfig= getSessionEventConfig();
     const user= netlifyIdentity.currentUser();
     let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email)<0))){
+    if(!_eventConfig||!_eventConfig.owners||!user||(!isAdmin&&(_eventConfig.owners.indexOf(user.email.toLowerCase().trim())<0))){
     // if(!isAdmin||!user||user.user_metadata.admin_events.indexOf(user.email)<0){
         onoff= true;
     }

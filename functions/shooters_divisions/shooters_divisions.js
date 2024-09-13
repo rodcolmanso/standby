@@ -31,7 +31,7 @@ const handler = async (event, context)=>{
           console.log(`p_eventId= ${p_eventId}`);
         }
         if(event.queryStringParameters.email!==undefined&&event.queryStringParameters.email!==null&&event.queryStringParameters.email!==""){
-          p_email= event.queryStringParameters.email.toLowerCase();
+          p_email= event.queryStringParameters.email.toLowerCase().trim();
           console.log(`p_email= ${p_email}`);
         }
         console.log(`p_emailXXXXXXXX= ${p_email}`);
@@ -199,7 +199,7 @@ const handler = async (event, context)=>{
             };
           }
 
-          const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== user.email 
+          const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== user.email.toLowerCase().trim() 
                                ||_r_sd[0].events[0].owners.indexOf(user.email.toLowerCase().trim())>-1
                                ||_r_sd[0].events[0].gange[0].adm.indexOf(user.email.toLowerCase().trim())>-1 );
           if(!_authorized){
@@ -249,7 +249,7 @@ const handler = async (event, context)=>{
             new_record= await cShooters.updateOne({ _id : new ObjectId(shooterId) }
                                                  ,{ $set: { 
                                                    name : shooter.name
-                                                   ,email: shooter.email 
+                                                   ,email: shooter.email.toLowerCase().trim() 
                                                    ,category: shooter.category 
                                                    ,eventId: shooter.eventId 
                                                   }

@@ -1313,10 +1313,10 @@ function goToSubscription(parms){
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
     let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
-    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email)>=0);
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email.toLowerCase().trim())>=0);
 
-    if(!isAdmin && !isEventAdmin && user&&user.email){
-        parms='&email='+user.email;
+    if(!isAdmin && !isEventAdmin && user&&user.email.toLowerCase().trim()){
+        parms='&email='+user.email.toLowerCase().trim();
     }
 
     if(parms!==undefined && parms!==''){
@@ -1369,7 +1369,7 @@ window.onload = async () => {
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
     
-    eventAdmin= (_eventConfig&&_eventConfig.owners&&user&&_eventConfig.owners.indexOf(user.email)>=0);
+    eventAdmin= (_eventConfig&&_eventConfig.owners&&user&&_eventConfig.owners.indexOf(user.email.toLowerCase().trim())>=0);
     isAdmin= eventAdmin||(user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
     
 
