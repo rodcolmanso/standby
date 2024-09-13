@@ -160,7 +160,7 @@ netlifyIdentity.on('open', function() {
     if (iframe) {
 
       var iOSfixJS = iframe.contentWindow.document.createElement("script");
-      iOSfixJS.innerText = `for(let i= 0; i< document.getElementsByType('email').length;i++){document.getElementsByName('email')[i].autocomplete="username";console.log('Executou autocomplete '+i);}`;
+      iOSfixJS.innerText = `for(let i= 0; i< document.getElementsByName('email').length;i++){document.getElementsByName('email')[i].autocomplete="username";console.log('Executou autocomplete '+i);}`;
     iframe.contentWindow.document.body.appendChild(iOSfixJS);
     //   for(let i= 0; i< iframe.contentWindow.document.getElementsByName('email').length;i++){
     //     iframe.getElementsByName('email')[i].autocomplete="username";      
