@@ -263,7 +263,7 @@ function buildEventsTable(events){
                         <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
                         <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhe</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurações</a></li>
-                        <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
+                        <!--<li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>-->
                     </ul>
                 </div>
               </div>
