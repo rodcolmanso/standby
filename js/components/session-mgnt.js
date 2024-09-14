@@ -468,8 +468,13 @@ function setAvatarPic(){
     const _dbUser= getSessionDbUser();
     const _id= _dbUser===null?(Math.random()*1000000).toString():_dbUser._id;
     const _date= new Date();
-    document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar_old.jpg/profile/"+_id+".jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes());   //uuidv4();
-    // document.getElementById("loginout").innerHTML= '<i class="bi bi-box-arrow-in-left"></i> ';
+    
+    if(!netlifyIdentity.currentUser() || netlifyIdentity.currentUser()===null){
+        document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar_old.jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes());   //uuidv4();
+    }else{
+        document.getElementById("header-avatar-pic").src= "https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/"+_id+".jpg?"+_date.getFullYear()+_date.getMonth()+_date.getHours()+(''+_date.getMinutes());   //uuidv4();
+    }
+    
 
     document.getElementById("loggedin").style.display =  (netlifyIdentity.currentUser()===null?'none':'');
     document.getElementById("loginout").style.display =  (netlifyIdentity.currentUser()===null?'':'none');
