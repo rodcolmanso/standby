@@ -365,7 +365,7 @@ netlifyIdentity.on('logout', () => {
 });
 
 function clearSessionDbUser(){
-    setCookie(SESSION_DBUSER, null, 0.006);
+    setCookie(SESSION_DBUSER, "", 0.006);
     setAvatarPic();
 }
 

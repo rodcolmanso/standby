@@ -138,15 +138,28 @@ function search() {
 
     if(queryDate.length>0){
         // sQuery= sQuery+'&date_from='+queryDate[0].substring(6,10)+'-'+queryDate[0].substring(3,5)+'-'+queryDate[0].substring(0,2);
-        const d=new Date(queryDate[0]);
+        let d=new Date(queryDate[0]);
+
+        console.log('d from= ',d);
+        if(d===null || d===undefined){
+            d=new Date(); 
+        }
+
         sQuery= sQuery+'&date_from='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     }
     if(queryDate.length>1){
-        const d=new Date(queryDate[1]);
+        let d=new Date(queryDate[1]);
+        
+        console.log('d to= ',d);
+        if(d===null || d===undefined){
+            d=new Date(); 
+        }
+
         d.setDate(d.getDate() +1);
         sQuery= sQuery+'&date_to='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     }
     applySpinners(true);
+    setCookie('nf_jwt', "", 0.6);
     fetch("/.netlify/functions/events"+sQuery,
         {method: "GET"
         ,headers: _headers}
