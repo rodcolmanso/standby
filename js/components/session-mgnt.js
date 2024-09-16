@@ -74,12 +74,13 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-        // setCookie('nf_jwt', "", 0.6);
+        setCookie('nf_jwt', "", 0.6);
 
         /////////////
         if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email.toLowerCase().trim()){ //sem _id no cookie
             let responseClone; // 1
-           await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
+        //    await fetch('/.netlify/functions/shooters_v2?uuid='+uuidv4()+'&logged=1', {
+           await fetch('/.netlify/functions/shooters_v2?logged=1', {
                 method: "GET",
                 headers: {"Content-Type": "application/json"
                         ,Accept: 'application/json'
@@ -160,11 +161,8 @@ netlifyIdentity.on('open', function() {
     if (iframe) {
 
       var iOSfixJS = iframe.contentWindow.document.createElement("script");
-      iOSfixJS.innerText = `for(let i= 0; i< document.getElementsByName('email').length;i++){document.getElementsByName('email')[i].autocomplete="username";console.log('Executou autocomplete '+i);}`;
-    iframe.contentWindow.document.body.appendChild(iOSfixJS);
-    //   for(let i= 0; i< iframe.contentWindow.document.getElementsByName('email').length;i++){
-    //     iframe.getElementsByName('email')[i].autocomplete="username";      
-    //   }
+      iOSfixJS.innerText = `for(let i= 0; i< document.getElementsByName('email').length;i++){document.getElementsByName('email')[i].autocomplete="username";}`;
+      iframe.contentWindow.document.body.appendChild(iOSfixJS);
         
       var iOSfix = iframe.contentWindow.document.createElement("style");
       iOSfix.innerText = `input { font-size: 16px!important }input[type='email']{text-transform: lowercase;}`;
@@ -263,6 +261,7 @@ btnSaveDocnum.addEventListener('click', function(e) {
     document.getElementById('btnSaveDocnum').disabled=true
     document.getElementById('btnSaveDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
     document.getElementById('btnCloseDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
+    setCookie('nf_jwt', "", 0.6);
     fetch('/.netlify/functions/shooters_v2?replace=1', {
         method: "PATCH",
         body: JSON.stringify(_userDb),

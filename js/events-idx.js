@@ -49,7 +49,21 @@ const promiseOfRanges = (_rangeId, _identityUser)=>{
 
 window.onload = async () => {
 
-    user= netlifyIdentity.currentUser();
+    try{
+        user= netlifyIdentity.currentUser();
+    }catch(error){
+        console.log('Error getting netlifyIdentity',JSON.stringify(error,null,2));
+        user= null;
+
+    }
+
+    if(user!==null){ //usuário logado
+        let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
+        if(user.token.expires_at< exipre_compare){
+             await netlifyIdentity.refresh().then((jwt)=>console.log(`Token refreshed ${jwt}`));
+        }
+    }
+    
     if(user===null || user===undefined || user.token.access_token===null || user.token.access_token===undefined){
         user= {token:{access_token:""},email:'xxxxxxx'};
 
@@ -186,7 +200,7 @@ function buildEventsTable(events){
     const user = netlifyIdentity.currentUser();
 
     let readOnly=`class="dropdown-item disabled" aria-disabled="true"`;
-    if(user){
+    if(user && isAdmin){
         readOnly=`class="dropdown-item"`;
     }
     
@@ -263,7 +277,7 @@ function buildEventsTable(events){
                         <li ${_hideDuel}><a class="dropdown-item" href="/matches.html?event_id=${events[i]._id}"><i class="bi bi-play-circle"></i> Duelos</a></li>
                         <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhe</a></li>
                         <li><a class="dropdown-item" href="./event-config.html?event_id=${events[i]._id}"><i class="bi bi-gear-fill"></i> Configurações</a></li>
-                        <!--<li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>-->
+                        <li><a ${readOnly} href="javascript:exlcuir('${events[i]._id}','${events[i].name}')"><i class="bi bi-trash"></i> Excluir</a></li>
                     </ul>
                 </div>
               </div>
