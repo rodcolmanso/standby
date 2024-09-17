@@ -110,7 +110,7 @@ class Header extends HTMLElement {
                   <a class="nav-link py-2 px-0 px-lg-2" id="nav-matches" onclick="hrefMatches();" rel="noopener">Duelos</a>
                 </li>
                 <li class="nav-item col-6 col-lg-auto">
-                  <a class="nav-link py-2 px-0 px-lg-2" id="nav-ranking" href="/ranking.html" rel="noopener">Ranking</a>
+                  <a class="nav-link py-2 px-0 px-lg-2" id="nav-ranking" href="/ranking.html" rel="noopener">Tempos</a>
                 </li>
               </ul>
 
