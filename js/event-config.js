@@ -320,7 +320,7 @@ function updateEventConfig(){
     eventConfig.vl_second_try= document.getElementById('vl_second_try').value;
     eventConfig.vl_other_tries= document.getElementById('vl_other_tries').value;
 
-    if(eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
+    if(isNaN(eventConfig.date) || eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
      ||eventConfig.dateDuel===''||eventConfig.dateDuel.toString()==='Invalid Date'){
         alert('Informe datas válidas para o evento!')
         return 0;

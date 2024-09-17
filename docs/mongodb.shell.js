@@ -1474,14 +1474,37 @@ db.duel_results.countDocuments({divisionName:"Pistola", v_shooterId:"661be218427
 // ==================
 
 db.guns.insertOne({
-_id: '66cfb8ee0badeb112d52d3c1'
-,type: "Outros"
-,factory: "Outros"
-,model: "Outros"
+// _id: '66cfb8ee0badeb112d52d3c1'
+type: "Revolver"
+,factory: "Smith & Wesson"
+,model: "67"
 ,caliber: ".38 SPL"
 ,operation: "Repetição"
 });
 
+db.guns.insertOne({
+    type: "Revolver"
+    ,factory: "Rossi"
+    ,model: "845"
+    ,caliber: ".38 SPL"
+    ,operation: "Repetição"
+    });
+
+db.guns.insertOne({
+    type: "Pistola"
+    ,factory: "Grand Power"
+    ,model: "Q1"
+    ,caliber: "9mm"
+    ,operation: "Semi-auto"
+    });
+
+db.guns.insertOne({
+    type: "Pistola"
+    ,factory: "Taurus"
+    ,model: "PT 940"
+    ,caliber: ".40S&W"
+    ,operation: "Semi-auto"
+    });
 
 
 //===================
@@ -1888,3 +1911,115 @@ db.shooters.aggregate([
     db.time_records.createIndex( { eventId : 1,divisionId:1,shooterId:1 ,shooterDivisionId:1 } );
 
     
+    db.events.find({  "$eq": [{ "$month": "$date" }, 8]  });
+
+    db.events.find({ "$expr": { "$eq": [{ "$month": "$date" }, 8] , "$eq": [{ "$year": "$date" }, 2024] } })
+
+    db.time_records.aggregate([
+        {$addFields:{_shooterId:{$toObjectId:"$shooterId"}
+                    ,_divisionId:{$toObjectId:"$divisionId"}
+                    ,_eventId:{$toObjectId:"$eventId"}
+                    ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
+        ,{$lookup:{
+            from: "shooters"
+            ,localField: "_shooterId"
+            ,foreignField: "_id"
+            ,as: "shooter"
+            ,pipeline:[
+                {$addFields:{shooterName:"$name"}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "divisions"
+            ,localField: "_divisionId"
+            ,foreignField: "_id"
+            ,as: "division"
+            ,pipeline:[
+                {$addFields:{divisionName:"$name"}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "events"
+            ,localField: "_eventId"
+            ,foreignField: "_id"
+            ,as: "event"
+            ,pipeline:[
+                {$addFields:{eventName:"$name",clockDate:"$date"
+                             ,evMonth:{ "$month": "$date" }
+                             ,evYear:{ "$year": "$date" }
+                             ,_rangeId:{ $toObjectId: "$rangeId" }
+                }}
+                ,{$lookup:{
+                    from: "ranges"
+                    ,localField: "_rangeId"
+                    ,foreignField: "_id"
+                    ,as: "range"
+                    ,pipeline:[
+                        {$addFields:{rangeName: "$name", rangeAdms:"$adm"}}
+                    ]
+                }}
+                ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$range", 0 ] }, "$$ROOT" ] } } }
+                ,{$project: {range:0, _rangeId:0, _id:0, address:0, active:0}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "shooters_divisions"
+            ,localField: "_shooterDivisionId"
+            ,foreignField: "_id"
+            ,as: "shooter_division"
+            ,pipeline:[
+                {$addFields:{_gunId:{ $toObjectId: "$gunId" }}}
+                ,{$lookup:{
+                    from: "guns"
+                    ,localField: "_gunId"
+                    ,foreignField: "_id"
+                    ,as: "gun_det"
+                    ,pipeline:[
+                        {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}
+                    ]
+                }}
+                ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$gun_det", 0 ] }, "$$ROOT" ] } } }
+                ,{$project: {gun_det:0, _gunId:0}}
+            ]
+        }}
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
+        ,{$addFields:{fixDivisionName:{ $replaceAll: { input: "$divisionName", find: "Armas curtas", replacement: "$type" } }}}
+        ,{$group: {
+            _id: {divisionName: "$fixDivisionName"
+                 ,shooterId:"$shooterId"
+                 ,eventId: "$eventId"
+                 ,divisionId: "$divisionId"
+                 ,shooterName:"$shooterName"
+                 ,eventName: "$eventName"
+                //  ,local: "$local"
+                 ,clockDate: "$clockDate"
+                 ,gun: "$gunFullName"
+                 ,type: "$type"
+                 ,gunId: "$gunId"
+                 ,model: "$model"
+                 ,factory: "$factory"
+                 ,caliber: "$caliber"
+                 ,optics: "$optics"
+                 ,evMonth: "$evMonth"
+                 ,evYear: "$evYear"
+                 ,local:"$rangeName"
+                 ,rangeAdms:"$rangeAdms"}
+                 ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
+            }
+        }
+        ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
+        ,{$project: {_id:0} }
+        ,{$match: _filter}
+      ]).sort({ divisionName:1, bestTime:1, shooterName:1, gun:1, optics:1}).toArray();
+
+
+
+      
+
+      {$match: {rangeAdms:'gcfragnator@gmail.com'
+        ,evMonth: 8
+        ,evYear: 2024
+}}

@@ -140,9 +140,10 @@ function search() {
         // sQuery= sQuery+'&date_from='+queryDate[0].substring(6,10)+'-'+queryDate[0].substring(3,5)+'-'+queryDate[0].substring(0,2);
         let d=new Date(queryDate[0]);
 
-        console.log('d from= ',d);
-        if(d===null || d===undefined){
+        console.log('d from:',d);
+        if(isNaN(d) || d===null || d===undefined|| d==='Invalid Date'){
             d=new Date(); 
+            console.log('d_from changed to:',d);
         }
 
         sQuery= sQuery+'&date_from='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
@@ -150,16 +151,17 @@ function search() {
     if(queryDate.length>1){
         let d=new Date(queryDate[1]);
         
-        console.log('d to= ',d);
-        if(d===null || d===undefined){
-            d=new Date(); 
+        console.log('d to=',d);
+        if(isNaN(d) || d===null || d===undefined|| d==='Invalid Date'){
+            d=new Date();
+            console.log('d_to changed to:',d);
         }
 
         d.setDate(d.getDate() +1);
         sQuery= sQuery+'&date_to='+d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
     }
     applySpinners(true);
-    setCookie('nf_jwt', "", 0.6);
+    // setCookie('nf_jwt', "", 0.6);
     fetch("/.netlify/functions/events"+sQuery,
         {method: "GET"
         ,headers: _headers}

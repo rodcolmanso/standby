@@ -74,7 +74,7 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-        setCookie('nf_jwt', "", 0.6);
+//        setCookie('nf_jwt', "", 0.6);
 
         /////////////
         if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email.toLowerCase().trim()){ //sem _id no cookie
@@ -261,7 +261,7 @@ btnSaveDocnum.addEventListener('click', function(e) {
     document.getElementById('btnSaveDocnum').disabled=true
     document.getElementById('btnSaveDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
     document.getElementById('btnCloseDocnum').innerHTML= `<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>`;
-    setCookie('nf_jwt', "", 0.6);
+//    setCookie('nf_jwt', "", 0.6);
     fetch('/.netlify/functions/shooters_v2?replace=1', {
         method: "PATCH",
         body: JSON.stringify(_userDb),
@@ -400,6 +400,12 @@ function getSessionDbUser(){
     }
 }
 
+const zeroPad = (num, places) => String(num).padStart(places, '0');
+
+function naiveRound(num, decimalPlaces = 0) {
+    var p = Math.pow(10, decimalPlaces);
+    return Math.round(num * p) / p;
+}
 
 function base64encode(str) {
     let encode = encodeURIComponent(str).replace(/%([a-f0-9]{2})/gi, (m, $1) => String.fromCharCode(parseInt($1, 16)))
@@ -634,9 +640,9 @@ function applySpinners(onoff){
     if(_spinner){
         _spinner.visibility=onoff;
         if(onoff)
-            _spinner.style.visibility = 'visible'//'visible'; //'hidden'
+            _spinner.style.display = ''//'visible'; //'hidden'
         else
-            _spinner.style.visibility = 'hidden'//'visible'; //'hidden'           
+            _spinner.style.display = 'none'//'visible'; //'hidden'           
     }
 
     if(onoff && document.getElementById("btnInscrever")){
@@ -667,9 +673,9 @@ function applySpinners(onoff){
         [].forEach.call(spans,span=>{
             if(span.getAttribute('class')&&span.getAttribute('class').includes("spinner")){
                 if(onoff)
-                    span.style.visibility = 'visible'//'visible'; //'hidden'
+                    span.style.display = ''//'visible'; //'hidden'
                 else
-                    span.style.visibility = 'hidden'//'visible'; //'hidden'
+                    span.style.display = 'none'//'visible'; //'hidden'
                 }
             }
         );

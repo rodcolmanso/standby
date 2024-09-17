@@ -274,11 +274,6 @@ function transformRegistrer(players){
     return rP;
 }
 
-function naiveRound(num, decimalPlaces = 0) {
-    var p = Math.pow(10, decimalPlaces);
-    return Math.round(num * p) / p;
-}
-
 // let _tbAdvance;
 // let _tbOverall;
 // let _Ladies;
@@ -952,8 +947,6 @@ function addTimeRecord(){
     //document.getElementById('timeBestScore').innerText= getBestScoreAndTries(idShooter, idDivision)[0]>=999?'NA':getBestScoreAndTries(idShooter, idDivision)[0];
                 
 }
-
-const zeroPad = (num, places) => String(num).padStart(places, '0');
 
 function buildTimeTable(idShooter,idDivision,idShooterDivision){
     

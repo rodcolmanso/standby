@@ -1,3 +1,4 @@
+const { cat } = require("@cloudinary/url-gen/qualifiers/focusOn");
 const {MongoClient} = require ("mongodb");
 require('dotenv').config();
 
@@ -30,6 +31,51 @@ const handler = async (event, context)=>{
           //   _filter.shooterId= p_shooterId;
           // }
 
+          const p_year= event.queryStringParameters.year?event.queryStringParameters.year.toString():null;
+          if(p_year!==null){
+            let _year;
+
+            try{
+                _year= Number (p_year);
+            }catch(e){
+              console.error('year: '+e);
+              return  {
+                statusCode: 400,
+                body: JSON.stringify('Year: '+e)
+              };
+            }
+            
+            _filter.evYear= _year;
+            console.log('filter year:',JSON.stringify(_filter,null,2));
+
+            const p_month= event.queryStringParameters.month?event.queryStringParameters.month.toString():null;
+            if(p_month!==null){
+              
+              let _month;
+
+              try{
+                  _month= Number (p_month);
+              
+                if(_month<1 || _month>12)
+                  throw new Error('Invalid month. out of range. _month='+_month+".");
+              }catch(e){
+                console.error('Month '+e);
+                return  {
+                  statusCode: 400,
+                  body: JSON.stringify('Month '+e)
+                };
+              }
+              
+              _filter.evMonth= _month;
+              console.log('filter month:',JSON.stringify(_filter,null,2));
+            }
+          }
+
+          const p_rangeAdm= event.queryStringParameters.rangeAdm?event.queryStringParameters.rangeAdm.toString():null;
+          if(p_rangeAdm!==null){
+            _filter.rangeAdms= p_rangeAdm;
+          }
+
           const p_divisionName= event.queryStringParameters.divisionName?event.queryStringParameters.divisionName.toString():null;
           if(p_divisionName!==null){
             _filter.divisionName= p_divisionName;
@@ -53,90 +99,105 @@ const handler = async (event, context)=>{
           }
           console.log('_filter='+JSON.stringify(_filter,null,2));
           let rank= await cTime_Records.aggregate([
-            {$addFields:{_shooterId:{$toObjectId:"$shooterId"}
-                        ,_divisionId:{$toObjectId:"$divisionId"}
-                        ,_eventId:{$toObjectId:"$eventId"}
-                        ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
-            ,{$lookup:{
-                from: "shooters"
-                ,localField: "_shooterId"
-                ,foreignField: "_id"
-                ,as: "shooter"
-                ,pipeline:[
-                    {$addFields:{shooterName:"$name"}}
-                ]
-            }}
-            ,{$lookup:{
-                from: "divisions"
-                ,localField: "_divisionId"
-                ,foreignField: "_id"
-                ,as: "division"
-                ,pipeline:[
-                    {$addFields:{divisionName:"$name"}}
-                ]
-            }}
-            ,{$lookup:{
-                from: "events"
-                ,localField: "_eventId"
-                ,foreignField: "_id"
-                ,as: "event"
-                ,pipeline:[
-                    {$addFields:{eventName:"$name",clockDate:"$date"}}
-                ]
-            }}
-            ,{$lookup:{
-                from: "shooters_divisions"
-                ,localField: "_shooterDivisionId"
-                ,foreignField: "_id"
-                ,as: "shooter_division"
-                ,pipeline:[
-                    {$addFields:{_gunId:{ $toObjectId: "$gunId" }}}
-                    ,{$lookup:{
-                        from: "guns"
-                        ,localField: "_gunId"
-                        ,foreignField: "_id"
-                        ,as: "gun_det"
-                        ,pipeline:[
-                            {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}
-                            // ,{$addFields:{gunFullName: { $replaceAll: { input: "$gunFullName", find: "Taurus", replacement: "" } }}}
-                            // ,{$addFields:{gunFullName: { $replaceAll: { input: "$gunFullName", find: "DFA", replacement: "" } }}}
-                            // ,{$addFields:{gunFullName: {$trim: {input:"$gunFullName"}}}}
-                            
-                        ]
-                    }}
-                    ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$gun_det", 0 ] }, "$$ROOT" ] } } }
-                    ,{$project: {gun_det:0, _gunId:0}}
-                    // ,{ $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
-                ]
-            }}
-            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
-            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
-            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
-            ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
-            ,{$addFields:{fixDivisionName:{ $replaceAll: { input: "$divisionName", find: "Armas curtas", replacement: "$type" } }}}
-            ,{$group: {
-                _id: {divisionName: "$fixDivisionName"
-                     ,shooterId:"$shooterId"
-                     ,eventId: "$eventId"
-                     ,divisionId: "$divisionId"
-                     ,shooterName:"$shooterName"
-                     ,eventName: "$eventName"
-                     ,local: "$local"
-                     ,clockDate: "$clockDate"
-                     ,gun: "$gunFullName"
-                     ,type: "$type"
-                     ,gunId: "$gunId"
-                     ,model: "$model"
-                     ,factory: "$factory"
-                     ,caliber: "$caliber"
-                     ,optics: "$optics"}
-                     ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
-                }
+        {$addFields:{_shooterId:{$toObjectId:"$shooterId"}
+                    ,_divisionId:{$toObjectId:"$divisionId"}
+                    ,_eventId:{$toObjectId:"$eventId"}
+                    ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
+        ,{$lookup:{
+            from: "shooters"
+            ,localField: "_shooterId"
+            ,foreignField: "_id"
+            ,as: "shooter"
+            ,pipeline:[
+                {$addFields:{shooterName:"$name"}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "divisions"
+            ,localField: "_divisionId"
+            ,foreignField: "_id"
+            ,as: "division"
+            ,pipeline:[
+                {$addFields:{divisionName:"$name"}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "events"
+            ,localField: "_eventId"
+            ,foreignField: "_id"
+            ,as: "event"
+            ,pipeline:[
+                {$addFields:{eventName:"$name",clockDate:"$date"
+                             ,evMonth:{ "$month": "$date" }
+                             ,evYear:{ "$year": "$date" }
+                             ,_rangeId:{ $toObjectId: "$rangeId" }
+                }}
+                ,{$lookup:{
+                    from: "ranges"
+                    ,localField: "_rangeId"
+                    ,foreignField: "_id"
+                    ,as: "range"
+                    ,pipeline:[
+                        {$addFields:{rangeName: "$name", rangeAdms:"$adm"}}
+                    ]
+                }}
+                ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$range", 0 ] }, "$$ROOT" ] } } }
+                ,{$project: {range:0, _rangeId:0, _id:0, address:0, active:0}}
+            ]
+        }}
+        ,{$lookup:{
+            from: "shooters_divisions"
+            ,localField: "_shooterDivisionId"
+            ,foreignField: "_id"
+            ,as: "shooter_division"
+            ,pipeline:[
+                {$addFields:{_gunId:{ $toObjectId: "$gunId" }}}
+                ,{$lookup:{
+                    from: "guns"
+                    ,localField: "_gunId"
+                    ,foreignField: "_id"
+                    ,as: "gun_det"
+                    ,pipeline:[
+                        {$addFields:{gunFullName: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] }}}
+                    ]
+                }}
+                ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$gun_det", 0 ] }, "$$ROOT" ] } } }
+                ,{$project: {gun_det:0, _gunId:0}}
+            ]
+        }}
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+        ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter_division", 0 ] }, "$$ROOT" ] } } }
+        ,{$addFields:{fixDivisionName:{ $replaceAll: { input: "$divisionName", find: "Armas curtas", replacement: "$type" } }}}
+        ,{$group: {
+            _id: {divisionName: "$fixDivisionName"
+                 ,shooterId:"$shooterId"
+                 ,eventId: "$eventId"
+                 ,divisionId: "$divisionId"
+                 ,shooterName:"$shooterName"
+                 ,shooterCategory:"$category"
+                 ,eventName: "$eventName"
+                //  ,local: "$local"
+                 ,clockDate: "$clockDate"
+                 ,gun: "$gunFullName"
+                 ,type: "$type"
+                 ,gunId: "$gunId"
+                 ,model: "$model"
+                 ,factory: "$factory"
+                 ,caliber: "$caliber"
+                 ,optics: "$optics"
+                 ,evMonth: "$evMonth"
+                 ,evYear: "$evYear"
+                 ,local:"$rangeName"
+                 ,rangeAdms:"$rangeAdms"}
+                 ,bestTime: {$min:{$sum:[ {$multiply:[10000,"$penalties"]},"$sTime"]}}
             }
-            ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
-            ,{$project: {_id:0} }
-            ,{$match: _filter}
-          ]).sort({ divisionName:1, bestTime:1, shooterName:1, gun:1, optics:1}).toArray();
+        }
+        ,{$replaceRoot: { newRoot: {$mergeObjects:["$_id", "$$ROOT"] } } }
+        ,{$project: {_id:0} }
+        ,{$match: _filter}
+      ]).sort({ divisionName:1, bestTime:1, shooterName:1, gun:1, optics:1}).toArray();
 
           let _ret=[];
 
