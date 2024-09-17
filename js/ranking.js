@@ -49,7 +49,8 @@ const promiseOfRanking = () => {
 
 async function submitForm(){
     applySpinners(true);
-    buildTables(await promiseOfRanking());
+    ranking= await promiseOfRanking(); 
+    buildTables();
     applySpinners(false);
     return 0;
 }
@@ -66,8 +67,11 @@ window.onload = async () => {
     await loadPage();
     document.getElementById('nav-ranking').classList.add('active');
 
+    document.getElementById('nav-matches').style.display='none';
+    document.getElementById('nav-qualify').style.display='none';
+
     ranking= await promiseOfRanking();
-    buildTables(ranking);
+    buildTables();
     
     let isAdmin= (loggedUser&&loggedUser.app_metadata.roles!==undefined&&loggedUser.app_metadata.roles!==""&&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
 
@@ -84,7 +88,53 @@ let _tbP;
 let _tbR;
 let _tbFL;
 
-function buildTables(ranking){
+function filterRank(f){
+ 
+    if(f.checked){
+        if(f.id==='btn-check-lady'){
+            document.getElementById('btn-check-seniors').checked= false;
+        }else if(f.id==='btn-check-seniors'){
+            document.getElementById('btn-check-lady').checked = false;
+        }else if(f.id==='btnCheckNotF'){
+            document.getElementById('btnCheckOnlyF').checked = false;
+        }else if(f.id==='btnCheckOnlyF'){
+            document.getElementById('btnCheckNotF').checked = false;
+        }
+    }
+
+    buildTables();
+}
+
+let ranking;
+
+function buildTables(){
+
+    let filterCat;
+    let filterF12;
+    let filterOptic;
+
+    if(document.getElementById('btn-check-lady').checked){
+        filterCat= cLadies;
+    }else if(document.getElementById('btn-check-seniors').checked){
+        filterCat= cSeniors;
+    }else{
+        filterCat= null;
+    }
+
+    if(document.getElementById('btnCheckNotF').checked){
+        filterF12= false;
+    }else if(document.getElementById('btnCheckOnlyF').checked){
+        filterF12= true;
+    }else{
+        filterF12= null;
+    }
+
+    if(document.getElementById('btnCheckNoRD').checked){
+        filterOptic= false;
+    }else{
+        filterOptic= null;
+    }
+    
 
     ranking= ranking.sort((a, b) => {
         if (a.bestTime < b.bestTime) {
@@ -114,6 +164,23 @@ function buildTables(ranking){
 
     for(let i=0; i< ranking.length;i++){
 
+        if(filterCat && filterCat!== undefined && filterCat!==null && ranking[i].shooterCategory!== filterCat){
+            continue;
+        }
+
+        if(filterF12!== undefined && filterF12!==null){
+            
+            if( filterF12 && (ranking[i].caliber.toLowerCase().trim()!== '12ga' || ranking[i].operation.toLowerCase().trim()!=="semi-auto" ))
+                continue;
+
+            if( !filterF12 && ranking[i].caliber.toLowerCase().trim()=== '12ga' && ranking[i].operation.toLowerCase().trim()==="semi-auto" )
+                continue;
+        }
+
+        if(filterOptic===false && ranking[i].optics ){
+            continue;   
+        }
+
         if(ranking[i].divisionName==='Pistola'){
             posPistol++;
             _pos= posPistol;
@@ -133,6 +200,13 @@ function buildTables(ranking){
 
         let penal= "999";
         let time=  "4";
+        let _badgeCat='<span class="fst-italic text-muted text-small badge bg-info-subtle rounded-pill text-start d-flex " style="max-height: 15px; padding: 0px !important;">overall</span>';
+        if(ranking[i].shooterCategory===cLadies){
+            _badgeCat='<span class="fst-italic text-muted text-small badge bg-danger-subtle rounded-pill text-start d-flex" style="max-height: 15px; padding: 0px !important;">dama</span>';
+        }else if(ranking[i].shooterCategory===cSeniors){
+            _badgeCat='<span class=" fst-italic text-muted text-small badge bg-success-subtle rounded-pill text-start d-flex" style="max-height: 15px; padding: 0px !important;">senior</span>';
+
+        }
 
         if(Number(ranking[i].bestTime)>999.99){
             // penal= ranking[i].bestTime.toString().substring(0,1);
@@ -159,18 +233,25 @@ function buildTables(ranking){
 
         row= `<tr>
                 <td class="text-end text-small w-05">${_posS}º</td>
-                <td class="text-start">
+                <td class="text-start w-05">
                     <div class="row  text-start">
-                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" style="max-height: 30px !important;" alt="...">
-                            ${ranking[i].shooterName}
+                            <div class="d-none d-sm-block col-md-1">
+                                <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" style="max-height: 30px !important;" alt="...">
+                            </div>
+                            <div class=" text-start col-md-6 d-flex">${ranking[i].shooterName}
+                            </div>
+                            <div class="text-start col-md-2 d-none d-sm-block">
+                                ${_badgeCat}
+                            </div>
                     </div>
                 </td>
                 <td class="text-start" ><span class="badge ${_gbColor}">${time}
                 <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
                 </span></td>
-                <td class="text-start">${ranking[i].factory} ${ranking[i].model} <span class="text-small">(${ranking[i].caliber})</span>  <span class="text-danger">${badg_rd}</span></td>
+                <td class="text-start">
+                    ${ranking[i].factory} ${ranking[i].model} <span class="text-small">(${ranking[i].caliber})</span>  <span class="text-danger">${badg_rd}</span></td>
                 <td class="text-center text-small"><a href="/qualify.html?eventId=${ranking[i].eventId}&selected_division=${ranking[i].divisionId}"> ${(new Date(ranking[i].clockDate)).toLocaleDateString().substring(0,5)}</a></td>
-                <td class="text-start text-small">${ranking[i].local}</td>              
+                <td class="text-start text-small w-15">${ranking[i].local}</td>              
             </tr>`;
 
         if(ranking[i].divisionName==='Pistola'){
@@ -232,6 +313,12 @@ function changeDivision(division){
         _tbP.responsive.rebuild();
         _tbP.responsive.recalc();
 
+        document.getElementById('btnCheckNotF').style.display= 'none';
+        document.getElementById('btnCheckOnlyF').style.display= 'none';
+        document.getElementById('btnCheckNotFL').style.display= 'none';
+        document.getElementById('btnCheckOnlyFL').style.display= 'none';
+        document.getElementById('divF12').style.display= 'none';
+
     }else if(division==='R'){
         document.getElementById('pistolTabTable').style.display= 'none';
         document.getElementById('revolverTabTable').style.display= '';
@@ -241,14 +328,26 @@ function changeDivision(division){
         _tbR.responsive.rebuild();
         _tbR.responsive.recalc();
 
+        document.getElementById('btnCheckNotF').style.display= 'none';
+        document.getElementById('btnCheckOnlyF').style.display= 'none';
+        document.getElementById('btnCheckNotFL').style.display= 'none';
+        document.getElementById('btnCheckOnlyFL').style.display= 'none';
+        document.getElementById('divF12').style.display= 'none';
+
     }else{
         document.getElementById('pistolTabTable').style.display= 'none';
         document.getElementById('revolverTabTable').style.display= 'none';
         document.getElementById('forcaLivreTabTable').style.display= '';
-
+        
         document.getElementById('nav-fl').classList.add("active");
         _tbFL.responsive.rebuild();
         _tbFL.responsive.recalc();
+
+        document.getElementById('btnCheckNotF').style.display= '';
+        document.getElementById('btnCheckOnlyF').style.display= '';
+        document.getElementById('btnCheckNotFL').style.display= '';
+        document.getElementById('btnCheckOnlyFL').style.display= '';
+        document.getElementById('divF12').style.display= '';
 
     }
 

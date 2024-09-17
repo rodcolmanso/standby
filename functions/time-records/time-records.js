@@ -186,6 +186,7 @@ const handler = async (event, context)=>{
                  ,model: "$model"
                  ,factory: "$factory"
                  ,caliber: "$caliber"
+                 ,operation: "$operation"
                  ,optics: "$optics"
                  ,evMonth: "$evMonth"
                  ,evYear: "$evYear"
