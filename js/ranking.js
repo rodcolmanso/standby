@@ -159,7 +159,12 @@ function buildTables(ranking){
 
         row= `<tr>
                 <td class="text-end text-small w-05">${_posS}º</td>
-                <td class="text-start">${ranking[i].shooterName}</td>
+                <td class="text-start">
+                    <div class="row  text-start">
+                            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" style="max-height: 30px !important;" alt="...">
+                            ${ranking[i].shooterName}
+                    </div>
+                </td>
                 <td class="text-start" ><span class="badge ${_gbColor}">${time}
                 <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
                 </span></td>
