@@ -200,11 +200,11 @@ function buildTables(){
 
         let penal= "999";
         let time=  "4";
-        let _badgeCat='<span class="fst-italic text-muted text-small badge bg-info-subtle rounded-pill text-start d-flex " style="max-height: 15px; padding: 0px !important;">overall</span>';
+        let _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-info-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">overall</span>';
         if(ranking[i].shooterCategory===cLadies){
-            _badgeCat='<span class="fst-italic text-muted text-small badge bg-danger-subtle rounded-pill text-start d-flex" style="max-height: 15px; padding: 0px !important;">dama</span>';
+            _badgeCat='<span class="d-none d-sm-block fst-italic text-muted text-small badge bg-danger-subtle rounded-pill text-start" style=" padding-top:0px !important; width:45px !important; max-height:10px !important;">dama</span>';
         }else if(ranking[i].shooterCategory===cSeniors){
-            _badgeCat='<span class=" fst-italic text-muted text-small badge bg-success-subtle rounded-pill text-start d-flex" style="max-height: 15px; padding: 0px !important;">senior</span>';
+            _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-success-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">senior</span>';
 
         }
 
@@ -232,26 +232,38 @@ function buildTables(){
         
 
         row= `<tr>
-                <td class="text-end text-small w-05">${_posS}º</td>
-                <td class="text-start w-05">
-                    <div class="row  text-start">
-                            <div class="d-none d-sm-block col-md-1">
-                                <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle" style="max-height: 30px !important;" alt="...">
-                            </div>
-                            <div class=" text-start col-md-6 d-flex">${ranking[i].shooterName}
-                            </div>
-                            <div class="text-start col-md-2 d-none d-sm-block">
-                                ${_badgeCat}
-                            </div>
+                <td class="text-end text-small">${_posS}º</td>
+                <td class="text-start ">
+                    <div class="d-flex">
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle d-none d-sm-block" style="max-height: 30px !important;" alt="..." />
+                        <span class=" d-none d-lg-block">&nbsp;${ranking[i].shooterName}</span>
+                        <span class="text-small text-truncate d-lg-none">&nbsp;${ranking[i].shooterName}&nbsp;</span>
+                        ${_badgeCat}
+                        </div>
+                </td>
+                <td class="text-start">
+                    <span class="d-none d-lg-block badge ${_gbColor}" style="width:45px !important;">${time}
+                        <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
+                    </span>
+                    <span class="text-small d-lg-none badge ${_gbColor}" style="width:38px !important;">${time}
+                        <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
+                    </span>
+                </td>
+                <td class="text-start text-truncate">
+                    <div class="d-flex">
+                        <span class="d-none d-sm-block d-sm-none d-md-block">${ranking[i].factory}&nbsp</span>
+                        <span class="d-none d-lg-block">
+                            ${ranking[i].model} (${ranking[i].caliber})
+                            <span class="text-danger">${badg_rd}</span>
+                        </span>
+                        <span class="text-small d-lg-none">
+                            ${ranking[i].model} (${ranking[i].caliber})
+                            <span class="text-danger">${badg_rd}</span>
+                        </span>
                     </div>
                 </td>
-                <td class="text-start" ><span class="badge ${_gbColor}">${time}
-                <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
-                </span></td>
-                <td class="text-start">
-                    ${ranking[i].factory} ${ranking[i].model} <span class="text-small">(${ranking[i].caliber})</span>  <span class="text-danger">${badg_rd}</span></td>
                 <td class="text-center text-small"><a href="/qualify.html?eventId=${ranking[i].eventId}&selected_division=${ranking[i].divisionId}"> ${(new Date(ranking[i].clockDate)).toLocaleDateString().substring(0,5)}</a></td>
-                <td class="text-start text-small w-15">${ranking[i].local}</td>              
+                <td class="text-start text-small w-15 text-truncate">${ranking[i].local}</td>              
             </tr>`;
 
         if(ranking[i].divisionName==='Pistola'){
@@ -310,8 +322,9 @@ function changeDivision(division){
         document.getElementById('forcaLivreTabTable').style.display= 'none';
 
         document.getElementById('nav-pis').classList.add("active");
-        _tbP.responsive.rebuild();
-        _tbP.responsive.recalc();
+        // _tbP.responsive.rebuild();
+        // _tbP.responsive.recalc();
+        _tbP.draw();
 
         document.getElementById('btnCheckNotF').style.display= 'none';
         document.getElementById('btnCheckOnlyF').style.display= 'none';
@@ -325,8 +338,9 @@ function changeDivision(division){
         document.getElementById('forcaLivreTabTable').style.display= 'none';
 
         document.getElementById('nav-rev').classList.add("active");
-        _tbR.responsive.rebuild();
-        _tbR.responsive.recalc();
+        // _tbR.responsive.rebuild();
+        // _tbR.responsive.recalc();
+        _tbR.draw();
 
         document.getElementById('btnCheckNotF').style.display= 'none';
         document.getElementById('btnCheckOnlyF').style.display= 'none';
@@ -340,8 +354,9 @@ function changeDivision(division){
         document.getElementById('forcaLivreTabTable').style.display= '';
         
         document.getElementById('nav-fl').classList.add("active");
-        _tbFL.responsive.rebuild();
-        _tbFL.responsive.recalc();
+        // _tbFL.responsive.rebuild();
+        // _tbFL.responsive.recalc();
+        _tbFL.draw();
 
         document.getElementById('btnCheckNotF').style.display= '';
         document.getElementById('btnCheckOnlyF').style.display= '';
