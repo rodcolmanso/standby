@@ -21,7 +21,7 @@ function naiveRound(num, decimalPlaces = 0) {
 }
 
 
-const zeroPad = (num, places) => String(num).padStart(places, '0');
+// const zeroPad = (num, places) => String(num).padStart(places, '0');
 function buildClassiication(rank){
 
     let badg=""
