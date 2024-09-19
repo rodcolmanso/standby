@@ -57,13 +57,14 @@ async function submitForm(){
 
 async function loadPage(){
     loggedUser= netlifyIdentity.currentUser();
-    applySpinners(true);
     document.getElementById('mesSelect').value= (new Date()).getMonth()+1;
     document.getElementById('anoSelect').value= (new Date()).getFullYear();
 }
 
 window.onload = async () => {
 
+
+    applySpinners(true);
     await loadPage();
     document.getElementById('nav-ranking').classList.add('active');
 
@@ -73,11 +74,8 @@ window.onload = async () => {
     ranking= await promiseOfRanking();
     buildTables();
     
-    let isAdmin= (loggedUser&&loggedUser.app_metadata.roles!==undefined&&loggedUser.app_metadata.roles!==""&&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
+    // let isAdmin= (loggedUser&&loggedUser.app_metadata.roles!==undefined&&loggedUser.app_metadata.roles!==""&&!(loggedUser.app_metadata.roles.indexOf("admin")<0));
 
-    applySpinners(true);
-
-    // playersArray= await promiseOfPlayers(eventConfig._id);
     applySpinners(false);
     spinner.style.visibility = 'hidden'//'visible'; //'hidden'
     
@@ -107,7 +105,7 @@ function filterRank(f){
 
 let ranking;
 
-function buildTables(){
+async function buildTables(_tb){
 
     let filterCat;
     let filterF12;
@@ -287,6 +285,7 @@ function buildTables(){
     _tbP.draw(false);
     _tbP.responsive.rebuild();
     _tbP.responsive.recalc();
+    applySpinners(false);
     
     _tbR= new DataTable(document.getElementById('tableRevolver').parentNode, 
         { paging: false

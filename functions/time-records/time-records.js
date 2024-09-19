@@ -27,6 +27,7 @@ const handler = async (event, context)=>{
         if(p_rank!==null){
 
           let _filter= {};
+          let _filterMonth= {};
           // if(p_shooterId!==null){
           //   _filter.shooterId= p_shooterId;
           // }
@@ -48,6 +49,7 @@ const handler = async (event, context)=>{
             _filter.evYear= _year;
             console.log('filter year:',JSON.stringify(_filter,null,2));
 
+            
             const p_month= event.queryStringParameters.month?event.queryStringParameters.month.toString():null;
             if(p_month!==null){
               
@@ -68,6 +70,17 @@ const handler = async (event, context)=>{
               
               _filter.evMonth= _month;
               console.log('filter month:',JSON.stringify(_filter,null,2));
+
+              let _monthAux= String(_month+1).padStart(2, '0') ;
+              let _yearAux= _year;
+
+              if(_month>12){
+                _monthAux="01";
+                _yearAux= _year+1;
+              }
+              
+              _filterMonth.datetime={$gte: (new Date(""+_year+"-"+String(_month).padStart(2, '0')+"-01")),$lt: (new Date(""+_yearAux+"-"+_monthAux+"-01"))};
+              console.log('_filterMonth:',JSON.stringify(_filterMonth,null,2));
             }
           }
 
@@ -103,6 +116,7 @@ const handler = async (event, context)=>{
                     ,_divisionId:{$toObjectId:"$divisionId"}
                     ,_eventId:{$toObjectId:"$eventId"}
                     ,_shooterDivisionId:{$toObjectId:"$shooterDivisionId"}}}
+        ,{$match:_filterMonth}
         ,{$lookup:{
             from: "shooters"
             ,localField: "_shooterId"
