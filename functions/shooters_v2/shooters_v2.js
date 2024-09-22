@@ -93,13 +93,18 @@ const handler = async (event, context)=>{
           retShooters = await cShooters.find(filter).toArray();
         }catch(error){
           console.log('Error finding shooter!');
-          return res.status(400).json({ success: false, errors: _error.array() });
+          // return res.status(400).json({ success: false, errors: _error.array() });
+          console.log('error here B: ', error);
+          return  {
+            statusCode: 400,
+            body: JSON.stringify(_error)
+          };
         }
 
         console.log('retShooters.length', retShooters.length);
         if(retShooters.length>0 && retShooters[0]._id
-          &&user.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
-          &&user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+          &&user&&user.email&&user.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
+          && user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
 
           console.log('Vai consultar img', retShooters[0]._id);
 
@@ -188,7 +193,14 @@ const handler = async (event, context)=>{
           body: JSON.stringify(retShooters)
         };
       }catch(_error){
-        return res.status(400).json({ success: false, errors: _error.array() });
+        // return res.status(400).json({ success: false, errors: _error.array() });
+        console.log('error here A: ', _error);
+        return  {
+          statusCode: 400,
+          body: JSON.stringify(_error)
+        };
+
+
       }
 
       case 'PATCH':

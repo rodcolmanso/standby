@@ -105,6 +105,13 @@ function filterRank(f){
 
 let ranking;
 
+function goToShooter(parms){
+    if(parms!==undefined && parms!==''){
+        parms= '?id='+parms;
+    }else parms='';
+    window.location="/shooter.html"+parms;
+}
+
 async function buildTables(_tb){
 
     let filterCat;
@@ -232,7 +239,10 @@ async function buildTables(_tb){
         row= `<tr>
                 <td class="text-end text-small">${_posS}º</td>
                 <td class="text-start ">
-                    <div class="d-flex">
+                    <div class="d-flex dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" onClick="goToShooter('${ranking[i].shooterId}')" ><i class="bi bi-ticket-detailed"></i> Detalhar</a></li>
+                    </ul>
                         <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${ranking[i].shooterId}.jpg?${getCodeImg()}" class="small-profile-avatar-pic rounded-circle d-none d-sm-block" style="max-height: 30px !important;" alt="..." />
                         <span class=" d-none d-lg-block">&nbsp;${ranking[i].shooterName}</span>
                         <span class="text-small text-truncate d-lg-none">&nbsp;${ranking[i].shooterName}&nbsp;</span>

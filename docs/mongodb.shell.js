@@ -2028,6 +2028,21 @@ db.shooters.aggregate([
 
 
 
+      db.shooters.updateOne({sex:{$ne:"F"} ,birthday:{$lt:ISODate('1975-01-01T00:00:00.000Z')}, category:{$ne:2}}
+      ,{$set:{category:5}});
+
+      db.shooters.updateMany({sex:{$ne:"F"} ,birthday:{$lt:ISODate('1975-01-01T00:00:00.000Z')}, category:{$ne:2}}
+      ,{$set:{category:5}});
+
+
+      db.shooters.find({crEndDate:{$ne:null}});
+      ,{$set:{crEndDate:null}});
+
+
+      db.shooters.updateMany({sex:"M",category:5 ,birthday:{$gt:ISODate('1974-12-31T00:00:00.000Z')}}
+      ,{$set:{category:0}});
+
+
 
       db.shooters.updateOne({_id:ObjectId('661ab5b8b99563a97948e2c6')},{$set:{fullName:"Francisco Fernando Campadello",birthday: new Date("1971-11-03") ,sex:"M",cr:"30575",crEndDate: new Date("2030-07-30") ,SH_email:"acespade43@uol.com.br"}});
       db.shooters.updateOne({_id:ObjectId('661ab6ae501fc2cd2ff558e1')},{$set:{fullName:"Priscila da Rocha Manso",birthday: new Date("1980-05-15") ,sex:"M",cr:"0",crEndDate: new Date("1980-01-01") ,SH_email:"pris.rocha@gmail.com"}});
