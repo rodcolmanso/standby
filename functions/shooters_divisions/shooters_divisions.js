@@ -189,7 +189,7 @@ const handler = async (event, context)=>{
             }}
           ]).toArray();
 
-          // console.log('aggregate='+JSON.stringify(_r_sd,null,2));
+          console.log('aggregate='+JSON.stringify(_r_sd,null,2));
 
           if(_r_sd.length<1){
              console.log('ShooterDivisionId='+_body.shooterDivisionId+' not found.');
@@ -198,10 +198,13 @@ const handler = async (event, context)=>{
               body: JSON.stringify({message: `ShooterDivisionId ${_body.shooterDivisionId} not found.`})
             };
           }
+          console.log('HEEEERRRRR 1');
 
           const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== user.email.toLowerCase().trim() 
                                ||_r_sd[0].events[0].owners.indexOf(user.email.toLowerCase().trim())>-1
-                               ||_r_sd[0].events[0].gange[0].adm.indexOf(user.email.toLowerCase().trim())>-1 );
+                               ||_r_sd[0].events[0].range[0].adm.indexOf(user.email.toLowerCase().trim())>-1 );
+
+          console.log('HEEEERRRRR 2');
           if(!_authorized){
             console.log(`Unauthorized, User ${user.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`);
             return  {

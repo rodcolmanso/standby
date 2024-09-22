@@ -119,7 +119,7 @@
 </head>
 <body>
   <header-component></header-component>
-  <div class="container mt-5">
+  <div class="container-fluid mt-2">
     <div class="row">
       <div class="col-md-4">
         <!-- Foto de perfil -->
@@ -131,11 +131,11 @@
               <input type="hidden" name="imgChanged" value=false id="imgChanged" />
               <div class="btn" style="padding-right:1px !important;">
                 <label for="input-shooter-img" >
-                  <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" />
+                  <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" style="max-height: 300px;"/>
                 </label>
                 <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
               </div>
-              <div class="row text-center">
+              <div class="row text-center" >
                 <div class="col">
                   <input type="radio" class="btn-check disableshooter" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
                   <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
@@ -148,22 +148,56 @@
                 </div>
               </div>
               <p class="card-text">
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control disableshooter" disabled required id="modalEmail" placeholder="name@example.com" >
-                  <label for="modalEmail">E-mail</label>
-                </div>
-              </p>
-              <p class="card-text">
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control disableshooter" required id="docnum" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
-                  <label for="modalEmail">CPF</label>
-                </div>
+                <div class="input-group">
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control disableshooter" disabled required id="modalEmail" placeholder="name@example.com" >
+                    <label for="modalEmail">E-mail</label>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control disableshooter" required id="docnum" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                    <label for="modalEmail">CPF</label>
+                  </div>
+                </div> 
               </p>
               <p class="card-title">
                 <div class="form-floating mb-3">
                   <input type="text" class="form-control disableshooter" id="modalName" placeholder="John Wick" required maxlength="100">
-                  <label for="modalName">Nome</label>
+                  <label for="modalName">Nome de Guerra</label>
                 </div>
+              </p>
+              <p class="card-title">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control disableshooter" id="fullName" placeholder="John Wick" required maxlength="100">
+                  <label for="modalName">Nome Completo</label>
+                </div>
+              </p>
+              <p class="card-text">
+                <div class="input-group">
+                  <div class="form-floating mb-3 hideshooter">
+                    <input type="date" class="form-control disableshooter" id="birthday" required value="1977-11-29" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                    <label for="birthday">Nascimento</label>
+                  </div>
+                  <div class="form-floating ">
+                    <select class="form-select form-select-sm disableshooter" required id="sexo" > 
+                      <option value=""></option>
+                      <option value="M">Masculino</option>
+                      <option value="F">Feminino</option>
+                    </select>
+                    <label for="sexo">Sexo</label>
+                  </div>
+                </div>
+              </p>
+              <p class="card-text">
+              <div class="input-group hideshooter">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control disableshooter" id="cr" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="modalEmail">Nº do CR</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="date" class="form-control disableshooter" id="cr_validade" value="2029-03-10" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="modalEmail">Validade do CR</label>
+                </div>
+              </div>
               </p>
               <div class="row text-end hideshooter">
                 <div class="col">
@@ -204,6 +238,127 @@
         
       </div>
       <div class="col-md-8">
+        <div class="card" style="display: none;">
+          <h5 class="card-header">Acervo</h5>
+          <div class="card-body">
+            <table class="table table-hover align-middle text-small" >
+              <thead>
+                <tr>
+                  <th class="" class="item-align-middle text-start" scope="col">Arma</th>
+                  <th class="" scope="col">Nº Série</th>
+                  <th class="" scope="col">Tipo Registro</th>
+                  <th class="" scope="col">Nº Registro</th>
+                  <th class="" scope="col">Validade</th>
+                  <th class="" scope="col">Proprietário</th>
+                  <th class="" scope="col">Ativa?</th>
+                  <th class="" scope="col"></th>
+                </tr>
+              </thead>
+              <tbody id="division-table">
+                <tr>
+                  <td class="" class="item-align-middle text-start" scope="col"> Taurus TX 22 (.22LR)</td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Sigma</option>
+                      <option>Sinarm</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
+                  </td>
+                  <td class="" scope="col">
+                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Própria</option>
+                      <option>Clube</option>
+                      <option>Pai/Mãe/Tutor</option>
+                      <option>Outros</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input class="form-check-input nodisable" type="checkbox" checked >
+                  </td>
+                  <td class="" scope="col">
+                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="" class="item-align-middle text-start" scope="col"> Taurus TS9 (9mm)</td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Sigma</option>
+                      <option>Sinarm</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
+                  </td>
+                  <td class="" scope="col">
+                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Própria</option>
+                      <option>Clube</option>
+                      <option>Pai/Mãe/Tutor</option>
+                      <option>Outros</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input class="form-check-input nodisable" type="checkbox" checked >
+                  </td>
+                  <td class="" scope="col">
+                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
+                  </td>
+                </tr><tr>
+                  <td class="" class="item-align-middle text-start" scope="col"> Brigade BMF9 (9mm)</td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Sigma</option>
+                      <option>Sinarm</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
+                  </td>
+                  <td class="" scope="col">
+                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
+                  </td>
+                  <td class="" scope="col">
+                    <select class="form-select form-select-sm nodisable" > 
+                      <option>Própria</option>
+                      <option>Clube</option>
+                      <option>Pai/Mãe/Tutor</option>
+                      <option>Outros</option>
+                    </select>
+                  </td>
+                  <td class="" scope="col">
+                    <input class="form-check-input nodisable" type="checkbox" checked >
+                  </td>
+                  <td class="" scope="col">
+                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+
         <!-- Calendário de resultados -->
         <div id="calendario-resultados" class="mb-4">
           <!-- Calendário será renderizado aqui -->
@@ -282,6 +437,7 @@
     });
   </script-->
 <script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./js/shooter-idx.js" type="text/javascript" defer></script>
 
 

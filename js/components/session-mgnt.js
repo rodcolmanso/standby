@@ -10,7 +10,7 @@
 // const { parse } = require("dotenv");
 
                 // document.getElementById('btnModalSpinner').click();
-
+const SENIOR_AGE= 50;
               
 const SESSION_DBUSER="tpm-session-dbuser";
 const SESSION_EVENT_CONFIG="tpm-session-event-config";

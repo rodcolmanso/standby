@@ -160,6 +160,11 @@ const handler = async (event, context)=>{
             for(let i=0;i<retShooters.length;i++){
                 if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
                   retShooters[0].docnum= retShooters[0].docnum.substring(0,2)+'*.***.*'+retShooters[0].docnum.substring(7,9)+"-"+retShooters[0].docnum.substring(9);
+                  
+                retShooters[0].fullName= "*******";
+                retShooters[0].birthday= null;
+                retShooters[0].cr= '******';
+                retShooters[0].crEndDate= null;
 
                   const emailsize= retShooters[0].email.indexOf('@');
                   if(emailsize<4){
@@ -235,6 +240,12 @@ const handler = async (event, context)=>{
               // ,docnum: shooterData.docnum
                 name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                 ,category: shooterData.category
+                
+                ,fullName: shooterData.fullName
+                ,birthday: shooterData.birthday
+                ,sex: shooterData.sex
+                ,cr: shooterData.cr
+                ,crEndDate: shooterData.crEndDate
               };
 
               console.log('First _shooterUpd', _shooterUpd);

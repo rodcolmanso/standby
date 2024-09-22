@@ -494,11 +494,11 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                 }
                 let _badgePause= aPlayers[i].labelQueue===undefined?'':aPlayers[i].labelQueue;
                 let _txtFila= 'Sair da fila';
-                let _iconFila='<i class="bi bi-pause-circle-fill"></i>';
+                let _iconFila='<i class="bi bi-pause-circle-fill queue"></i>';
                 if(aPlayers[i].order_aux>0){
                      _txtFila= 'Retornar à fila';
-                     _iconFila='<i class="bi bi-play-circle-fill"></i>';
-                     _badgePause='<i class="bi bi-pause-circle-fill"> </i> '
+                     _iconFila='<i class="bi bi-play-circle-fill queue"></i>';
+                     _badgePause='<i class="bi bi-pause-circle-fill queue"> </i> '
                 }
                 row= `
                 <tr>

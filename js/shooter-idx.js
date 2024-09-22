@@ -217,6 +217,11 @@ function saveShooter(){
 
     _UshooterData.img= document.getElementById('pic-profile').src;
     _UshooterData.imgChanged= (document.getElementById('imgChanged').value||document.getElementById('imgChanged').value==='true');
+    _UshooterData.fullName = document.getElementById('fullName').value;
+    _UshooterData.birthday = new Date(document.getElementById('birthday').value);
+    _UshooterData.sex      = document.getElementById('sexo').value;
+    _UshooterData.cr       = document.getElementById('cr').value;
+    _UshooterData.crEndDate= document.getElementById('cr_validade').value !== ""? new Date(document.getElementById('cr_validade').value) :null;
 
     if(eventConfig!==null){
         if(eventConfig._id!==null){
@@ -290,7 +295,13 @@ function buildShooterForm(){
         document.getElementById('modalEmail').disabled=true;
         document.getElementById('docnum').value= formatCpf(shooterData.docnum,false);
         document.getElementById('modalName').value= shooterData.name;
-        
+
+        document.getElementById('fullName').value= shooterData.fullName?shooterData.fullName:"";
+        document.getElementById('birthday').value= (shooterData.birthday?shooterData.birthday.substring(0,10):"");
+        document.getElementById('sexo').value= shooterData.sex?shooterData.sex:"";
+        document.getElementById('cr').value= shooterData.cr?shooterData.cr:"";
+        document.getElementById('cr_validade').value= shooterData.crEndDate?shooterData.crEndDate.substring(0,10):"";
+
         if(!shooterData.category|| shooterData.category===null)
             shooterData.category=0;
 
@@ -299,6 +310,73 @@ function buildShooterForm(){
         document.getElementById('modalOption5').checked = (shooterData.category===5);
 
 }
+
+document.getElementById('modalOption2').addEventListener('click', e => {
+    var _checked = e.target.checked;
+    if(_checked){
+        document.getElementById('sexo').value= "F";
+    }
+  });
+
+  document.getElementById('modalOption0').addEventListener('click', e => {
+    var _checked = e.target.checked;
+    if(_checked){
+        document.getElementById('sexo').value= "M";
+    }
+  });
+
+  document.getElementById('modalOption5').addEventListener('click', e => {
+    var _checked = e.target.checked;
+    if(_checked){
+        document.getElementById('sexo').value= "M";
+    }
+  });
+
+  document.getElementById('sexo').addEventListener('change', e => {
+    var _value = e.target.value;
+    if(_value==="F"){
+        document.getElementById('modalOption2').checked = true;
+        document.getElementById('modalOption0').checked = false;
+        document.getElementById('modalOption5').checked = false;
+    }else if(_value==="M" && document.getElementById('modalOption2').checked){
+        document.getElementById('modalOption2').checked = false;
+
+        _bday= document.getElementById('birthday').value;
+        _age= _bday===""? null: getAge(new Date(_bday));
+
+        if(_age!==null && _age > SENIOR_AGE ){
+            document.getElementById('modalOption0').checked = false;
+            document.getElementById('modalOption5').checked = true;
+        }else{
+            document.getElementById('modalOption0').checked = true;
+            document.getElementById('modalOption5').checked = false;
+        }
+
+    }
+  });
+
+  function getAge(_d){
+    return  moment().diff(moment(_d), 'year');
+  }
+
+  document.getElementById('birthday').addEventListener('change', e => {
+    var _value = e.target.value;
+
+    if( !document.getElementById('modalOption2').checked && _value!==""){
+
+        var _age= getAge(new Date(_value));
+
+        if (_age > SENIOR_AGE){
+            document.getElementById('modalOption0').checked = false;
+            document.getElementById('modalOption2').checked = true;
+            document.getElementById('modalOption5').checked = true;
+        }else{
+            document.getElementById('modalOption0').checked = true;
+            document.getElementById('modalOption2').checked = false;
+            document.getElementById('modalOption5').checked = false;
+        }
+    }
+  });
 
 
 const compressImage = async (file, { quality = 1, type = file.type }) => {
@@ -422,11 +500,11 @@ function hrefMatches(){
 let eventConfig;
 async function loadPage(){
     
-    loggedUser= netlifyIdentity.currentUser();
+    // loggedUser= netlifyIdentity.currentUser();
     
     applySpinners(true);
     // document.getElementById('nav-shooter').classList.add('active');
-    eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
+    eventConfig = await promiseOfSessionEventConfig(null,netlifyIdentity.currentUser());
     if(eventConfig){
         document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
         document.getElementById('nav-matches').disabled=false;
@@ -512,23 +590,30 @@ function disableShooterFields(updater){
         });
 
     let _textarea = document.querySelectorAll("textarea");
-        [].forEach.call(_textarea,btn=>{
-            if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0
-            // &&btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
-            //     && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0
-            )
-                btn.disabled=!updater;
+    [].forEach.call(_textarea,btn=>{
+        if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0
+        // &&btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+        //     && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0
+        )
+            btn.disabled=!updater;
 
-            if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
-                if(updater)
-                    btn.style.display = ''//'visible'; //'hidden'
-                else
-                    btn.style.display = 'none'//'visible'; //'hidden'
-            }
-        });
-        document.getElementById('modalEmail').disabled=true;
-        if(document.getElementById('docnum').value.indexOf('**')>-1){
-            document.getElementById('docnum').disabled==true;
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                btn.style.display = ''//'visible'; //'hidden'
+            else
+                btn.style.display = 'none'//'visible'; //'hidden'
         }
+    });
+
+    document.getElementById('modalEmail').disabled=true;
+    if(document.getElementById('docnum').value.indexOf('**')>-1){
+        document.getElementById('docnum').disabled==true;
+    }
+
+    let _select = document.querySelectorAll("select");
+    [].forEach.call(_select,btn=>{
+        if(btn.getAttribute('class').indexOf('disableshooter')>=0)
+            btn.disabled=!updater;
+    });
 
 }
