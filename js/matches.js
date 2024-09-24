@@ -32,6 +32,7 @@ const gunOthers= {
 
 let mouseDown = false;
 let startX, scrollLeft;
+let allToAll=false;
 const slider = document.querySelector('.scrolling-wrapper');
 
 const startDragging = (e) => {
@@ -108,6 +109,8 @@ function updateAllMatches(mainMatches, recapMatches, categ, force){
     }
 
     addMainMatches(mainMatches, recapMatches, categ);
+    if(allToAll)
+        hideVrSpace();
 }
 
 function replaceShooter(matchId, targetId, categ){
@@ -272,17 +275,80 @@ function addLevels(mainMatches, recapMatches, categ){
     
     }
 
-    for(let i=0;i<count;i++){
-        if(i+1===count){
+    let has4play=0;
+    if(mainMatches.length>0 && mainMatches[0].length>0&&mainMatches&&mainMatches.length>1&&mainMatches[1].length>0&&
+        mainMatches[0].length/mainMatches[1].length!==2 &&
+        (mainMatches[0].length!==4&&mainMatches[0].length!==8&&mainMatches[0].length!==16&&mainMatches[0].length!==32&&mainMatches[0].length!==64)
+        ){
+            has4play=1;
+        }
+
+    for(let round=0;round<count;round++){
+        if(round+1===count){
             col_matches= col_match_aux;
         };
-    levels+= `<div id="${categ}LevelM${i}" class="col-5 ${col_matches}">
-            </div>
-            <div class="col-5 col-matches-rule" id="${categ}RuleLevelM${i}">
-            </div>`;
+        
+        levels+= `<div id="${categ}LevelM${round}" class="col-5 ${col_matches}"></div>
+            <div class="col-5 col-matches-rule" id="${categ}RuleLevelM${round}">
+            <div class="row no-gutters justify-content-md-center text-center"><b>&nbsp</b></div>
+            <div class="d-flex ps-1"></div>`;
+            
+
+            for(let match=0;match<mainMatches[round].length/2;match++){
+                
+                space=["",""];
+                let s="";
+                if(round>=has4play){
+                    // for(let k=1; k < 2**round;k++){
+                    for(let k=1; k < 2**(round-(has4play-1));k++){
+
+                        
+                        if(k>(2**(round-(has4play-1))/2)){
+                            s+= `<div class="hiVRde"><div class="hiVRde d-flex ps-58 vr"></div></div>
+                            `;
+                        }else{
+                            s+= `<div class="hiVRde d-flex ps-58"></div>`;
+                        }
+
+                    }
+
+                    s+= `<div class="hiVRde" ><div class="d-flex hiVRde ps-33 vr" ></div></div>`;
+                    s+= `<div class="hiVRde d-flex ps-50"></div>`;
+                    
+                    s+= `<div class="hiVRde" ><div class="d-flex hiVRde ps-33 vr "></div></div>`;
+                }
+
+                
+
+
+                if(round>=has4play){
+                    // for(let k=1; k < 2**round;k++){
+                    for(let k=1; k < 2**(round-(has4play-1));k++){
+
+                        if(k<(2**(round-(has4play-1))/2)){
+                            s+= `<div class="hiVRde" ><div class=" hiVRde d-flex ps-58 vr"></div></div>`;
+                        }else{
+                            s+= `<div class="hiVRde" ><div class="hiVRde d-flex ps-58"></div></div>`;
+                        }
+                        
+
+
+                    }
+                }
+
+                levels+=s;
+            }
+            
+                
+                // <div class="d-flex" style="height: 50%;">
+                //     <div class="vr">&nbsp;</div>
+                // </div>
+
+
+        levels+= `</div>`;
     }
 
-    div_levels.innerHTML=levels;
+    div_levels.innerHTML= levels;
 
     if(mainMatches.length===1){ // Todos contra todas. Coluna para lista de atiradores
 
@@ -355,6 +421,42 @@ function addEventListenerShooterDiv(){
     });
 };
 
+vrHide=true;
+function hideVrSpace(){
+
+    vrHide=!vrHide;
+
+    if(allToAll)
+        vrHide=true;
+        
+
+    let _div = document.querySelectorAll("div");
+    [].forEach.call(_div,elem=>{
+
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hiVRde')>=0)){
+            if(!vrHide)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+
+     _div = document.querySelectorAll("hr");
+    [].forEach.call(_div,elem=>{
+
+        
+        // if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hiVRde')>=0)){
+            if(!vrHide)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        // }
+
+    });
+}
+
 function addMainMatches(mainMatches, recapMatches, categ){
     
     let matches="";
@@ -376,13 +478,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
     for(let round=0;round<mainMatches.length;round++){
         
         if(mainMatches.length===1){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Todos Contra Todos</b></div><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>Todos Contra Todos</b></div>`;
         }else if(has4play>1 && round===0){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Preliminares</b></div><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()" ><b>Preliminares</b></div>`;
         }else if (mainMatches.length-round===1){
 
-            matches+=`<div class="row no-gutters justify-content-md-center text-center" style='color:black'> <i class="bi bi-trophy-fill"></i><div>
-            <div class="row no-gutters justify-content-md-center text-center" style='color:black'><b>FINAL</b></div>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()" style='color:black; font-weight: bold;'> <i class="bi bi-trophy-fill"></i>&nbsp;FINAL&nbsp;`;
             
             if(recapMatches&&recapMatches[0]&&recapMatches[0][0]
                 &&mainMatches[mainMatches.length-2]&&mainMatches[mainMatches.length-2][0]&&mainMatches[mainMatches.length-2][0].id
@@ -390,19 +491,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 &&recapMatches[0][0].parentA===mainMatches[mainMatches.length-2][0].id
                 &&recapMatches[0][0].parentB===mainMatches[mainMatches.length-2][1].id
             ){
-                matches+=`<div class="row no-gutters justify-content-md-center text-center" style='color:black'>1º e 2º Colocados:</div><br><br>`;
-            }else{
-               matches+=`<div class="row no-gutters justify-content-md-center text-center" style='color:black'>1º Colocado:</div><br><br>`;
+                matches+=`&nbsp;1º e 2º Colocados:</div>`;
+            }else{  //<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()" style='color:black'>
+               matches+=`&nbsp;1º Colocado:</div>`;
             }
 
         }else if (mainMatches.length-round===2){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Semi-finais:</b></div><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>Semi-finais:</b></div>`;
         }else if (mainMatches.length-round===3){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Quartas-de-final:</b></div><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>Quartas-de-final:</b></div>`;
         }else if (mainMatches.length-round===4){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Oitavas-de-final:</b></div><br><br><br>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>Oitavas-de-final:</b></div>`;
         }else
-            matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>${mainMatches.length-round+1}º Rodata</b></div>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>${mainMatches.length-round+1}º Rodada</b></div>`;
 
         for(let match=0;match<mainMatches[round].length;match++){
             checkedA= mainMatches[round][match].v.id!==null&&mainMatches[round][match].v.id===mainMatches[round][match].shooterA.id?"checked":"";
@@ -411,20 +512,17 @@ function addMainMatches(mainMatches, recapMatches, categ){
             space=["",""];
             
             let s="";
-            if(round>=has4play){
-                s= `<div class=" ps-8"></div>`;
-                for(let k=0;k<=(round-has4play)*2;k++){
-                    s+= `
-                    <div class="ps-50"></div>`;
+            
+            if(round>=has4play)
+                // for(let k=1; k < 2**round;k++){
+                for(let k=1; k < 2**(round-(has4play-1));k++){
+                    s+= `<div class=" hiVRde card-block-vr" onclick="hideVrSpace()"></div>
+                    <div class="hiVRde ps-8" onclick="hideVrSpace()"></div>`;
                 }
-                space[0]=s;
-            }
+            space[0]=s;
             
             _rd= mainMatches[round][match].shooterA.optics?`<span class="text-danger">⦿</span>`:"";
 
-            //->> let _admin= (netlifyIdentity.currentUser()&&netlifyIdentity.currentUser().email&&
-            // ((netlifyIdentity.currentUser().app_metadata&&netlifyIdentity.currentUser().app_metadata.roles&&netlifyIdentity.currentUser().app_metadata.roles!==""&&netlifyIdentity.currentUser().app_metadata.roles.indexOf("admin")>=0)
-            // || (eventConfig&&eventConfig.owners&&eventConfig.owners!==''&&eventConfig.owners.indexOf(netlifyIdentity.currentUser().email)>=0)))
             
             droppable= '" draggable="false';
             if(mainMatches[round][match].v.id===null && mainMatches[round][match].shooterA.id!==null){
@@ -448,7 +546,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 roundNum=`<div class="col-md-1">${match+1}</div>`;
             }
 
-            matches+= s+`
+            matches+= space[0]+`
+        <div class="ps-8" ></div>
         <div class="dropdown">
             <div  class="${allToAllRow} nodisable" data-bs-toggle="dropdown" aria-expanded="false">
                 <ul class="dropdown-menu">
@@ -462,7 +561,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 </ul>
                 ${roundNum}
                 <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
-                    <div class="row" >
+                    <div class="row align-items-center" style="padding-left:3px; ">
+                    <hr class="hiVRde" style="width:8px; padding-left:0px; padding-right:0px; height:0px; margin-bottom:3px; ">
                         <div class="col-md-4 small-avatar-pic" >
                                 <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </div>
@@ -490,8 +590,15 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
             _rd= mainMatches[round][iB].shooterB.optics?`<span class="text-danger">⦿</span>`:"";
             matches+= `<!---->
+            
+            <div class="row hiVRde" style="padding-left:200px !important; padding-right:2px !important; height:0px !important;">
+              <hr class="hiVRde" >
+            </div>
+
             <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.B">
-                <div class="row ">`;
+                
+                <div class="row align-items-center" style="padding-left:3px; " >
+                    <hr class="hiVRde" style="width:8px; padding-left:0px; padding-right:0px; height:0px;  margin-bottom:3px;" >`;
 
                 if(mainMatches.length===1){ //todos contra todos
 
@@ -539,43 +646,16 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
         </div>
     </div>
-    <!--fim Partida-->
-    <p class="ps-8"></p>
-    <p class="ps-8"></p>`;
-
-            
+    <div class="ps-8"></div>
+    <!--fim Partida-->`;
+    matches+= space[0];
+  
             s="";
-            if(round>=has4play){
-                s+= `
-                    <div class="ps-8">
-                    </div>`;
-                for(let k=0;k<=(round-has4play)*(2+(round-has4play));k++){
-                    s+= `
-                    <div class="ps-50">
-                    </div>`;
-                }
-                matches+=s;
-                space[1]=s;
-                levelSpace.push(space);
-            }
-            
             
         } 
+        matches+= `<div style="height:100%" onclick="hideVrSpace()">&nbsp;</div>`;
         document.getElementById(categ+'LevelM'+round).innerHTML= matches;
         matches="";
-
-        divRule=`<p class=" vr ps-50"></p>
-        <div class="d-flex align-items-center" style="height: 136px;">
-            <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
-        </div>
-        <p class="ps-50"></p>
-        <p class="ps-50"></p>
-        <div class="d-flex align-items-center" style="height: 136px;">
-            <div class="vr"><p class="ps-50"></p><p class="ps-2">-</p></div>
-        </div>`;
-
-        
-        // document.getElementById('overallRuleLevelM'+l).innerHTML= divRule;
     }
 
     if(mainMatches.length===1){ //Todos contra todos. Exibe tabela de jogadores
@@ -622,13 +702,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
         }
         dbPlayersCat.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels);
-        // dbPlayers= dbPlayers.sort((a, b) => {
-        //     if (a.vics < b.vics) {
-        //       return -1;
-        //     }
-        //   });
-
-
+        
         for(let i=0; i<dbPlayersCat.length-1;i++){
             for(let j=0; j< mainMatches[0].length; j++){
 
@@ -701,13 +775,11 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 &&recapMatches[0][0].parentA===mainMatches[mainMatches.length-2][0].id
                 &&recapMatches[0][0].parentB===mainMatches[mainMatches.length-2][1].id
             ){
-                matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><i class="bi bi-trophy"></i></div>
-                    <div style='color:black' class="row no-gutters justify-content-md-center text-center"><b>FINAL Bronze</b><br></div>
-                    <div style='color:black' class="row no-gutters justify-content-md-center text-center">3º e 4º Colocados:</div><br><br>`;
+                matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><b><i class="bi bi-trophy"></i>
+                &nbsp;3º e 4º Colocados:</b></div>`;
             }else{
-                matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><i class="bi bi-trophy"></i></div>
-                    <div style='color:black' class="row no-gutters justify-content-md-center text-center"><b>FINAL da Repescagem</b><br></div>
-                    <div style='color:black' class="row no-gutters justify-content-md-center text-center">2º e 3º Colocados:</div><br><br>`;
+                matches+=`<div style='color:black' class="row no-gutters justify-content-md-center text-center"><b><i class="bi bi-trophy"></i>
+                    &nbsp;2º e 3º Colocados:</b><br><br></div>`;
             }
 
         }else{
@@ -1143,6 +1215,10 @@ function buildKOs(KOs){
         updateAllMatches(KOs.advancedDoubleKOs[0], KOs.advancedDoubleKOs[1],'advance');
 
         document.getElementById('liAdvance').style.display= '';
+        if(KOs.advancedDoubleKOs[0].length===1){
+            allToAll=true;
+            hideVrSpace();
+        }else allToAll=false;
     }
     
     if(KOs.overallDoubleKOs && KOs.overallDoubleKOs.length>0 && KOs.overallDoubleKOs[0]!==null && KOs.overallDoubleKOs[0].length>0){
@@ -1151,6 +1227,10 @@ function buildKOs(KOs){
         updateAllMatches(KOs.overallDoubleKOs[0], KOs.overallDoubleKOs[1], 'overall');
 
         document.getElementById('liOverall').style.display= '';
+        if(KOs.overallDoubleKOs[0].length===1){
+            allToAll=true;
+            hideVrSpace();
+        }else allToAll=false;
     }
     
     if(KOs.opticDoubleKOs && KOs.opticDoubleKOs.length>0 && KOs.opticDoubleKOs !=="" && KOs.opticDoubleKOs[0]!==undefined && KOs.opticDoubleKOs[0].length>0){
@@ -1159,6 +1239,10 @@ function buildKOs(KOs){
         updateAllMatches(KOs.opticDoubleKOs[0],KOs.opticDoubleKOs[1],'optics');
 
         document.getElementById('liOptics').style.display= '';
+        if(KOs.opticDoubleKOs[0].length===1){
+            allToAll=true;
+            hideVrSpace();
+        }else allToAll=false;
     }
     
     if(KOs.seniorDoubleKOs && KOs.seniorDoubleKOs.length>0 && KOs.seniorDoubleKOs[0]!==undefined && KOs.seniorDoubleKOs[0].length>0){
@@ -1166,7 +1250,11 @@ function buildKOs(KOs){
         addMainMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
         updateAllMatches(KOs.seniorDoubleKOs[0], KOs.seniorDoubleKOs[1], 'seniors');
 
-        document.getElementById('liSeniors').style.display= '';        
+        document.getElementById('liSeniors').style.display= '';    
+        if(KOs.seniorDoubleKOs[0].length===1){
+            allToAll=true;
+            hideVrSpace();
+        }else allToAll=false;
     }
     
     if(KOs.ladyDoubleKOs && KOs.ladyDoubleKOs.length>0 && KOs.ladyDoubleKOs[0]!==undefined && KOs.ladyDoubleKOs[0].length>0){
@@ -1175,6 +1263,10 @@ function buildKOs(KOs){
         updateAllMatches(KOs.ladyDoubleKOs[0],KOs.ladyDoubleKOs[1], 'ladies');
 
         document.getElementById('liLadies').style.display= '';
+        if(KOs.ladyDoubleKOs[0].length<1){
+            allToAll=true;
+            hideVrSpace();
+        }else allToAll=false;
     }
     addEventListenerShooterDiv();
 }//function buildKOs(KOs){

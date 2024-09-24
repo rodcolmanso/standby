@@ -162,7 +162,12 @@ table {
   height: auto !important;
 }
 
-
+.card-block-vr{
+  height: 50px;
+}
+.card-block-half-vr{
+  height: 25px;
+}
 
 .card-block{
 	height: 50px;
@@ -178,8 +183,10 @@ table {
 }
 
 .small-avatar-pic{
-  height:48px !important;
-  max-width: 48px !important;
+  height:46px !important;
+  max-width: 46px !important;
+  padding: 1px;
+
 }
 
 .small-avatar-pic-table{
@@ -187,6 +194,7 @@ table {
   padding: 0px !important;
   margin-bottom: 0 !important;
   /* max-width: 48px !important; */
+  
 }
 
 .small-profile-avatar-pic{
@@ -202,7 +210,9 @@ table {
 }
 
 .col-card-match{
-  width: 155px !important;
+  width: 140px !important;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 
 .col-card-check{
@@ -257,6 +267,11 @@ table {
 
 }
 
+.ps-1 {
+  height:1px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
 
 .ps-2 {
   height:2px !important;
@@ -264,8 +279,26 @@ table {
   padding: 0 !important;
 }
 
+.ps-33 {
+  height:33px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
 .ps-8 {
   height:8px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.ps-12 {
+  height:12px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.ps-58 {
+  height:58px !important;
   margin-bottom: 0 !important;
   padding: 0 !important;
 }
