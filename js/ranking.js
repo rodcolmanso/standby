@@ -23,7 +23,7 @@ let _ord=[[0, 'asc']];
 
 const event_id = params.event_id;
 
-const promiseOfRanking = () => {
+const promiseOfRanking = async () => {
 
     year= document.getElementById('anoSelect').value;
     month= document.getElementById('mesSelect').value;
@@ -39,17 +39,24 @@ const promiseOfRanking = () => {
         query=query+"&rangeAdm="+adm
      }
 
-     return fetch("/.netlify/functions/time-records"+query
+     const r = await fetch("/.netlify/functions/time-records" + query
 
-     )
-    .then(r=>r.json())
-    .then(data => {
-    return data;
-})};
+    );
+    const data = await r.json();
+    return data;};
 
 async function submitForm(){
+
+    document.getElementById('btn-check-lady').checked = false;
+    document.getElementById('btn-check-seniors').checked = false;
+    document.getElementById('btnCheckNoRD').checked = false;
+    document.getElementById('btnCheckNotF').checked = false;
+    document.getElementById('btnCheckOnlyF').checked = false;
+    
     applySpinners(true);
     ranking= await promiseOfRanking(); 
+
+    
     buildTables();
     applySpinners(false);
     return 0;
@@ -100,8 +107,62 @@ function filterRank(f){
         }
     }
 
-    buildTables();
+    // buildTables();
 }
+
+$('#btn-check-lady').on('click', function () {
+    if(this.checked){
+        _tbP.columns(1).search('cat-lady').draw();
+        _tbR.columns(1).search('cat-lady').draw();
+        _tbFL.columns(1).search('cat-lady').draw();
+    }else{
+        _tbP.columns(1).search('').draw();
+        _tbR.columns(1).search('').draw();
+        _tbFL.columns(1).search('').draw();
+    }
+});
+
+$('#btn-check-seniors').on('click', function () {
+    if(this.checked){
+        _tbP.columns(1).search('cat-senior').draw();
+        _tbR.columns(1).search('cat-senior').draw();
+        _tbFL.columns(1).search('cat-senior').draw();
+    }else{
+        _tbP.columns(1).search('').draw();
+        _tbR.columns(1).search('').draw();
+        _tbFL.columns(1).search('').draw();
+    }
+});
+
+
+$('#btnCheckNoRD').on('click', function () {
+    if(this.checked){
+        _tbP.columns(3).search('!RD-yes',{smart: true}).draw();
+        _tbR.columns(3).search('!RD-yes',{smart: true}).draw();
+        _tbFL.columns(3).search('!RD-yes',{smart: true}).draw();
+    }else{
+        _tbP.columns(3).search('').draw();
+        _tbR.columns(3).search('').draw();
+        _tbFL.columns(3).search('').draw();
+    }
+});
+
+$('#btnCheckOnlyF').on('click', function () {
+    if(this.checked){
+        _tbFL.columns(2).search('12ga-semi-auto').draw();
+    }else{
+        _tbFL.columns(2).search('').draw();
+    }
+});
+
+$('#btnCheckNotF').on('click', function () {
+    if(this.checked)
+        _tbFL.columns(2).search('!12ga-semi-auto',{smart: true}).draw();
+    else
+        _tbFL.columns(2).search('').draw();
+});
+
+
 
 let ranking;
 
@@ -114,31 +175,31 @@ function goToShooter(parms){
 
 async function buildTables(_tb){
 
-    let filterCat;
-    let filterF12;
-    let filterOptic;
+    // let filterCat;
+    // let filterF12;
+    // let filterOptic;
 
-    if(document.getElementById('btn-check-lady').checked){
-        filterCat= cLadies;
-    }else if(document.getElementById('btn-check-seniors').checked){
-        filterCat= cSeniors;
-    }else{
-        filterCat= null;
-    }
+    // if(document.getElementById('btn-check-lady').checked){
+    //     filterCat= cLadies;
+    // }else if(document.getElementById('btn-check-seniors').checked){
+    //     filterCat= cSeniors;
+    // }else{
+    //     filterCat= null;
+    // }
 
-    if(document.getElementById('btnCheckNotF').checked){
-        filterF12= false;
-    }else if(document.getElementById('btnCheckOnlyF').checked){
-        filterF12= true;
-    }else{
-        filterF12= null;
-    }
+    // if(document.getElementById('btnCheckNotF').checked){
+    //     filterF12= false;
+    // }else if(document.getElementById('btnCheckOnlyF').checked){
+    //     filterF12= true;
+    // }else{
+    //     filterF12= null;
+    // }
 
-    if(document.getElementById('btnCheckNoRD').checked){
-        filterOptic= false;
-    }else{
-        filterOptic= null;
-    }
+    // if(document.getElementById('btnCheckNoRD').checked){
+    //     filterOptic= false;
+    // }else{
+    //     filterOptic= null;
+    // }
     
 
     ranking= ranking.sort((a, b) => {
@@ -155,36 +216,35 @@ async function buildTables(_tb){
     let _pos;
 
     _tbP?_tbP.destroy():'';
-    _tbP=null;
+    // _tbP=null;
     document.getElementById('tablePistol').innerHTML= "";
     
     _tbR?_tbR.destroy():'';
-    _tbR= null;
+    // _tbR= null;
     document.getElementById('tableRevolver').innerHTML= "";
 
     _tbFL?_tbFL.destroy():'';
-    _tbFL=null;
+    // _tbFL=null;
     document.getElementById('tableForcaLivre').innerHTML= "";
     
 
     for(let i=0; i< ranking.length;i++){
+        // if(filterCat && filterCat!== undefined && filterCat!==null && ranking[i].shooterCategory!== filterCat){
+        //     continue;
+        // }
 
-        if(filterCat && filterCat!== undefined && filterCat!==null && ranking[i].shooterCategory!== filterCat){
-            continue;
-        }
-
-        if(filterF12!== undefined && filterF12!==null){
+        // if(filterF12!== undefined && filterF12!==null){
             
-            if( filterF12 && (ranking[i].caliber.toLowerCase().trim()!== '12ga' || ranking[i].operation.toLowerCase().trim()!=="semi-auto" ))
-                continue;
+        //     if( filterF12 && (ranking[i].caliber.toLowerCase().trim()!== '12ga' || ranking[i].operation.toLowerCase().trim()!=="semi-auto" ))
+        //         continue;
 
-            if( !filterF12 && ranking[i].caliber.toLowerCase().trim()=== '12ga' && ranking[i].operation.toLowerCase().trim()==="semi-auto" )
-                continue;
-        }
+        //     if( !filterF12 && ranking[i].caliber.toLowerCase().trim()=== '12ga' && ranking[i].operation.toLowerCase().trim()==="semi-auto" )
+        //         continue;
+        // }
 
-        if(filterOptic===false && ranking[i].optics ){
-            continue;   
-        }
+        // if(filterOptic===false && ranking[i].optics ){
+        //     continue;   
+        // }
 
         if(ranking[i].divisionName==='Pistola'){
             posPistol++;
@@ -200,23 +260,20 @@ async function buildTables(_tb){
         badg_rd=''; //⨀
 
         if(ranking[i].optics===true || ranking[i].optics==='true'){
-            badg_rd='⦿'
+            badg_rd='<span class="text-danger">⦿</span><span style="display:none">RD-yes</span>'
         }
 
         let penal= "999";
         let time=  "4";
-        let _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-info-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">overall</span>';
+        let _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-info-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">overall</span><span style="display:none">cat-overall</span>';
         if(ranking[i].shooterCategory===cLadies){
-            _badgeCat='<span class="d-none d-sm-block fst-italic text-muted text-small badge bg-danger-subtle rounded-pill text-start" style=" padding-top:0px !important; width:45px !important; max-height:10px !important;">dama</span>';
+            _badgeCat='<span class="d-none d-sm-block fst-italic text-muted text-small badge bg-danger-subtle rounded-pill text-start" style=" padding-top:0px !important; width:45px !important; max-height:10px !important;">dama</span><span style="display:none">cat-lady</span>';
         }else if(ranking[i].shooterCategory===cSeniors){
-            _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-success-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">senior</span>';
+            _badgeCat='<span class="d-none d-sm-block d-sm-none d-md-block fst-italic text-muted text-small badge bg-success-subtle rounded-pill text-start" style="padding-top:0px !important; width:50px !important; max-height:10px !important;">senior</span><span style="display:none">cat-senior</span>';
 
         }
 
         if(Number(ranking[i].bestTime)>999.99){
-            // penal= ranking[i].bestTime.toString().substring(0,1);
-            // ranking[i].bestTime= Number(ranking[i].bestTime.toString().substring(1,ranking[i].bestTime.toString().length-1)).toString();
-            // ranking[i].bestTime= ranking[i].bestTime.replaceAll(".",",");
 
             penal="+"+ranking[i].bestTime.toString().slice(0,1);
             time= naiveRound(parseFloat(ranking[i].bestTime.toString().slice(1)),2).toFixed(2);
@@ -234,7 +291,6 @@ async function buildTables(_tb){
         let _posS= zeroPad(_pos,2);
         if(ranking.length>99)
             _posS= zeroPad(_pos,3);
-        
 
         row= `<tr>
                 <td class="text-end text-small">${_posS}º</td>
@@ -248,29 +304,33 @@ async function buildTables(_tb){
                         <span class="text-small text-truncate d-lg-none">&nbsp;${ranking[i].shooterName}&nbsp;</span>
                         ${_badgeCat}
                         </div>
-                </td>
-                <td class="text-start">
+                </td> `;
+                
+        row+= `<td class="text-start">
                     <span class="d-none d-lg-block badge ${_gbColor}" style="width:45px !important;">${time}
                         <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
                     </span>
                     <span class="text-small d-lg-none badge ${_gbColor}" style="width:38px !important;">${time}
                         <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penal}</span>
                     </span>
-                </td>
-                <td class="text-start text-truncate">
+                    <span style="display:none">${ranking[i].caliber.toLowerCase().trim()}-${ranking[i].operation.toLowerCase().trim()}</span>
+                </td>`;
+                
+        row+= `<td class="text-start text-truncate">
                     <div class="d-flex">
                         <span class="d-none d-sm-block d-sm-none d-md-block">${ranking[i].factory}&nbsp</span>
                         <span class="d-none d-lg-block">
                             ${ranking[i].model} (${ranking[i].caliber})
-                            <span class="text-danger">${badg_rd}</span>
+                            ${badg_rd}
                         </span>
                         <span class="text-small d-lg-none">
                             ${ranking[i].model} (${ranking[i].caliber})
-                            <span class="text-danger">${badg_rd}</span>
+                            ${badg_rd}
                         </span>
                     </div>
-                </td>
-                <td class="text-center text-small"><a href="/qualify.html?eventId=${ranking[i].eventId}&selected_division=${ranking[i].divisionId}"> ${(new Date(ranking[i].clockDate)).toLocaleDateString().substring(0,5)}</a></td>
+                </td>`;
+                
+        row+= `<td class="text-center text-small"><a href="/qualify.html?eventId=${ranking[i].eventId}&selected_division=${ranking[i].divisionId}"> ${(new Date(ranking[i].clockDate)).toLocaleDateString().substring(0,5)}</a></td>
                 <td class="text-start text-small w-15 text-truncate">${ranking[i].local}</td>              
             </tr>`;
 
@@ -286,36 +346,66 @@ async function buildTables(_tb){
 
     }
 
-    _tbP= new DataTable(document.getElementById('tablePistol').parentNode, 
-        { paging: false
-        ,responsive: false
-        ,oLanguage: {sSearch: "Buscar:"}
+    const tableConfig=  { paging: false
+        // pageLength: 50
+        ,responsive: true
+        ,ordering: false
+        ,oLanguage: {sSearch: "Buscar:"
+            ,entries: {
+                _: 'atiradores',
+                1: 'atletas'
+            }
         }
+        ,columnDefs: [
+            {
+                // searchable: false,
+                orderable: false,
+                targets: 0
+            }
+        ],
+        order: [[2, 'asc']]
+        };
+
+    _tbP= new DataTable(document.getElementById('TtablePistol'), //.parentNode
+       tableConfig
     );
-    _tbP.draw(false);
-    _tbP.responsive.rebuild();
-    _tbP.responsive.recalc();
+    _tbP.on('search.dt', function () {
+        let i = 1;
+        _tbP.cells(null, 0, { search: 'applied', order: 'applied' })
+        .every(function (cell) {
+                this.data((i++) +'º');
+        });
+    }).draw(false);
+
+    // _tbP.responsive.rebuild();
+    // _tbP.responsive.recalc();
     applySpinners(false);
     
-    _tbR= new DataTable(document.getElementById('tableRevolver').parentNode, 
-        { paging: false
-        ,responsive: false
-        ,oLanguage: {sSearch: "Buscar:"}
-        }
+    _tbR= new DataTable(document.getElementById('TtableRevolver'), //.parentNode
+        tableConfig
     );
-    _tbR.draw(false);
-    _tbR.responsive.rebuild();
-    _tbR.responsive.recalc();
+    _tbR.on('order.dt search.dt', function () {
+        let i = 1;
+        _tbR.cells(null, 0, { search: 'applied', order: 'applied' })
+        .every(function (cell) {
+            this.data((i++) +'º');
+        });
+    }).draw(false);
+    // _tbR.responsive.rebuild();
+    // _tbR.responsive.recalc();
 
-    _tbFL= new DataTable(document.getElementById('tableForcaLivre').parentNode, 
-        { paging: false
-        ,responsive: false
-        ,oLanguage: {sSearch: "Buscar:"}
-        }
+    _tbFL= new DataTable(document.getElementById('TtableForcaLivre'), //.parentNode
+        tableConfig
     );
-    _tbFL.draw(false);
-    _tbFL.responsive.rebuild();
-    _tbFL.responsive.recalc();
+    _tbFL.on('order.dt search.dt', function () {
+        let i = 1;
+        _tbFL.cells(null, 0, { search: 'applied', order: 'applied' })
+        .every(function (cell) {
+            this.data((i++) +'º');
+        });
+    }).draw(false);
+    // _tbFL.responsive.rebuild();
+    // _tbFL.responsive.recalc();
 
 }
 
