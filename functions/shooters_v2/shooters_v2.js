@@ -33,10 +33,13 @@ const handler = async (event, context)=>{
     try{
       console.log(`before get rawNetlifyContex`);
       const rawNetlifyContext = context.clientContext.custom.netlify;
-      console.log(`rawNetlifyContex`);
+      console.log(`rawNetlifyContex=`, netlifyContext);
       const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      
       const { identity, _user } = JSON.parse(netlifyContext);
-      console.log(`got _user`);
+      console.log(`got _user:`, _user);
+      console.log(`JSON._user:stringify`, JSON.stringify(_user));
+      
       user= _user;
     }catch(e){
       console.log(`got error getting rawNetlifyContex`);
