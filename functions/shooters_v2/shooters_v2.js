@@ -28,8 +28,20 @@ const handler = async (event, context)=>{
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     console.log(`got cShooters`);
     
-    const user= context.clientContext.user;
-    console.log(`got user`);
+    // const user= context.clientContext.user;
+    let user=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, _user } = JSON.parse(netlifyContext);
+      console.log(`got _user`);
+      user= _user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+       user= context.clientContext.user;
+    }
 
     console.log(`user=`, user);
     console.log(`user.email=`, user?user.email:'user undefined');
@@ -47,9 +59,11 @@ const handler = async (event, context)=>{
         if(event.queryStringParameters.logged!==undefined){
           console.log(`Got into event.queryStringParameters.logged!==undefined`);
 
-          if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
+          // if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
+          if(user!==undefined){
             console.log(`Got into context.clientContext!==undefined&&context.clientContext.user!==undefined`);
-            filter.email= context.clientContext.user.email.toLowerCase().trim();
+            // filter.email= context.clientContext.user.email.toLowerCase().trim();
+            filter.email= user.email.toLowerCase().trim();
           }else{
             console.log(`NOTTTTTT got into context.clientContext!==undefined&&context.clientContext.user!==undefined`);
             filter.email= (Math.random()*1000000).toString();
@@ -237,6 +251,8 @@ const handler = async (event, context)=>{
               ,docnum: shooterData.docnum
               ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
               ,category: shooterData.category
+              ,inserter: user.email.toLowerCase().trim()
+              ,inserter_date: Date.now()
               }
             );
 
@@ -258,6 +274,8 @@ const handler = async (event, context)=>{
                 ,sex: shooterData.sex
                 ,cr: shooterData.cr
                 ,crEndDate: shooterData.crEndDate
+                ,last_updater: user.email.toLowerCase().trim()
+                ,last_updater_date: Date.now()
               };
 
               console.log('First _shooterUpd', _shooterUpd);
@@ -317,10 +335,17 @@ const handler = async (event, context)=>{
                 // associa o userdb/cpf ao email
                 console.log('[Shooters] Will try to update shooter my document number: '+shooterData.docnum);
                 try{
+
+                  let user_updater= 'unknown';
+                  if(user && user.email){ 
+                    user_updater= user.email;
+                  }
                   const dbShooter= await cShooters.updateOne(
                                               {'email':shooterData.docnum+'@tpmonline.com.br', 'docnum':shooterData.docnum}
                                               ,{ $set: { email : shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                 ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')}
+                                                ,last_updater: user_updater
+                                                ,last_updater_date: Date.now()
                                               });
 
                    if(dbShooter.modifiedCount<1){

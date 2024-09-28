@@ -5,12 +5,29 @@ const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
 
+// const user= context.clientContext.user;
+let user=null;
 
 const handler = async (event, context)=>{
+
+  try{
+    console.log(`before get rawNetlifyContex`);
+    const rawNetlifyContext = context.clientContext.custom.netlify;
+    console.log(`rawNetlifyContex`);
+    const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+    const { identity, _user } = JSON.parse(netlifyContext);
+    console.log(`got _user`);
+    user= _user;
+  }catch(e){
+    console.log(`got error getting rawNetlifyContex`);
+     user= context.clientContext.user;
+  }
+  
   try {
 
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cRanges= database.collection(process.env.MONGODB_COLLECTION_RANGES);
+    
 
     switch (event.httpMethod){
       case 'GET':
@@ -25,13 +42,15 @@ const handler = async (event, context)=>{
           filter.name= {$regex:v_name};
         }
         console.log('Antes do filter updater!!!!!!!!!!!!!');
-        if(p_updater&&context.clientContext.user&&context.clientContext.user.email){
-          const isAdmin= (context.clientContext.user&&context.clientContext.user.app_metadata.roles!==undefined &&!(context.clientContext.user.app_metadata.roles.indexOf("admin")<0));
+        // if(p_updater&&context.clientContext.user&&context.clientContext.user.email){
+        if(p_updater&&user&&user.email){
+          const isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
 
           console.log('isAdmin='+isAdmin);
 
             filter.$or=[{active:{$exists:isAdmin}}, {_id: new ObjectId(p_rangeId)},
-              {adm: {$eq:context.clientContext.user.email.toLowerCase().trim()}}
+              // {adm: {$eq:context.clientContext.user.email.toLowerCase().trim()}}
+              {adm: {$eq:user.email.toLowerCase().trim()}}
             ];
 
             // filter.adm= {$eq:context.clientContext.user.email};

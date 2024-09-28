@@ -348,6 +348,11 @@ async function buildTables(_tb){
 
     const tableConfig=  { paging: false
         // pageLength: 50
+        ,layout: {
+            bottomEnd: {
+                buttons: ['excel', 'pdf', 'print']
+            }
+        }
         ,responsive: true
         ,ordering: false
         ,oLanguage: {sSearch: "Buscar:"

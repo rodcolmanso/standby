@@ -525,6 +525,7 @@ function setCookie(cname, cvalue, exdays) {
         
     if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0)
         &&(btn.getAttribute('type')&&btn.getAttribute('type').indexOf('search')<0)
+        &&(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('dt-button')<0)
         ){
             btn.disabled=onoff;
         }

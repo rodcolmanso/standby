@@ -16,7 +16,21 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 const handler = async (event, context)=>{
-  const user= context.clientContext.user;
+  // const user= context.clientContext.user;
+  
+  let user=null;
+  try{
+    console.log(`before get rawNetlifyContex`);
+    const rawNetlifyContext = context.clientContext.custom.netlify;
+    console.log(`rawNetlifyContex`);
+    const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+    const { identity, _user } = JSON.parse(netlifyContext);
+    console.log(`got _user`);
+    user= _user;
+  }catch(e){
+    console.log(`got error getting rawNetlifyContex`);
+     user= context.clientContext.user;
+  }
 
   try {
 

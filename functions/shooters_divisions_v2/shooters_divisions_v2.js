@@ -30,7 +30,20 @@ const handler = async (event, context)=>{
     switch (event.httpMethod){
       case 'GET':
 
-        const user= context.clientContext.user;
+        // const user= context.clientContext.user;
+    let user=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, _user } = JSON.parse(netlifyContext);
+      console.log(`got _user`);
+      user= _user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+       user= context.clientContext.user;
+    }
 
         // if(!user){
         //   console.log(`User not logged!`);
@@ -233,7 +246,22 @@ const handler = async (event, context)=>{
           // console.log('==================================');
           
 
-          let user= context.clientContext.user;
+          // let user= context.clientContext.user;
+     
+    let user=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, _user } = JSON.parse(netlifyContext);
+      console.log(`got _user`);
+      user= _user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+       user= context.clientContext.user;
+    }
+          
           for(let i=0;i<shootersDiv.length;i++){
             // console.log('=antes do if=');
             // console.log(`shootersDiv[i].registered&& shootersDiv[i].registered.gun_det && shootersDiv[i].registered.gun_det.length= ${shootersDiv[i].registered} && ${shootersDiv[i].registered.gun_det} && ${shootersDiv[i].registered.gun_det.length}` );
@@ -281,7 +309,20 @@ const handler = async (event, context)=>{
           // console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
 
           // console.log(JSON.stringify(context, null, 2))
-          let user= context.clientContext.user;
+          // let user= context.clientContext.user;
+        let user=null;
+        try{
+          console.log(`before get rawNetlifyContex`);
+          const rawNetlifyContext = context.clientContext.custom.netlify;
+          console.log(`rawNetlifyContex`);
+          const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+          const { identity, _user } = JSON.parse(netlifyContext);
+          console.log(`got _user`);
+          user= _user;
+        }catch(e){
+          console.log(`got error getting rawNetlifyContex`);
+          user= context.clientContext.user;
+        }
 
           if(!user||!user.email){
             // console.log(`Unauthorized, User not logged!`);
@@ -337,6 +378,8 @@ const handler = async (event, context)=>{
             name: shooterDivisions.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
             ,email: shooterDivisions.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
             ,docnum: shooterDivisions.docnum
+            ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+            ,last_updater_date: Date.now()
             };
           
            if(shooterDivisions.category && shooterDivisions.category!==null){
@@ -345,7 +388,12 @@ const handler = async (event, context)=>{
             
           const new_record= await cShooters.updateOne(
                                             {email: shooterDivisions.email.toLowerCase().trim()}
-                                            ,{$set: _shooterUpsert}
+                                            ,{$set: _shooterUpsert
+                                              ,$setOnInsert: { 
+                                                inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                               ,inserter_date: Date.now()
+                                             }
+                                            }
                                             ,{upsert:true}
           
                                           );
@@ -401,6 +449,8 @@ const handler = async (event, context)=>{
                     ,duel: shooterDivisions.shooters_divisions[i].duel
                     ,order_aux: 0
                     ,subscribe_date: new Date()
+                    ,inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                    ,inserter_date: Date.now()
                     }));
 
                     if(new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==null && new_record.updatedShooterDivisions[new_record.updatedShooterDivisions.length-1].insertedId!==undefined)
@@ -422,7 +472,13 @@ const handler = async (event, context)=>{
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
                                                                     ,order_aux: 0
                                                                     ,subscribe_date: new Date()
-                                                                    }}
+                                                                    ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                                    ,last_updater_date: Date.now()
+                                                                    }
+                                                                ,$setOnInsert: { 
+                                                                  inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                                  ,inserter_date: Date.now()
+                                                                 }}
                                                               ,{upsert:true}
                                                             ));
                   }
@@ -463,6 +519,7 @@ const handler = async (event, context)=>{
       case 'PATCH': // associates divisions with a shooter
         // let shooter= {" name":"", "email": "", "category":0, "eventId":[]};
         let shooter= JSON.parse(event.body);
+
         let registered= shooter.registered;
         let shooterId=shooter.shooterId;
         let event_id= shooter.event_id;
@@ -472,6 +529,8 @@ const handler = async (event, context)=>{
   
         if(shooterId===null||shooterId===""||shooterId===0){ // new shooter
 
+          shooter.inserter= (user&&user.email)?user.email.toLowerCase().trim():'unknown';
+          shooter.inserter_date= Date.now();
   
           new_record= await cShooters.insertOne(shooter);
 
@@ -486,6 +545,8 @@ const handler = async (event, context)=>{
                                                    ,email: shooter.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                    ,category: shooter.category 
                                                   //  ,eventId: shooter.eventId 
+                                                  ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                  ,last_updater_date: Date.now()
                                                   }
                                                  });
           // console.log(`Updated!: ${new_record.toString()}, Name: ${shooter.name}`);
@@ -505,6 +566,8 @@ const handler = async (event, context)=>{
           shooter_division.optics= registered[i].optics;
           shooter_division.order_aux= 0;
           shooter_division.subscribe_date= new Date();
+          shooter_division.inserter= (user&&user.email)?user.email.toLowerCase().trim():'unknown';
+          shooter_division.inserter_date= Date.now();
           shooters_divisions.push(shooter_division);
         }
         await cShooters_Divisions.deleteMany({"shooterId":shooterId});
@@ -524,7 +587,21 @@ const handler = async (event, context)=>{
           // console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
           let shooterDivisions= JSON.parse(event.body);
         
-          let user= context.clientContext.user;
+          // let user= context.clientContext.user;
+          
+          let user=null;
+          try{
+            console.log(`before get rawNetlifyContex`);
+            const rawNetlifyContext = context.clientContext.custom.netlify;
+            console.log(`rawNetlifyContex`);
+            const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+            const { identity, _user } = JSON.parse(netlifyContext);
+            console.log(`got _user`);
+            user= _user;
+          }catch(e){
+            console.log(`got error getting rawNetlifyContex`);
+            user= context.clientContext.user;
+          }
           if(!user){
             console.log(`Unauthorized, User (not logged)!`);
             return  {

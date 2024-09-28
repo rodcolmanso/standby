@@ -854,7 +854,20 @@ const handler = async (event, context)=>{
         // console.log('Entrou no PATCH dos KOs');
         let matchesBody= JSON.parse(event.body);
 
-        let user= context.clientContext.user;
+        // let user= context.clientContext.user;
+        let user=null;
+        try{
+          console.log(`before get rawNetlifyContex`);
+          const rawNetlifyContext = context.clientContext.custom.netlify;
+          console.log(`rawNetlifyContex`);
+          const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+          const { identity, _user } = JSON.parse(netlifyContext);
+          console.log(`got _user`);
+          user= _user;
+        }catch(e){
+          console.log(`got error getting rawNetlifyContex`);
+          user= context.clientContext.user;
+        }
 
           let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
             // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
@@ -914,7 +927,20 @@ const handler = async (event, context)=>{
 // console.log(`${eventId}&&${divisionId}&&${categ}`);
         if(eventId&&divisionId){ //&&categ
 // console.log("2");
-          let user= context.clientContext.user;
+          // let user= context.clientContext.user;
+          let user=null;
+          try{
+            console.log(`before get rawNetlifyContex`);
+            const rawNetlifyContext = context.clientContext.custom.netlify;
+            console.log(`rawNetlifyContex`);
+            const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+            const { identity, _user } = JSON.parse(netlifyContext);
+            console.log(`got _user`);
+            user= _user;
+          }catch(e){
+            console.log(`got error getting rawNetlifyContex`);
+            user= context.clientContext.user;
+          }
 
           let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
           let isEventAdmin=false;

@@ -23,7 +23,20 @@ const handler = async (event, context)=>{
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     
-    const user= context.clientContext.user;
+    // const user= context.clientContext.user;
+    let user=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, _user } = JSON.parse(netlifyContext);
+      console.log(`got _user`);
+      user= _user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+       user= context.clientContext.user;
+    }
 
     switch (event.httpMethod){
       case 'GET':
@@ -31,8 +44,10 @@ const handler = async (event, context)=>{
       filter={};
       if(event.queryStringParameters.logged!==undefined){
 
-        if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
-          filter.email= context.clientContext.user.email.toLowerCase().trim();
+        // if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
+          if(user!==undefined){
+            // filter.email= context.clientContext.user.email.toLowerCase().trim();
+            filter.email= user.email.toLowerCase().trim();
         }else{
           filter.email= (Math.random()*1000000).toString();
         }
