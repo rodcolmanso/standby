@@ -26,6 +26,12 @@ const handler = async (event, context)=>{
     const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
     const { identity, _user } = JSON.parse(netlifyContext);
     console.log(`got _user`);
+    console.log(`got _user:`, _user);
+            if(!_user || !_user.email ){
+              console.log('Error getting user new method');
+              throw new Error('Error getting user new method');
+            }
+            console.log(`JSON._user:stringify`, JSON.stringify(_user));
     user= _user;
   }catch(e){
     console.log(`got error getting rawNetlifyContex`);

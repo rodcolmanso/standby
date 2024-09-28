@@ -38,6 +38,9 @@ const handler = async (event, context)=>{
       
       const { identity, _user } = JSON.parse(netlifyContext);
       console.log(`got _user:`, _user);
+      if(!_user || !_user.email ){
+        throw new Error('Error getting user new method');
+      }
       console.log(`JSON._user:stringify`, JSON.stringify(_user));
       
       user= _user;
