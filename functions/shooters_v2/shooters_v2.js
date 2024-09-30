@@ -346,12 +346,23 @@ const handler = async (event, context)=>{
                   if(user && user.email){ 
                     user_updater= user.email;
                   }
+
+                  console.log('=====================================');
+                  console.log(shooterData.docnum+'@tpmonline.com.br');
+                  console.log(shooterData.docnum);
+                  console.log( shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`',''));
+                  console.log(shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`',''));
+                  console.log(user_updater);
+                  console.log(Date.now());
+                  console.log('=====================================');
+                  
+
                   const dbShooter= await cShooters.updateOne(
                                               {'email':shooterData.docnum+'@tpmonline.com.br', 'docnum':shooterData.docnum}
                                               ,{ $set: { email : shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
-                                                ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')}
+                                                ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                 ,last_updater: user_updater
-                                                ,last_updater_date: Date.now()
+                                                ,last_updater_date: Date.now()}
                                               });
 
                    if(dbShooter.modifiedCount<1){
@@ -367,6 +378,7 @@ const handler = async (event, context)=>{
                     };
                    }
                 }catch(errrrr){
+                  console.log('ERRORRR aqui: ', errrrr)
                   return  {
                     statusCode:  409,
                     body: `E11000. Error, document number already registred for anoter user. { ${shooterData.docnum} `
