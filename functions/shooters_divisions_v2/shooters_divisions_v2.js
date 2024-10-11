@@ -31,28 +31,28 @@ const handler = async (event, context)=>{
       case 'GET':
 
         // const user= context.clientContext.user;
-    let user=null;
+    let userContext=null;
     try{
       console.log(`before get rawNetlifyContex`);
       const rawNetlifyContext = context.clientContext.custom.netlify;
       console.log(`rawNetlifyContex`);
       const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-      const { identity, _user } = JSON.parse(netlifyContext);
-      console.log(`got _user`);
-      console.log(`got _user:`, _user);
-      if(!_user || !_user.email ){
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user`);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
         throw new Error('Error getting user new method');
       }
-      console.log(`JSON._user:stringify`, JSON.stringify(_user));
-      user= _user;
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
+      userContext= user;
     }catch(e){
       console.log(`got error getting rawNetlifyContex`);
-       user= context.clientContext.user;
+      userContext= context.clientContext.user;
     }
 
-        // if(!user){
-        //   console.log(`User not logged!`);
-        // }else console.log(`User logged!`);
+        // if(!userContext){
+        //   console.log(`userContext not logged!`);
+        // }else console.log(`userContext logged!`);
 
         p_eventId=null;
         p_email=null;
@@ -84,18 +84,18 @@ const handler = async (event, context)=>{
           // console.log(`p_shooterId= ${p_shooterId}`);
         }
 
-        // console.log(`user.email: ${user.email}`);
-        let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
-        // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+        // console.log(`userContext.email: ${userContext.email}`);
+        let isAdmin= (userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles.indexOf("admin")>=0);
+        // let isEventAdmin= (userContext&&userContext.user_metadata&&userContext.user_metadata.admin_events&&userContext.user_metadata.admin_events!==""&&userContext.user_metadata.admin_events.indexOf(p_eventId)>-1);
         let isEventAdmin=false;
-          if(!isAdmin&& user && user.email){
+          if(!isAdmin&& userContext && userContext.email){
 
-            //check if the user is admin of the event:
+            //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(p_eventId)
             // const _e= await cEvent.aggregate( [
             //   {$match:{_id: f_id
-            //           , owners: user.email}}
+            //           , owners: userContext.email}}
             // ]).toArray();
             const _e= await cEvent.aggregate( [
               { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
@@ -106,8 +106,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email.toLowerCase().trim()}
-                       , {'range.adm': user.email.toLowerCase().trim()}]
+                       ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                       , {'range.adm': userContext.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -178,12 +178,26 @@ const handler = async (event, context)=>{
               shootersDiv[i].shooters_divisions[j].gunFactory= shootersDiv[i].shooters_divisions[j].gun_det[0].factory;
             }
             
+            console.log('');
+            console.log('');
+            console.log('####################################');
+            console.log('userContext=',userContext);
+            
+            if(userContext&&userContext.email&&shootersDiv[i].email){
+              console.log('userContext.email.toLowerCase().trim()=',userContext.email.toLowerCase().trim());
+              console.log('shootersDiv[i].email.toLowerCase().trim()=',shootersDiv[i].email.toLowerCase().trim());
+            }
 
-            if(!isAdmin&&!isEventAdmin)
-            if(!user||!user.email||!shootersDiv[i].email||user.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
-              
-              shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
+            console.log('####################################');
+            console.log('');
+            console.log('');
 
+            if(!isAdmin&&!isEventAdmin){
+              if(!userContext||!userContext.email||!shootersDiv[i].email||userContext.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
+                
+                shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
+
+              }
             }
           }
 
@@ -251,25 +265,25 @@ const handler = async (event, context)=>{
           // console.log('==================================');
           
 
-          // let user= context.clientContext.user;
+          // let userContext= context.clientContext.user;
      
-    let user=null;
+    let userContext=null;
     try{
       console.log(`before get rawNetlifyContex`);
       const rawNetlifyContext = context.clientContext.custom.netlify;
       console.log(`rawNetlifyContex`);
       const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-      const { identity, _user } = JSON.parse(netlifyContext);
-      console.log(`got _user`);
-      console.log(`got _user:`, _user);
-      if(!_user || !_user.email ){
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user`);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
         throw new Error('Error getting user new method');
       }
-      console.log(`JSON._user:stringify`, JSON.stringify(_user));
-      user= _user;
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
+      userContext= user;
     }catch(e){
       console.log(`got error getting rawNetlifyContex`);
-       user= context.clientContext.user;
+      userContext= context.clientContext.user;
     }
           
           for(let i=0;i<shootersDiv.length;i++){
@@ -290,9 +304,23 @@ const handler = async (event, context)=>{
                 // console.log(`===DENTRO DO If shootersDiv[i].registered[j].gun= ${shootersDiv[i].registered[j].gun}`);
               }
             }
-            if(!user||user.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
+
+            console.log('');
+            console.log('');
+            console.log('====================================');
+            console.log('userContext=',userContext);
+            
+            if(userContext){
+              console.log('userContext.email.toLowerCase().trim()=',userContext.email.toLowerCase().trim());
+              console.log('shootersDiv[i].email.toLowerCase().trim()=',shootersDiv[i].email.toLowerCase().trim());
+            }
+
+            if(!userContext||userContext.email.toLowerCase().trim()!==shootersDiv[i].email.toLowerCase().trim()){
               shootersDiv[i].docnum= shootersDiv[i].docnum.substring(0,2)+'*.***.*'+shootersDiv[i].docnum.substring(7,9)+"-"+shootersDiv[i].docnum.substring(9);
             }
+            console.log('====================================');
+            console.log('');
+            console.log('');
           }
 
             return  {
@@ -319,47 +347,47 @@ const handler = async (event, context)=>{
           // console.log(`PUTTED JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
 
           // console.log(JSON.stringify(context, null, 2))
-          // let user= context.clientContext.user;
-        let user=null;
+          // let userContext= context.clientContext.user;
+        let userContext=null;
         try{
           console.log(`before get rawNetlifyContex`);
           const rawNetlifyContext = context.clientContext.custom.netlify;
           console.log(`rawNetlifyContex`);
           const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-          const { identity, _user } = JSON.parse(netlifyContext);
-          console.log(`got _user`);
-          console.log(`got _user:`, _user);
-          if(!_user || !_user.email ){
+          const { identity, user } = JSON.parse(netlifyContext);
+          console.log(`got user`);
+          console.log(`got user:`, user);
+          if(!user || !user.email ){
             throw new Error('Error getting user new method');
           }
-          console.log(`JSON._user:stringify`, JSON.stringify(_user));
-          user= _user;
+          console.log(`JSON.user:stringify`, JSON.stringify(user));
+          userContext= user;
         }catch(e){
           console.log(`got error getting rawNetlifyContex`);
-          user= context.clientContext.user;
+          userContext= context.clientContext.user;
         }
 
-          if(!user||!user.email){
-            // console.log(`Unauthorized, User not logged!`);
+          if(!userContext||!userContext.email){
+            // console.log(`Unauthorized, userContext not logged!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User not logged!`
+              body: `Unauthorized, userContext not logged!`
             }; 
           }
 
-          // console.log(`user.email: ${user.email}`);
-          let isAdmin= (user!==null&&user!==undefined&&user.app_metadata!==null&&user.app_metadata!==undefined &&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+          // console.log(`userContext.email: ${userContext.email}`);
+          let isAdmin= (userContext!==null&&userContext!==undefined&&userContext.app_metadata!==null&&userContext.app_metadata!==undefined &&userContext.app_metadata.roles!==undefined&&userContext.app_metadata.roles!==""&&!(userContext.app_metadata.roles.indexOf("admin")<0));
           // console.log(`is Admin: ${isAdmin}`);
 
           let isEventAdmin=false;
           if(!isAdmin){
 
-            //check if the user is admin of the event:
+            //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(p_eventId)
             // const _e= await cEvent.aggregate( [
             //   {$match:{_id: f_id
-            //           , owners: user.email}}
+            //           , owners: userContext.email}}
             // ]).toArray();
 
             const _e= await cEvent.aggregate( [
@@ -371,8 +399,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email.toLowerCase().trim()}
-                       , {'range.adm': user.email.toLowerCase().trim()}]
+                       ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                       , {'range.adm': userContext.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -380,12 +408,12 @@ const handler = async (event, context)=>{
             isEventAdmin= (_e.length>0);
           }
 
-          if(shooterDivisions.email.toLowerCase().trim()!==user.email.toLowerCase().trim()
+          if(shooterDivisions.email.toLowerCase().trim()!==userContext.email.toLowerCase().trim()
           &&!isAdmin&&!isEventAdmin){
-            console.log(`Unauthorized, User ${user.email} (isEventAdmin=${isEventAdmin}) cannot update/insert the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`);
+            console.log(`Unauthorized, userContext ${userContext.email} (isEventAdmin=${isEventAdmin}) cannot update/insert the userContext ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user.email} cannot update/insert the user ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
+              body: `Unauthorized, userContext ${userContext.email} cannot update/insert the userContext ${shooterDivisions.email.toLowerCase().trim()} (shooterId: ${shooterDivisions.shooterId})!`
             };
           }
 
@@ -393,7 +421,7 @@ const handler = async (event, context)=>{
             name: shooterDivisions.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
             ,email: shooterDivisions.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
             ,docnum: shooterDivisions.docnum
-            ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+            ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
             ,last_updater_date: Date.now()
             };
           
@@ -405,7 +433,7 @@ const handler = async (event, context)=>{
                                             {email: shooterDivisions.email.toLowerCase().trim()}
                                             ,{$set: _shooterUpsert
                                               ,$setOnInsert: { 
-                                                inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                                                ,inserter_date: Date.now()
                                              }
                                             }
@@ -444,10 +472,10 @@ const handler = async (event, context)=>{
             if(shooterDivisions.shooters_divisions[i].eventId !== p_eventId
              ||shooterDivisions.shooters_divisions[i].shooterId!== shooterDivisions._id
             ){
-              console.log(`Unauthorized, User ${user.email} cannot update/insert registritions in events different than ${p_eventId}) or for other shoooters in this operation!`);
+              console.log(`Unauthorized, userContext ${userContext.email} cannot update/insert registritions in events different than ${p_eventId}) or for other shoooters in this operation!`);
               return  {
                 statusCode: 401,
-                body: `Unauthorized, User ${user.email} cannot update/insert registritions in events different than ${p_eventId}) in this operation!`
+                body: `Unauthorized, userContext ${userContext.email} cannot update/insert registritions in events different than ${p_eventId}) in this operation!`
                 };
             }
 
@@ -464,7 +492,7 @@ const handler = async (event, context)=>{
                     ,duel: shooterDivisions.shooters_divisions[i].duel
                     ,order_aux: 0
                     ,subscribe_date: new Date()
-                    ,inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                    ,inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                     ,inserter_date: Date.now()
                     }));
 
@@ -487,11 +515,11 @@ const handler = async (event, context)=>{
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
                                                                     ,order_aux: 0
                                                                     ,subscribe_date: new Date()
-                                                                    ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                                    ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                                                                     ,last_updater_date: Date.now()
                                                                     }
                                                                 ,$setOnInsert: { 
-                                                                  inserter: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                                  inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                                                                   ,inserter_date: Date.now()
                                                                  }}
                                                               ,{upsert:true}
@@ -544,7 +572,7 @@ const handler = async (event, context)=>{
   
         if(shooterId===null||shooterId===""||shooterId===0){ // new shooter
 
-          shooter.inserter= (user&&user.email)?user.email.toLowerCase().trim():'unknown';
+          shooter.inserter= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
           shooter.inserter_date= Date.now();
   
           new_record= await cShooters.insertOne(shooter);
@@ -560,7 +588,7 @@ const handler = async (event, context)=>{
                                                    ,email: shooter.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                    ,category: shooter.category 
                                                   //  ,eventId: shooter.eventId 
-                                                  ,last_updater: (user&&user.email)?user.email.toLowerCase().trim():'unknown'
+                                                  ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                                                   ,last_updater_date: Date.now()
                                                   }
                                                  });
@@ -581,7 +609,7 @@ const handler = async (event, context)=>{
           shooter_division.optics= registered[i].optics;
           shooter_division.order_aux= 0;
           shooter_division.subscribe_date= new Date();
-          shooter_division.inserter= (user&&user.email)?user.email.toLowerCase().trim():'unknown';
+          shooter_division.inserter= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
           shooter_division.inserter_date= Date.now();
           shooters_divisions.push(shooter_division);
         }
@@ -602,35 +630,35 @@ const handler = async (event, context)=>{
           // console.log(`DELETE shooter_division.JSON.stringify(body)=: ${JSON.stringify(event.body,null,2)}`);
           let shooterDivisions= JSON.parse(event.body);
         
-          // let user= context.clientContext.user;
+          // let userContext= context.clientContext.user;
           
-          let user=null;
+          let userContext=null;
           try{
             console.log(`before get rawNetlifyContex`);
             const rawNetlifyContext = context.clientContext.custom.netlify;
             console.log(`rawNetlifyContex`);
             const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-            const { identity, _user } = JSON.parse(netlifyContext);
-            console.log(`got _user`);
-            console.log(`got _user:`, _user);
-            if(!_user || !_user.email ){
+            const { identity, user } = JSON.parse(netlifyContext);
+            console.log(`got user`);
+            console.log(`got user:`, user);
+            if(!user || !user.email ){
               throw new Error('Error getting user new method');
             }
-            console.log(`JSON._user:stringify`, JSON.stringify(_user));
-            user= _user;
+            console.log(`JSON.user:stringify`, JSON.stringify(user));
+            userContext= user;
           }catch(e){
             console.log(`got error getting rawNetlifyContex`);
-            user= context.clientContext.user;
+            userContext= context.clientContext.user;
           }
-          if(!user){
-            console.log(`Unauthorized, User (not logged)!`);
+          if(!userContext){
+            console.log(`Unauthorized, userContext (not logged)!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User (not logged)!`
+              body: `Unauthorized, userContext (not logged)!`
             }; 
           }
 
-          let isAdmin= (user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
+          let isAdmin= (userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles!==undefined&&(userContext.app_metadata.roles.indexOf("admin")>-1));
           // console.log(`is Admin: ${isAdmin}`);
 
           
@@ -663,7 +691,7 @@ const handler = async (event, context)=>{
                       ,foreignField: "_id"
                       ,as: "events_adm"
                       ,pipeline:[
-                          {$match:{"owners": user.email.toLowerCase().trim()}}
+                          {$match:{"owners": userContext.email.toLowerCase().trim()}}
                       ]
               }}
               ,{ $addFields: { "shooterId": { $toObjectId: "$shooterId" }}}
@@ -672,7 +700,7 @@ const handler = async (event, context)=>{
                   ,foreignField: "_id"
                   ,as: "shooters"
                   ,pipeline:[
-                      {$match:{"email": user.email.toLowerCase().trim()}}
+                      {$match:{"email": userContext.email.toLowerCase().trim()}}
                   ]
               }}
               ,{$match: { $or:[ {events_adm: {$ne: []}}, {shooters: {$ne: []}} ]  }}
@@ -694,8 +722,8 @@ const handler = async (event, context)=>{
                       ,as: "range"
                   }}
                   ,{$match:{_id: f_id
-                          ,$or:[ {owners: user.email.toLowerCase().trim()}
-                          , {'range.adm': user.email.toLowerCase().trim()}]
+                          ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                          , {'range.adm': userContext.email.toLowerCase().trim()}]
                           }
                       }
                 ]).toArray();
@@ -703,10 +731,10 @@ const handler = async (event, context)=>{
               }
 
               if(autorized_shooters_divisions.length<1 &&_e.length<1){
-                console.log(`Unauthorized! User ${user.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`);
+                console.log(`Unauthorized! userContext ${userContext.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`);
                 return  {
                   statusCode: 401,
-                  body: `Unauthorized! User ${user.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`
+                  body: `Unauthorized! userContext ${userContext.email} cannot delete subscriptions of other shooters! (shooterId: ${shooterDivisions.shooterId})`
                 }; 
               }
 

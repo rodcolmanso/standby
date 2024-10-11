@@ -73,15 +73,7 @@ function buildClassiication(rank){
         }
  
         row+= `<tr>
-              <td class="text-small text-sm-start nowrap"><b>${rank[i].divisionName}</b></td>
-              <td class="text-end">${rank[i].position}º</td>
-              <td class="text-end">
-                <p style="margin-bottom: 0 !important;">
-                  <span class="badge text-bg-warning" >${_time}
-                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
-                  </span>
-                </p>
-              </td>
+              <td class="text-small text-sm-start nowrap d-none d-xl-block"><b>${rank[i].divisionName}</b></td>
               <td class="text-start nowrap">
                 <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
                 <span class="badge text-bg-secondary">${rank[i].gun}
@@ -94,7 +86,15 @@ function buildClassiication(rank){
                 </span>
                 </p>
               </td>
-              <td class="text-truncate text-start "><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
+              <td class="text-end">
+                <p style="margin-bottom: 0 !important;">
+                  <span class="badge text-bg-warning" >${_time}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
+                  </span>
+                </p>
+              </td>
+              <td class="text-end text-small">${rank[i].position}º</td>
+              <td class="text-truncate text-start d-none d-xl-block"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
               <td class="text-small text-sm-center"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${(new Date(rank[i].clockDate)).toLocaleDateString()}</a></td>
             </tr>`;
     }

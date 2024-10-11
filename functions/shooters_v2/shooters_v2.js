@@ -28,29 +28,29 @@ const handler = async (event, context)=>{
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     console.log(`got cShooters`);
     
-    // const user= context.clientContext.user;
-    let user=null;
+    // const userContext= context.clientContext.user;
+    let userContext=null;
     try{
       console.log(`before get rawNetlifyContex`);
       const rawNetlifyContext = context.clientContext.custom.netlify;
       console.log(`rawNetlifyContex=`, netlifyContext);
       const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
       
-      const { identity, _user } = JSON.parse(netlifyContext);
-      console.log(`got _user:`, _user);
-      if(!_user || !_user.email ){
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
         throw new Error('Error getting user new method');
       }
-      console.log(`JSON._user:stringify`, JSON.stringify(_user));
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
       
-      user= _user;
+      userContext= user;
     }catch(e){
       console.log(`got error getting rawNetlifyContex`);
-       user= context.clientContext.user;
+      userContext= context.clientContext.user;
     }
 
-    console.log(`user=`, user);
-    console.log(`user.email=`, user?user.email:'user undefined');
+    console.log(`userContext=`, userContext);
+    console.log(`userContext.email=`, userContext?userContext.email:'userContext undefined');
 
     switch (event.httpMethod){
       case 'GET':
@@ -66,10 +66,10 @@ const handler = async (event, context)=>{
           console.log(`Got into event.queryStringParameters.logged!==undefined`);
 
           // if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
-          if(user!==undefined){
+          if(userContext!==undefined){
             console.log(`Got into context.clientContext!==undefined&&context.clientContext.user!==undefined`);
             // filter.email= context.clientContext.user.email.toLowerCase().trim();
-            filter.email= user.email.toLowerCase().trim();
+            filter.email= userContext.email.toLowerCase().trim();
           }else{
             console.log(`NOTTTTTT got into context.clientContext!==undefined&&context.clientContext.user!==undefined`);
             filter.email= (Math.random()*1000000).toString();
@@ -123,8 +123,8 @@ const handler = async (event, context)=>{
 
         console.log('retShooters.length', retShooters.length);
         if(retShooters.length>0 && retShooters[0]._id
-          &&user&&user.email&&user.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
-          && user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+          &&userContext&&userContext.email&&userContext.email.toLowerCase().trim() ===retShooters[0].email.toLowerCase().trim()   //usuário logado é o mesmo do avatar
+          && userContext.user_metadata&& userContext.user_metadata.avatar_url&&userContext.user_metadata.avatar_url!==''){
 
           console.log('Vai consultar img', retShooters[0]._id);
 
@@ -141,7 +141,7 @@ const handler = async (event, context)=>{
           
           if(!_hasImg){
           console.log('VAI FAZER UPDOAD NO CLOUDINARY!!!!!!!!!!!!! avatar_url=',avatar_url);
-          await cloudinary.uploader.upload(user.user_metadata.avatar_url,
+          await cloudinary.uploader.upload(userContext.user_metadata.avatar_url,
               { public_id: "profile/"+retShooters[0]._id
                 ,overwrite: false
                 })
@@ -150,14 +150,14 @@ const handler = async (event, context)=>{
 
         }
 
-        let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
+        let isAdmin= userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&(userContext.app_metadata.roles.indexOf("admin")>=0||userContext.app_metadata.roles.indexOf("super")>=0);
         
         if(!isAdmin){ //mask sensitivy data
 
           let isEventAdmin=false;
-          if(event.queryStringParameters.eventId && user && user.email){
+          if(event.queryStringParameters.eventId && userContext && userContext.email){
 
-            //check if the user is admin of the event:
+            //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(event.queryStringParameters.eventId)
             
@@ -170,8 +170,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                      ,$or:[ {owners: user.email.toLowerCase().trim()}
-                      , {'range.adm': user.email.toLowerCase().trim()}]
+                      ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                      , {'range.adm': userContext.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -183,7 +183,7 @@ const handler = async (event, context)=>{
 
           if(!isEventAdmin)
             for(let i=0;i<retShooters.length;i++){
-                if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
+                if(!userContext||!userContext.email||userContext.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
                   retShooters[0].docnum= retShooters[0].docnum.substring(0,2)+'*.***.*'+retShooters[0].docnum.substring(7,9)+"-"+retShooters[0].docnum.substring(9);
                   
                 retShooters[0].fullName= "*******";
@@ -232,17 +232,17 @@ const handler = async (event, context)=>{
           console.log('shooterData.eventOwners=',shooterData.eventOwners);
           
 
-          if(!user|| !shooterData.email ||!user.app_metadata|| 
-            (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())
-             &&((!user.app_metadata.roles || user.app_metadata.roles.indexOf("admin")<0)
-             && (!user.app_metadata.roles || user.app_metadata.roles.indexOf("super")<0)
-             && (!shooterData.eventOwners || shooterData.eventOwners.length<1|| shooterData.eventOwners.indexOf(user.email.toLowerCase().trim())<0))
+          if(!userContext|| !shooterData.email ||!userContext.app_metadata|| 
+            (userContext.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())
+             &&((!userContext.app_metadata.roles || userContext.app_metadata.roles.indexOf("admin")<0)
+             && (!userContext.app_metadata.roles || userContext.app_metadata.roles.indexOf("super")<0)
+             && (!shooterData.eventOwners || shooterData.eventOwners.length<1|| shooterData.eventOwners.indexOf(userContext.email.toLowerCase().trim())<0))
             ){
-              console.log(`Unauthorized, User not logged!`);
-              console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
+              console.log(`Unauthorized, userContext not logged!`);
+              console.log(`userContext.app_metadata.roles= ${userContext.app_metadata.roles}`);
               return  {
                 statusCode: 401,
-                body: `Unauthorized, User not logged!`
+                body: `Unauthorized, userContext not logged!`
               }; 
           }
 
@@ -257,7 +257,7 @@ const handler = async (event, context)=>{
               ,docnum: shooterData.docnum
               ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
               ,category: shooterData.category
-              ,inserter: user.email.toLowerCase().trim()
+              ,inserter: userContext.email.toLowerCase().trim()
               ,inserter_date: Date.now()
               }
             );
@@ -280,7 +280,7 @@ const handler = async (event, context)=>{
                 ,sex: shooterData.sex
                 ,cr: shooterData.cr
                 ,crEndDate: shooterData.crEndDate
-                ,last_updater: user.email.toLowerCase().trim()
+                ,last_updater: userContext.email.toLowerCase().trim()
                 ,last_updater_date: Date.now()
               };
 
@@ -343,8 +343,8 @@ const handler = async (event, context)=>{
                 try{
 
                   let user_updater= 'unknown';
-                  if(user && user.email){ 
-                    user_updater= user.email;
+                  if(userContext && userContext.email){ 
+                    user_updater= userContext.email;
                   }
 
                   console.log('=====================================');
@@ -379,21 +379,52 @@ const handler = async (event, context)=>{
                    }
                 }catch(errrrr){
                   console.log('ERRORRR aqui: ', errrrr)
+                  //// CPF já cadastrado com um outro email. Exibir o email já cadastrado!
+                  const existentShooter= await cShooters.find({'docnum':shooterData.docnum}).toArray();
+                  let _existentEmailMsg=', EMAIL NOT FOUND!?!?';
+                  let _existentEmail='';
+                  if(existentShooter.length>0){
+                    _existentEmailMsg= ', email= '+existentShooter[0].email;
+                    _existentEmail= existentShooter[0].email;
+                  }
+
                   return  {
                     statusCode:  409,
-                    body: `E11000. Error, document number already registred for anoter user. { ${shooterData.docnum} `
+                    body: JSON.stringify( { errorCode:409, registeredEmail:_existentEmail, errorMessage: `E11000. Error, document number already registred for anoter user. docnum ${shooterData.docnum}${_existentEmailMsg}`})
                   };
                 }
               }else{
+
+                //// CPF já cadastrado com um outro email. Exibir o email já cadastrado!
+                const existentShooter= await cShooters.find({'docnum':shooterData.docnum}).toArray();
+                let _existentEmailMsg=', EMAIL NOT FOUND!?!?';
+                let _existentEmail='';
+                if(existentShooter.length>0){
+                  _existentEmailMsg= ', email= '+existentShooter[0].email;
+                  _existentEmail= existentShooter[0].email;
+                }
+
                 return  {
                   statusCode:  409,
-                  body: `E11000. Error, document number already registred for anoter user. { ${shooterData.docnum} `
+                  body: JSON.stringify( { errorCode:409, registeredEmail:_existentEmail, errorMessage: `E11001. Error, document number already registred for anoter user. docnum=${shooterData.docnum}${_existentEmailMsg}`})
                 };
               }
             }else if(error.toString().toLowerCase().indexOf('email_1')>0){
+
+              //// email já usado para outro CPF. Exibir CPF já cadastrado?????
+              const existentShooter= await cShooters.find({'email':shooterData.email}).toArray();
+                let _existentEmailMsg=', EMAIL NOT FOUND!?!?';
+                let _existentEmail='';
+                if(existentShooter.length>0){
+                  _existentEmailMsg= ', email= '+existentShooter[0].email;
+                  _existentEmail= existentShooter[0].email;
+                }
+
               return  {
                 statusCode:  408,
-                body: `E11000. Error, email already registred for anoter user. { ${shooterData.email} `
+                body: JSON.stringify( { errorCode:408
+                                        , registeredEmail:_existentEmail
+                                       ,errorMessage:  `E11002. Error, email already registred for anoter user. { ${shooterData.email}${_existentEmailMsg} `})
               };
             }
 

@@ -23,25 +23,25 @@ const handler = async (event, context)=>{
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     
-    // const user= context.clientContext.user;
-    let user=null;
+    // const userContext= context.clientContext.user;
+    let userContext=null;
     try{
       console.log(`before get rawNetlifyContex`);
       const rawNetlifyContext = context.clientContext.custom.netlify;
       console.log(`rawNetlifyContex`);
       const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-      const { identity, _user } = JSON.parse(netlifyContext);
-      console.log(`got _user`);
-      console.log(`got _user:`, _user);
-      if(!_user || !_user.email ){
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user`);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
         console.log('Error getting user new method');
         throw new Error('Error getting user new method');
       }
-      console.log(`JSON._user:stringify`, JSON.stringify(_user));
-      user= _user;
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
+      userContext= user;
     }catch(e){
       console.log(`got error getting rawNetlifyContex`);
-       user= context.clientContext.user;
+      userContext= context.clientContext.user;
     }
 
     switch (event.httpMethod){
@@ -51,9 +51,9 @@ const handler = async (event, context)=>{
       if(event.queryStringParameters.logged!==undefined){
 
         // if(context.clientContext!==undefined&&context.clientContext.user!==undefined){
-          if(user!==undefined){
+          if(userContext!==undefined){
             // filter.email= context.clientContext.user.email.toLowerCase().trim();
-            filter.email= user.email.toLowerCase().trim();
+            filter.email= userContext.email.toLowerCase().trim();
         }else{
           filter.email= (Math.random()*1000000).toString();
         }
@@ -100,15 +100,15 @@ const handler = async (event, context)=>{
   // const testemail= 'luccamangamer@gmail.com';
 
 
-  if(user&& user.user_metadata&& user.user_metadata.avatar_url&&user.user_metadata.avatar_url!==''){
+  if(userContext&& userContext.user_metadata&& userContext.user_metadata.avatar_url&&userContext.user_metadata.avatar_url!==''){
     // if(testProvidedImg){
-    // console.log('YES, provider avatar='+user.user_metadata.avatar_url+'. Getting dbUser._id...  user.email='+ user.email);
-    // console.log('YES, provider avatar='+testProvidedImg+'. Getting dbUser._id...  user.email='+ testemail);
+    // console.log('YES, provider avatar='+userContext.user_metadata.avatar_url+'. Getting dbUser._id...  userContext.email='+ userContext.email);
+    // console.log('YES, provider avatar='+testProvidedImg+'. Getting dbUser._id...  userContext.email='+ testemail);
     
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     const shooters= await cShooters.aggregate(
       [
-      {$match: {email: user.email.toLowerCase().trim()}}
+      {$match: {email: userContext.email.toLowerCase().trim()}}
       // {$match: {email: testemail}}
       ]).toArray();
     
@@ -117,36 +117,36 @@ const handler = async (event, context)=>{
       
       // console.log('          uploading provider avatar on Cloudinay....... dbUser._id= '+ shooters[0]._id);
       
-      cloudinary.uploader.upload(user.user_metadata.avatar_url,
+      cloudinary.uploader.upload(userContext.user_metadata.avatar_url,
         // cloudinary.uploader.upload(testProvidedImg,
           { public_id: "profile/"+shooters[0]._id
             ,overwrite: false
             })
           .then(result=>console.log(result));
 
-    // console.log('SUCCESS! Uploaded provider avatar='+user.user_metadata.avatar_url+' to Cloudinay....... dbUser._id= '+ shooters[0]._id);
+    // console.log('SUCCESS! Uploaded provider avatar='+userContext.user_metadata.avatar_url+' to Cloudinay....... dbUser._id= '+ shooters[0]._id);
 
-    }//else console.log('dbUser not found. user.email='+ user.email);
+    }//else console.log('dbUser not found. userContext.email='+ userContext.email);
 
   }//else console.log('There is NO privider avatar.');
 // ============================================
 
 
-      // const user= context.clientContext.user;
-      let isAdmin= user&&user.app_metadata&&user.app_metadata.roles&&(user.app_metadata.roles.indexOf("admin")>=0||user.app_metadata.roles.indexOf("super")>=0);
+      // const userContext= context.clientContext.user;
+      let isAdmin= userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&(userContext.app_metadata.roles.indexOf("admin")>=0||userContext.app_metadata.roles.indexOf("super")>=0);
       
       if(!isAdmin){ //mask sensitivy data
 
         let isEventAdmin=false;
-        if(event.queryStringParameters.eventId && user && user.email){
+        if(event.queryStringParameters.eventId && userContext && userContext.email){
 
-          //check if the user is admin of the event:
+          //check if the userContext is admin of the event:
           const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
           const f_id= new ObjectId(event.queryStringParameters.eventId)
           
           // const _e= await cEvent.aggregate( [
           //   {$match:{_id: f_id
-          //           , owners: user.email}}
+          //           , owners: userContext.email}}
           // ]).toArray();
           const _e= await cEvent.aggregate( [
             { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
@@ -157,8 +157,8 @@ const handler = async (event, context)=>{
                 ,as: "range"
             }}
             ,{$match:{_id: f_id
-                     ,$or:[ {owners: user.email.toLowerCase().trim()}
-                     , {'range.adm': user.email.toLowerCase().trim()}]
+                     ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                     , {'range.adm': userContext.email.toLowerCase().trim()}]
                     }
                 }
           ]).toArray();
@@ -168,7 +168,7 @@ const handler = async (event, context)=>{
 
         if(!isEventAdmin)
           for(let i=0;i<retShooters.length;i++){
-              if(!user||!user.email||user.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
+              if(!userContext||!userContext.email||userContext.email.trim().toLowerCase() !== retShooters[0].email.trim().toLowerCase()){
                 retShooters[0].docnum= retShooters[0].docnum.substring(0,2)+'*.***.*'+retShooters[0].docnum.substring(7,9)+"-"+retShooters[0].docnum.substring(9);
 
                 const emailsize= retShooters[0].email.indexOf('@');
@@ -199,17 +199,17 @@ const handler = async (event, context)=>{
 
         try{
 
-          //  console.log('user: '+user);
+          //  console.log('userContext: '+userContext);
           //  console.log('shooterData.email: '+shooterData.email);
-          //  console.log('user.email.toLowerCase().trim()): '+user.email.toLowerCase().trim());
+          //  console.log('userContext.email.toLowerCase().trim()): '+userContext.email.toLowerCase().trim());
           //  console.log('shooterData.email.toLowerCase().trim(): '+shooterData.email.toLowerCase().trim());
-          //  console.log('user.app_metadata: '+user.app_metadata);
-          //  console.log('user.app_metadata.roles: '+user.app_metadata.roles)
-          //  console.log('user.app_metadata.roles.indexOf("admin")<0: '+user.app_metadata.roles.indexOf("admin")<0);
+          //  console.log('userContext.app_metadata: '+userContext.app_metadata);
+          //  console.log('userContext.app_metadata.roles: '+userContext.app_metadata.roles)
+          //  console.log('userContext.app_metadata.roles.indexOf("admin")<0: '+userContext.app_metadata.roles.indexOf("admin")<0);
 
-          if(!user|| !shooterData.email ||!user.app_metadata|| (user.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&(user.app_metadata.roles.indexOf("admin")<0&&user.app_metadata.roles.indexOf("super")<0)){
-              console.log(`Unauthorized, User not logged!`);
-              console.log(`user.app_metadata.roles= ${user.app_metadata.roles}`);
+          if(!userContext|| !shooterData.email ||!userContext.app_metadata|| (userContext.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&(userContext.app_metadata.roles.indexOf("admin")<0&&userContext.app_metadata.roles.indexOf("super")<0)){
+              console.log(`Unauthorized, userContext not logged!`);
+              console.log(`userContext.app_metadata.roles= ${userContext.app_metadata.roles}`);
               return  {
                 statusCode: 401,
                 body: `Unauthorized, User not logged!`

@@ -854,37 +854,37 @@ const handler = async (event, context)=>{
         // console.log('Entrou no PATCH dos KOs');
         let matchesBody= JSON.parse(event.body);
 
-        // let user= context.clientContext.user;
-        let user=null;
+        // let userContext= context.clientContext.user;
+        let userContext=null;
         try{
           console.log(`before get rawNetlifyContex`);
           const rawNetlifyContext = context.clientContext.custom.netlify;
           console.log(`rawNetlifyContex`);
           const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-          const { identity, _user } = JSON.parse(netlifyContext);
-          console.log(`got _user`);
-          console.log(`got _user:`, _user);
-          if(!_user || !_user.email ){
+          const { identity, user } = JSON.parse(netlifyContext);
+          console.log(`got user`);
+          console.log(`got user:`, user);
+          if(!user || !user.email ){
             throw new Error('Error getting user new method');
           }
-          console.log(`JSON._user:stringify`, JSON.stringify(_user));
-          user= _user;
+          console.log(`JSON.user:stringify`, JSON.stringify(user));
+          userContext= user;
         }catch(e){
           console.log(`got error getting rawNetlifyContex`);
-          user= context.clientContext.user;
+          userContext= context.clientContext.user;
         }
 
-          let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
-            // let isEventAdmin= (user&&user.user_metadata&&user.user_metadata.admin_events&&user.user_metadata.admin_events!==""&&user.user_metadata.admin_events.indexOf(p_eventId)>-1);
+          let isAdmin= (userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles.indexOf("admin")>=0);
+            // let isEventAdmin= (userContext&&userContext.userContext_metadata&&userContext.userContext_metadata.admin_events&&userContext.userContext_metadata.admin_events!==""&&userContext.userContext_metadata.admin_events.indexOf(p_eventId)>-1);
           let isEventAdmin=false;
-          if(!isAdmin&& user && user.email){
+          if(!isAdmin&& userContext && userContext.email){
 
-            //check if the user is admin of the event:
+            //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(matchesBody.eventId)
             // const _e= await cEvent.aggregate( [
             //   {$match:{_id: f_id
-            //           , owners: user.email}}
+            //           , owners: userContext.email}}
             // ]).toArray();
             const _e= await cEvent.aggregate( [
               { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
@@ -895,8 +895,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email.toLowerCase().trim()}
-                       , {'range.adm': user.email.toLowerCase().trim()}]
+                       ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                       , {'range.adm': userContext.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -905,10 +905,10 @@ const handler = async (event, context)=>{
           }
 
           if(!isAdmin&&!isEventAdmin){
-            console.log(`Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`);
+            console.log(`Unauthorized, userContext ${userContext?userContext.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`
+              body: `Unauthorized, userContext ${userContext?userContext.email:'N/A'} cannot update/delete duels in event ${matchesBody.eventId}!`
               };
           }
     
@@ -933,39 +933,39 @@ const handler = async (event, context)=>{
         if(eventId&&divisionId){ //&&categ
 // console.log("2");
           // let user= context.clientContext.user;
-          let user=null;
+          let userContext=null;
           try{
             console.log(`before get rawNetlifyContex`);
             const rawNetlifyContext = context.clientContext.custom.netlify;
             console.log(`rawNetlifyContex`);
             const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-            const { identity, _user } = JSON.parse(netlifyContext);
-            console.log(`got _user`);
-            console.log(`got _user:`, _user);
-            if(!_user || !_user.email ){
+            const { identity, user } = JSON.parse(netlifyContext);
+            console.log(`got user`);
+            console.log(`got user:`, user);
+            if(!user || !user.email ){
               console.log('Error getting user new method');
               throw new Error('Error getting user new method');
             }
-            console.log(`JSON._user:stringify`, JSON.stringify(_user));
-            user= _user;
+            console.log(`JSON.user:stringify`, JSON.stringify(user));
+            userContext= user;
           }catch(e){
             console.log(`got error getting rawNetlifyContex`);
-            user= context.clientContext.user;
+            userContext= context.clientContext.user;
           }
 
-          let isAdmin= (user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf("admin")>=0);
+          let isAdmin= (userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles.indexOf("admin")>=0);
           let isEventAdmin=false;
 // console.log("3");
-          if(!isAdmin&& user && user.email){
+          if(!isAdmin&& userContext && userContext.email){
 // console.log("4");
-            //check if the user is admin of the event:
+            //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(eventId);
 // console.log("5");
 
             // const _e= await cEvent.aggregate( [
             //   {$match:{_id: f_id
-            //           , owners: user.email}}
+            //           , owners: userContext.email}}
             // ]).toArray();
 
             const _e= await cEvent.aggregate( [
@@ -977,8 +977,8 @@ const handler = async (event, context)=>{
                   ,as: "range"
               }}
               ,{$match:{_id: f_id
-                       ,$or:[ {owners: user.email.toLowerCase().trim()}
-                       , {'range.adm': user.email.toLowerCase().trim()}]
+                       ,$or:[ {owners: userContext.email.toLowerCase().trim()}
+                       , {'range.adm': userContext.email.toLowerCase().trim()}]
                       }
                   }
             ]).toArray();
@@ -987,10 +987,10 @@ const handler = async (event, context)=>{
           }
 
           if(!isAdmin&&!isEventAdmin){
-            console.log(`Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`);
+            console.log(`Unauthorized, userContext ${userContext?userContext.email:'N/A'} cannot update/delete duels in event ${eventId}!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user?user.email:'N/A'} cannot update/delete duels in event ${eventId}!`
+              body: `Unauthorized, userContext ${userContext?userContext.email:'N/A'} cannot update/delete duels in event ${eventId}!`
               };
           }
 // console.log("7");

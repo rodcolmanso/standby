@@ -73,7 +73,7 @@ window.onload = async () => {
 
     applySpinners(true);
     await loadPage();
-    document.getElementById('nav-ranking').classList.add('active');
+    // document.getElementById('nav-ranking').classList.add('active');
 
     document.getElementById('nav-matches').style.display='none';
     document.getElementById('nav-qualify').style.display='none';

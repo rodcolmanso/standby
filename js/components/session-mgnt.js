@@ -274,21 +274,29 @@ btnSaveDocnum.addEventListener('click', function(e) {
         .then(function(response) {
             console.log(response.status); // Will show you the status
 
-            if (!response.ok) {
-                if(response.status===409){
-                    alert(`ERRO! CPF já cadastrado para outro Atirador.`);
+            return response.json();
+        })
+        .then(json =>{
+            // if (!response.ok) {
+            if(json.errorCode){
+                console.log(json.errorMessage);
+                 
+                if(json.errorCode===409){
+                    alert(`ERRO! CPF já cadastrado para o email: ${json.registeredEmail} \n
+Se você quiser alterar o seu email de login, entre em contato com tiroaopratometalico.com.br.`);
                     // document.getElementById('docnum').value= shooterData.docnum;
                 }
-                if(response.status===408){
-                    alert(`ERRO! Email já cadastrado para outro Atirador.`);
+                if(json.errorCode===408){
+                    alert(`ERRO! Email já cadastrado para outro cpf. email: ${json.registeredEmail} \n
+Se você quiser alterar o seu email de login, entre em contato com tiroaopratometalico.com.br.`);
                     // document.getElementById('modalEmail').value= shooterData.email;
                 }
-                if(response.status===401){
+                if(json.errorCode===401){
                     alert(`ERRO! Você não tem permissão para executar essa ação.`);
                 }
-                throw new Error("HTTP status " + response.status);
+                throw new Error("alerted");
             }
-            return response.json();
+            return json;
         })
         .then(json => {
             let _a='';
@@ -314,9 +322,12 @@ btnSaveDocnum.addEventListener('click', function(e) {
         })
         .catch(err => {
             console.log(`Error updating atirador, error: ${err.toString()} `);
-            alert('Erro atualizando cpf do atirador: '+ err.toString());
-            clearSessionDbUser();
-            netlifyIdentity.logout();
+            if(err.toString().trim().toLowerCase().indexOf('alerted')<0){
+                alert('Erro atualizando cpf do atirador: '+ err.toString());
+            }
+
+            // clearSessionDbUser();
+            // netlifyIdentity.logout();
     })
         .finally(()=> {
             document.getElementById('btnCloseDocnum').disabled=false;

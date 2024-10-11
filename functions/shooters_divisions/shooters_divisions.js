@@ -133,41 +133,41 @@ const handler = async (event, context)=>{
       case 'PATCH': // associates divisions with a shooter
         
       // console.log('entrou');
-        // let user= context.clientContext.user;
-        let user=null;
+        // let userContext= context.clientContext.user;
+        let userContext=null;
         try{
           console.log(`before get rawNetlifyContex`);
           const rawNetlifyContext = context.clientContext.custom.netlify;
           console.log(`rawNetlifyContex`);
           const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-          const { identity, _user } = JSON.parse(netlifyContext);
-          console.log(`got _user`);
-          console.log(`got _user:`, _user);
-          if(!_user || !_user.email ){
+          const { identity, user } = JSON.parse(netlifyContext);
+          console.log(`got user`);
+          console.log(`got user:`, user);
+          if(!user || !user.email ){
             console.log('Error getting user new method');
             throw new Error('Error getting user new method');
           }
-          console.log(`JSON._user:stringify`, JSON.stringify(_user));
-          user= _user;
+          console.log(`JSON.user:stringify`, JSON.stringify(user));
+          userContext= user;
         }catch(e){
           console.log(`got error getting rawNetlifyContex`);
-          user= context.clientContext.user;
+          userContext= context.clientContext.user;
         }
 
-        if(!user){
-          console.log('user not logged');
+        if(!userContext){
+          console.log('userContext not logged');
           return  {
             statusCode: 401,
-            body: `Unauthorized, User (not logged)!`
+            body: `Unauthorized, userContext (not logged)!`
           }; 
 
         }
 
-        // console.log('user logado');
+        // console.log('userContext logado');
 
-        let isAdmin= (user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles!==undefined&&(user.app_metadata.roles.indexOf("admin")>-1));
+        let isAdmin= (userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles!==undefined&&(userContext.app_metadata.roles.indexOf("admin")>-1));
 
-        // console.log('user admin? '+isAdmin);
+        // console.log('userContext admin? '+isAdmin);
 
         let _body= JSON.parse(event.body);
 
@@ -219,16 +219,16 @@ const handler = async (event, context)=>{
           }
           console.log('HEEEERRRRR 1');
 
-          const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== user.email.toLowerCase().trim() 
-                               ||_r_sd[0].events[0].owners.indexOf(user.email.toLowerCase().trim())>-1
-                               ||_r_sd[0].events[0].range[0].adm.indexOf(user.email.toLowerCase().trim())>-1 );
+          const _authorized = (_r_sd[0].shooter[0].email.toLowerCase().trim()=== userContext.email.toLowerCase().trim() 
+                               ||_r_sd[0].events[0].owners.indexOf(userContext.email.toLowerCase().trim())>-1
+                               ||_r_sd[0].events[0].range[0].adm.indexOf(userContext.email.toLowerCase().trim())>-1 );
 
           console.log('HEEEERRRRR 2');
           if(!_authorized){
-            console.log(`Unauthorized, User ${user.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`);
+            console.log(`Unauthorized, userContext ${userContext.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`);
             return  {
               statusCode: 401,
-              body: `Unauthorized, User ${user.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`
+              body: `Unauthorized, userContext ${userContext.email} cannot update ShooterDivisionId: ${_body.shooterDivisionId})!`
             };
           }
 

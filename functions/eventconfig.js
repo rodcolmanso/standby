@@ -16,26 +16,26 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 const handler = async (event, context)=>{
-  // const user= context.clientContext.user;
+  // const userContext= context.clientContext.user;
   
-  let user=null;
+  let userContext=null;
   try{
     console.log(`before get rawNetlifyContex`);
     const rawNetlifyContext = context.clientContext.custom.netlify;
     console.log(`rawNetlifyContex`);
     const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-    const { identity, _user } = JSON.parse(netlifyContext);
-    console.log(`got _user`);
-    console.log(`got _user:`, _user);
-            if(!_user || !_user.email ){
+    const { identity, user } = JSON.parse(netlifyContext);
+    console.log(`got user`);
+    console.log(`got user:`, user);
+            if(!user || !user.email ){
               console.log('Error getting user new method');
               throw new Error('Error getting user new method');
             }
-            console.log(`JSON._user:stringify`, JSON.stringify(_user));
-    user= _user;
+    console.log(`JSON.user:stringify`, JSON.stringify(user));
+    userContext= user;
   }catch(e){
     console.log(`got error getting rawNetlifyContex`);
-     user= context.clientContext.user;
+    userContext= context.clientContext.user;
   }
 
   try {
@@ -64,29 +64,29 @@ const handler = async (event, context)=>{
       case 'PATCH':
 
         console.log('Entrou no patch');
-        console.log('user='+user);
-        console.log('user.emal='+user.email);
-        // console.log('user.app_metadata.roles[0]='+user.app_metadata.roles[0]);
+        console.log('userContext='+userContext);
+        console.log('userContext.emal='+userContext.email);
+        // console.log('userContext.app_metadata.roles[0]='+userContext.app_metadata.roles[0]);
         let event_config= JSON.parse(event.body);
       
-        let isAdmin= (user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+        let isAdmin= (userContext.app_metadata.roles!==undefined&&userContext.app_metadata.roles!==""&&!(userContext.app_metadata.roles.indexOf("admin")<0));
         console.log('isAdmin='+isAdmin);
 
         let updatedEvent=null;
         if(!isAdmin){
 
-          const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:user.email.toLowerCase().trim()}}).toArray();
+          const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:userContext.email.toLowerCase().trim()}}).toArray();
 
           if( rangeAdm.length<=0){
             return  {
               statusCode: 401,
-                body: `Unauthorized, User ${user.email} cannot update/insert events for this shooting range!`
+                body: `Unauthorized, userContext ${userContext.email} cannot update/insert events for this shooting range!`
               };
           }
 
           console.log('Nao eh adm 0');
-          // filter.owners=user.email;
-          event_config.owners.push(user.email.toLowerCase().trim());
+          // filter.owners=userContext.email;
+          event_config.owners.push(userContext.email.toLowerCase().trim());
           console.log('Nao eh adm 1');
           event_config.owners = [...new Set(event_config.owners)];
           console.log('event_config.owners'+event_config.owners);
@@ -129,8 +129,8 @@ const handler = async (event, context)=>{
             let filter={ "_id" : o_id};
             if(!isAdmin){
               console.log('Nao eh adm');
-              // filter.owners=user.email;
-              event_config.owners.push(user.email.toLowerCase().trim());
+              // filter.owners=userContext.email;
+              event_config.owners.push(userContext.email.toLowerCase().trim());
               event_config.owners = [...new Set(event_config.owners)];
               event_config.owners= event_config.owners.reduce((acc, i) => i ? [...acc, i] : acc, []);
               console.log('event_config.owners'+event_config.owners);
@@ -147,7 +147,7 @@ const handler = async (event, context)=>{
                 }
               }
               updatedEvent= await cEvents.updateOne(
-                                                //{ _id : o_id, owners: user.email }
+                                                //{ _id : o_id, owners: userContext.email }
                                                   filter
                                                   ,{ $set: { 
                                                     name : event_config.name

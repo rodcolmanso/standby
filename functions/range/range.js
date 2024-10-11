@@ -5,8 +5,8 @@ const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
 
-// const user= context.clientContext.user;
-let user=null;
+// const userContext= context.clientContext.user;
+let userContext=null;
 
 const handler = async (event, context)=>{
 
@@ -15,18 +15,18 @@ const handler = async (event, context)=>{
     const rawNetlifyContext = context.clientContext.custom.netlify;
     console.log(`rawNetlifyContex`);
     const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-    const { identity, _user } = JSON.parse(netlifyContext);
-    console.log(`got _user`);
-    console.log(`got _user:`, _user);
-    if(!_user || !_user.email ){
+    const { identity, user } = JSON.parse(netlifyContext);
+    console.log(`got user`);
+    console.log(`got user:`, user);
+    if(!user || !user.email ){
       console.log('Error getting user new method');
       throw new Error('Error getting user new method');
     }
-    console.log(`JSON._user:stringify`, JSON.stringify(_user));
-    user= _user;
+    console.log(`JSON.user:stringify`, JSON.stringify(user));
+    userContext= user;
   }catch(e){
     console.log(`got error getting rawNetlifyContex`);
-     user= context.clientContext.user;
+    userContext= context.clientContext.user;
   }
   
   try {
@@ -48,18 +48,18 @@ const handler = async (event, context)=>{
           filter.name= {$regex:v_name};
         }
         console.log('Antes do filter updater!!!!!!!!!!!!!');
-        // if(p_updater&&context.clientContext.user&&context.clientContext.user.email){
-        if(p_updater&&user&&user.email){
-          const isAdmin= (user&&user.app_metadata.roles!==undefined &&!(user.app_metadata.roles.indexOf("admin")<0));
+        // if(p_updater&&context.clientContext.userContext&&context.clientContext.userContext.email){
+        if(p_updater&&userContext&&userContext.email){
+          const isAdmin= (userContext&&userContext.app_metadata.roles!==undefined &&!(userContext.app_metadata.roles.indexOf("admin")<0));
 
           console.log('isAdmin='+isAdmin);
 
             filter.$or=[{active:{$exists:isAdmin}}, {_id: new ObjectId(p_rangeId)},
-              // {adm: {$eq:context.clientContext.user.email.toLowerCase().trim()}}
-              {adm: {$eq:user.email.toLowerCase().trim()}}
+              // {adm: {$eq:context.clientContext.userContext.email.toLowerCase().trim()}}
+              {adm: {$eq:userContext.email.toLowerCase().trim()}}
             ];
 
-            // filter.adm= {$eq:context.clientContext.user.email};
+            // filter.adm= {$eq:context.clientContext.userContext.email};
             console.log('entrou no updater. filter='+JSON.stringify(filter));
 
             
