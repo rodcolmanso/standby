@@ -122,6 +122,7 @@ const handler = async (event, context)=>{
               ,vl_first_try:event_config.vl_first_try
               ,vl_second_try:event_config.vl_second_try
               ,vl_other_tries:event_config.vl_other_tries
+              ,vl_per_gun: event_config.vl_per_gun
 
             });
         }else{
@@ -171,6 +172,7 @@ const handler = async (event, context)=>{
                                                     ,vl_first_try: event_config.vl_first_try
                                                     ,vl_second_try: event_config.vl_second_try
                                                     ,vl_other_tries: event_config.vl_other_tries
+                                                    ,vl_per_gun: event_config.vl_per_gun
                                                     }
                                                   }
                                                   // ,{ upsert: true }

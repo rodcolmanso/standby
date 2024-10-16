@@ -328,6 +328,7 @@ const handler = async (event, context)=>{
               ,{$addFields:{"_shooterId":{$toObjectId:"$shooterId"}
                           ,"_eventId"  :{$toObjectId:"$eventId"}
                           ,"_divisionId"  :{$toObjectId:"$divisionId"}
+                          ,"_shooterDivisionId"  :{$toObjectId:"$shooterDivisionId"}
                           }}
               ,{$lookup:{
                           from: "events"
@@ -350,18 +351,32 @@ const handler = async (event, context)=>{
                               {$project:{"divisionName":"$name"}}
                           ]
               }}
+              ,{$lookup:{
+                from: "shooters_divisions"
+                ,localField:"_shooterDivisionId"
+                ,foreignField:"_id"
+                ,as: "shooters_divisions"
+               }}  
               ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
               ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
               ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+              ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooters_divisions", 0 ] }, "$$ROOT" ] } } }
               ,{$group:{
-                  _id:["$shooterId", "$email" , "$name" ,"$vl_first_try", "$vl_second_try", "$vl_other_tries"],
+                  // _id:["$shooterId", "$email" , "$name" ,"$vl_first_try", "$vl_second_try", "$vl_other_tries"],
+                  _id:["$shooterId", "$email" , "$name", "$vl_first_try", "$vl_second_try", "$vl_other_tries","$gun"],
                   tries:{$count:{}}
               }}
           ]).toArray();
 
+          let _triesReport = triesReport.sort((a, b) => {
+            if (a._id[2] < b._id[2]) {
+              return -1;
+            }
+          });
+
           return  {
             statusCode: 200,
-            body: JSON.stringify(triesReport)
+            body: JSON.stringify(_triesReport)
           };
 
         }else{

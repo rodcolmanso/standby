@@ -3338,3 +3338,51 @@ db.shooters.updateOne({docnum:"23062124814"},{$set: { phone:"+55 (11) 958498888"
 db.shooters.updateOne({docnum:"21766056830"},{$set: { phone:"+55 (11) 991299934" ,rg: "Y244025O", rg_issuer: "CGPI/ DIREX/ DPF", tpm_filiation_dt: new Date("2023-10-18"), address: "EST DO NABURU HANAI, 130, Centro" , zip_code: "06950000" , city: "Juquitiba"}});
 db.shooters.updateOne({docnum:"23483478817"},{$set: { phone:"+55 (11) 954406488" ,rg: "G102301Q", rg_issuer: "CGPI/ DIREX/ DPF", tpm_filiation_dt: new Date("2023-10-18"), address: "Rua Baguassu, 151, AP 151, Vila Regente Feijó" , zip_code: "03344015" , city: "São Paulo"}});
 db.shooters.updateOne({docnum:"24090834805"},{$set: { phone:"+55 (11) 981316078" ,rg: "85050656282017", rg_issuer: "CGPI/ DIREX/ DPF", tpm_filiation_dt: new Date("2022-09-26"), address: "Avenida Roland Garros, 2364, compl b, Jardim Brasil (Zona Norte)" , zip_code: "02235001" , city: "São Paulo"}});
+
+
+db.time_records.aggregate([
+              {$match:{eventId:'67056f35f80a35979f51bd47'}}
+              ,{$addFields:{"_shooterId":{$toObjectId:"$shooterId"}
+                          ,"_eventId"  :{$toObjectId:"$eventId"}
+                          ,"_divisionId"  :{$toObjectId:"$divisionId"}
+                          ,"_shooterDivisionId"  :{$toObjectId:"$shooterDivisionId"}
+                          }}
+              ,{$lookup:{
+                          from: "events"
+                          ,localField:"_eventId"
+                          ,foreignField: "_id"
+                          ,as:"event"
+              }}                     
+              ,{$lookup:{
+                          from: "shooters"
+                          ,localField:"_shooterId"
+                          ,foreignField:"_id"
+                          ,as: "shooter"
+              }}
+              ,{$lookup:{
+                          from: "divisions"
+                          ,localField:"_divisionId"
+                          ,foreignField:"_id"
+                          ,as: "division"
+                          ,pipeline:[
+                              {$project:{"divisionName":"$name"}}
+                          ]
+              }}
+              ,{$lookup:{
+                from: "shooters_divisions"
+                ,localField:"_shooterDivisionId"
+                ,foreignField:"_id"
+                ,as: "shooters_divisions"
+               }}  
+            //  ]).toArray();
+              ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooter", 0 ] }, "$$ROOT" ] } } }
+              ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$event", 0 ] }, "$$ROOT" ] } } }
+              ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$division", 0 ] }, "$$ROOT" ] } } }
+              ,{$replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ "$shooters_divisions", 0 ] }, "$$ROOT" ] } } }
+              ,{$group:{
+                  _id:["$shooterId", "$email" , "$name" ,"$gun", "$vl_first_try", "$vl_second_try", "$vl_other_tries"],
+                  tries:{$count:{}}
+              }}
+          ]).toArray();
+
+          

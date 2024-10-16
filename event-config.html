@@ -5,8 +5,10 @@
   <script src="assets/js/color-modes.js"></script>
   <script src="js/components/header.js" type="text/javascript" defer></script>
 
-  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" type="text/javascript" defer></script>
-  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.bootstrap5.js" type="text/javascript" defer></script>
+  <!-- <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js" type="text/javascript" defer></script> -->
+  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js" type="text/javascript" defer></script>
+  <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js" type="text/javascript" defer></script>
+  <script src="//cdn.datatables.net/plug-ins/2.1.8/api/sum().js" type="text/javascript" defer></script>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,7 +24,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.bootstrap5.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
 
   <style>
     .bd-placeholder-img {
@@ -313,40 +315,49 @@
           </label>
         </div>
       </div>
-
-      <div class="form-floating mb-3 col-md-3">
-        <!-- <input type="number" class="form-control nodisable" required id="vl_first_try">
-        <label for="vl_first_try" >1ª Passada</label> -->
-        <div class="input-group mb-3">
-          <span class="input-group-text">1ª Passada</span>
-          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
-          <span class="input-group-text">.00</span>
+      <!-- <div class="border border-secondary p-2 mb-16"> -->
+        <div class="form-floating mb-3 col-md-3">
+          <!-- <input type="number" class="form-control nodisable" required id="vl_first_try">
+          <label for="vl_first_try" >1ª Passada</label> -->
+          <div class="input-group mb-2">
+            <span class="input-group-text">Inscrição + 1ª Passada</span>
+            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
+            <span class="input-group-text">,00</span>
+          </div>
         </div>
-      </div>
-      <div class="form-floating mb-3 col-md-3">
-        <div class="input-group mb-3">
-          <!-- <input type="number" class="form-control nodisable" required id="vl_second_try">
-          <label for="vl_second_try" >2ª Passada R$</label> -->
-          <span class="input-group-text">2ª</span>
-          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
-          <span class="input-group-text">.00</span>
+        <div class="form-floating mb-2 col-md-2">
+          <div class="input-group mb-2">
+            <!-- <input type="number" class="form-control nodisable" required id="vl_second_try">
+            <label for="vl_second_try" >2ª Passada R$</label> -->
+            <span class="input-group-text">2ª Passada</span>
+            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
+            <span class="input-group-text">,00</span>
+          </div>
         </div>
-      </div>
-      <div class="form-floating mb-3 col-md-3">
-        <div class="input-group mb-3">
-          <!-- <input type="number" class="form-control nodisable" required id="vl_other_tries">
-          <label for="vl_other_tries" >Demais Passada R$</label> -->
-          <span class="input-group-text">Demais</span>
-          <input type="number" class="form-control nodisable" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
-          <span class="input-group-text">.00</span>
-          
+        <div class="form-floating mb-2 col-md-2">
+          <div class="input-group mb-2">
+            <!-- <input type="number" class="form-control nodisable" required id="vl_other_tries">
+            <label for="vl_other_tries" >Demais Passada R$</label> -->
+            <span class="input-group-text">Demais Passadas</span>
+            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
+            <span class="input-group-text">,00</span>
+            
+          </div>
         </div>
-      </div>
-      <div class="form-floating mb-3 col-md-3">
-        <button type="button" id="btn-relat-tries" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
-          Relatório Passadas (R$)
-        </button>
-      </div> 
+        <div class="form-floating mb-2 col-md-2">
+          <div class="form-check">
+            <input class="form-check-input  nodisable" type="checkbox" id="vl_per_gun" checked>
+            <label class="form-check-label" for="vl_per_gun">
+              Por Arma
+            </label>
+          </div>
+        </div>
+        <div class="form-floating mb-2 col-md-2">
+          <button type="button" id="btn-relat-tries" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
+            Relatório Passadas (R$)
+          </button>
+        </div> 
+      <!-- </div> -->
       
       
       <p></p>
@@ -409,6 +420,7 @@
           <thead>
             <tr>
               <th scope="col" class="text-start">Atirador</th>
+              <th scope="col" class="text-start">Arma</th>
               <th scope="col" class="text-end">Passadas</th>
               <th scope="col" class="text-end">1ª</th>
               <th scope="col" class="text-end">2ª</th>
@@ -431,8 +443,9 @@
 </div>
      
   <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://code.jquery.com/jquery-1.9.1.js"></script> -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
     integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"

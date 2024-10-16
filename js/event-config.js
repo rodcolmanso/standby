@@ -64,7 +64,7 @@ async function loadPage(eId){
 
     if(eventConfig==null){ // New event
         eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString(), "rangeId":null
-        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0};
+        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0, "vl_per_gun":false};
     }
 
     ranges = await promiseOfRanges(eventConfig.rangeId?eventConfig.rangeId:null,loggedUser);
@@ -138,6 +138,7 @@ async function loadPage(eId){
     document.getElementById('vl_first_try').value= eventConfig.vl_first_try= eventConfig.vl_first_try?eventConfig.vl_first_try:0;
     document.getElementById('vl_second_try').value= eventConfig.vl_second_try= eventConfig.vl_second_try?eventConfig.vl_second_try:0;
     document.getElementById('vl_other_tries').value= eventConfig.vl_other_tries= eventConfig.vl_other_tries?eventConfig.vl_other_tries:0;
+    document.getElementById('vl_per_gun').checked= eventConfig.vl_per_gun?eventConfig.vl_per_gun:false;
     
     //document.getElementById('
     if(eventConfig.owners!==undefined)
@@ -197,6 +198,26 @@ function loadTriesReport(_event){
 
                 let event_total=0;
                 document.getElementById('tb_tries').innerHTML='';
+                
+                const vlPerGun= document.getElementById('vl_per_gun').checked;
+                if(!vlPerGun){
+                    let _json=[];
+                    _json.push(json[0]);
+                    _json[0]._id[6]=1;
+
+                    for(let i=1;i<json.length;i++){
+                        if(_json[_json.length-1]._id[0]=== json[i]._id[0]){
+                            _json[_json.length-1].tries+=json[i].tries
+                            _json[_json.length-1]._id[6]+=1;
+                        }else{
+                            _json.push(json[i]);
+                            _json[_json.length-1]._id[6]=1;
+
+                        }
+                    }
+                    json= _json;
+                }
+                
                 for(let i=0;i<json.length;i++){
                     
                     let vl_1=0
@@ -215,6 +236,7 @@ function loadTriesReport(_event){
                     document.getElementById('tb_tries').innerHTML+=
                     `<tr>
                     <td class="text-start">${json[i]._id[2]}</td>
+                    <td class="text-start">${json[i]._id[6]}</td>
                     <!--<td class="text-start">${json[i]._id[1]}</td>-->
                     <td class="text-end">${json[i].tries}</td>
                     <td class="text-end">R$${vl_1}</td>
@@ -228,7 +250,47 @@ function loadTriesReport(_event){
                 document.getElementById('eventTotal').innerHTML= event_total;
 
                 _tb= new DataTable('#table_report_tries',
-                     {pageLength: 25
+                     {footerCallback: function (row, data, start, end, display) {
+                        let api = this.api();
+                 
+                        // Remove the formatting to get integer data for summation
+                        let intVal = function (i) {
+                            return typeof i === 'string'
+                                ? i.replace(/[\R$,]/g, '') * 1
+                                : typeof i === 'number'
+                                ? i
+                                : 0;
+                        };
+                 
+                        // Total over all pages
+                        total = api
+                            .column(6)
+                            .data()
+                            .reduce((a, b) => intVal(a) + intVal(b), 0);
+                 
+                        // Total over this page
+                        pageTotal = api
+                            .column(6, { page: 'current' })
+                            .data()
+                            .reduce((a, b) => intVal(a) + intVal(b), 0);
+                 
+                        // Update footer
+                        // api.column(6).footer().innerHTML =
+                        //     'R$' + pageTotal + ' ( R$' + total + ' total)';
+                        api.table().footer().innerHTML =
+                        `<tr>
+                            <th scope="row"></th>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="text-end text-small">Subtotal</td>
+                            <td class="text-end">R$${pageTotal},00</td>
+                        </tr>`;
+                            // 'R$' + pageTotal + ' ( R$' + total + ' total)';
+                            
+                    }
+                    ,pageLength: 25
                     ,responsive: true
                     ,oLanguage: {sSearch: "Buscar:"}
                      });
@@ -319,6 +381,7 @@ function updateEventConfig(){
     eventConfig.vl_first_try= document.getElementById('vl_first_try').value;
     eventConfig.vl_second_try= document.getElementById('vl_second_try').value;
     eventConfig.vl_other_tries= document.getElementById('vl_other_tries').value;
+    eventConfig.vl_per_gun= document.getElementById('vl_per_gun').checked;
 
     if(isNaN(eventConfig.date) || eventConfig.date===''||eventConfig.date.toString()==='Invalid Date'
      ||eventConfig.dateDuel===''||eventConfig.dateDuel.toString()==='Invalid Date'){
