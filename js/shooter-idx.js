@@ -39,7 +39,8 @@ function buildClassiication(rank){
     }
 
     rank= rank.sort((a, b) => {
-        if (a.divisionCode < b.divisionCode) {
+        // if (a.divisionCode < b.divisionCode) {
+        if (a.position < b.position) {
           return -1;
         }
       });
@@ -73,8 +74,8 @@ function buildClassiication(rank){
         }
  
         row+= `<tr>
-              <td class="text-small text-sm-start nowrap d-none d-xl-block"><b>${rank[i].divisionName}</b></td>
-              <td class="text-start nowrap">
+              <td class="text-small text-sm-start nowrap d-none d-xl-block text-truncate"><b>${rank[i].divisionName}</b></td>
+              <td class="text-start nowrap text-small">
                 <p class="d-none d-xl-block" style="margin-bottom: 0 !important;">
                 <span class="badge text-bg-secondary">${rank[i].gun}
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${badg_rd}</span>
@@ -86,7 +87,7 @@ function buildClassiication(rank){
                 </span>
                 </p>
               </td>
-              <td class="text-end">
+              <td class="text-end text-small">
                 <p style="margin-bottom: 0 !important;">
                   <span class="badge text-bg-warning" >${_time}
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${_penal}</span>
@@ -94,7 +95,7 @@ function buildClassiication(rank){
                 </p>
               </td>
               <td class="text-end text-small">${rank[i].position}º</td>
-              <td class="text-truncate text-start d-none d-xl-block"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>
+              <!--<td class="text-truncate text-start d-none d-xl-block"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${rank[i].eventName}</a></td>-->
               <td class="text-small text-sm-center"><a class="text-small" href="/qualify.html?event_id=${rank[i].eventId}&selected_division=${rank[i].divisionId}">${(new Date(rank[i].clockDate)).toLocaleDateString()}</a></td>
             </tr>`;
     }
@@ -573,6 +574,18 @@ function disableShooterFields(updater){
 
     });
 
+    let _label = document.querySelectorAll("label");
+    [].forEach.call(_label,elem=>{
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+
     let _radio = document.querySelectorAll('input[type="radio"]');
         [].forEach.call(_radio,rdo=>{
             if(rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('disableshooter')>=0
@@ -616,4 +629,23 @@ function disableShooterFields(updater){
             btn.disabled=!updater;
     });
 
+}
+
+const exampleModal = document.getElementById('exampleModal')
+if (exampleModal) {
+  exampleModal.addEventListener('show.bs.modal', event => {
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const recipient = button.getAttribute('data-bs-whatever')
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+    const modalTitle = exampleModal.querySelector('.modal-title')
+    const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+    modalTitle.textContent = `New message to ${recipient}`
+    modalBodyInput.value = recipient
+  })
 }

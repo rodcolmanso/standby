@@ -1527,6 +1527,8 @@ db.ranges.insertMany(clubs);
 
 db.ranges.insertOne({ name: 'Opsrange',address: 'Av. Pedro Bueno, 690 - Aeroporto Congonhas',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com','rmanso@outlook.com'], active:true});
 
+db.ranges.insertOne({ name: 'CT 3 Porcento',address: 'R. Prof. João Machado, 84 - Nossa Sra. do O',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com','rmanso@outlook.com', 'gcfragnator@gmail.com'], active:true});
+clubedetiro3porcento
 
 db.events.aggregate([
     {$group:{_id:{local:'$local', address:'$address', city:'$city', state:'$state'} }}

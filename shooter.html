@@ -20,6 +20,7 @@
   <link rel="icon" href="/assets/brand/tpm-navbar-logo2.png" type="mage/x-icon">
   <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
   <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -109,6 +110,30 @@
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
     }
+
+
+    .image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  /* background-color: #000000;  */
+  /* color: #fff;  */
+  padding: 10px 20px; 
+  /* font-size: 20px;  */
+  text-align: center;
+}
   </style>
 
 
@@ -119,95 +144,62 @@
 </head>
 <body>
   <header-component></header-component>
+  <form action="javascript:saveShooter();">
   <div class="container-fluid mt-2">
     <div class="row">
       <div class="col-md-4">
         <!-- Foto de perfil -->
         <ul class="list-group">
-          <form action="javascript:saveShooter();">
+          
             <li class="list-group-item text-center">
               <!-- <img id="pic-profile" src="caminho/para/foto-de-perfil.jpg" alt="Foto de Perfil" class="img-fluid mb-3"> -->
               <input type="hidden" name="_id" value="" id="_id" />
               <input type="hidden" name="imgChanged" value=false id="imgChanged" />
               <div class="btn" style="padding-right:1px !important;">
-                <label for="input-shooter-img" >
-                  <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" style="max-height: 300px;"/>
-                </label>
-                <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
+                <div class="image-container">
+                  <label for="input-shooter-img" >
+                    <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" style="max-height: 300px;"/>
+                  </label>
+                  
+                  <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style=" --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" 
+                   >alterar
+                   <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" />
+                  </label>
+                </div>
               </div>
               <div class="row text-center" >
                 <div class="col">
-                  <input type="radio" class="btn-check disableshooter" name="modalCategory" value="2" id="modalOption2" autocomplete="off" required>
-                  <label class="btn btn-outline-danger" for="modalOption2">Dama</label>
+                  <input type="radio" class="btn-check disableshooter" name="modalCategory" value="2" id="modalOption2" autocomplete="off">
+                  <label class="btn btn-outline-danger" for="modalOption2"
+                  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Dama</label>
 
                   <input type="radio" class="btn-check disableshooter" name="modalCategory" value="0" id="modalOption0" autocomplete="off">
-                  <label class="btn btn-outline-info" for="modalOption0">Overall</label>
+                  <label class="btn btn-outline-info" for="modalOption0"
+                  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Overall</label>
 
                   <input type="radio" class="btn-check disableshooter" name="modalCategory" value="5" id="modalOption5" autocomplete="off">
-                  <label class="btn btn-outline-success" for="modalOption5">Senior</label>
+                  <label class="btn btn-outline-success" for="modalOption5"
+                  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Senior</label>
                 </div>
               </div>
-              <p class="card-text">
-                <div class="input-group">
-                  <div class="form-floating mb-3">
-                    <input type="email" class="form-control disableshooter" disabled required id="modalEmail" placeholder="name@example.com" >
-                    <label for="modalEmail">E-mail</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control disableshooter" required id="docnum" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
-                    <label for="modalEmail">CPF</label>
-                  </div>
-                </div> 
-              </p>
-              <p class="card-title">
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control disableshooter" id="modalName" placeholder="John Wick" required maxlength="100">
-                  <label for="modalName">Nome de Guerra</label>
-                </div>
-              </p>
-              <p class="card-title">
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control disableshooter" id="fullName" placeholder="John Wick" required maxlength="100">
-                  <label for="modalName">Nome Completo</label>
-                </div>
-              </p>
-              <p class="card-text">
-                <div class="input-group">
-                  <div class="form-floating mb-3 hideshooter">
-                    <input type="date" class="form-control disableshooter" id="birthday" required value="1977-11-29" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
-                    <label for="birthday">Nascimento</label>
-                  </div>
-                  <div class="form-floating ">
-                    <select class="form-select form-select-sm disableshooter" required id="sexo" > 
-                      <option value=""></option>
-                      <option value="M">Masculino</option>
-                      <option value="F">Feminino</option>
-                    </select>
-                    <label for="sexo">Sexo</label>
-                  </div>
-                </div>
-              </p>
-              <p class="card-text">
-              <div class="input-group hideshooter">
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control disableshooter" id="cr" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
-                  <label for="modalEmail">Nº do CR</label>
-                </div>
-                <div class="form-floating mb-3">
-                  <input type="date" class="form-control disableshooter" id="cr_validade" value="2029-03-10" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
-                  <label for="modalEmail">Validade do CR</label>
-                </div>
-              </div>
-              </p>
-              <div class="row text-end hideshooter">
-                <div class="col">
-                  <button type="submit" class="btn btn-success disableshooter" value="Salvar" ><!--data-bs-dismiss="modal" -->
-                    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
-                  <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="history.back()"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Voltar</button>
-                </div>
-              </div>
+              <table class="table table-responsive align-middle table-striped table-hover" style="width:100%">
+                <thead>
+                  <tr>
+                    <th class="text-start d-none d-xl-block text-small">Divisão</th>
+                    <th class="text-start w-30 text-small">Arma</th>
+                    <th class="text-end text-small">Tempo</th>
+                    <th class="text-small text-sm-end text-truncate">Posição</th>
+                    <!-- <th class="d-none d-xl-block text-start">Local</th> -->
+                    <!-- <th class="d-xl-none text-start"></th> -->
+                    <th class="text-center text-small">Data</th>
+                  </tr>
+                </thead>
+                <tbody id="table-classification">
+                </tbody>
+              </table>
+              
             </li>
-          </form>
+          
         </ul>
         <p>&nbsp;</p>
         <!-- <h4>Próximos Eventos </h4> -->
@@ -238,157 +230,148 @@
         
       </div>
       <div class="col-md-8">
-        <div class="card" style="display: none;">
-          <h5 class="card-header">Acervo</h5>
+
+
+        <div class="card">
+          <!-- <h5 class="card-header">Acervo</h5> -->
           <div class="card-body">
+            <!-- Calendário de resultados -->
+            <!-- <div id="calendario-resultados" class="mb-4"> -->
+              <!-- Calendário será renderizado aqui -->
+            <!-- </div> -->
+            <!-- Próximos eventos -->
+            <!-- <h5>CLASSIFICAÇÃO 2024</h5> -->
+            <!-- Tabela de classificação -->
+            <!--<p class="card-title"> -->
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control disableshooter" id="modalName" placeholder="John Wick" required maxlength="100">
+                <label for="modalName">Nome de Guerra</label>
+              </div>
+            <!-- </p>
+            <p class="card-title"> -->
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control disableshooter" id="fullName" placeholder="John Wick" required maxlength="100">
+                <label for="modalName">Nome Completo</label>
+              </div>
+            <!-- </p> -->
+            <!-- <p class="card-text"> -->
+            <div class="input-group">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control disableshooter" disabled required id="modalEmail" placeholder="name@example.com" >
+                <label for="modalEmail">E-mail</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control disableshooter" required id="docnum" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                <label for="modalEmail">CPF</label>
+              </div>
+            </div> 
+          <!-- </p> -->
+            <!--<p class="card-text"> -->
+              <div class="input-group">
+                <div class="form-floating mb-3 hideshooter">
+                  <input type="date" class="form-control disableshooter" id="birthday" required value="1977-11-29" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="birthday">Nascimento</label>
+                </div>
+                <div class="form-floating ">
+                  <select class="form-select form-select-sm disableshooter" required id="sexo" > 
+                    <option value=""></option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                  </select>
+                  <label for="sexo">Sexo</label>
+                </div>
+              </div>
+            <!-- </p>
+            <p class="card-text"> -->
+              <div class="input-group hideshooter">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control disableshooter" id="cr" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="modalEmail">Nº do CR</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="date" class="form-control disableshooter" id="cr_validade" value="2029-03-10" placeholder="000.000.001-91" > <!--onkeypress="$(this).mask('000.000.000-00');"-->
+                  <label for="modalEmail">Validade do CR</label>
+                </div>
+              </div>
+            <!-- </p> -->
+            <div class="row text-center hideshooter">
+              <div class="text-centerl">
+                <button type="submit" class="btn btn-success disableshooter" value="Salvar" ><!--data-bs-dismiss="modal" -->
+                  <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Salvar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>&nbsp;</div>
+        <div class="card" >
+          <h5 class="card-header">Acervo</h5>
+          <div class="card-body" style="display: none;">
             <table class="table table-hover align-middle text-small" >
               <thead>
                 <tr>
-                  <th class="" class="item-align-middle text-start" scope="col">Arma</th>
-                  <th class="" scope="col">Nº Série</th>
-                  <th class="" scope="col">Tipo Registro</th>
-                  <th class="" scope="col">Nº Registro</th>
-                  <th class="" scope="col">Validade</th>
-                  <th class="" scope="col">Proprietário</th>
-                  <th class="" scope="col">Ativa?</th>
-                  <th class="" scope="col"></th>
+                  <th class="" class="item-align-middle text-start">Arma</th>
+                  <th class="" >Nº Série</th>
+                  <th class="" >Nº Registro</th>
+                  <th scope="col" class="d-none  d-lg-table-cell" >Validade</th>
+                  <th scope="col" class="d-none  d-lg-table-cell" >Ativa?</th>
+                  <th class="" >x</th>
                 </tr>
               </thead>
               <tbody id="division-table">
                 <tr>
-                  <td class="" class="item-align-middle text-start" scope="col"> Taurus TX 22 (.22LR)</td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Sigma</option>
-                      <option>Sinarm</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
-                  </td>
-                  <td class="" scope="col">
-                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Própria</option>
-                      <option>Clube</option>
-                      <option>Pai/Mãe/Tutor</option>
-                      <option>Outros</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input class="form-check-input nodisable" type="checkbox" checked >
-                  </td>
-                  <td class="" scope="col">
-                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
+                  <td class="" class="item-align-middle text-start" > Taurus TX 22 (.22LR)</td>
+                  <td class="">ACK325654</td>
+                  <td class="" >467532</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >01/12/2025</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >Ativa</td>
+                  <td class="" >
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
                   </td>
                 </tr>
                 <tr>
-                  <td class="" class="item-align-middle text-start" scope="col"> Taurus TS9 (9mm)</td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Sigma</option>
-                      <option>Sinarm</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
-                  </td>
-                  <td class="" scope="col">
-                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Própria</option>
-                      <option>Clube</option>
-                      <option>Pai/Mãe/Tutor</option>
-                      <option>Outros</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input class="form-check-input nodisable" type="checkbox" checked >
-                  </td>
-                  <td class="" scope="col">
-                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
-                  </td>
-                </tr><tr>
-                  <td class="" class="item-align-middle text-start" scope="col"> Brigade BMF9 (9mm)</td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="TFD-24543H" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Sigma</option>
-                      <option>Sinarm</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input type="text" class="form-control form-control-sm nodisable" value="467532" >
-                  </td>
-                  <td class="" scope="col">
-                    <input type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
-                  </td>
-                  <td class="" scope="col">
-                    <select class="form-select form-select-sm nodisable" > 
-                      <option>Própria</option>
-                      <option>Clube</option>
-                      <option>Pai/Mãe/Tutor</option>
-                      <option>Outros</option>
-                    </select>
-                  </td>
-                  <td class="" scope="col">
-                    <input class="form-check-input nodisable" type="checkbox" checked >
-                  </td>
-                  <td class="" scope="col">
-                    <button class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx">-</button>
+                  <td class="" class="item-align-middle text-start" > Taurus TS9 (9mm)</td>
+                  <td class="">ACK325654</td>
+                  <td class="" >467532</td>
+                  <td scope="col" class="d-none d-lg-table-cell" >01/12/2025</td>
+                  <td scope="col" class="d-none d-lg-table-cell" >Ativa</td>
+                  <td class="" >
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
                   </td>
                 </tr>
+                <tr>
+                  <td class="" class="item-align-middle text-start" > CBC Military 3.0 (12GA)</td>
+                  <td class="">ACK325654</td>
+                  <td class="" >467532</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >01/12/2025</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >Ativa</td>
+                  <td class="" >
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
+                  </td>
+                </tr>
+                
               </tbody>
             </table>
             <div class="text-center">
-              <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#divisionModal" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+              <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+              <!-- <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button> -->
             </div>
           </div>
         </div>
-
-
-        <!-- Calendário de resultados -->
-        <div id="calendario-resultados" class="mb-4">
-          <!-- Calendário será renderizado aqui -->
+        <div>&nbsp;</div>
+        <div class=" text-center">
+          <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="history.back()">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Voltar
+          </button>
         </div>
-        <!-- Próximos eventos -->
-        <!-- <h5>CLASSIFICAÇÃO 2024</h5> -->
-        <!-- Tabela de classificação -->
-        <table class="table table-responsive align-middle table-striped table-hover" style="width:100%">
-          <thead>
-            <tr>
-              <th class="text-start d-none d-xl-block">Divisão</th>
-              <th class="text-start w-25">Arma</th>
-              <th class="text-end">Tempo</th>
-              <th class="text-small text-sm-end">Posição</th>
-              <th class="d-none d-xl-block text-start">Local</th>
-              <!-- <th class="d-xl-none text-start"></th> -->
-              <th class="text-center">Data</th>
-            </tr>
-          </thead>
-          <tbody id="table-classification">
-          </tbody>
-        </table>
         <!-- Gráfico de evolução -->
         <p>&nbsp;</p>
+        
         <!-- <h4>Evolução</h4>
         <canvas id="grafico-evolucao"></canvas> -->
       </div>
     </div>
   </div>
-
+  </form>
   <!-- Bootstrap JavaScript (opcional) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   
@@ -440,6 +423,88 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="./js/shooter-idx.js" type="text/javascript" defer></script>
 
+<!-----------MODAL ACERVO-->
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">ACERVO</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="gunId" class="col-form-label">Arma*:</label>
+              <select id="gunId" class="form-select form-select-sm nodisable" required > 
+                <option>TX22</option>
+                <option>TS9</option>
+                <option>CBC Military 3.0 (12GA)</option>
+                <option>Outros</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <div class="mb-3">
+              <label for="numSerie" class="col-form-label">Numero de Série:</label>
+                <input type="text"id="numSerie" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="mb-3">
+              <label for="regType" class="col-form-label">Registro:</label>
+              <select id="regType" class="form-select form-select-sm nodisable" > 
+                <option>Sigma</option>
+                <option>Sinarm</option>
+              </select> 
+            </div>
+            <div class="mb-3">
+              <label for="regNun" class="col-form-label">Número:</label>
+              <input type="text" id="regNun" class="form-control form-control-sm nodisable" value="467532" >
+            </div>
+            <div class="mb-3">
+              <label for="regExpirationDate" class="col-form-label">Validade:</label>
+                <input id="regExpirationDate" type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="mb-3">
+              <label for="gunOwner" class="col-form-label">Propriedade:</label>
+              <select id="gunOwner" class="form-select form-select-sm nodisable" > 
+                  <option>Própria</option>
+                  <option>Clube</option>
+                  <option>Pai/Mãe/Tutor</option>
+                  <option>Outros</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="acerveFolder" class="col-form-label">Acervo:</label>
+              <select id="acerveFolder" class="form-select form-select-sm nodisable" > 
+                  <option>Esportivo</option>
+                  <option>Caça</option>
+                  <option>Coleção</option>
+                  <option>Defesa</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check form-switch">
+              <input class="form-check-input" checked type="checkbox" role="switch" id="flexSwitchCheckDefault">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Ativa</label>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">Notas:</label>
+            <textarea class="form-control" id="note-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--MODAL-->
 
 </body>
 </html>
