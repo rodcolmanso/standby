@@ -59,6 +59,25 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 
 };
 
+const promiseOfGunCollection = (_shooterId, _identityUser)=>{
+
+    let _headers;
+    if(_identityUser!==null){
+        _headers= {"Content-type": "application/json; charset=UTF-8"
+                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
+    }else{
+        _headers= {"Content-type": "application/json; charset=UTF-8"}
+    }
+    return fetch("/.netlify/functions/gun_collection?shooterId="+_shooterId, {
+    method: "GET",
+    // body: JSON.stringify(eventConfig),
+    headers: _headers}).then(r=>r.json())
+    .then(data => {
+        return data;
+    })
+
+};
+
 let dbUser={};
 // let loggedUser={};
 

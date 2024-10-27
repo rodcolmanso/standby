@@ -125,12 +125,12 @@
 
 .overlay-text {
   position: absolute;
-  top: 50%; 
+  top: 80%; 
   left: 50%; 
   transform: translate(-50%, -50%); 
   /* background-color: #000000;  */
   /* color: #fff;  */
-  padding: 10px 20px; 
+  padding: 2px 5px; 
   /* font-size: 20px;  */
   text-align: center;
 }
@@ -161,9 +161,9 @@
                     <img id="pic-profile"  alt="Foto de Perfil" class="img-fluid mb-3" style="max-height: 300px;"/>
                   </label>
                   
-                  <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style=" --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" 
+                  <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
                    >alterar
-                   <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" />
+                   <input type="file" class="form-control d-none disableshooter" id="input-shooter-img" onchange="displaySelectedImage(event, 'pic-profile')" />
                   </label>
                 </div>
               </div>
@@ -303,9 +303,9 @@
           </div>
         </div>
         <div>&nbsp;</div>
-        <div class="card" >
+        <div class="card hideshooter" >
           <h5 class="card-header">Acervo</h5>
-          <div class="card-body" style="display: none;">
+          <div class="card-body" >
             <table class="table table-hover align-middle text-small" >
               <thead>
                 <tr>
@@ -314,11 +314,11 @@
                   <th class="" >Nº Registro</th>
                   <th scope="col" class="d-none  d-lg-table-cell" >Validade</th>
                   <th scope="col" class="d-none  d-lg-table-cell" >Ativa?</th>
-                  <th class="" >x</th>
+                  <th class="d-none" >x</th>
                 </tr>
               </thead>
               <tbody id="division-table">
-                <tr>
+                <!-- <tr>
                   <td class="" class="item-align-middle text-start" > Taurus TX 22 (.22LR)</td>
                   <td class="">ACK325654</td>
                   <td class="" >467532</td>
@@ -327,31 +327,10 @@
                   <td class="" >
                     <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
                   </td>
-                </tr>
-                <tr>
-                  <td class="" class="item-align-middle text-start" > Taurus TS9 (9mm)</td>
-                  <td class="">ACK325654</td>
-                  <td class="" >467532</td>
-                  <td scope="col" class="d-none d-lg-table-cell" >01/12/2025</td>
-                  <td scope="col" class="d-none d-lg-table-cell" >Ativa</td>
-                  <td class="" >
-                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="" class="item-align-middle text-start" > CBC Military 3.0 (12GA)</td>
-                  <td class="">ACK325654</td>
-                  <td class="" >467532</td>
-                  <td scope="col" class="d-none  d-lg-table-cell" >01/12/2025</td>
-                  <td scope="col" class="d-none  d-lg-table-cell" >Ativa</td>
-                  <td class="" >
-                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
-                  </td>
-                </tr>
-                
+                </tr> -->
               </tbody>
             </table>
-            <div class="text-center">
+            <div class="text-center hideshooter d-none">
               <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
               <!-- <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button> -->
             </div>
@@ -433,19 +412,20 @@
       </div>
       <div class="modal-body">
         <form>
-          <div class="mb-3">
-            <label for="gunId" class="col-form-label">Arma*:</label>
-              <select id="gunId" class="form-select form-select-sm nodisable" required > 
-                <option>TX22</option>
-                <option>TS9</option>
-                <option>CBC Military 3.0 (12GA)</option>
-                <option>Outros</option>
-            </select>
-          </div>
           <div class="input-group">
             <div class="mb-3">
-              <label for="numSerie" class="col-form-label">Numero de Série:</label>
-                <input type="text"id="numSerie" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+              <label for="gunId" class="col-form-label">Arma*:</label>
+                <select id="gunId" class="form-select form-select-sm nodisable" required > 
+                  <option>TX22</option>
+                  <option>TS9</option>
+                  <option>CBC Military 3.0 (12GA)</option>
+                  <option>Outros</option>
+              </select>
+            </div>
+          
+            <div class="mb-3">
+              <label for="serialNum" class="col-form-label">Numero de Série:</label>
+                <input type="text"id="serialNum" class="form-control form-control-sm nodisable" value="TFD-24543H" >
             </div>
           </div>
           <div class="input-group">
@@ -457,8 +437,8 @@
               </select> 
             </div>
             <div class="mb-3">
-              <label for="regNun" class="col-form-label">Número:</label>
-              <input type="text" id="regNun" class="form-control form-control-sm nodisable" value="467532" >
+              <label for="regNum" class="col-form-label">Número:</label>
+              <input type="text" id="regNum" class="form-control form-control-sm nodisable" value="467532" >
             </div>
             <div class="mb-3">
               <label for="regExpirationDate" class="col-form-label">Validade:</label>
@@ -492,8 +472,8 @@
             </div>
           </div>
           <div class="mb-3">
-            <label for="message-text" class="col-form-label">Notas:</label>
-            <textarea class="form-control" id="note-text"></textarea>
+            <label for="note" class="col-form-label">Notas:</label>
+            <textarea class="form-control" id="note"></textarea>
           </div>
         </form>
       </div>

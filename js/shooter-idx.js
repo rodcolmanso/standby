@@ -104,6 +104,26 @@ function buildClassiication(rank){
 
 }
 
+function listAcerto(acervo){
+
+    let row='';
+
+    for(let i=0; i<acervo.length;i++){
+        row+= `<tr>
+                  <td class="" class="item-align-middle text-start" > ${acervo[i].gun}</td>
+                  <td class="">${acervo[i].serialNum}</td>
+                  <td class="">${acervo[i].regNum}</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >${acervo[i].regExpirationDate===null?"":(new Date(acervo[i].regExpirationDate)).toLocaleDateString()}</td>
+                  <td scope="col" class="d-none  d-lg-table-cell" >${acervo[i].active===false?"Inativa":"Ativa"}</td>
+                  <td class="d-none" >
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button>
+                  </td>
+               </tr>`;
+    }
+
+    document.getElementById("division-table").innerHTML= row;
+}
+
 window.onload = async () => {
 
     await loadPage();
@@ -164,6 +184,13 @@ window.onload = async () => {
     if(!_shooterId)
         _shooterId= loggedUser._id;
 
+
+    if(updater){
+        applySpinners(true);
+        acervo= await promiseOfGunCollection(_shooterId, user);
+        listAcerto(acervo);
+    }
+
     await fetch('/.netlify/functions/time-records?rank=2&shooterId='+ _shooterId , {
         method: "GET",
         headers: _headers
@@ -181,8 +208,14 @@ window.onload = async () => {
     ).finally(()=> {applySpinners(false);disableShooterFields(updater);});
     //================================================
 
+    
+    applySpinners(false);
+
     disableShooterFields(updater);
 };
+
+let acervo;
+
 document.getElementById('docnum').addEventListener('input', function(e) {
     var value = e.target.value;
     var cpfPattern = formatCpf(value,true);
@@ -514,6 +547,7 @@ async function loadPage(){
         document.getElementById('nav-matches').style.display='none';
         document.getElementById('nav-qualify').style.display='none';
     }
+
     applySpinners(false);
     disableShooterFields(updater);
 
