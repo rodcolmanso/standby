@@ -59,6 +59,18 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 
 };
 
+const promiseOfGetGunList = (shooterId, _divisionName)=>{
+    applySpinners(true);
+    return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}`, {
+            method: "GET"})
+            .then(response => response.json()) 
+            .then(json => {
+                return json;
+            })
+            .catch(err => console.log(`Error getting gunList: ${err}`))
+            .finally(()=> {});
+}
+
 const promiseOfGunCollection = (_shooterId, _identityUser)=>{
 
     let _headers;

@@ -314,7 +314,7 @@
                   <th class="" >Nº Registro</th>
                   <th scope="col" class="d-none  d-lg-table-cell" >Validade</th>
                   <th scope="col" class="d-none  d-lg-table-cell" >Ativa?</th>
-                  <th class="d-none" >x</th>
+                  <th class="" ></th>
                 </tr>
               </thead>
               <tbody id="division-table">
@@ -330,8 +330,8 @@
                 </tr> -->
               </tbody>
             </table>
-            <div class="text-center hideshooter d-none">
-              <button type="button" class="btn btn-info btn-sm rounded-circle nodisable"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap" onclick="document.getElementById('new-division-name').value=''"><i class="bi bi-plus"></i></button>
+            <div class="text-center hideshooter">
+              <button type="button" id="btn-new-acervo" class="btn btn-info btn-sm rounded-circle disableshooter"  data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="-1" ><i class="bi bi-plus"></i></button>
               <!-- <button type="button" class="btn btn-sm btn-danger rounded-circle nodisable" value="xxxx" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">-</button> -->
             </div>
           </div>
@@ -408,79 +408,88 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">ACERVO</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="input-group">
+      <form id="form_acervo" class="needs-validation hide" action="javascript:submitAcerto()">
+        <div class="modal-body">
+          <input type="hidden" id="gunCollectionId">
+          <input type="hidden" id="shooterId">
+          <input type="hidden" id="acervoIdx">
+          
+          <!-- <div class="input-group"> -->
             <div class="mb-3">
               <label for="gunId" class="col-form-label">Arma*:</label>
-                <select id="gunId" class="form-select form-select-sm nodisable" required > 
-                  <option>TX22</option>
-                  <option>TS9</option>
-                  <option>CBC Military 3.0 (12GA)</option>
-                  <option>Outros</option>
+                <select id="gunId" class="form-select form-select-sm disableshooter" required > 
+                  <option valuew=""></option>
               </select>
             </div>
-          
+            <div class="mb-3" id="div-gun" >
+              <label for="serialNum" class="col-form-label">Descição da Arma:</label>
+                <input type="text" id="gun" class="form-control form-control-sm disableshooter"  >
+            </div>
             <div class="mb-3">
               <label for="serialNum" class="col-form-label">Numero de Série:</label>
-                <input type="text"id="serialNum" class="form-control form-control-sm nodisable" value="TFD-24543H" >
+                <input type="text"id="serialNum" class="form-control form-control-sm disableshooter" >
             </div>
-          </div>
+          <!-- </div> -->
           <div class="input-group">
             <div class="mb-3">
               <label for="regType" class="col-form-label">Registro:</label>
-              <select id="regType" class="form-select form-select-sm nodisable" > 
-                <option>Sigma</option>
-                <option>Sinarm</option>
+              <select id="regType" class="form-select form-select-sm disableshooter" > 
+                <option value=""></option>
+                <option value="2">Sigma</option>
+                <option value="1">Sinarm</option>
               </select> 
             </div>
             <div class="mb-3">
               <label for="regNum" class="col-form-label">Número:</label>
-              <input type="text" id="regNum" class="form-control form-control-sm nodisable" value="467532" >
+              <input type="text" id="regNum" class="form-control form-control-sm disableshooter"  >
             </div>
             <div class="mb-3">
               <label for="regExpirationDate" class="col-form-label">Validade:</label>
-                <input id="regExpirationDate" type="date" class="form-control form-control-sm nodisable" value="2031-11-01" >
+                <input id="regExpirationDate" type="date" class="form-control form-control-sm disableshooter"  >
             </div>
           </div>
           <div class="input-group">
             <div class="mb-3">
               <label for="gunOwner" class="col-form-label">Propriedade:</label>
-              <select id="gunOwner" class="form-select form-select-sm nodisable" > 
-                  <option>Própria</option>
-                  <option>Clube</option>
-                  <option>Pai/Mãe/Tutor</option>
-                  <option>Outros</option>
+              <select id="gunOwner" class="form-select form-select-sm disableshooter" > 
+                <option value=""></option>
+                  <option value="0">Própria</option>
+                  <option value="1">Clube</option>
+                  <option value="2">Pai/Mãe/Tutor</option>
+                  <option value="3">Outros</option>
               </select>
             </div>
             <div class="mb-3">
               <label for="acerveFolder" class="col-form-label">Acervo:</label>
-              <select id="acerveFolder" class="form-select form-select-sm nodisable" > 
-                  <option>Esportivo</option>
-                  <option>Caça</option>
-                  <option>Coleção</option>
-                  <option>Defesa</option>
+              <select id="acerveFolder" class="form-select form-select-sm disableshooter" > 
+                  <option value=""></option>
+                  <option value="1">Esportivo</option>
+                  <option value="2">Caça</option>
+                  <option value="3">Coleção</option>
+                  <option value="0">Defesa</option>
               </select>
             </div>
-          </div>
-          <div class="mb-3">
-            <div class="form-check form-switch">
-              <input class="form-check-input" checked type="checkbox" role="switch" id="flexSwitchCheckDefault">
-              <label class="form-check-label" for="flexSwitchCheckDefault">Ativa</label>
+          
+            <div class="mb-3 d-flex align-items-end align-end">
+              <div class="form-check form-switch align-items-end align-end">
+                <input class="form-check-input disableshooter" checked type="checkbox" role="switch" id="active">
+                <label class="form-check-label" for="active">Ativa</label>
+              </div>
             </div>
+
           </div>
           <div class="mb-3">
-            <label for="note" class="col-form-label">Notas:</label>
-            <textarea class="form-control" id="note"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary">Salvar</button>
-      </div>
+            <label for="note" class="col-form-label ">Notas:</label>
+            <textarea class="form-control disableshooter" id="note"></textarea>
+          </div>  
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-close-modal-acervo" class="btn btn-secondary nodisable" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary disableshooter" id="form_acervo">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

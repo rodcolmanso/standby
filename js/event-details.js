@@ -560,18 +560,6 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
 
 }
 
-const promiseOfGetGunList = (shooterId, _divisionName)=>{
-    applySpinners(true);
-    return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}`, {
-            method: "GET"})
-            .then(response => response.json()) 
-            .then(json => {
-                return json;
-            })
-            .catch(err => console.log(`Error getting gunList: ${err}`))
-            .finally(()=> {applySpinners(false);enableShooterFields();});
-}
-
 function populateGunDropdown(shooterDivisions, _subs){
 
     // populateGunDropdown(`subscribe-gun-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}`, shooterDivisions[l].shooters_divisions[i].gun_det[0]._id);

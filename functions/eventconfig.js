@@ -260,8 +260,7 @@ const handler = async (event, context)=>{
         return{
           statusCode: 204
           // ,body: JSON.stringify(deleteEvent)
-          ,body: JSON.stringify({message: "Deleted OKAY"})
-          
+          ,body: JSON.stringify({message: "Deleted OKAY"})  
         }
       
 

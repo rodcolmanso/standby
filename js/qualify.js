@@ -506,9 +506,10 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <ul class="dropdown-menu">
                             <li ${_style} ><a class="dropdown-item" onClick="pauseResumeQueue('${aPlayers[i].shooter_division}',${aPlayers[i].order_aux})" >${_iconFila} ${_txtFila}</a></li>    
+                            <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i><b> Alterar inscrição</b></a></li>
+                            <li ${_style} >_____________________</li>
+                            <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar atirador</a></li>
                             <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
-                            <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i> Alterar Inscrição</a></li>
-                            <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar Atirador</a></li>
                         </ul>
                         <div class="row  text-start">
                             <div class="col-2" style="max-width: 40px !important;">
