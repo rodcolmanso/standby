@@ -41,14 +41,14 @@ const handler = async (event, context)=>{
       }; 
     }
 
-    const isAdmin= userContext.app_metadata && userContext.app_metadata.roles && userContext.app_metadata.roles.indexOf("admin")>-1;
+    const isAdmin= userContext.app_metadata && userContext.app_metadata.roles && (userContext.app_metadata.roles.indexOf("admin")>-1||userContext.app_metadata.roles.indexOf("super")>-1);
 
     switch (event.httpMethod){
       case 'GET':
         const p_shooterId= event.queryStringParameters.shooterId?event.queryStringParameters.shooterId.toString():null;
         let filter= {_shooterId: p_shooterId};
 
-        if(!userContext.app_metadata || !userContext.app_metadata.roles || userContext.app_metadata.roles.indexOf("admin")<0){
+        if(!userContext.app_metadata || !userContext.app_metadata.roles || (userContext.app_metadata.roles.indexOf("admin")<0 && userContext.app_metadata.roles.indexOf("super")<0)){
           filter.email= userContext.email.toLowerCase().trim();
         }
 
@@ -62,6 +62,19 @@ const handler = async (event, context)=>{
               ,localField: "_shooterId"
               ,foreignField: "shooterId"
               ,as: "gun_collection"
+              ,pipeline:[
+                { $addFields: {"_gunId": { $toObjectId: "$gunId" }}}
+                ,{$lookup:{
+                    from: "guns"
+                    ,localField: "_gunId"
+                    ,foreignField: "_id"
+                    ,as: "gun_det"
+                    ,pipeline:[
+                        { $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
+                    ]
+                    }
+                }
+            ]
               }
           }
           ,{$match:filter}

@@ -59,9 +59,9 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 
 };
 
-const promiseOfGetGunList = (shooterId, _divisionName)=>{
+const promiseOfGetGunList = (shooterId, _divisionName, extraQuery)=>{
     applySpinners(true);
-    return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}`, {
+    return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}${extraQuery}`, {
             method: "GET"})
             .then(response => response.json()) 
             .then(json => {

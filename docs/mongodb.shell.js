@@ -3398,6 +3398,17 @@ db.shooters.aggregate([
         ,localField: "_shooterId"
         ,foreignField: "shooterId"
         ,as: "gun_collection"
+        ,pipeline:[
+            { $addFields: {"_gunId": { $toObjectId: "$gunId" }}}
+            ,{$lookup:{
+                from: "guns"
+                ,localField: "_gunId"
+                ,foreignField: "_id"
+                ,as: "gun_det"
+                }
+            }
+            ,{ $project: { alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
+        ]        
         }
     }
     ,{$match:{"_shooterId": "66ee2e865bd600de9529449f"}}

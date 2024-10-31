@@ -487,6 +487,7 @@ const handler = async (event, context)=>{
                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
                     ,gun: shooterDivisions.shooters_divisions[i].gun?shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):""
                     ,gunId: shooterDivisions.shooters_divisions[i].gunId
+                    ,gunRegNum: shooterDivisions.shooters_divisions[i].gunRegNum?shooterDivisions.shooters_divisions[i].gunRegNum:""
                     ,optics: shooterDivisions.shooters_divisions[i].optics
                     ,clock: shooterDivisions.shooters_divisions[i].clock
                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -510,6 +511,7 @@ const handler = async (event, context)=>{
                                                                     ,eventId: shooterDivisions.shooters_divisions[i].eventId
                                                                     ,gun: shooterDivisions.shooters_divisions[i].gun?shooterDivisions.shooters_divisions[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):""
                                                                     ,gunId: shooterDivisions.shooters_divisions[i].gunId
+                                                                    ,gunRegNum: shooterDivisions.shooters_divisions[i].gunRegNum?shooterDivisions.shooters_divisions[i].gunRegNum:""
                                                                     ,optics: shooterDivisions.shooters_divisions[i].optics
                                                                     ,clock: shooterDivisions.shooters_divisions[i].clock
                                                                     ,duel: shooterDivisions.shooters_divisions[i].duel
@@ -606,6 +608,8 @@ const handler = async (event, context)=>{
           shooter_division.divisionId= registered[i].divisionId;
           shooter_division.eventId=event_id;
           shooter_division.gun= registered[i].gun?registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`',''):"";
+          shooter_division.gunId= registered[i].gunId?registered[i].gunId:"";
+          shooter_division.gunRegNum= registered[i].gunRegNum?registered[i].gunRegNum:"";
           shooter_division.optics= registered[i].optics;
           shooter_division.order_aux= 0;
           shooter_division.subscribe_date= new Date();

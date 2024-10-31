@@ -15,10 +15,28 @@ const handler = async (event, context)=>{
     switch (event.httpMethod){
       case 'GET':
         // const p_shooterId= event.queryStringParameters.shooterId?event.queryStringParameters.shooterId.toString():null;
+
+        let filter= {active:true};
+
+        if(event.queryStringParameters.hec && event.queryStringParameters.hec.toLowerCase()==='no'){
+          filter.caliber= {$nin:['.454 Casull', '.308 Win', '5.56', '7.62', '10mm', '300BLK', '44Mag']};
+        }
+
+        if(event.queryStringParameters.division && event.queryStringParameters.division.toLowerCase()==='pistola'){
+          filter.type= 'Pistola';
+        }
+
+        if(event.queryStringParameters.division && event.queryStringParameters.division.toLowerCase()==='revolver'){
+          filter.type= 'Revolver';
+        }
+
+        if(event.queryStringParameters.division && event.queryStringParameters.division.toLowerCase()==='handgun'){
+          filter.type= {$in:['Pistola', 'Revolver']};
+        }
         
           const _guns= await cGuns.aggregate(
-            [
-               { $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
+            [  {$match: filter}
+               ,{ $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
             ]
          ).sort({ alias:1}).toArray();
 

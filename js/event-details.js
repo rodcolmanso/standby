@@ -282,7 +282,8 @@ function myFunction() {
     // <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiado! <i class="bi bi-clipboard-check-fill"></i></button>
   }
 
-let gunList;
+let gunList=[];
+let acervoList=[];
 async function loadPage(){
     
         loggedUser= netlifyIdentity.currentUser();
@@ -290,7 +291,10 @@ async function loadPage(){
         applySpinners(true);
         eventConfig= await promiseOfSessionEventConfig(null,loggedUser);
         let _userDb= getSessionDbUser();
-        gunList= await promiseOfGetGunList(_userDb?_userDb._id:null,null);
+        gunList= await promiseOfGetGunList(_userDb?_userDb._id:null,null, '&hec=no');
+        if(_userDb && _userDb._id)
+            acervoList= await promiseOfGunCollection(_userDb?_userDb._id:null,loggedUser);
+        
         applySpinners(false);
         enableShooterFields();
 
@@ -309,7 +313,7 @@ netlifyIdentity.on('close', () => {
 
 $(function() {
     // $("#subscribe-email").change(function() {
-    $("#subscribe-docnum").focusout(function() {
+    $("#subscribe-docnum").focusout(async function() {
         
         if(this.value===""){
             document.getElementById('subscribe-name').value="";
@@ -319,6 +323,7 @@ $(function() {
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
             document.getElementById('shooter-img2').src="none";
+            acervoList=[];
         }
 
         // if(!this.checkValidity()){
@@ -331,6 +336,7 @@ $(function() {
             document.getElementById('subscribe-shooterId').value="";
             document.getElementById('shooter-img').src="none";
             document.getElementById('shooter-img2').src="none";
+            acervoList=[];
 
             // this.focus();
         }else if (this.value!=="") {
@@ -341,6 +347,8 @@ $(function() {
             document.getElementById("search-button-name").style.display='none';
             // document.getElementById("search-button-name").style.visibility="hidden";
             promiseOfGetShootersDivisions(eventConfig._id, this.value.replace(/\D+/g, ''), MODAL_TABLE_SUB_ID);
+            
+            
         }
   
     });
@@ -539,12 +547,14 @@ const promiseOfGetShootersDivisions = (_eventId, _email, modalId)=>{
             method: "GET"
             ,headers: _header})
             .then(response => response.json()) 
-            .then(json => {
+            .then(async json => {
                 if(modalId===MODAL_TABLE_SUB_ID){
                     shooterDivisions= json;
                     if(shooterDivisions!==null && shooterDivisions.length>0){
                         popupSubscriptionModal(shooterDivisions[0]);
                         populateSubscriptionModalTable(eventConfig, shooterDivisions, document.getElementById(MODAL_TABLE_SUB_ID));
+                        acervoList= await promiseOfGunCollection(shooterDivisions[0].shooterId,loggedUser);
+                        document.getElementById("select-subscribe-division").dispatchEvent(new Event('change'));
                     }else{
                         populateNewShooter(_email);
                     }
@@ -876,7 +886,7 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
 function subscribeNew(){
 
-    if(document.getElementById('select-subscribe-gun').value.trim()==""){
+    if(document.getElementById('select-subscribe-gun').value.split('|')[0].trim()==""){
 
         alert('informe uma arma');
         document.getElementById('select-subscribe-gun').focus();
@@ -893,7 +903,7 @@ function subscribeNew(){
 
     }
 
-    if(document.getElementById("select-subscribe-gun").value===gunOthers._id && document.getElementById('subscribe-gun').value===''){
+    if(document.getElementById("select-subscribe-gun").value.split('|')[0]===gunOthers._id && document.getElementById('subscribe-gun').value===''){
         alert('Informe a arma');
         document.getElementById('subscribe-gun').focus();
         return 0
@@ -910,7 +920,8 @@ function subscribeNew(){
     nShooters_divisions.eventId=eventConfig._id;
     document.getElementById("subscribe-gun").value= document.getElementById("subscribe-gun").value.replaceAll('"','').replaceAll("'","").replaceAll('`','');
     nShooters_divisions.gun= document.getElementById("subscribe-gun").value;
-    nShooters_divisions.gunId= document.getElementById("select-subscribe-gun").value;
+    nShooters_divisions.gunId= document.getElementById("select-subscribe-gun").value.split('|')[0];
+    nShooters_divisions.gunRegNum= document.getElementById("select-subscribe-gun").value.split('|')[1];
     nShooters_divisions.optics= document.getElementById("subscribe-optic").checked;
     nShooters_divisions.clock= document.getElementById("subscribe-check-clock").checked;
     nShooters_divisions.duel= document.getElementById("subscribe-check-duel").checked;
@@ -933,7 +944,7 @@ function subscribeNew(){
 
     // document.getElementById("select-subscribe-division").value="";
     document.getElementById("subscribe-gun").value="";
-    document.getElementById("select-subscribe-gun").value="";
+    document.getElementById("select-subscribe-gun").value="|";
     document.getElementById("subscribe-opticN").checked=false;
     document.getElementById("subscribe-optic").checked=false;
 
@@ -1180,9 +1191,15 @@ function compareStrings(a, b) {
   }
 
 document.getElementById("select-subscribe-gun").addEventListener('change', function (ev) {
-    if(ev.target.value===gunOthers._id){
-        document.getElementById('subscribe-gun').style.display='';
-        document.getElementById('subscribe-gun-label').style.display='';
+    if(ev.target.value.split('|')[0]===gunOthers._id){
+        if(ev.target.selectedOptions[0].innerText!== 'Outras'){
+            document.getElementById('subscribe-gun').value= ev.target.selectedOptions[0].innerText;
+            // ev.target.selectedOptions[0].innerText= 'Outras'
+        }else{
+            document.getElementById('subscribe-gun').style.display='';
+            document.getElementById('subscribe-gun-label').style.display='';
+        }
+
     }else{
         document.getElementById('subscribe-gun').style.display='none';
         document.getElementById('subscribe-gun-label').style.display='none';
@@ -1190,7 +1207,7 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
     }
 });
 
-  document.getElementById("select-subscribe-division").addEventListener('change', function (ev) {
+document.getElementById("select-subscribe-division").addEventListener('change', function (ev) {
 
     document.getElementById('subscribe-gun').style.display='none';
     document.getElementById('subscribe-gun-label').style.display='none';
@@ -1212,22 +1229,52 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
         while (dropDown.options.length > 0)
             dropDown.remove(0);
 
-        let newOption = new Option("",);
+        let newOption = new Option("","|");
         dropDown.add(newOption);
+
+        if(acervoList.length>0){
+            
+            for(let ac=0;ac<acervoList.length;ac++){
+                
+                if(divisionName=== 'força livre'
+                  || acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()===divisionName
+                  || (divisionName=== 'armas curtas'
+                      &&(acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()==='pistola'
+                         ||acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()==='revolver')
+                  ) ){
+                    
+                    if(dropDown.length===1){
+                        newOption = new Option("____[ACERVO]_____","|");
+                        dropDown.add(newOption);
+                    }
+
+                    newOption = new Option(acervoList[ac].gun,acervoList[ac].gunId+"|"+acervoList[ac].regNum);
+                    dropDown.add(newOption);
+                    }
+
+            }
+
+            if(dropDown.length>1){
+                newOption = new Option("_______________","|");
+                dropDown.add(newOption);
+            }
+        }
+
+
         if(divisionName==="força livre"){
             for(let j=0;j<gunList.length;j++){
-                let newOption = new Option(gunList[j].alias,gunList[j]._id);
+                let newOption = new Option(gunList[j].alias, gunList[j]._id+"|");
                 
                 if(gunList[j]._id!==gunOthers._id && divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()==="carabina"||gunList[j].type.toLocaleLowerCase().trim()==="espingarda"))
                     dropDown.add(newOption);
             }
         
-            let newOption = new Option("_______________","");
+            let newOption = new Option("_______________","|");
             dropDown.add(newOption);
         }
 
         for(let j=0;j<gunList.length;j++){
-            newOption = new Option(gunList[j].alias,gunList[j]._id);
+            newOption = new Option(gunList[j].alias, gunList[j]._id+"|");
 
             if(gunList[j]._id!==gunOthers._id &&((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
                 ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
@@ -1238,7 +1285,7 @@ document.getElementById("select-subscribe-gun").addEventListener('change', funct
                 dropDown.add(newOption);
             }
         }
-        newOption = new Option(gunOthers.model,gunOthers._id);
+        newOption = new Option(gunOthers.model, gunOthers._id+"|");
         dropDown.add(newOption);
     }
   });
