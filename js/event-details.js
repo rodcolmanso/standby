@@ -1236,7 +1236,7 @@ document.getElementById("select-subscribe-division").addEventListener('change', 
             
             for(let ac=0;ac<acervoList.length;ac++){
                 
-                if(divisionName=== 'força livre'
+                if(divisionName=== 'força livre' || acervoList[ac].gunId === gunOthers._id
                   || acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()===divisionName
                   || (divisionName=== 'armas curtas'
                       &&(acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()==='pistola'
