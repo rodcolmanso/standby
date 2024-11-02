@@ -89,7 +89,7 @@ class Header extends HTMLElement {
             <a class=" p-0 me-0 me-lg-2" href="/" aria-label="Bootstrap">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="0" class="d-block " viewBox="0 0 118 94" role="img">
               <title>T.P.M. Online</title>
-                <img  class="small-profile-avatar-pic rounded-circle" rel="icon" src="/assets/brand/tpm-navbar-logo_preto.png" type="mage/x-icon">  
+                <img  class="small-profile-avatar-pic rounded-circle" rel="icon" src="/assets/brand/tpm-navbar-logo_preto_2.png" type="mage/x-icon">  
               </svg>
     </a>
 
@@ -111,22 +111,22 @@ class Header extends HTMLElement {
                 <li class="nav-item col-6 col-lg-auto">
                   <a class="nav-link py-2 px-0 px-lg-2" id="nav-events" href="/" onclick="">Eventos</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto">
+                <li class="nav-item col-6 col-lg-auto hide">
                   <a class="nav-link py-2 px-0 px-lg-2" aria-current="true" onclick="hrefQualify();"  rel="noopener">Clubes</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto">
+                <li class="nav-item col-6 col-lg-auto hide">
                   <a class="nav-link py-2 px-0 px-lg-2" onclick="#" rel="noopener">Resultados</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto">
+                <li class="nav-item col-6 col-lg-auto hide">
                   <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Regulamento</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto">
+                <li class="nav-item col-6 col-lg-auto hide">
                   <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Quem somos</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto" id="btn-header-filiese">
+                <li class="nav-item col-6 col-lg-auto hide" id="btn-header-filiese">
                   <button type="button" class="btn btn-success nodisable" value="" onclick="">Filie-se</button>
                 </li>
-                <li class="nav-item col-6 col-lg-auto" id="btn-header-admin">
+                <li class="nav-item col-6 col-lg-auto hide" id="btn-header-admin">
                   <button type="button" class="btn btn-dark nodisable" value="" onclick="">Administrativo</button>
                 </li>
               </ul>
@@ -206,22 +206,22 @@ class Header extends HTMLElement {
                   <br/><i class="bi bi-pencil-square text-small"></i><span class="text-small">Meu perfil </span>
                   <br/><span class=""><hr/></span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha afiliação</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-person-rifle"></i> <span id=avatarMeuAcervo>Meu acervo</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-person-rolodex"></i> <span id=avatarMeuAcervo>Minhas inscrições</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-medal"></i> <span id=avatarMeuAcervo>Meus resultados</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-list-check"></i> <span id=avatarFiliacao>Minha habitualidades</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-stamp"></i> <span id=avatarFiliacao>Declarações</span>
                 </a>
                 <span><hr/></span>

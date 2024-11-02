@@ -1,15 +1,41 @@
 Urgente
     [ ] site admin !?
-      [ ] gerar certificado de participação
-      [ ] gerar Anexo E
+      [ ] Consultar/editar Filiação
+      [ ] Aprovar, Download , Upload de Comprovante de Habitualidades Anexo E
+      [ ] Tela de cobrança/batimento financeiro com os clubes
       [ ] Estudar assinatura digital integrada
 
 Melhorar a experiencia de cadastro e login
-    [ ] Menu Avatar com links relacionados ao atirador
-    [ ] Criar Titulo de Página para (Perfil de atirador, Relogo, Duelo, Clubes, Eventos, etc)
-    [ ] Remover do menu superior "Duelos e Contra o Relógio"
+    [x] Menu Avatar com links relacionados ao atirador
+    [x] Criar Titulo de Página para (Perfil de atirador, Relogo, Duelo, Clubes, Eventos, etc)
+    [x] Remover do menu superior "Duelos e Contra o Relógio"
     
-  
+Admin
+    [ ] Cadastro de Clubes
+    [ ] Cadastro de Armas
+    [ ] Cadastro de Supers
+
+
+Ranking
+    [ ] Melhorar tela de filtro
+    
+
+Clubes
+    [ ] Tela listando os Clubes por Região/Clube
+    [ ] Supers 
+    [ ] Calendário
+    [ ] Contato
+
+Supers
+    [ ] Tela listando os Supers por Região/Clube
+    [ ] Oferecer clina / treinamento
+    [ ] Contato
+
+Home/Inicio
+    [ ] Tela Home/Inicio
+
+Regulamentos
+    [ ] Tela Regulamentos
   
 
   

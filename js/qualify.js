@@ -504,7 +504,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         <ul class="dropdown-menu">
                             <li ${_style} ><a class="dropdown-item" onClick="pauseResumeQueue('${aPlayers[i].shooter_division}',${aPlayers[i].order_aux})" >${_iconFila} ${_txtFila}</a></li>    
                             <li ${_style} ><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdrop"  ><i class="bi bi-pencil-fill"></i><b> Alterar inscrição</b></a></li> <!--onClick="goToSubscription('${aPlayers[i].id}')"-->
-                            <li ${_style} >_____________________</li>
+                            <li ${_style} ><span><hr/></span></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar atirador</a></li>
                             <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
                         </ul>

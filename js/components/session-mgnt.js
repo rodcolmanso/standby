@@ -648,9 +648,24 @@ function setCookie(cname, cvalue, exdays) {
     _div = document.querySelectorAll("li");
     [].forEach.call(_div,elem=>{
 
-        if(elem.getAttribute('class')&&elem.getAttribute('class').indexOf('nodisable')<0
-            && onoff)
-            elem.draggable= !onoff;
+        // if(elem.getAttribute('class')&&elem.getAttribute('class').indexOf('nodisable')<0
+        //     && onoff)
+        //     elem.draggable= !onoff;
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+    _div = document.querySelectorAll("a");
+    [].forEach.call(_div,elem=>{
+
+        // if(elem.getAttribute('class')&&elem.getAttribute('class').indexOf('nodisable')<0
+        //     && onoff)
+        //     elem.draggable= !onoff;
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
             if(!onoff)
@@ -918,5 +933,6 @@ async function loadPageEvent(tab){
 
 }
 
-removeClass(document.getElementById("btn-header-filiese"),"d-none");
-  addClass(document.getElementById("btn-header-admin"),"d-none");
+// removeClass(document.getElementById("btn-header-filiese"),"d-none");
+addClass(document.getElementById("btn-header-filiese"),"d-none");
+addClass(document.getElementById("btn-header-admin"),"d-none");
