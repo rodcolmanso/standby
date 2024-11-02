@@ -218,7 +218,7 @@ window.onload = async () => {
         dropDown.add(newOption);
     }
 
-    await fetch('/.netlify/functions/time-records?rank=2&shooterId='+ _shooterId , {
+    fetch('/.netlify/functions/time-records?rank=2&shooterId='+ _shooterId , {
         method: "GET",
         headers: _headers
         }
@@ -572,14 +572,14 @@ async function loadPage(){
     applySpinners(true);
     // document.getElementById('nav-shooter').classList.add('active');
     eventConfig = await promiseOfSessionEventConfig(null,netlifyIdentity.currentUser());
-    if(eventConfig){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
-        document.getElementById('nav-matches').disabled=false;
-        document.getElementById('nav-qualify').disabled=false;
-    }else{
-        document.getElementById('nav-matches').style.display='none';
-        document.getElementById('nav-qualify').style.display='none';
-    }
+    // if(eventConfig){
+    //     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    //     document.getElementById('nav-matches').disabled=false;
+    //     document.getElementById('nav-qualify').disabled=false;
+    // }else{
+    //     document.getElementById('nav-matches').style.display='none';
+    //     document.getElementById('nav-qualify').style.display='none';
+    // }
 
     applySpinners(false);
     disableShooterFields(updater);

@@ -95,15 +95,21 @@ async function loadPage(){
     applySpinners(true);
     eventConfig = await promiseOfSessionEventConfig(null,loggedUser);
     applySpinners(false);
-
-    document.getElementById('eventTitleSelect').innerHTML=`<h5>Contra o Relógio - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
-    // document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
-    applySpinners(false);
+/* <span class="text-decoration-none text-truncate">&nbsp;&nbsp;<a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}"><i class="fa-solid fa-door-open"></i></a>  <span class="text-small">${(new Date(eventConfig.date)).toLocaleDateString()}</span>*/
+    // eventTitles= document.getElementsByName('eventTitleSelect');
+    // for(let i=0;i< eventTitles.length;i++){
+    //     eventTitles[i].innerHTML=`${eventConfig.name} `;
+    // }
+    
+    // // document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small">${eventConfig.name}</span></h5>`;
+    // document.getElementById('eventTitle').innerHTML= ` <a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    // applySpinners(false);
 
     if(eventConfig===null){
         alert(`Evento não encontrado`);
         window.location.href = window.location="/index.html";
+    }else{
+        loadPageEvent(tab_clock);
     }
 }
 
@@ -116,9 +122,9 @@ window.onload = async () => {
     if(params.tbord)
         _ord=JSON.parse(atob(params.tbord));
 
-    document.getElementById('btnAddShooter').style.display='';
-    document.getElementById('btnOptDuel').style.display='';
-    document.getElementById('nav-qualify').classList.add('active');
+    // document.getElementById('btnAddShooter').style.display='';
+    // document.getElementById('btnOptDuel').style.display='';
+    // document.getElementById('nav-qualify').classList.add('active');
 
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
@@ -132,11 +138,7 @@ window.onload = async () => {
         document.getElementById('btnRelPassadas').style.display='none';
     }
 
-    if(_eventConfig.duel)
-        document.getElementById('btnOptDuel').style.display='';
-    else
-        document.getElementById('btnOptDuel').style.display='none';
-
+   
     applySpinners(true);
 
     // eventConfig = await promiseOfEventConfig;
@@ -228,11 +230,6 @@ function changeDivision(selectDivision){
     //-> buildCategory2(eventConfig, selectDivision.value);
     
     
-    if(selectDivision.value===null || selectDivision.value=='' || selectDivision.value<0||selectDivision.value<0){
-        document.getElementById('btnAddShooter').disabled = true;
-    }else{
-        document.getElementById('btnAddShooter').disabled = false;
-    }
     disableInputs();
 };
 
@@ -506,7 +503,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <ul class="dropdown-menu">
                             <li ${_style} ><a class="dropdown-item" onClick="pauseResumeQueue('${aPlayers[i].shooter_division}',${aPlayers[i].order_aux})" >${_iconFila} ${_txtFila}</a></li>    
-                            <li ${_style} ><a class="dropdown-item" onClick="goToSubscription('${aPlayers[i].id}')" ><i class="bi bi-pencil-fill"></i><b> Alterar inscrição</b></a></li>
+                            <li ${_style} ><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdrop"  ><i class="bi bi-pencil-fill"></i><b> Alterar inscrição</b></a></li> <!--onClick="goToSubscription('${aPlayers[i].id}')"-->
                             <li ${_style} >_____________________</li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar atirador</a></li>
                             <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
@@ -552,11 +549,16 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     </td>
                     <td class="align-middle align-items-center align-items-center">
                       <div class="row">
-                        <div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
+                        <!--<div class="align-middle col" style="max-width: 10px !important; margin-bottom:0;">
                          ${sTries} 
-                        </div>
+                        </div>-->
                         <div class="col">
-                          <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-stopwatch"></i>
+                          <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                          <i class="bi bi-stopwatch"></i>
+                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
+                          ${aPlayers[i].tries.toString()}
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
                           </button>
                         </div>
                       </div>

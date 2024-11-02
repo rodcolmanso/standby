@@ -1,17 +1,21 @@
-- Urgente
-    - Inativar arma (nao listar)
-    - em selecionar armas, listar primeiro o proprio acervo
-    - site admin !?
-      - gerar certificado de participação
-      - gerar Anexo E
-      - Estudar assinatura digital integrada
+Urgente
+    [ ] site admin !?
+      [ ] gerar certificado de participação
+      [ ] gerar Anexo E
+      [ ] Estudar assinatura digital integrada
 
+Melhorar a experiencia de cadastro e login
+    [ ] Menu Avatar com links relacionados ao atirador
+    [ ] Criar Titulo de Página para (Perfil de atirador, Relogo, Duelo, Clubes, Eventos, etc)
+    [ ] Remover do menu superior "Duelos e Contra o Relógio"
+    
   
   
 
   
 - Carrocel em lista de eventos
-    - Pesquisa por clube ou cidade ou estado
+    - Pesquisa por clube ou cidade
+     ou estado
 
 - Shooter Home Page
     - Inscrever-se a evento
@@ -25,8 +29,7 @@
   
 
 
-  Melhorar a experiencia de cadastro e login
-    - Sessão menu Home
+  
     - Mudar todos os emails sem login para @tpmonline.com.br
     - Apagar atiradores de teste
 

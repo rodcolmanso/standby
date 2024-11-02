@@ -105,9 +105,7 @@ window.onload = async () => {
 
 
     document.getElementById('nav-events').classList.add('active');
-    
-    document.getElementById('nav-matches').style.display='none';
-    document.getElementById('nav-qualify').style.display='none';
+
 
     const dDate= new Date();
     // dDate.setDate(0);

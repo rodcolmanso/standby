@@ -248,6 +248,7 @@ window.onload = async () => {
     // const sUrl= ""+window.location.toString();
     _reload=true;
     await loadPage();
+    loadPageEvent(tab_info);
 
     // if(params.inscription!==undefined && params.inscription==="clock"){
     if(params.inscription!==undefined ){
@@ -1044,11 +1045,6 @@ function getDivisionName(divisionId){
 function buildEventDetailsPage(eventConfig){
     document.getElementById('nav-events').classList.add('active');
 
-    if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate text-nowrap"  href="/event-config.html?event_id=${eventConfig._id}"><i class="bi bi-gear-fill"></i><span class="text-decoration-none text-nowrap">${eventConfig.name}</span></a>`;
-    }else{
-        document.getElementById('eventTitle').innerHTML= `Novo evento`;
-    }
     
     document.getElementById('event-name').innerHTML= eventConfig.name;
     document.getElementById('masthead-event-name').innerHTML= eventConfig.name;
@@ -1080,7 +1076,7 @@ function buildEventDetailsPage(eventConfig){
 
     document.getElementById('event-local').innerHTML= eventConfig.address + " "+ eventConfig.city + "/"+ eventConfig.state;
     
-    document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_450,w_600/d_defaults:header-bg.jpg/"+eventConfig._id+"xxxx')" ;
+    document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
     
     document.getElementById('event-public').checked= eventConfig.public;
 

@@ -11,6 +11,12 @@
 .account-settings .user-profile .user-avatar {
     margin: 0 0 1rem 0;
 }
+
+.dropdown-menu {
+    width: 220px !important;
+    /* height: 400px !important; */
+  }
+
 .account-settings .user-profile .user-avatar img {
     width: 90px;
     height: 90px;

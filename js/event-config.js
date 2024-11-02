@@ -86,11 +86,11 @@ async function loadPage(eId){
 
     document.getElementById('nav-events').classList.add('active');
 
-    if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
-        document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
-    }else{
-        document.getElementById('eventTitle').innerHTML= `Novo evento`;
-    }
+    // if(eventConfig._id!==null && eventConfig._id!==undefined&& eventConfig._id!==0&& eventConfig._id!=="0"){
+    //     document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
+    // }else{
+    //     document.getElementById('eventTitle').innerHTML= `Novo evento`;
+    // }
     
     document.getElementById('event-name').value= eventConfig.name;
     document.getElementById('modal-eventName').innerText= eventConfig.name;
@@ -320,6 +320,7 @@ function loadTriesReport(_event){
 window.onload = async () => {
 
     await loadPage(null);
+    loadPageEvent(tab_config);
     
     if(params.rel)
         document.getElementById('btn-relat-tries').click();

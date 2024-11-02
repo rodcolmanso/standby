@@ -26,7 +26,7 @@ function getRandomInt(min, max) {
     // Add the minimum value to shift the range to [min, max]
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-
+  
 const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 
     _eventId= _eventId!==null?_eventId:s_event_id;
@@ -83,7 +83,19 @@ const promiseOfGunCollection = (_shooterId, _identityUser)=>{
     return fetch("/.netlify/functions/gun_collection?shooterId="+_shooterId, {
     method: "GET",
     // body: JSON.stringify(eventConfig),
-    headers: _headers}).then(r=>r.json())
+    headers: _headers})
+    // .then(function(response) {
+    //     console.log(response.status); // Will show you the status
+
+    //     if (!response.ok) {
+    //         if(response.status===401){
+    //             return [];
+    //         } else
+    //         throw new Error("HTTP status " + response.status);
+    //     }
+        
+    // })
+    .then(r=>r.json())
     .then(data => {
         return data;
     })
@@ -95,7 +107,6 @@ let dbUser={};
 
  async function loadingUserSession(user){
     
-    
     user= netlifyIdentity.currentUser();
     if(user!==null){ //usuário logado
         let exipre_compare= ((new Date()).getTime()-Math.round(user.token.expires_in/4) );
@@ -105,7 +116,7 @@ let dbUser={};
 
         let sdbu=getSessionDbUser();
         // clearSessionEventConfig();
-//        setCookie('nf_jwt', "", 0.6);
+            //        setCookie('nf_jwt', "", 0.6);
 
         /////////////
         if(sdbu===null||sdbu.email!==netlifyIdentity.currentUser().email.toLowerCase().trim()){ //sem _id no cookie
@@ -183,7 +194,20 @@ let dbUser={};
             setAvatarPic();
         }
         
-    }else setAvatarPic();
+        let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
+
+        if(isAdmin){
+            addClass(document.getElementById("btn-header-filiese"),"d-none");
+            removeClass(document.getElementById("btn-header-admin"),"d-none");
+        }else{
+            removeClass(document.getElementById("btn-header-filiese"),"d-none");
+            addClass(document.getElementById("btn-header-admin"),"d-none");
+        }
+        
+        
+    }else{
+        setAvatarPic();
+    }
     
 }
 
@@ -621,6 +645,22 @@ function setCookie(cname, cvalue, exdays) {
 
     });
 
+    _div = document.querySelectorAll("li");
+    [].forEach.call(_div,elem=>{
+
+        if(elem.getAttribute('class')&&elem.getAttribute('class').indexOf('nodisable')<0
+            && onoff)
+            elem.draggable= !onoff;
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
+            if(!onoff)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+
     let _radio = document.querySelectorAll('input[type="radio"]');
         [].forEach.call(_radio,rdo=>{
             if(rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('nodisable')<0
@@ -785,3 +825,98 @@ function validaCPF(cpf) {
     // document.getElementById('btnCloseModalSpinner').click();
     // console.log('FECHANDO O SPPPIIINNNEEERRRRRR');
 }, false);
+
+
+
+function hasClass(el, className)
+{
+    if (el.classList)
+        return el.classList.contains(className);
+    return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+}
+
+function addClass(el, className)
+{
+    if (el.classList)
+        el.classList.add(className)
+    else if (!hasClass(el, className))
+        el.className += " " + className;
+}
+
+function removeClass(el, className)
+{
+    if (el.classList)
+        el.classList.remove(className)
+    else if (hasClass(el, className))
+    {
+        var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+        el.className = el.className.replace(reg, ' ');
+    }
+}
+
+const tab_info=0;
+const tab_clock=1;
+const tab_duel=2;
+const tab_config=3;
+async function loadPageEvent(tab){
+    
+    const eventConfig = getSessionEventConfig();
+    
+    document.getElementById('nav-events').classList.add('active');
+
+    eventTitles= document.getElementsByName('eventTitle');
+    for(let i=0;i< eventTitles.length;i++){
+        eventTitles[i].innerHTML=eventConfig.name;
+    }
+
+    eventTitleDate= document.getElementsByName('eventTitleDate');
+    for(let i=0;i< eventTitleDate.length;i++){
+        eventTitleDate[i].innerHTML=(new Date(eventConfig.date)).toLocaleDateString().replace('/20','/');
+    }
+
+    removeClass(document.getElementById("nav-item_tab_0"), "border-secondary");
+    removeClass(document.getElementById("nav-link_0"), "active");
+    removeClass(document.getElementById("nav-link_0"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_1"), "border-secondary");
+    removeClass(document.getElementById("nav-link_1"), "active");
+    removeClass(document.getElementById("nav-link_1"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_2"), "border-secondary");
+    removeClass(document.getElementById("nav-link_2"), "active");
+    removeClass(document.getElementById("nav-link_2"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_3"), "border-secondary");
+    removeClass(document.getElementById("nav-link_3"), "active");
+    removeClass(document.getElementById("nav-link_3"), "active_sub");
+
+    addClass(document.getElementById("nav-item_tab_"+tab), "border-secondary");
+    addClass(document.getElementById("nav-link_"+tab), "active");
+    addClass(document.getElementById("nav-link_"+tab), "active_sub");
+
+    if(tab===tab_config){
+        addClass(document.getElementById("division-div-select"),"d-none");
+        removeClass(document.getElementById("nav-item_tab_"+tab_config),"d-none");
+    }
+
+    if(tab===tab_info){
+        addClass(document.getElementById("div-sub-header-title"),"d-none");
+        addClass(document.getElementById("division-div-select"),"d-none");
+    }
+    
+
+    if(!eventConfig.clock){
+        addClass(document.getElementById("nav-item_tab_"+tab_clock), "d-none");
+    }
+
+    if(!eventConfig.duel){
+        addClass(document.getElementById("nav-item_tab_"+tab_duel), "d-none");
+    }
+
+    document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
+
+
+}
+
+removeClass(document.getElementById("btn-header-filiese"),"d-none");
+  addClass(document.getElementById("btn-header-admin"),"d-none");

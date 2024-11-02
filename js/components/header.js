@@ -86,10 +86,18 @@ class Header extends HTMLElement {
             </button>
           </div>
           
-            
-          <div class="text-truncate " >
-            <h6 class=" text-small text-truncate" id="eventTitle" style="max-width: 170px;"></h6>
-          </div>
+            <a class=" p-0 me-0 me-lg-2" href="/" aria-label="Bootstrap">
+              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="0" class="d-block " viewBox="0 0 118 94" role="img">
+              <title>T.P.M. Online</title>
+                <img  class="small-profile-avatar-pic rounded-circle" rel="icon" src="/assets/brand/tpm-navbar-logo_preto.png" type="mage/x-icon">  
+              </svg>
+    </a>
+
+
+    
+          <!--<div class="text-truncate " >
+            <h6 class=" d-none text-small text-truncate" name="eventTitle" style="max-width: 170px;"></h6>
+            </div>-->
           
           
           <div class="offcanvas-lg offcanvas-start flex-grow-1" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel" data-bs-scroll="false">
@@ -104,14 +112,23 @@ class Header extends HTMLElement {
                   <a class="nav-link py-2 px-0 px-lg-2" id="nav-events" href="/" onclick="">Eventos</a>
                 </li>
                 <li class="nav-item col-6 col-lg-auto">
-                  <a class="nav-link py-2 px-0 px-lg-2" id="nav-qualify" aria-current="true" onclick="hrefQualify();"  rel="noopener">Contra o Relógio</a>
+                  <a class="nav-link py-2 px-0 px-lg-2" aria-current="true" onclick="hrefQualify();"  rel="noopener">Clubes</a>
                 </li>
                 <li class="nav-item col-6 col-lg-auto">
-                  <a class="nav-link py-2 px-0 px-lg-2" id="nav-matches" onclick="hrefMatches();" rel="noopener">Duelos</a>
+                  <a class="nav-link py-2 px-0 px-lg-2" onclick="#" rel="noopener">Resultados</a>
                 </li>
-                <!--<li class="nav-item col-6 col-lg-auto">
-                  <a class="nav-link py-2 px-0 px-lg-2" id="nav-ranking" href="/ranking.html" rel="noopener">Rankings</a>
-                </li>-->
+                <li class="nav-item col-6 col-lg-auto">
+                  <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Regulamento</a>
+                </li>
+                <li class="nav-item col-6 col-lg-auto">
+                  <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Quem somos</a>
+                </li>
+                <li class="nav-item col-6 col-lg-auto" id="btn-header-filiese">
+                  <button type="button" class="btn btn-success nodisable" value="" onclick="">Filie-se</button>
+                </li>
+                <li class="nav-item col-6 col-lg-auto" id="btn-header-admin">
+                  <button type="button" class="btn btn-dark nodisable" value="" onclick="">Administrativo</button>
+                </li>
               </ul>
 
               <hr class=" text-white-50" />
@@ -128,6 +145,9 @@ class Header extends HTMLElement {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="navbar-nav-svg" viewBox="0 0 512 416.32" role="img"><title>Twitter</title><path fill="currentColor" d="M160.83 416.32c193.2 0 298.92-160.22 298.92-298.92 0-4.51 0-9-.2-13.52A214 214 0 0 0 512 49.38a212.93 212.93 0 0 1-60.44 16.6 105.7 105.7 0 0 0 46.3-58.19 209 209 0 0 1-66.79 25.37 105.09 105.09 0 0 0-181.73 71.91 116.12 116.12 0 0 0 2.66 24c-87.28-4.3-164.73-46.3-216.56-109.82A105.48 105.48 0 0 0 68 159.6a106.27 106.27 0 0 1-47.53-13.11v1.43a105.28 105.28 0 0 0 84.21 103.06 105.67 105.67 0 0 1-47.33 1.84 105.06 105.06 0 0 0 98.14 72.94A210.72 210.72 0 0 1 25 370.84a202.17 202.17 0 0 1-25-1.43 298.85 298.85 0 0 0 160.83 46.92"></path></svg>
                     <small class=" ms-2">Twitter</small>
                   </a>
+                </li>-->
+                <!--<li class="nav-item col-6 col-lg-auto">
+                  <button type="button" class="btn btn-dark nodisable" value="" onclick="">Administrativo</button>
                 </li>-->
                 <li class="nav-item col-6 col-lg-auto">
                   <a class="nav-link py-2 px-0 px-lg-2" href="mailto:rodrigo.manso@gmail.com?subject=[TPM Online] Contato">
@@ -146,7 +166,7 @@ class Header extends HTMLElement {
                     <svg class="bi my-1 theme-icon-active"><use href="#circle-half"></use></svg>
                     <span class=" ms-2" id="bd-theme-text"></span>
                   </button>
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                  <ul class="dropdown-menu dropdown-menu-avatar dropdown-menu-end" aria-labelledby="bd-theme-text">
                     <li>
                       <button type="button" class="nodisable dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
                         <svg class="bi me-2 opacity-50 theme-icon"><use href="#sun-fill"></use></svg>
@@ -183,19 +203,38 @@ class Header extends HTMLElement {
               <div id="loggedin" style="display: none">
                 <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="/shooter.html" onclick="">
                   <span id=avatarUserName>Perfil</span>
-                  <br/><span>_____________________</span>
-                  <i class="bi bi-pencil-square"></i><span>Meu Perfil</span>
+                  <br/><i class="bi bi-pencil-square text-small"></i><span class="text-small">Meu perfil </span>
+                  <br/><span class=""><hr/></span>
                 </a>
                 <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha afiliação</span>
+                </a>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-person-rifle"></i> <span id=avatarMeuAcervo>Meu acervo</span>
+                </a>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="bi bi-person-rolodex"></i> <span id=avatarMeuAcervo>Minhas inscrições</span>
+                </a>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-medal"></i> <span id=avatarMeuAcervo>Meus resultados</span>
+                </a>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-list-check"></i> <span id=avatarFiliacao>Minha habitualidades</span>
+                </a>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-stamp"></i> <span id=avatarFiliacao>Declarações</span>
+                </a>
+                <span><hr/></span>
+                <a class="nav-link py-2 px-0 px-lg-2 text-small" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>
                 </a>
               </div>
               <div id="loginout">
                 <a class="nav-link py-2 px-0 px-lg-2" id="nav-home" href="javascript:netlifyIdentity.open('login')" onclick="">
-                  <i class="bi bi-box-arrow-in-right"></i> Entrar
+                  <i class="bi bi-box-arrow-in-right"></i> Entre (login)
                 </a>
                 <a class="nav-link py-2 px-0 px-lg-2" id="nav-home_signup" href="javascript:netlifyIdentity.open('signup')" onclick="">
-                  <i class="bi bi-pencil-square"></i> Registrar-se
+                  <i class="bi bi-pencil-square"></i> Crie sua conta
                 </a>
               </div>
               <!-- Button trigger modal 

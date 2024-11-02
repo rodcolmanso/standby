@@ -1456,7 +1456,8 @@ let eventAdmin= false;
 window.onload = async () => {
 
     await loadPage();  //load event config
-    document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
+    // document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
+    loadPageEvent(tab_duel);
     
     const user= netlifyIdentity.currentUser();
     const _eventConfig= getSessionEventConfig();
@@ -1473,15 +1474,14 @@ window.onload = async () => {
         document.getElementById('btnRelPassadas').style.display='';
     }
 
-    if(_eventConfig.clock)
-        document.getElementById('btnOptClock').style.display='';
-    else
-        document.getElementById('btnOptClock').style.display='none';
+    // if(_eventConfig.clock)
+    //     document.getElementById('btnOptClock').style.display='';
+    // else
+    //     document.getElementById('btnOptClock').style.display='none';
     
-    document.getElementById('btnAddShooter').style.display='';
-    document.getElementById('nav-matches').classList.add('active');
+    // document.getElementById('btnAddShooter').style.display='';
+    // document.getElementById('nav-matches').classList.add('active');
 
-    document.getElementById('eventTitle').innerHTML= `<a class="text-decoration-none text-truncate"  href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a>`;
     buildDivisions(eventConfig.divisions);
 
     if(params.selected_division!==undefined){

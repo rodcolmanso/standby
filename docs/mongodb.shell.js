@@ -3405,9 +3405,11 @@ db.shooters.aggregate([
                 ,localField: "_gunId"
                 ,foreignField: "_id"
                 ,as: "gun_det"
+                ,pipeline:[
+                    { $project: { type:1, factory:1, model:1, caliber:1, operation:1, alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
+                ]
                 }
             }
-            ,{ $project: { alias: { $concat: [ "$factory", " ", "$model", " (", "$caliber", ")" ] } } }
         ]        
         }
     }

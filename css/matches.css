@@ -398,7 +398,7 @@ table {
  /* Event Details */
  header.masthead {
   padding-top: 2.5rem;
-  padding-bottom: 6rem;
+  padding-bottom: 2.5rem;
   text-align: center;
   color: #fff;
   /* background-image: url("../assets/img/header-bg.jpg"); */
@@ -444,7 +444,17 @@ header.masthead .masthead-heading {
   opacity: 0.8;
 }
 
+.dropdown-menu {
+  width: 220px !important;
+  /* height: 400px !important; */
+}
+
 .spinner-border-bg{
   height: 60px;
   width: 60px;
+}
+
+.navbar-nav .nav-link.active {
+  /* font-size: 20px !important; */
+  text-decoration: underline !important;
 }
