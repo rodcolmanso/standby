@@ -90,7 +90,7 @@ const promiseOfGunCollection = (_shooterId, _identityUser)=>{
         _headers= {"Content-type": "application/json; charset=UTF-8"
                 ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
     }else{
-        _headers= {"Content-type": "application/json; charset=UTF-8"}
+        return []; //_headers= {"Content-type": "application/json; charset=UTF-8"}
     }
     return fetch("/.netlify/functions/gun_collection?shooterId="+_shooterId, {
     method: "GET",
