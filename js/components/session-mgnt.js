@@ -940,7 +940,8 @@ async function loadPageEvent(tab){
         addClass(document.getElementById("nav-item_tab_"+tab_duel), "d-none");
     }
 
-    document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
+    // document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
+    document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/defaults/header-bg.jpg')" ;
 
 
 }

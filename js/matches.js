@@ -1187,7 +1187,7 @@ function getDuels(selectDivision){
                             </div>`;
                     }else{
                         document.getElementById('duel-gen-body').innerHTML=
-                            `<h3>Aguarde o Supervisor de prova gerar os duelos...</h3>`;
+                            `<h6>Aguarde o Supervisor de prova gerar os duelos...</h6>`;
                     }
 
                     document.getElementById('btn-modal-duel-gen').click();

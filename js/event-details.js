@@ -1085,7 +1085,8 @@ function buildEventDetailsPage(eventConfig){
 
     document.getElementById('event-local').innerHTML= eventConfig.address + " "+ eventConfig.city + "/"+ eventConfig.state;
     
-    document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
+    // document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
+    document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/defaults/header-bg.jpg')" ;
     
     document.getElementById('event-public').checked= eventConfig.public;
 
