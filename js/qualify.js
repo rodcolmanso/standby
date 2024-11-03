@@ -117,7 +117,19 @@ async function loadPage(){
 
 window.onload = async () => {
 
+    const ec= getSessionEventConfig();
+    if(!params.event_id && ec && ec._id){
+        urlSearchParams.set("event_id", ec._id);
+        history.pushState(null, null, "?"+urlSearchParams.toString());
+    }
     await loadPage();
+    
+    // gunList= await promiseOfGetGunList(null,null);
+    // gunList= gunList.sort((a, b) => {
+    //     if (a.type < b.type) {
+    //     return -1;
+    //     }
+    // });
 
     if(params.tbord)
         _ord=JSON.parse(atob(params.tbord));
@@ -257,6 +269,7 @@ function transformRegistrer(players){
             aRow= {'email':players[i].email.toLowerCase().trim(),'division':players[i].registered[j].divisionId,'shooter_division':players[i].registered[j].shooterDivisionId,'category':players[i].category,'name':players[i].name,'id':players[i].shooterId,'shooterIdId':players[i].shooterId,'gun':players[i].registered[j].gun,'optics':players[i].registered[j].optics,'score':players[i].registered[j].score,'tries':players[i].registered[j].tries,'penalties':players[i].registered[j].penalties, 'sort_idx':sort_idx, 'datetime':players[i].registered[j].datetime 
                   ,'gunModel':players[i].registered[j].gunModel , 'gunFactory':players[i].registered[j].gunFactory, 'gunCaliber':players[i].registered[j].gunCaliber, 'gunId':players[i].registered[j].gunId
                   ,'order_aux':players[i].registered[j].order_aux, 'subscribe_date':players[i].registered[j].subscribe_date
+                  ,'gunRegNum': players[i].registered[j].gunRegNum
             };
             
             rP.push(aRow);  
@@ -503,10 +516,11 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                     <td class="align-middle text-start nodisable dropright" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <ul class="dropdown-menu">
                             <li ${_style} ><a class="dropdown-item" onClick="pauseResumeQueue('${aPlayers[i].shooter_division}',${aPlayers[i].order_aux})" >${_iconFila} ${_txtFila}</a></li>    
-                            <li ${_style} ><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdrop"  ><i class="bi bi-pencil-fill"></i><b> Alterar inscrição</b></a></li> <!--onClick="goToSubscription('${aPlayers[i].id}')"-->
+                            <li ${_style} ><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${aPlayers[i].shooter_division}|${aPlayers[i].gunId}-${aPlayers[i].gunRegNum?aPlayers[i].gunRegNum:""}|${aPlayers[i].id}|${aPlayers[i].name}|${aPlayers[i].optics}|${aPlayers[i].gun}|${document.getElementById("selectDivision").selectedOptions[0].innerText}">
+                                <i class="bi bi-pencil-fill"></i><b> Alterar arma</b></a></li> <!--onClick="goToSubscription('${aPlayers[i].id}')"-->
                             <li ${_style} ><span><hr/></span></li>
                             <li ${_style} ><a class="dropdown-item" onClick="goToShooter('${aPlayers[i].id}')" ><i class="bi bi-person-fill-gear"></i> Editar atirador</a></li>
-                            <li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>
+                            <!--<li><a class="dropdown-item" onClick="showClassification('${aPlayers[i].id}','${aPlayers[i].name}', ${aPlayers[i].category}, '${aPlayers[i].gunId}', ${aPlayers[i].optics})" ><i class="far fa-address-card"></i> Posição no Ranking</a></li>-->
                         </ul>
                         <div class="row  text-start">
                             <div class="col-2" style="max-width: 40px !important;">
@@ -674,7 +688,7 @@ function pauseResumeQueue(shooterDivisionId, pauseResume){
         _headers.Authorization= `Bearer ${user.token.access_token}` ;
     }
 
-    let _body= {'shooterDivisionId':shooterDivisionId ,'pauseResume':pauseResume};
+    let _body= {'shooterDivisionId':shooterDivisionId ,'order_aux':pauseResume, subscribe_date: new Date()};
 
     fetch('/.netlify/functions/shooters_divisions' , {
         method: "PATCH",

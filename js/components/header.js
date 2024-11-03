@@ -123,12 +123,12 @@ class Header extends HTMLElement {
                 <li class="nav-item col-6 col-lg-auto hide">
                   <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Quem somos</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide" id="btn-header-filiese">
+                <!--<li class="nav-item col-6 col-lg-auto d-none" id="btn-header-filiese">
                   <button type="button" class="btn btn-success nodisable" value="" onclick="">Filie-se</button>
                 </li>
                 <li class="nav-item col-6 col-lg-auto hide" id="btn-header-admin">
                   <button type="button" class="btn btn-dark nodisable" value="" onclick="">Administrativo</button>
-                </li>
+                </li>-->
               </ul>
 
               <hr class=" text-white-50" />
@@ -224,7 +224,7 @@ class Header extends HTMLElement {
                 <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-stamp"></i> <span id=avatarFiliacao>Declarações</span>
                 </a>
-                <span><hr/></span>
+                <span class="hide"><hr/></span>
                 <a class="nav-link py-2 px-0 px-lg-2 text-small" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>
                 </a>

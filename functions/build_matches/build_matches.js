@@ -446,7 +446,8 @@ const flatPlayesDivisions = (players, sort, light)=>{
       };
     }else{
       aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email.toLowerCase().trim(),'id':players[i].shooterDivisionId
-        ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId};
+        ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId
+        ,'gunRegNum': players[i].gunRegNum};
     }
     rP.push(aRow);  
   }

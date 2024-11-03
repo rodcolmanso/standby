@@ -11,14 +11,14 @@ let allShootersDivisions=null;
 let gunsOfShooterDivisions=[];
 let _tb= null;
 
-const gunOthers= {
-    _id: '66cfb8ee0badeb112d52d3c1'
-    ,type: "Outras"
-    ,factory: "Outras"
-    ,model: "Outras"
-    ,caliber: "."
-    ,operation: "Outras"
-    };
+// const gunOthers= {
+//     _id: '66cfb8ee0badeb112d52d3c1'
+//     ,type: "Outras"
+//     ,factory: "Outras"
+//     ,model: "Outras"
+//     ,caliber: "."
+//     ,operation: "Outras"
+//     };
 
 const MODAL_TABLE_SUB_ID= 'subscribe-table';
 const MODAL_TABLE_ALL_SUBS_ID= 'subscribe-table-subs';
@@ -122,6 +122,8 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
   })
 
   async function silentRefreshPage(){
+    urlSearchParams = new URLSearchParams(window.location.search);
+    params = Object.fromEntries(urlSearchParams.entries());
     console.log('will refreshed async');
     clearSessionEventConfig();
     _reload=true;
@@ -246,6 +248,13 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 const qrcode = new QRCode("qrcode");
 window.onload = async () => {
     // const sUrl= ""+window.location.toString();
+
+    const ec= getSessionEventConfig();
+    if(!params.event_id && ec && ec._id){
+        urlSearchParams.set("event_id", ec._id);
+        history.pushState(null, null, "?"+urlSearchParams.toString());
+    }
+
     _reload=true;
     await loadPage();
     loadPageEvent(tab_info);
@@ -283,7 +292,7 @@ function myFunction() {
     // <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiado! <i class="bi bi-clipboard-check-fill"></i></button>
   }
 
-let gunList=[];
+// let gunList=[];
 let acervoList=[];
 async function loadPage(){
     

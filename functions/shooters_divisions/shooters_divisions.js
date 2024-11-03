@@ -171,15 +171,26 @@ const handler = async (event, context)=>{
 
         let _body= JSON.parse(event.body);
 
+        if(_body._id)
+          _body.shooterDivisionId= _body._id;
+        else if(_body.shooterDivisionId)
+          _body._id= _body.shooterDivisionId;
+        else{
+          return  {
+              statusCode: 401,
+              body: JSON.stringify({message: "Informe shooterDivisionId"})
+            };  
+        }
+
         // console.log('_body= '+JSON.stringify(_body));
 
-        if(!_body||!_body.shooterDivisionId || _body.pauseResume===undefined || _body.pauseResume==='' || _body.pauseResume=== null){
-          console.log('ERROR 401= Informe shooterDivisionId and pauseResume value');
-        return  {
-            statusCode: 401,
-            body: JSON.stringify({message: "Informe shooterDivisionId and pauseResume value."})
-          };
-        }
+        //=> if(!_body||!_body.shooterDivisionId || _body.order_aux===undefined || _body.order_aux==='' || _body.order_aux=== null){
+        //   console.log('ERROR 401= Informe shooterDivisionId and pauseResume value');
+        // return  {
+        //     statusCode: 401,
+        //     body: JSON.stringify({message: "Informe shooterDivisionId and pauseResume value."})
+        //   };
+        // }
 
         if(!isAdmin){
           // console.log('Will find shooter_division. _body.shooterDivisionId='+_body.shooterDivisionId);
@@ -235,17 +246,43 @@ const handler = async (event, context)=>{
         }
 
         // console.log('Will update shooter_division');        
-        await cShooters_Divisions.updateOne({_id:new ObjectId(_body.shooterDivisionId)}
-                                           ,{ $set: {
-                                            order_aux : _body.pauseResume
-                                            ,subscribe_date: new Date()
-                                          }}
-        );
+        //=> await cShooters_Divisions.updateOne({_id:new ObjectId(_body.shooterDivisionId)}
+        //                                    ,{ $set: {
+        //                                     order_aux : _body.order_aux
+        //                                     ,subscribe_date: new Date()
+        //                                   }}
+        // );
 
-        return  {
-          statusCode: 201,
-          body: JSON.stringify({message: `Updated. shooterDivisionId:${_body.shooterDivisionId} .order_aux:${_body.pauseResume}`})
-        };
+        const _updateId= _body._id?_body._id :_body.shooterDivisionId;
+        delete _body._id;
+        delete _body.shooterDivisionId;
+
+        _body.last_updater= userContext.email;
+        _body.last_updater_date= new Date();
+        try{
+          await cShooters_Divisions.updateOne({_id:new ObjectId(_updateId)}
+                                            ,{ $set: _body}
+          );
+
+          return  {
+            statusCode: 201,
+            body: JSON.stringify({message: `Updated.`,shooter_division: _body }  )
+          };
+        }catch(error){
+          console.log("Error updating shooter_divisions: "+error.toString());
+          if(error.code.toString()==="11000"){
+            let gun= error.toString().slice(-1*error.toString().indexOf('gun: "'));
+            return  {
+              statusCode:  409,
+              body: JSON.stringify(`E11000. Cannot subscribe a gun twice in a same division. { ${gun} `)
+            };
+            }
+
+          return  {
+            statusCode: 510,
+            body: error.toString()
+          };
+        }
         
 
       case 'PUT': // associates divisions with a shooter

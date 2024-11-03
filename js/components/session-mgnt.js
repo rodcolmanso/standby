@@ -15,9 +15,21 @@ const SENIOR_AGE= 50;
 const SESSION_DBUSER="tpm-session-dbuser";
 const SESSION_EVENT_CONFIG="tpm-session-event-config";
 
-const urlSearchParams = new URLSearchParams(window.location.search);
-const params = Object.fromEntries(urlSearchParams.entries());
+let urlSearchParams = new URLSearchParams(window.location.search);
+let params = Object.fromEntries(urlSearchParams.entries());
 const s_event_id = params.event_id!==undefined?params.event_id:(params.eventId!==undefined?params.eventId:(params.s_event_id!==undefined?params.s_event_id:null));
+
+const gunOthers= {
+    _id: '66cfb8ee0badeb112d52d3c1'
+    ,type: "Outras"
+    ,factory: "Outras"
+    ,model: "Outras"
+    ,caliber: "."
+    ,operation: "Outras"
+    };
+
+let gunList=[];
+
 
 function getRandomInt(min, max) {
     // Use Math.floor to round down to the nearest whole number
@@ -196,13 +208,13 @@ let dbUser={};
         
         let isAdmin= (user&&(user.app_metadata.roles!==undefined&&user.app_metadata.roles!=="")&&!(user.app_metadata.roles.indexOf("admin")<0));
 
-        if(isAdmin){
-            addClass(document.getElementById("btn-header-filiese"),"d-none");
-            removeClass(document.getElementById("btn-header-admin"),"d-none");
-        }else{
-            removeClass(document.getElementById("btn-header-filiese"),"d-none");
-            addClass(document.getElementById("btn-header-admin"),"d-none");
-        }
+        // if(isAdmin){
+        //     addClass(document.getElementById("btn-header-filiese"),"d-none");
+        //     removeClass(document.getElementById("btn-header-admin"),"d-none");
+        // }else{
+        //     removeClass(document.getElementById("btn-header-filiese"),"d-none");
+        //     addClass(document.getElementById("btn-header-admin"),"d-none");
+        // }
         
         
     }else{
@@ -886,7 +898,7 @@ async function loadPageEvent(tab){
 
     eventTitleDate= document.getElementsByName('eventTitleDate');
     for(let i=0;i< eventTitleDate.length;i++){
-        eventTitleDate[i].innerHTML=(new Date(eventConfig.date)).toLocaleDateString().replace('/20','/');
+        eventTitleDate[i].innerHTML=(new Date(eventConfig.date)).toLocaleDateString().substring(0,5);// replace('/20','/');
     }
 
     removeClass(document.getElementById("nav-item_tab_0"), "border-secondary");
@@ -934,5 +946,189 @@ async function loadPageEvent(tab){
 }
 
 // removeClass(document.getElementById("btn-header-filiese"),"d-none");
-addClass(document.getElementById("btn-header-filiese"),"d-none");
-addClass(document.getElementById("btn-header-admin"),"d-none");
+// addClass(document.getElementById("btn-header-filiese"),"d-none");
+// addClass(document.getElementById("btn-header-admin"),"d-none");
+
+
+// -----------------÷
+const editShooterGunModal = document.getElementById('staticBackdropShooterGun');
+if (editShooterGunModal) {
+    editShooterGunModal.addEventListener('show.bs.modal', event => {
+
+    // Button that triggered the modal
+    const button = event.relatedTarget
+    // Extract info from data-bs-* attributes
+    const shooterInfos = button.getAttribute('data-bs-whatever')
+    const _shooterDivisionId= shooterInfos.split('|')[0];
+    const _gundId_regNum= shooterInfos.split('|')[1].replaceAll('-undefined','-');
+    const _gundId= _gundId_regNum.split('-')[0];
+    const _regNum= _gundId_regNum.split('-')[1];
+    const _shooterId= shooterInfos.split('|')[2];
+    const _shooterName= shooterInfos.split('|')[3];
+    const _shooterGunOptic= shooterInfos.split('|')[4];
+    const _shooterGunOther= shooterInfos.split('|')[5];
+    const _division= shooterInfos.split('|')[6];
+    // If necessary, you could initiate an Ajax request here
+    // and then do the updating in a callback.
+
+    // Update the modal's content.
+
+    fetch(`/.netlify/functions/guns?shooterId=${_shooterId}&hec=no&division_name=${_division}`, {
+        method: "GET"})
+        .then(response => response.json()) 
+        .then(json => {
+        // .then(_gunList => {
+            _gunList= json;
+            dropDown= document.getElementById("mondalShooterGun");
+
+            while (dropDown.options.length > 0)
+                dropDown.remove(0);
+
+            if(_gunList[0].regNum){
+                newOption = new Option("----[ACERVO]----", "");
+                dropDown.add(newOption);
+            }
+
+            let endAcervo=false;
+            for(let j=0;j<_gunList.length;j++){
+
+                let aux_Id= _gunList[j]._id+"-";
+
+
+                if(_gunList[j].regNum){
+                    aux_Id+=_gunList[j].regNum;
+                }else if(!endAcervo&&_gunList[0].regNum){
+                    newOption = new Option("--------------", "");
+                    dropDown.add(newOption);
+                    endAcervo=true;
+                }
+
+                newOption = new Option(_gunList[j].alias, aux_Id);
+                // if(_gunList[j]._id!== gunOthers._id)
+                if(_gunList[j].alias.indexOf("Outras")<0 )
+                    dropDown.add(newOption);
+            }
+            newOption = new Option("OUTRA (Especificar)", gunOthers._id+'-');
+            dropDown.add(newOption);
+
+            document.getElementById('mondalShooterGun').value= _gundId+'-'+_regNum;
+
+            if(document.getElementById('mondalShooterGun').selectedOptions[0].innerText==="OUTRA (Especificar)"){
+                $("#div-mondalGunOther").removeClass('d-none');
+                document.getElementById("mondalGunOther").required= true;
+            }else{
+                $("#div-mondalGunOther").addClass('d-none');
+                document.getElementById("mondalGunOther").required= false;
+            }
+
+            return _gunList;
+        })
+        .catch(err => console.log(`Error getting gunList For Change Gun Modal: ${err}`))
+        .finally(()=> {});
+
+    document.getElementById('mondalShooterImg').src=  `https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${_shooterId}.jpg`;
+    document.getElementById('mondalShooterName').innerText= _shooterName;
+    
+    if(_shooterGunOptic===true || _shooterGunOptic==='true'){
+        document.getElementById('mondalShooterGunOptic').checked= true;
+        document.getElementById('mondalShooterGunOptic').style.backgroundColor= 'Red';
+    }else{
+        document.getElementById('mondalShooterGunOptic').checked= false;
+        document.getElementById('mondalShooterGunOptic').style.backgroundColor= '';
+    }
+    document.getElementById('mondalGunOther').value= _shooterGunOther;
+    document.getElementById('mondalDivisionName').innerText= _division;
+
+    document.getElementById('mondalShooterDivisionId').value=_shooterDivisionId;
+
+    // document.getElementById('mondalDivisionName').innerText= _gundId;
+  })
+}
+
+document.getElementById('mondalShooterGun')
+const mondalShooterGun = document.getElementById('mondalShooterGun');
+if(mondalShooterGun){
+    mondalShooterGun.addEventListener('change', e => {
+
+        if(e.target.selectedOptions[0].innerText.indexOf("OUTRA (Es")>-1){
+            $("#div-mondalGunOther").removeClass('d-none');
+            document.getElementById("mondalGunOther").required= true;
+            document.getElementById("mondalGunOther").value="";
+        }else if(e.target.value.indexOf(gunOthers._id)>-1 ){
+            $("#div-mondalGunOther").addClass('d-none');
+            document.getElementById("mondalGunOther").value= e.target.selectedOptions[0].innerText;
+        }else{
+            $("#div-mondalGunOther").addClass('d-none');
+            if(e.target.value==="")
+                document.getElementById("mondalGunOther").value= "";
+            else
+                document.getElementById("mondalGunOther").value= e.target.selectedOptions[0].innerText;
+            document.getElementById("mondalGunOther").required= false;
+        }
+
+    });
+}
+
+
+const modalGunSave = document.getElementById('modalGunSave');
+if(modalGunSave){
+    modalGunSave.addEventListener('click', event => {
+
+
+        if(document.getElementById('mondalShooterGun').value.trim()===""|| document.getElementById("mondalGunOther").value.trim()===""){
+            alert("Informar uma arma!");
+            document.getElementById('mondalShooterGun').focus();
+            return 0;
+        }
+
+
+    let _body= {'_id'      :  document.getElementById('mondalShooterDivisionId').value
+               ,'gunId'    : document.getElementById('mondalShooterGun').value.split("-")[0]
+               ,'gunRegNum': document.getElementById('mondalShooterGun').value.split("-")[1]
+               ,'gun'      : document.getElementById('mondalGunOther').value
+               ,'optics'   : document.getElementById('mondalShooterGunOptic').checked
+    };
+
+    console.log('_body:',JSON.stringify(_body));
+
+    const _user= netlifyIdentity.currentUser();
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    if(_user&&_user.token&&_user.token.access_token){
+        _headers.Authorization= `Bearer ${_user.token.access_token}` ;
+    }
+    applySpinners(true);
+    fetch('/.netlify/functions/shooters_divisions' , {
+        method: "PATCH",
+        headers: _headers,
+        body: JSON.stringify(_body)
+        })
+    .then(function(response) {
+        console.log(response.status); // Will show you the status
+
+        if (!response.ok) {
+            if(response.status===409){
+                alert(`A arma ${_body.gun} já está inscrita na divisão ${document.getElementById('mondalDivisionName').innerText}.`);
+                // return 0;
+            }
+            throw new Error("HTTP status " + response.status);
+        }
+    
+    })
+    .then(json => {
+        applySpinners(false);
+            
+            try{
+                updateShootersList();
+            // alert("Atualizado com sucesso!");
+            document.getElementById('modalGunClose').click();
+            }catch(eee_){
+                window.location.reload();
+            }
+
+    }
+    ).catch(err => {console.log(`Error updating gun queue: ${err}`); }
+    ).finally(()=> {
+        applySpinners(false);
+    });
+    })
+}

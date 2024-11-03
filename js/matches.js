@@ -21,14 +21,14 @@ let modalChanged;
 let language="pt-br";
 let loggedUser;
 
-const gunOthers= {
-    _id: '66cfb8ee0badeb112d52d3c1'
-    ,type: "Outras"
-    ,factory: "Outras"
-    ,model: "Outras"
-    ,caliber: "."
-    ,operation: "Outras"
-    };
+// const gunOthers= {
+//     _id: '66cfb8ee0badeb112d52d3c1'
+//     ,type: "Outras"
+//     ,factory: "Outras"
+//     ,model: "Outras"
+//     ,caliber: "."
+//     ,operation: "Outras"
+//     };
 
 let mouseDown = false;
 let startX, scrollLeft;
@@ -556,8 +556,11 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
         <path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
         </svg> ${mainMatches[round][match].shooterA.name.substring(0,mainMatches[round][match].shooterA.name.indexOf(" "))} vs ${mainMatches[round][match].shooterB.name.substring(0,mainMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
-                    <li><a class="dropdown-item" onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${mainMatches[round][match].shooterA.name}</a></li>
-                    <li><a class="dropdown-item" onClick="goToSubscription('${mainMatches[round][match].shooterB.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${mainMatches[round][match].shooterB.name}</a></li>
+                    
+        <li><i class="bi bi-pencil-fill"></i> Alterar arma de:</li>
+                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${mainMatches[round][match].shooterA.shooterDivisionId}|${mainMatches[round][match].shooterA.gunId}-${mainMatches[round][match].shooterA.gunRegNum?mainMatches[round][match].shooterA.gunRegNum:""}|${mainMatches[round][match].shooterA.shooterId}|${mainMatches[round][match].shooterA.name}|${mainMatches[round][match].shooterA.optics}|${mainMatches[round][match].shooterA.gun}|${mainMatches[round][match].shooterA.division_name}">
+                     - ${mainMatches[round][match].shooterA.name}</a></li> <!--onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')"-->
+                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${mainMatches[round][match].shooterB.shooterDivisionId}|${mainMatches[round][match].shooterB.gunId}-${mainMatches[round][match].shooterB.gunRegNum?mainMatches[round][match].shooterB.gunRegNum:""}|${mainMatches[round][match].shooterB.shooterId}|${mainMatches[round][match].shooterB.name}|${mainMatches[round][match].shooterB.optics}|${mainMatches[round][match].shooterB.gun}|${mainMatches[round][match].shooterB.division_name}"> -${mainMatches[round][match].shooterB.name}</a></li>
                 </ul>
                 ${roundNum}
                 <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
@@ -1455,6 +1458,12 @@ let isAdmin=false;
 let eventAdmin= false;
 window.onload = async () => {
 
+
+    const ec= getSessionEventConfig();
+    if(!params.event_id && ec && ec._id){
+        urlSearchParams.set("event_id", ec._id);
+        history.pushState(null, null, "?"+urlSearchParams.toString());
+    }
     await loadPage();  //load event config
     // document.getElementById('eventTitleSelect').innerHTML=`<h5>Duelos - <span class="text-small"><a class="text-decoration-none" href="/event-details.html?event_id=${eventConfig._id}">${eventConfig.name}</a></span></h5>`;
     loadPageEvent(tab_duel);

@@ -1,13 +1,5 @@
 let updater=false;
 let shooterData=null;
-const gunOthers= {
-    _id: '66cfb8ee0badeb112d52d3c1'
-    ,type: "Outras"
-    ,factory: "Outras"
-    ,model: "Outras"
-    ,caliber: "."
-    ,operation: "Outras"
-    };
 
 netlifyIdentity.on('close', () => {
     
@@ -131,8 +123,6 @@ function listAcerto(acervo){
 
     document.getElementById("division-table").innerHTML= row;
 }
-
-let gunList;
 
 window.onload = async () => {
 
