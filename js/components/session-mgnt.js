@@ -649,14 +649,18 @@ function setCookie(cname, cvalue, exdays) {
             elem.draggable= !onoff;
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
-            if(!onoff)
+            if(!onoff){
                 elem.style.display = ''//'visible'; //'hidden'
-            else
+                removeClass(elem,'d-none');
+            }else{
                 elem.style.display = 'none'//'visible'; //'hidden'
+                addClass(elem,'d-none');
+            }
         }
 
     });
 
+    //========================
     _div = document.querySelectorAll("li");
     [].forEach.call(_div,elem=>{
 
@@ -665,10 +669,13 @@ function setCookie(cname, cvalue, exdays) {
         //     elem.draggable= !onoff;
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
-            if(!onoff)
+            if(!onoff){
                 elem.style.display = ''//'visible'; //'hidden'
-            else
+                removeClass(elem,'d-none');
+            }else{
                 elem.style.display = 'none'//'visible'; //'hidden'
+                addClass(elem,'d-none');
+            }
         }
 
     });
@@ -680,13 +687,45 @@ function setCookie(cname, cvalue, exdays) {
         //     elem.draggable= !onoff;
         
         if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hide')>=0)){
-            if(!onoff)
+            if(!onoff){
                 elem.style.display = ''//'visible'; //'hidden'
-            else
+                removeClass(elem,'d-none');
+            }else{
                 elem.style.display = 'none'//'visible'; //'hidden'
+                addClass(elem,'d-none');
+            }
         }
-
     });
+    //========================
+
+    //================HIDE ALLL========
+    _div = document.querySelectorAll("li");
+    [].forEach.call(_div,elem=>{
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hixdeAll')>=0)){
+            elem.style.display = 'none'//'visible'; //'hidden'
+            addClass(elem,'d-none');
+        }
+    });
+    _div = document.querySelectorAll("a");
+    [].forEach.call(_div,elem=>{
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hixdeAll')>=0)){
+            elem.style.display = 'none'//'visible'; //'hidden'
+            addClass(elem,'d-none');
+        }
+    });
+    _div = document.querySelectorAll("span");
+    [].forEach.call(_div,elem=>{
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hixdeAll')>=0)){
+            elem.style.display = 'none'//'visible'; //'hidden'
+            addClass(elem,'d-none');
+        }
+    });
+    //========================
+
+
+
+    //============................
+
 
     let _radio = document.querySelectorAll('input[type="radio"]');
         [].forEach.call(_radio,rdo=>{
@@ -891,16 +930,6 @@ async function loadPageEvent(tab){
     
     document.getElementById('nav-events').classList.add('active');
 
-    eventTitles= document.getElementsByName('eventTitle');
-    for(let i=0;i< eventTitles.length;i++){
-        eventTitles[i].innerHTML=eventConfig.name;
-    }
-
-    eventTitleDate= document.getElementsByName('eventTitleDate');
-    for(let i=0;i< eventTitleDate.length;i++){
-        eventTitleDate[i].innerHTML=(new Date(eventConfig.date)).toLocaleDateString().substring(0,5);// replace('/20','/');
-    }
-
     removeClass(document.getElementById("nav-item_tab_0"), "border-secondary");
     removeClass(document.getElementById("nav-link_0"), "active");
     removeClass(document.getElementById("nav-link_0"), "active_sub");
@@ -919,7 +948,49 @@ async function loadPageEvent(tab){
 
     addClass(document.getElementById("nav-item_tab_"+tab), "border-secondary");
     addClass(document.getElementById("nav-link_"+tab), "active");
-    addClass(document.getElementById("nav-link_"+tab), "active_sub");
+    addClass(document.getElementById("nav-link_"+tab), "active_sub")
+
+    removeClass(document.getElementById("nav-item_tab_"+tab), "d-none");;
+    removeClass(document.getElementById("nav-link_"+tab), "d-none");
+    
+    document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/defaults/header-bg.jpg')" ;
+
+    if(tab===tab_config){
+
+        addClass(document.getElementById("division-div-select"), "d-none");
+        removeClass(document.getElementById("nav-item_tab_0"), "d-none");
+        
+        addClass(document.getElementById("nav-item_tab_"+tab_config), "border-secondary");
+        addClass(document.getElementById("nav-link_"+tab_config), "active");
+        addClass(document.getElementById("nav-link_"+tab_config), "active_sub");
+
+        if(!eventConfig|| !eventConfig._id){
+
+            addClass(document.getElementById("nav-item_tab_0"), "d-none");
+            addClass(document.getElementById("nav-item_tab_1"), "d-none");
+            addClass(document.getElementById("nav-item_tab_2"), "d-none");
+            removeClass(document.getElementById("nav-item_tab_3"), "d-none");
+            
+            
+            return 0;
+        }else{
+
+            removeClass(document.getElementById("nav-item_tab_0"), "d-none");
+            removeClass(document.getElementById("nav-item_tab_1"), "d-none");
+            removeClass(document.getElementById("nav-item_tab_2"), "d-none");
+
+        }
+    }
+
+    eventTitles= document.getElementsByName('eventTitle');
+    for(let i=0;i< eventTitles.length;i++){
+        eventTitles[i].innerHTML=eventConfig.name;
+    }
+
+    eventTitleDate= document.getElementsByName('eventTitleDate');
+    for(let i=0;i< eventTitleDate.length;i++){
+        eventTitleDate[i].innerHTML=(new Date(eventConfig.date)).toLocaleDateString().substring(0,5);// replace('/20','/');
+    }
 
     if(tab===tab_config){
         addClass(document.getElementById("division-div-select"),"d-none");
@@ -930,18 +1001,20 @@ async function loadPageEvent(tab){
         addClass(document.getElementById("div-sub-header-title"),"d-none");
         addClass(document.getElementById("division-div-select"),"d-none");
     }
-    
 
     if(!eventConfig.clock){
         addClass(document.getElementById("nav-item_tab_"+tab_clock), "d-none");
+    }else{
+        removeClass(document.getElementById("nav-item_tab_"+tab_clock), "d-none");
     }
 
     if(!eventConfig.duel){
         addClass(document.getElementById("nav-item_tab_"+tab_duel), "d-none");
+    }else{
+        removeClass(document.getElementById("nav-item_tab_"+tab_duel), "d-none");
     }
 
     // document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
-    document.getElementById('div-sub-header-title').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/defaults/header-bg.jpg')" ;
 
 
 }

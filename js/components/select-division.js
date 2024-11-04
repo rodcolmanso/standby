@@ -38,26 +38,26 @@ class Division extends HTMLElement {
         <ul class="nav nav-pills nav-fill bg-body-tertiary">
           <li id="nav-item_tab_3" class="nav-item border hide">
             <a id="nav-link_3" class="nav-link nav-link_sub " href="./event-config.html">
-            <span class="d-none d-sm-block">Configurações</span>
-            <span class="d-block d-sm-none "><i class="fa-solid fa-gear"></i></span>
+            <span class="d-none d-sm-block"><i class="fa-solid fa-gear"></i> Configurações</span>
+            <span class="d-block d-sm-none "><i class="fa-solid fa-gear"></i> <span class="text-small"> Conf</span></span>
             </a>
           </li>
           <li id="nav-item_tab_0" class="nav-item border ">
             <a id="nav-link_0" class="nav-link nav-link_sub " href="./event-details.html">
-            <span class="d-none d-sm-block">Informações gerais</span>
-            <span class="d-block d-sm-none"><i class="fa-solid fa-circle-info"></i> <span class="text-small">Infos.</span></span>
+            <span class="d-none d-sm-block"><i class="fa-solid fa-circle-info"></i> Informações gerais</span>
+            <span class="d-block d-sm-none"><i class="fa-solid fa-circle-info"></i> <span class="text-small">Info</span></span>
             </a>
           </li>
           <li id="nav-item_tab_1" class="nav-item border ">
             <a id="nav-link_1" class="nav-link nav-link_sub " aria-current="page" onClick="hrefQualify()" >
-            <span class="d-none d-sm-block">Contra o relógio</span>
+            <span class="d-none d-sm-block"><i class="fa-solid fa-clock"></i> Contra o relógio</span>
             <span class="d-block d-sm-none "><i class="fa-solid fa-clock"></i> <span class="text-small">Relógio</span></span>
             </a>
           </li>
           <li id="nav-item_tab_2" class="nav-item border ">
             <a id="nav-link_2" class="nav-link nav-link_sub " onClick="hrefMatches()">
-              <span class="d-none d-sm-block">Duelos</span>
-              <span class="d-block d-sm-none "><i class="fa-solid fa-holly-berry"></i> <span class="text-small">Duelos</span></span>
+              <span class="d-none d-sm-block"><i class="fa-solid fa-holly-berry"></i> Duelos</span>
+              <span class="d-block d-sm-none "><i class="fa-solid fa-holly-berry"></i> <span class="text-small">Duelo</span></span>
             </a>
           </li>
         </ul>

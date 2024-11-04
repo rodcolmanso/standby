@@ -320,7 +320,7 @@ function loadTriesReport(_event){
 window.onload = async () => {
 
     await loadPage(null);
-    loadPageEvent(tab_config);
+    loadPageEvent(3);
     
     if(params.rel)
         document.getElementById('btn-relat-tries').click();
@@ -451,13 +451,20 @@ function updateEventConfig(){
                     .then(json => {
                         console.log(`json= ${json}`);
                         console.log(`eventConfig._id= ${eventConfig._id}`);
-                        eventConfig._id=json.insertedId;
+                        
+                        eventConfig._id= json.insertedId;
+                        // -------
+
                         console.log(`[json.upsertedId] eventConfig._id= ${eventConfig._id}`);
                         clearSessionEventConfig();
-                        loadPage(eventConfig._id);
+                        // setSessionEventConfig(eventConfig);
+                        // loadPage(eventConfig._id);
                         alert(`Torneio ${eventConfig.name} criado/atualizado com sucesso!`);
-                        // window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
-                        // location.reload(true);
+                        urlSearchParams.set("event_id", eventConfig._id);
+                        history.pushState(null, null, "?"+urlSearchParams.toString());
+                        window.location.href = window.location.pathname+"?"+"event_id="+eventConfig._id;
+                        location.reload(true);
+                        
                     })
                     .catch(err => console.log(`Error adding, updating eventConfig: ${err}`))
                     .finally(()=> {
@@ -539,6 +546,9 @@ function buildDivisionTable(eventConfig){
             if(eventConfig.divisions[i].name!=='Armas curtas')
                 row+=`<option value="Armas curtas">Armas curtas</option>`;
             
+            if(eventConfig.divisions[i].name!=='Desafio Abud')
+                row+=`<option value="Desafio Abud">Desafio Abud (uma mão em mira aberta a 7m)</option>`;
+
             if(eventConfig.divisions[i].name!=='Levers & Pumps')
                 row+=`<option value="Levers & Pumps">Levers & Pumps</option>`;
             
@@ -741,4 +751,20 @@ function retriveSpreadsheet(){
 const sheetDataHandler= (sheetData)=>{
     console.log(sheetData);
     document.getElementById('textArea').value= JSON.stringify(sheetData);
+}
+
+function goToSubscription(parms){
+    const user= netlifyIdentity.currentUser();
+    const _eventConfig= getSessionEventConfig();
+    let isAdmin= (user&&user.app_metadata.roles!==undefined&&user.app_metadata.roles!==""&&!(user.app_metadata.roles.indexOf("admin")<0));
+    let isEventAdmin=  (user&&user.email&&_eventConfig&&_eventConfig.owners&&_eventConfig.owners.indexOf(user.email.toLowerCase().trim())>=0);
+
+    if(!isAdmin && !isEventAdmin && user&&user.email){
+        parms='&email='+user.email.toLowerCase().trim();
+    }
+
+    if(parms!==undefined && parms!==''){
+        parms= '&shooterId='+parms;
+    }else parms='';
+       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):""); //->+getActiveCat();
 }

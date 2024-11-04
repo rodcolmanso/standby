@@ -23,15 +23,17 @@ const handler = async (event, context)=>{
           filter.caliber= {$nin:['.454 Casull', '.308 Win', '5.56', '7.62', '10mm', '300BLK', '44Mag']};
         }
 
-        if(event.queryStringParameters.division_name && event.queryStringParameters.division_name.toLowerCase()==='pistola'){
+        if(event.queryStringParameters.division_name && event.queryStringParameters.division_name.toLowerCase().trim()==='pistola'){
           filter.type= {$in:['Pistola','Outras']};
         }
 
-        if(event.queryStringParameters.division_name && event.queryStringParameters.division_name.toLowerCase()==='revolver'){
+        if(event.queryStringParameters.division_name && event.queryStringParameters.division_name.toLowerCase().trim()==='revolver'){
           filter.type= {$in:['Revolver','Outras']};
         }
 
-        if(event.queryStringParameters.division_name && event.queryStringParameters.division_name.toLowerCase()==='handgun'){
+        if(event.queryStringParameters.division_name && (event.queryStringParameters.division_name.toLowerCase().trim()==='handgun'
+            ||event.queryStringParameters.division_name.toLowerCase().trim()==='armas curtas'
+            ||event.queryStringParameters.division_name.toLowerCase().trim()==='desafio abud')){
           filter.type= {$in:['Pistola', 'Revolver','Outras']};
         }
 

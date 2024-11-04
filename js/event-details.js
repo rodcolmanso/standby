@@ -620,9 +620,9 @@ function populateGunDropdown(shooterDivisions, _subs){
                         newOption.selected= true;
 
                     if(gunList[j]._id!==gunOthers._id && ((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
-                        ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
+                        ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&(divisionName!=="armas curtas" && divisionName!== 'desafio abud') )
                         ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
-                        ||(divisionName==="armas curtas"
+                        ||((divisionName==="armas curtas"|| divisionName=== 'desafio abud')
                             &&(gunList[j].type.toLocaleLowerCase().trim()==="revolver"
                                ||gunList[j].type.toLocaleLowerCase().trim()==="pistola" ) )){
                             dropDown.add(newOption);
@@ -1244,7 +1244,7 @@ document.getElementById("select-subscribe-division").addEventListener('change', 
                 
                 if(divisionName=== 'força livre' || acervoList[ac].gunId === gunOthers._id
                   || acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()===divisionName
-                  || (divisionName=== 'armas curtas'
+                  || ((divisionName=== 'armas curtas' || divisionName=== 'desafio abud')
                       &&(acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()==='pistola'
                          ||acervoList[ac].gun_det[0].type.toLocaleLowerCase().trim()==='revolver')
                   ) ){
@@ -1283,9 +1283,9 @@ document.getElementById("select-subscribe-division").addEventListener('change', 
             newOption = new Option(gunList[j].alias, gunList[j]._id+"|");
 
             if(gunList[j]._id!==gunOthers._id &&((divisionName==="força livre"&&(gunList[j].type.toLocaleLowerCase().trim()!=="carabina"&&gunList[j].type.toLocaleLowerCase().trim()!=="espingarda")))
-                ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&divisionName!=="armas curtas" )
+                ||(divisionName!=="força livre"&&divisionName!=="revolver"&&divisionName!=="pistola"&&(divisionName!=="armas curtas"&& divisionName!== 'desafio abud') )
                 ||divisionName===gunList[j].type.toLocaleLowerCase().trim()
-                ||(divisionName==="armas curtas"
+                ||((divisionName==="armas curtas"|| divisionName=== 'desafio abud')
                     &&(gunList[j].type.toLocaleLowerCase().trim()==="revolver"
                        ||gunList[j].type.toLocaleLowerCase().trim()==="pistola" ) )){
                 dropDown.add(newOption);

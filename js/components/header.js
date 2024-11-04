@@ -111,24 +111,27 @@ class Header extends HTMLElement {
                 <li class="nav-item col-6 col-lg-auto">
                   <a class="nav-link py-2 px-0 px-lg-2" id="nav-events" href="/" onclick="">Eventos</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide">
-                  <a class="nav-link py-2 px-0 px-lg-2" aria-current="true" onclick="hrefQualify();"  rel="noopener">Clubes</a>
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll">
+                  <a class="nav-link py-2 px-0 px-lg-2" aria-current="true" onclick=""  rel="noopener">Clubes</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide">
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll">
+                  <a class="nav-link py-2 px-0 px-lg-2" aria-current="true" onclick=""  rel="noopener">Super</a>
+                </li>
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll">
                   <a class="nav-link py-2 px-0 px-lg-2" onclick="#" rel="noopener">Resultados</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide">
-                  <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Regulamento</a>
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll">
+                  <a class="nav-link py-2 px-0 px-lg-2" href="#" rel="noopener">Regulamento</a>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide">
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll">
                   <a class="nav-link py-2 px-0 px-lg-2" href="/ranking.html" rel="noopener">Quem somos</a>
                 </li>
-                <!--<li class="nav-item col-6 col-lg-auto d-none" id="btn-header-filiese">
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll" id="btn-header-filiese">
                   <button type="button" class="btn btn-success nodisable" value="" onclick="">Filie-se</button>
                 </li>
-                <li class="nav-item col-6 col-lg-auto hide" id="btn-header-admin">
+                <li class="nav-item col-6 col-lg-auto hide hixdeAll" id="btn-header-admin">
                   <button type="button" class="btn btn-dark nodisable" value="" onclick="">Administrativo</button>
-                </li>-->
+                </li>
               </ul>
 
               <hr class=" text-white-50" />
@@ -206,25 +209,25 @@ class Header extends HTMLElement {
                   <br/><i class="bi bi-pencil-square text-small"></i><span class="text-small">Meu perfil </span>
                   <br/><span class=""><hr/></span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
-                  <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha afiliação</span>
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha filiação</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-person-rifle"></i> <span id=avatarMeuAcervo>Meu acervo</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-person-rolodex"></i> <span id=avatarMeuAcervo>Minhas inscrições</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-medal"></i> <span id=avatarMeuAcervo>Meus resultados</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-list-check"></i> <span id=avatarFiliacao>Minha habitualidades</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-stamp"></i> <span id=avatarFiliacao>Declarações</span>
                 </a>
-                <span class="hide"><hr/></span>
+                <span class="hide hixdeAll"><hr/></span>
                 <a class="nav-link py-2 px-0 px-lg-2 text-small" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>
                 </a>
