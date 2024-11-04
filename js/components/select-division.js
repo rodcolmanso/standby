@@ -8,38 +8,37 @@ class Division extends HTMLElement {
       <!--<div class=" bg-body-tertiary" id="div-sub-header-title">-->
       <header class="masthead_duel" id="div-sub-header-title">
         <div class="d-flex align-items-center justify-content-between">
-            
-          &nbsp;<button class=" d-none btn btn-primary nodisable hide" onclick="window.location.href='./event-config.html'" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">
+          <!--<button class=" d-none btn btn-primary nodisable hide" onclick="window.location.href='./event-config.html'" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">
             <i class="fa-solid fa-gear"></i>
-          </button>
+          </button>-->
+          <img class="" id="imgHeaderEvent" src="..." style="margin-left: .60rem; width: 100px; height: 75px;">
           
           <div>
             <div class="d-flex">
               <h2 class="d-none d-sm-block" name="eventTitle"></h2>
-              <h4 class="d-block d-sm-none d-inline-block text-truncate" style="max-width: 240px;" name="eventTitle"></h4>
+              <span class="d-block d-sm-none d-inline-block text-truncate" style="max-width: 200px;" name="eventTitle"></span>
               &nbsp;
-              <h2 class="d-none d-sm-block" name="eventTitleDate"></h2>
-              <h4 class="d-block d-sm-none " name="eventTitleDate"></h4>
+              <h4 class="d-none d-sm-block" name="eventTitleDate"></h4>
+              <span class="d-block d-sm-none text-small" name="eventTitleDate"></span>
             </div>
             <div class="text-center">
-              <button class=" btn btn-warning btn-sm nodisable" onclick="goToSubscription('');" type="button">
+              <button class=" btn btn-warning btn-sm nodisable" id="btn-subscribe-header-sm" onclick="goToSubscription('');" type="button">
                 Inscreva-se
               </button>
-            </div>
-          </div>
-            
-          <button class="btn btn-secondary nodisable" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">
+              <button class="btn btn-secondary nodisable hixdeAll" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem; margin-right: .65rem !important;">
             <i class="fa-solid fa-arrow-up-from-bracket"></i>
           </button>
+            </div>
+          </div>  
+          &nbsp;
         </div>  
-        
       </header>
       <div>
         <ul class="nav nav-pills nav-fill bg-body-tertiary">
           <li id="nav-item_tab_3" class="nav-item border hide">
             <a id="nav-link_3" class="nav-link nav-link_sub " href="./event-config.html">
             <span class="d-none d-sm-block"><i class="fa-solid fa-gear"></i> Configurações</span>
-            <span class="d-block d-sm-none "><i class="fa-solid fa-gear"></i> <span class="text-small"> Conf</span></span>
+            <span class="d-block d-sm-none "><i class="fa-solid fa-gear"></i> <span class="text-small"></span></span>
             </a>
           </li>
           <li id="nav-item_tab_0" class="nav-item border ">
@@ -57,7 +56,7 @@ class Division extends HTMLElement {
           <li id="nav-item_tab_2" class="nav-item border ">
             <a id="nav-link_2" class="nav-link nav-link_sub " onClick="hrefMatches()">
               <span class="d-none d-sm-block"><i class="fa-solid fa-holly-berry"></i> Duelos</span>
-              <span class="d-block d-sm-none "><i class="fa-solid fa-holly-berry"></i> <span class="text-small">Duelo</span></span>
+              <span class="d-block d-sm-none "><i class="fa-solid fa-holly-berry"></i> <span class="text-small">Duelos</span></span>
             </a>
           </li>
         </ul>
