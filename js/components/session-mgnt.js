@@ -927,6 +927,77 @@ function removeClass(el, className)
     }
 }
 
+
+function goToPage(page,oderParams){
+
+    if(!oderParams)
+        oderParams='';
+
+    urlSearchParams = new URLSearchParams(window.location.search);
+    params = Object.fromEntries(urlSearchParams.entries());
+    
+    let idP="?n=1";
+    if(params&&params.id){
+        idP="?id="+params.id;
+    }
+
+    window.location=`/${page}.html${idP}${oderParams}`;
+
+}
+
+let shooterData=null;
+async function loadPageProfile(tab){
+    
+    // document.getElementById('nav-profile').classList.add('active');
+
+    // let loggedUser= getSessionDbUser();
+    
+    const user= netlifyIdentity.currentUser();
+    sessionTitle= document.getElementsByName("sessionTitle");
+    sessionSubTitle= document.getElementsByName("sessionSubTitle");
+
+    if(user){
+        
+        for(let i=0; i<sessionTitle.length; i++){
+            sessionSubTitle[i].innerText= shooterData.name;
+        }
+
+        if(shooterData && shooterData.email === user.email){
+            
+            for(let i=0; i<sessionSubTitle.length; i++){
+                sessionTitle[i].innerText= "Meu perfil";
+            }
+        }
+    }
+
+    removeClass(document.getElementById("nav-item_tab_0"), "border-secondary");
+    removeClass(document.getElementById("nav-link_0"), "active");
+    removeClass(document.getElementById("nav-link_0"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_1"), "border-secondary");
+    removeClass(document.getElementById("nav-link_1"), "active");
+    removeClass(document.getElementById("nav-link_1"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_2"), "border-secondary");
+    removeClass(document.getElementById("nav-link_2"), "active");
+    removeClass(document.getElementById("nav-link_2"), "active_sub");
+
+    removeClass(document.getElementById("nav-item_tab_3"), "border-secondary");
+    removeClass(document.getElementById("nav-link_3"), "active");
+    removeClass(document.getElementById("nav-link_3"), "active_sub");
+
+    addClass(document.getElementById("nav-item_tab_"+tab), "border-secondary");
+    addClass(document.getElementById("nav-link_"+tab), "active");
+    addClass(document.getElementById("nav-link_"+tab), "active_sub")
+
+    if(!params.id){
+        urlSearchParams.set("id", shooterData._id);
+        history.pushState(null, null, "?"+urlSearchParams.toString());
+    }
+
+}
+
+
 const tab_info=0;
 const tab_clock=1;
 const tab_duel=2;
@@ -1222,4 +1293,116 @@ if(modalGunSave){
         applySpinners(false);
     });
     })
+}
+
+function disableShooterFields(updater){
+
+    let _button = document.querySelectorAll("button");
+    [].forEach.call(_button,btn=>{
+        
+        if(
+        (btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0)
+        ){
+            btn.disabled=!updater;
+        }
+
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                btn.style.visibility = 'visible'//'visible'; //'hidden'
+            else
+                btn.style.visibility = 'hidden'//'visible'; //'hidden'
+        }
+    });
+
+    let _input = document.querySelectorAll("input");
+    [].forEach.call(_input,btn=>{
+        if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0
+        // && btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+        // && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0)
+        )
+            btn.disabled= !updater;
+        
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                btn.style.display = '='//'visible'; //'hidden'
+            else
+                btn.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+
+    let _div = document.querySelectorAll("div");
+    [].forEach.call(_div,elem=>{
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater){
+                elem.style.display = ''//'visible'; //'hidden'
+                removeClass(elem,'d-none');
+            }else{
+                elem.style.display = 'none'//'visible'; //'hidden'
+                addClass(elem,'d-none');
+            }
+        }
+
+    });
+
+    let _label = document.querySelectorAll("label");
+    [].forEach.call(_label,elem=>{
+        
+        if((elem.getAttribute('class')&&elem.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                elem.style.display = ''//'visible'; //'hidden'
+            else
+                elem.style.display = 'none'//'visible'; //'hidden'
+        }
+
+    });
+
+    let _radio = document.querySelectorAll('input[type="radio"]');
+        [].forEach.call(_radio,rdo=>{
+            if(rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('disableshooter')>=0
+            // &&rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('nodisable')<0
+            // && rdo.getAttribute('type') && rdo.getAttribute('type').indexOf('search')<0
+        )
+                rdo.disabled= !updater;
+            
+            if((rdo.getAttribute('class')&&rdo.getAttribute('class').indexOf('hideshooter')>=0)){
+                if(updater)
+                    rdo.style.display = ''//'visible'; //'hidden'
+                else
+                    rdo.style.display = 'none'//'visible'; //'hidden'
+            }
+        });
+
+    let _textarea = document.querySelectorAll("textarea");
+    [].forEach.call(_textarea,btn=>{
+        if(btn.getAttribute('class')&&btn.getAttribute('class').indexOf('disableshooter')>=0
+        // &&btn.getAttribute('class')&&btn.getAttribute('class').indexOf('nodisable')<0
+        //     && btn.getAttribute('type') && btn.getAttribute('type').indexOf('search')<0
+        )
+            btn.disabled=!updater;
+
+        if((btn.getAttribute('class')&&btn.getAttribute('class').indexOf('hideshooter')>=0)){
+            if(updater)
+                btn.style.display = ''//'visible'; //'hidden'
+            else
+                btn.style.display = 'none'//'visible'; //'hidden'
+        }
+    });
+
+    try{
+        document.getElementById('modalEmail').disabled=true;
+        if(document.getElementById('docnum').value.indexOf('**')>-1){
+            document.getElementById('docnum').disabled==true;
+    }
+    }catch(e){
+        
+    }
+
+    let _select = document.querySelectorAll("select");
+    [].forEach.call(_select,btn=>{
+        if(btn.getAttribute('class').indexOf('disableshooter')>=0)
+            btn.disabled=!updater;
+    });
+
 }

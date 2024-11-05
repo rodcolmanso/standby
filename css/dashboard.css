@@ -274,6 +274,18 @@ header.masthead_duel {
   background-size: cover;
 }
 
+header.masthead_session {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  text-align: center;
+  color: white;
+  background-image: url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/65bd6e808328263ca1d938c9.jpg');
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  background-position: center center;
+  background-size: cover;
+}
+
 .navbar-nav .nav-link.active {
   /* font-size: 20px !important; */
   text-decoration: underline !important;

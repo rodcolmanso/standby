@@ -209,11 +209,11 @@ class Header extends HTMLElement {
                   <br/><i class="bi bi-pencil-square text-small"></i><span class="text-small">Meu perfil </span>
                   <br/><span class=""><hr/></span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
-                  <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha filiação</span>
+                <a class="nav-link py-2 px-0 px-lg-2" id="nav-logout" href="/shooter-acervo.html">
+                  <i class="fa-solid fa-person-rifle"></i> <span id=gotoacervo>Meu acervo</span>
                 </a>
-                <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
-                  <i class="fa-solid fa-person-rifle"></i> <span id=avatarMeuAcervo>Meu acervo</span>
+                 <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
+                  <i class="fa-solid fa-certificate"></i> <span id=avatarFiliacao>Minha filiação</span>
                 </a>
                 <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-person-rolodex"></i> <span id=avatarMeuAcervo>Minhas inscrições</span>
@@ -227,7 +227,7 @@ class Header extends HTMLElement {
                 <a class="nav-link py-2 px-0 px-lg-2 hide hixdeAll" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="fa-solid fa-stamp"></i> <span id=avatarFiliacao>Declarações</span>
                 </a>
-                <span class="hide hixdeAll"><hr/></span>
+                <span class="hide "><hr/></span>
                 <a class="nav-link py-2 px-0 px-lg-2 text-small" id="nav-logout" href="javascript:netlifyIdentity.logout()" onclick="">
                   <i class="bi bi-box-arrow-in-left"></i> <span id=avatarUserName_>Logout</span>
                 </a>
