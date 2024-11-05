@@ -104,6 +104,18 @@
     .bd-mode-toggle .dropdown-menu .active .bi {
       display: block !important;
     }
+
+    .overlay-text {
+      position: absolute;
+      top: 80%; 
+      left: 50%; 
+      transform: translate(-50%, -50%); 
+      /* background-color: #000000;  */
+      /* color: #fff;  */
+      padding: 2px 5px; 
+      /* font-size: 20px;  */
+      text-align: center;
+    }
   </style>
 
 
@@ -216,33 +228,67 @@
     data-bs-smooth-scroll="true" tabindex="0" id="nav-tabContent">
     <form class="row g-3" action="javascript:updateEventConfig()">
     
-      <div  class="form-floating mb-3 col-md-12 d-flex justify-content-center">
-        <!-- <div class="d-flex justify-content-center"> -->
-            <div class="btn nodisable">
-              <label for="event-img">
-                <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_225,w_300/defaults/tmpyellow'" src="..."
-                  class="img-fluid" alt="example placeholder" />
-                  </label>
-                <input type="file" class="form-control d-none nodisable" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
-            </div>
-        <!-- </div> -->
+      <div class="form-floating mb-3 col-md-4">
+        <!-- <input id="event-local" required type="text" class="form-control nodisable" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local"> -->
+        <select class="form-select nodisable" required id="event-local" aria-label="Floating label select example"></select>
+        <label for="event-local" >Clube</label>
       </div>
-    
       <div class="form-floating mb-3 col-md-5">
         <input type="text" class="form-control nodisable" required id="event-name">
         <label for="event-name" >Título</label>
       </div>
       
-      <div class="form-floating mb-3 col-md-1">
-        <div class="form-check form-switch">
-          <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
-          <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
+      <div class="mb-3 col-md-3 ">
+        <div class="input-group">
+        <div class="form-floating">
+          <div class="form-check form-switch">
+            <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
+            <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
+            <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
+          </div>
         </div>
-        <div class="form-check form-switch">
-          <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
-          <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
+        <div class="form-floating">
+          <div class="form-check">
+            <input class="form-check-input  nodisable" type="checkbox" id="event-public" checked>
+            <label class="form-check-label" for="event-public">
+              Público
+            </label>
+          </div>
         </div>
       </div>
+      </div>
+      
+
+      <div  class="form-floating mb-3 col-md-4 d-flex justify-content-center">
+        <!-- <div class="d-flex justify-content-center"> -->
+            <div class="btn nodisable text-center justify-content-center">
+              <label for="event-img">
+                <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_355/defaults/tmpyellow'" src="..."
+                  class="img-fluid text-center justify-content-center" alt="example placeholder" />
+                  </label>
+                  <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                    alterar
+                <input type="file" class="form-control d-none nodisable" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
+                  </label>
+            </div>
+        <!-- </div> -->
+      </div>
+      
+      <div class="form-floating mb-3 col-md-8">
+        <div class="input-group">
+          <span class="input-group-text">Descrição:</span>
+          <textarea class="form-control" required rows="10" id="event-note" aria-label="With textarea"></textarea>
+        </div>
+        <div id="div-address">
+        </div>
+        <div id="div-address-2">
+        </div>
+
+      </div>
+      
       <div class="form-floating mb-3 col-md-3">
         <input type="datetime-local" class="form-control nodisable" aria-describedby="basic-addon1"  id="event-date" >
         <label for="event-date" >Contra o Relógio em:</label>
@@ -252,20 +298,16 @@
         <label for="event-date" >Duelos em:</label>
       </div>
       
-      <div class="form-floating mb-3 col-md-4">
-        <!-- <input id="event-local" required type="text" class="form-control nodisable" placeholder="Local" value="" aria-label="" aria-describedby="basic-addon_local"> -->
-        <select class="form-select nodisable" required id="event-local" aria-label="Floating label select example"></select>
-        <label for="event-local" >Clube</label>
-      </div>
-      <div class="form-floating col-md-8">
+      
+      <div class="form-floating col-md-8 d-none">
         <input type="text" class="form-control" id="event-address" >
         <label for="event-address">Endereço</label>
       </div>
-      <div class="form-floating col-md-6">
+      <div class="form-floating col-md-6 d-none">
         <input type="text" required class="form-control" id="event-city">
         <label for="event-city">Cidade</label>
       </div>
-      <div class="form-floating col-md-3">
+      <div class="form-floating col-md-3 d-none">
           <select class="form-select" required id="event-state" aria-label="Floating label select example">
           <option selected>...</option>
           <option value="AP">Amapá</option>
@@ -296,19 +338,7 @@
         </select>
         <label for="event-state">Estado</label>
       </div>
-      <div class="col-3">
-        <div class="form-check">
-          <input class="form-check-input  nodisable" type="checkbox" id="event-public" checked>
-          <label class="form-check-label" for="event-public">
-            Público
-          </label>
-        </div>
-      </div>
       
-      <div class="form-floating col-md-7">
-        <textarea class="form-control nodisable" id="event-note"></textarea>
-        <label for="event-note">Descrição:</label>
-      </div>  
       <div class="col-md-3">
         <div class="form-check">
           <input class="form-check-input nodisable" type="radio" name="event-random-duel" id="event-random-duel1" checked value="true">
@@ -323,49 +353,68 @@
           </label>
         </div>
       </div>
-      <!-- <div class="border border-secondary p-2 mb-16"> -->
+      
+      <div class="card " >
+        <h5 class="card-header">Valor das passadas, 
+          
+          <!--<div class="form-floating mb-2 col-md-2 ">
+            <div class="form-check">
+              <input class="form-check-input  nodisable" type="checkbox" id="vl_per_gun" checked>
+              <label class="form-check-label" for="vl_per_gun">
+                Por Arma
+              </label>
+            </div>
+          </div>-->
+          <div class="input-group ">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <div class="form-check form-check-inline ">
+            <input class="form-check-input bg-noreddot nodisable" type="radio" name="vl_per_gunNane" required id="vl_per_gunNo" value="1" >
+            <label class="form-check-label" for="vl_per_gun"><small>por atirador</small></label>
+          </div>
+          <div class="form-check form-check-inline text-wrap" style="margin-right: 1px !important;">
+            <input class="form-check-input bg-reddot nodisable" type="radio" name="vl_per_gunNane" required id="vl_per_gun" value="0" > 
+            <label class="form-check-label" for="vl_per_gunNo"><small>por arma/atirador</small>:</label>
+          </div>
+          </div>
+
+        </h5>
+        <div class="card-body input-group" >
         <div class="form-floating mb-3 col-md-3">
           <!-- <input type="number" class="form-control nodisable" required id="vl_first_try">
           <label for="vl_first_try" >1ª Passada</label> -->
-          <div class="input-group mb-2">
-            <span class="input-group-text">Inscrição + 1ª Passada</span>
-            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_first_try">
+          <div class="input-group mb-3" style="margin-bottom:1px !important;">
+            <span class="input-group-text">1ª (Inscrição)</span>
+            <input type="number" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_first_try">
             <span class="input-group-text">,00</span>
           </div>
         </div>
-        <div class="form-floating mb-2 col-md-2">
-          <div class="input-group mb-2">
+        &nbsp;<div class="form-floating mb-2 col-md-3">
+          <div class="input-group mb-3" style="margin-bottom:1px !important;">
             <!-- <input type="number" class="form-control nodisable" required id="vl_second_try">
             <label for="vl_second_try" >2ª Passada R$</label> -->
             <span class="input-group-text">2ª Passada</span>
-            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_second_try">
+            <input type="number" size="10" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_second_try">
             <span class="input-group-text">,00</span>
           </div>
         </div>
+        &nbsp;
         <div class="form-floating mb-3 col-md-3">
-          <div class="input-group mb-3">
+          <div class="input-group mb-3" style="margin-bottom:1px !important;">
             <!-- <input type="number" class="form-control nodisable" required id="vl_other_tries">
             <label for="vl_other_tries" >Demais Passada R$</label> -->
-            <span class="input-group-text">Demais Passadas</span>
-            <input type="number" class="form-control nodisable text-end" aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
-            <span class="input-group-text">,00</span>
-            
+            <span class="input-group-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demais</span>
+            <input type="number" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
+            <span class="input-group-text">,00</span>     
           </div>
         </div>
-        <div class="form-floating mb-2 col-md-2">
-          <div class="form-check">
-            <input class="form-check-input  nodisable" type="checkbox" id="vl_per_gun" checked>
-            <label class="form-check-label" for="vl_per_gun">
-              Por Arma
-            </label>
-          </div>
-        </div>
-        <div class="form-floating mb-2 col-md-2">
-          <button type="button" id="btn-relat-tries" class="btn btn-secondary hide" data-bs-toggle="modal" data-bs-target="#modalReport">
+      </div>
+      <div class="text-center">
+          <button type="button" id="btn-relat-tries" class="btn btn-success hide" data-bs-toggle="modal" data-bs-target="#modalReport">
             Relatório de Passadas (R$)
           </button>
         </div> 
-      <!-- </div> -->
+
+      </div>
       
       
       <p></p>

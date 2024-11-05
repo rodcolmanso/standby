@@ -11,7 +11,7 @@ class Division extends HTMLElement {
           <!--<button class=" d-none btn btn-primary nodisable hide" onclick="window.location.href='./event-config.html'" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">
             <i class="fa-solid fa-gear"></i>
           </button>-->
-          <img class="" id="imgHeaderEvent" src="..." style="margin-left: .60rem; height: 75px;">
+          <img class="" id="imgHeaderEvent" src="..." style="margin-left: 0rem; height: 100px;">
           
           <div>
             <div class="d-flex">

@@ -41,11 +41,17 @@ document.getElementById("event-local").addEventListener('change', function (ev) 
     document.getElementById('event-city').value='';
     document.getElementById('event-state').value='';
 
+    document.getElementById('div-address').innerText= "";
+    document.getElementById('div-address-2').innerText= "";
+
     for(let r=0; ranges && r<ranges.length; r++){
         if(ranges[r]._id===ev.target.value){
             document.getElementById('event-address').value= ranges[r].address;
             document.getElementById('event-city').value= ranges[r].city;
             document.getElementById('event-state').value= ranges[r].state;
+
+            document.getElementById('div-address').innerText= ranges[r].address;
+            document.getElementById('div-address-2').innerText= value= ranges[r].city+ " - "+ ranges[r].state;
         }
     }
 
@@ -121,24 +127,33 @@ async function loadPage(eId){
     // document.getElementById('event-local').value= eventConfig.local;
     document.getElementById('event-local').value= eventConfig.rangeId;
     
-    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_225,w_300/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
+    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_377/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
     
+    document.getElementById('event-public').checked= eventConfig.public;
+
     document.getElementById('event-note').value= eventConfig.note;
 
     document.getElementById('event-address').value= eventConfig.address;
+
     document.getElementById('event-city').value= eventConfig.city;
     document.getElementById('event-state').value= eventConfig.state;
-    document.getElementById('event-public').checked= eventConfig.public;
+
+    
+    document.getElementById('div-address').innerText= eventConfig.address;
+    document.getElementById('div-address-2').innerText= eventConfig.city+ " - "+ eventConfig.state;
+
+    
 
     if(eventConfig.randomDuel)
         document.getElementById('event-random-duel1').checked=true;
     else
         document.getElementById('event-random-duel2').checked=true;
     
-    document.getElementById('vl_first_try').value= eventConfig.vl_first_try= eventConfig.vl_first_try?eventConfig.vl_first_try:0;
-    document.getElementById('vl_second_try').value= eventConfig.vl_second_try= eventConfig.vl_second_try?eventConfig.vl_second_try:0;
-    document.getElementById('vl_other_tries').value= eventConfig.vl_other_tries= eventConfig.vl_other_tries?eventConfig.vl_other_tries:0;
-    document.getElementById('vl_per_gun').checked= eventConfig.vl_per_gun?eventConfig.vl_per_gun:false;
+    document.getElementById('vl_first_try').value= eventConfig.vl_first_try= eventConfig.vl_first_try?eventConfig.vl_first_try:"";
+    document.getElementById('vl_second_try').value= eventConfig.vl_second_try= eventConfig.vl_second_try?eventConfig.vl_second_try:"";
+    document.getElementById('vl_other_tries').value= eventConfig.vl_other_tries= eventConfig.vl_other_tries?eventConfig.vl_other_tries:"";
+    document.getElementById('vl_per_gun').checked= eventConfig.vl_per_gun&&eventConfig.vl_per_gun===true?true:false;
+    document.getElementById('vl_per_gunNo').checked= eventConfig.vl_per_gun&&eventConfig.vl_per_gun===true?false:true;
     
     //document.getElementById('
     if(eventConfig.owners!==undefined)
