@@ -98,7 +98,7 @@
 }
 
 .w-10 {
-  width: 10%
+  width: 10% !important;
 }
 
 .w-20 {
@@ -118,7 +118,7 @@
 }
 
 .w-50 {
-  width: 50%;
+  width: 50% !important;
 }
 
 .w-60 {

@@ -8,7 +8,7 @@ class Division extends HTMLElement {
       <!--<div class=" bg-body-tertiary" id="div-sub-header-title">-->
       <header class="masthead_duel" id="div-sub-header-title">
         <div class="d-flex align-items-center justify-content-center justify-content-between">
-          <img class="" id="imgHeaderEvent" src="..." style="margin-left: .5rem; width: 75px;">
+          <img class="rounded-2" id="imgHeaderEvent" src="..." style="margin-left: .5rem; width: 75px;">
           
           <div  class="align-items-center justify-content-center justify-content-between">
             <div class="d-flex align-items-center justify-content-between">

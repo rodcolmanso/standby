@@ -528,12 +528,19 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                             </div>
                             <div class=" dropdown col-8 d-inline-block text-truncate">`;
 
-                                let _badgeCat='<span class="fst-italic text-muted text-small badge bg-info-subtle rounded-pill d-none d-sm-block text-start d-flex " style="max-height: 15px; padding: 0px !important;">overall</span>';
+                                let _badgeCat='<span class="fst-italic text-small badge bg-warning-subtle text-warning-emphasis rounded-2 d-none d-sm-block text-start  " style="max-height: 15px; padding: 0px !important;"> esporte </span>';
+                                let _divis= getDivision(eventConfig.divisions, document.getElementById('selectDivision').value);
 
                                 if(aPlayers[i].category===cLadies){
-                                    _badgeCat='<span class="fst-italic text-muted text-small badge bg-danger-subtle rounded-pill d-none d-sm-block text-start d-flex" style="max-height: 15px; padding: 0px !important;">dama</span>';
+                                    _badgeCat='<span class="fst-italic  text-small badge bg-danger-subtle text-danger-emphasis rounded-2 d-none d-sm-block text-start " style="max-height: 15px; padding: 0px !important;"> dama </span>';
                                 }else if(aPlayers[i].category===cSeniors){
-                                    _badgeCat='<span class=" fst-italic text-muted text-small badge bg-success-subtle rounded-pill d-none d-sm-block text-start d-flex" style="max-height: 15px; padding: 0px !important;">senior</span>';
+                                    _badgeCat='<span class=" fst-italic  text-small badge bg-success-subtle text-success-emphasis rounded-2 d-none d-sm-block text-start " style="max-height: 15px; padding: 0px !important;">senior</span>';
+
+                                }else if(_divis.categories.optics && aPlayers[i].optics){
+                                    _badgeCat='<span class=" fst-italic  text-small badge bg-danger rounded-2 d-none d-sm-block text-start " style="max-height: 15px; padding: 0px !important;">&nbsp;red dot&nbsp;</span>';
+
+                                }else if(_divis.categories.advance && aPlayers[i].score<_divis.advanceLimit.passingScore){
+                                    _badgeCat='<span class=" fst-italic  text-small badge bg-dark text-white rounded-2 d-none d-sm-block text-start" style="max-height: 15px; padding: 0px !important;">avançado</span>';
 
                                 }
 

@@ -1177,6 +1177,7 @@ function buildEventDetailsPage(eventConfig){
 
         document.getElementById("event-addres-end").innerHTML=`
         <strong>CT ${eventConfig.range[0].name}</strong> - <i class="fa-solid fa-location-dot"></i> ${eventConfig.address} ${eventConfig.city} / ${eventConfig.state}`;
+        document.getElementById("table-event-range").innerHTML=`<i class="fa-solid fa-location-dot"></i> CT ${eventConfig.range[0].name}`;
 
         if(eventConfig.divisions[i].subscribers)
             hasSubscribes= true;
@@ -1190,32 +1191,32 @@ function buildEventDetailsPage(eventConfig){
                 advLimit= eventConfig.divisions[i].advanceLimit.topBestOf+"<small> melhores</small>";
             }
             if (eventConfig.divisions[i].advanceLimit.passingScore>0){
-                advLimit= "<small>&lt;</small>"+eventConfig.divisions[i].advanceLimit.passingScore+"<small> seg</small>";
+                advLimit= "<small>&lt;</small>"+eventConfig.divisions[i].advanceLimit.passingScore+"<small>s</small>";
             }
         }
 
-        let displatCategory=`<span class="badge bg-warning rounded-pill " >
-                                Esporte
+        let displatCategory=`<span class="badge text-dark bg-warning rounded-pill " >
+                                esporte
                              </span>`;
 
         if(eventConfig.divisions[i].categories.advance)                             
-            displatCategory+=` <span class="badge bg-dark rounded-pill " >
-                                Avançado
-                                <span class="position-absolute translate-middle badge bg-secondary rounded-pill">
+            displatCategory+=` <span class="badge bg-dark text-white rounded-pill " >
+                                avançado
+                                <span class="position-absolute translate-middle badge bg-secondary-subtle text-secondary-emphasis rounded-pill">
                                     ${advLimit}
                                 </span></span>`;
         if(eventConfig.divisions[i].categories.ladies)
-            displatCategory+=` <span class="badge bg-danger-subtle rounded-pill " >
-                                Damas
+            displatCategory+=` <span class="badge bg-danger-subtle text-danger-emphasis rounded-pill " >
+                                damas
                             </span>`;
         if(eventConfig.divisions[i].categories.seniors)
             displatCategory+=` <span class="badge bg-success rounded-pill " >
-                                Sénior
+                                sênior
                              </span>`;
 
         if(eventConfig.divisions[i].categories.optics)
             displatCategory+=` <span class="badge bg-danger rounded-pill " >
-                                Red dot
+                                red dot
                              </span>
                             `;
 
