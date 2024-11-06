@@ -1187,10 +1187,10 @@ function buildEventDetailsPage(eventConfig){
 
         if(eventConfig.divisions[i].categories.advance){
             if (eventConfig.divisions[i].advanceLimit.topBestOf>0){
-                advLimit= eventConfig.divisions[i].advanceLimit.topBestOf+" melhores";
+                advLimit= eventConfig.divisions[i].advanceLimit.topBestOf+"<small> melhores</small>";
             }
             if (eventConfig.divisions[i].advanceLimit.passingScore>0){
-                advLimit= "&lt;"+eventConfig.divisions[i].advanceLimit.passingScore+" seg";
+                advLimit= "<small>&lt;</small>"+eventConfig.divisions[i].advanceLimit.passingScore+"<small> seg</small>";
             }
         }
 
@@ -1201,7 +1201,7 @@ function buildEventDetailsPage(eventConfig){
         if(eventConfig.divisions[i].categories.advance)                             
             displatCategory+=` <span class="badge bg-dark rounded-pill " >
                                 Avançado
-                                <span class="text-small position-absolute translate-middle badge bg-secondary rounded-pill">
+                                <span class="position-absolute translate-middle badge bg-secondary rounded-pill">
                                     ${advLimit}
                                 </span></span>`;
         if(eventConfig.divisions[i].categories.ladies)
@@ -1221,10 +1221,27 @@ function buildEventDetailsPage(eventConfig){
 
                             
         division_tabel_summary.innerHTML+= `<tr>
-                <td class="align-middle">${eventConfig.divisions[i].name}</td>
-                <td>${displatCategory}</td>
-                <td name="subscribe-col">${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}</td>
-                <td name="best-time-col" class="text-small">
+                <td class="align-middle">
+                    <span class="d-none d-xl-block">
+                        ${eventConfig.divisions[i].name}
+                    </span> 
+                    <span class="d-xl-none align-middle"> <!--text-small-->
+                        ${eventConfig.divisions[i].name}
+                    </span>
+                </td>
+                <td>
+                    <span class="d-none d-xl-block">${displatCategory}</span>
+                    <span class="d-xl-none align-middle">${displatCategory}</span>
+                </td>
+                <td class="text-center" name="subscribe-col">
+                    <span class="d-none d-xl-block">
+                        ${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}
+                    </span>
+                    <span class="d-xl-none align-middle">
+                        ${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}
+                    </span>
+                </td>
+                <td name="best-time-col" class="text-center text-small">
                 <span class="badge text-bg-warning" >${time}
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penals}</span>
                 </span>

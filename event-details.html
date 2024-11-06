@@ -242,9 +242,6 @@
           </div>
           <!-- <div class="btn col-md-4"> -->
         </div>
-        
-
-        
       </div>
 
       <div class="col-md-8">
@@ -273,24 +270,24 @@
                 <tr id="clock-hour-tr" class="">
                   <td class="text-end "><i class="fa-solid fa-stopwatch"></i> </td>
                   <td class="text-center " style="width: 145px;">Contra o Relógio:</td>
-                  <td class="text-start "><i class="fa-regular fa-calendar "></i> <span id="clock-hour-subtitle"></span></td>
+                  <td class="text-start "><span id="clock-hour-subtitle"></span></td> <!--<i class="fa-regular fa-calendar "></i> -->
                 </tr>
                 <tr class="" id="duel-hour-tr">
                   <td class="text-end "><i class="fa-solid fa-holly-berry"></i></td>
                   <td class="text-center "> Duelos:</td>
-                  <td class="text-start "><i class="fa-regular fa-calendar "></i> <span id="duel-hour-subtitle"></span></td>
+                  <td class="text-start "><span id="duel-hour-subtitle"></span></td>
                 </tr>
               </tbody>
             </table>
-            <p>&nbsp;</p>
+            <!-- <p>&nbsp;</p> -->
           </div>
           <div class="col-md-8">
             <table class="table table-sm table-striped">
               <thead>
-                <th>Divisões</th>
-                <th>Categorias</th>
-                <th name="subscribe-col">Inscritos</th>
-                <th name="best-time-col" class="text-small">Melhor tempo</th>
+                <th><span class="d-none d-xl-block">Divisões</span> <span class="d-xl-none align-middle">Divisões</span><!--text-small --></th>
+                <th class=""><span class="d-none d-xl-block">Categorias</span> <span class="d-xl-none align-middle">Categorias</span></th>
+                <th class="text-center" name="subscribe-col"><span class="d-none d-xl-block">Inscritos</span> <span class="d-xl-none align-middle">Inscritos</span></th>
+                <th class="text-center text-small" name="best-time-col">Melhor tempo</th>
               </thead>
               <tbody id="division-tabel-summary">
               </tbody>
@@ -352,23 +349,23 @@
       <div class="col-md-4 text-start justify-content-center d-xl-none align-middle">
         <p>&nbsp;</p>
         <div class="card " >
-          <h5 class="card-header">Valor das passadas<span name="span-vl-per-gun"></span></h5>
-            <div class="card-body" >
-              <table class="table table-sm table-striped">
-                <thead>
-                  <th>1ª Passada</th>
-                  <th>2ª Passada</th>
-                  <th>Demais</th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td name="td-vl-first-try"></td>
-                    <td name="td-vl-second-try"></td>
-                    <td name="td-vl-other-tries"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <h5 class="card-header text-small">Valor das passadas<span name="span-vl-per-gun"></span></h5>
+          <div class="card-body" >
+            <table class="table table-sm table-striped">
+              <thead>
+                <th class="text-small">1ª Passada</th>
+                <th class="text-small">2ª Passada</th>
+                <th class="text-small">Demais</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td name="td-vl-first-try" class="text-small"></td>
+                  <td name="td-vl-second-try" class="text-small"></td>
+                  <td name="td-vl-other-tries" class="text-small"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <p>&nbsp;</p>
       </div>     
@@ -386,7 +383,7 @@
     <div class="row d-flex text-center d-xl-none align-middle">
       <div class="input-group">
         <div class="btn col-md-4 text-center">
-          <input type="text"  style="width: 270px;" class="nodisable" value="" id="eventShortURL2">
+          <input type="text"  style="width: 200px;" class="nodisable" value="" id="eventShortURL2">
           <!-- The button used to copy the text -->
         </div>
         <div class="btn col-md-1 text-start">
