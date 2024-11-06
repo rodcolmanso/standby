@@ -1237,7 +1237,7 @@ function buildEventDetailsPage(eventConfig){
                     <span class="d-none d-xl-block">
                         ${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}
                     </span>
-                    <span class="d-xl-none align-middle">
+                    <span class="text-small d-xl-none align-middle">
                         ${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}
                     </span>
                 </td>
