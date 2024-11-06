@@ -72,7 +72,7 @@ const promiseOfSessionEventConfig = (_eventId, _identityUser)=>{
 };
 
 const promiseOfGetGunList = (shooterId, _divisionName, extraQuery)=>{
-    applySpinners(true);
+    // applySpinners(true);
     return fetch(`/.netlify/functions/guns?shooterId=${shooterId}&division_name=${_divisionName}${extraQuery}`, {
             method: "GET"})
             .then(response => response.json()) 
@@ -80,7 +80,7 @@ const promiseOfGetGunList = (shooterId, _divisionName, extraQuery)=>{
                 return json;
             })
             .catch(err => console.log(`Error getting gunList: ${err}`))
-            .finally(()=> {});
+            .finally(()=> {applySpinners(false)});
 }
 
 const promiseOfGunCollection = (_shooterId, _identityUser)=>{

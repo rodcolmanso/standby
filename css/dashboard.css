@@ -263,8 +263,8 @@ table {
 
 
 header.masthead_duel {
-  padding-top: 0rem;
-  padding-bottom: 0rem; /*.65rem;*/
+  padding-top: .50rem;
+  padding-bottom: .50rem; /*.65rem;*/
   text-align: center;
   color: #fff;
   /* background-image: url("../assets/img/header-bg.jpg"); */
@@ -290,3 +290,4 @@ header.masthead_session {
   /* font-size: 20px !important; */
   text-decoration: underline !important;
 }
+

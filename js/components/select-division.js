@@ -7,30 +7,30 @@ class Division extends HTMLElement {
       this.innerHTML = `
       <!--<div class=" bg-body-tertiary" id="div-sub-header-title">-->
       <header class="masthead_duel" id="div-sub-header-title">
-        <div class="d-flex align-items-center justify-content-between">
-          <!--<button class=" d-none btn btn-primary nodisable hide" onclick="window.location.href='./event-config.html'" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem;">
-            <i class="fa-solid fa-gear"></i>
-          </button>-->
-          <img class="" id="imgHeaderEvent" src="..." style="margin-left: 0rem; height: 100px;">
+        <div class="d-flex align-items-center justify-content-center justify-content-between">
+          <img class="" id="imgHeaderEvent" src="..." style="margin-left: .5rem; width: 75px;">
           
-          <div>
-            <div class="d-flex">
+          <div  class="align-items-center justify-content-center justify-content-between">
+            <div class="d-flex align-items-center justify-content-between">
               <h2 class="d-none d-sm-block" name="eventTitle"></h2>
-              <span class="d-block d-sm-none d-inline-block text-truncate" style="max-width: 200px;" name="eventTitle"></span>
-              &nbsp;
-              <h4 class="d-none d-sm-block" name="eventTitleDate"></h4>
-              <span class="d-block d-sm-none text-small" name="eventTitleDate"></span>
+              <span class="d-block d-sm-none d-inline-block text-truncate" style="max-width: 210px;" name="eventTitle"></span>
+
             </div>
             <div class="text-center">
               <button class=" btn btn-warning btn-sm nodisable" id="btn-subscribe-header-sm" onclick="goToSubscription('');" type="button">
                 Inscreva-se
               </button>
               <button class="btn btn-secondary nodisable hixdeAll" type="button" style="--bs-btn-padding-y: .20rem; --bs-btn-padding-x: .3rem; --bs-btn-font-size: .75rem; margin-right: .65rem !important;">
-            <i class="fa-solid fa-arrow-up-from-bracket"></i>
-          </button>
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+              </button>
             </div>
           </div>  
-          &nbsp;
+
+          <div class="text-center bg-warning text-dark rounded-3" style="padding:5px; margin-right: .3rem;  " >
+            <i class="fa-regular fa-calendar "></i>
+            <h4 class="d-none d-sm-block" name="eventTitleDate"></h4>
+            <span class="d-block d-sm-none text-small" name="eventTitleDate" ></span>
+          </div>
         </div>  
       </header>
       <div>
@@ -49,8 +49,8 @@ class Division extends HTMLElement {
           </li>
           <li id="nav-item_tab_1" class="nav-item border ">
             <a id="nav-link_1" class="nav-link nav-link_sub " aria-current="page" onClick="hrefQualify()" >
-            <span class="d-none d-sm-block"><i class="fa-solid fa-clock"></i> Contra o relógio</span>
-            <span class="d-block d-sm-none "><i class="fa-solid fa-clock"></i> <span class="text-small">Relógio</span></span>
+            <span class="d-none d-sm-block"><i class="fa-solid fa-stopwatch"></i> Contra o relógio</span>
+            <span class="d-block d-sm-none "><i class="fa-solid fa-stopwatch"></i> <span class="text-small">Relógio</span></span>
             </a>
           </li>
           <li id="nav-item_tab_2" class="nav-item border ">

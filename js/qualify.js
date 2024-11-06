@@ -568,7 +568,7 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                         </div>-->
                         <div class="col">
                           <button onClick="timeTrack('${aPlayers[i].id}', '${aPlayers[i].name}', '${aPlayers[i].gun}', '${sScore}', '${aPlayers[i].shooter_division}', ${_timee}, ${_penall}, ${aPlayers[i].optics})" class="btn btn-success nodisable position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                          <i class="bi bi-stopwatch"></i>
+                          <i class="fa-solid fa-stopwatch"></i>
                           <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-dark">
                           ${aPlayers[i].tries.toString()}
                                 <span class="visually-hidden">unread messages</span>

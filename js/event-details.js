@@ -101,7 +101,8 @@ const subscribeModal = document.getElementById('exampleModal');
 const subscribeModalAll = document.getElementById('subscriptionsModal');
 const myInput = document.getElementById('myInput')
 let _reload=true;
-subscribeModal.addEventListener('hidden.bs.modal', function (event) {
+// subscribeModal.addEventListener('hidden.bs.modal', function (event) {
+$('#subscriptionsModal').on('hidden.bs.collapse', function () {
     // loadPage();
 
     if(_reload&&params.inscription!==undefined && params.inscription==="clock"){
@@ -115,7 +116,7 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
         
         // ->>promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
         // -->  window.location.href = window.location="/event-details.html?event_id="+eventConfig._id;
-        console.log('will refreshed');
+        // console.log('will refreshed');
         silentRefreshPage();
     }
     
@@ -124,12 +125,12 @@ subscribeModal.addEventListener('hidden.bs.modal', function (event) {
   async function silentRefreshPage(){
     urlSearchParams = new URLSearchParams(window.location.search);
     params = Object.fromEntries(urlSearchParams.entries());
-    console.log('will refreshed async');
+    // console.log('will refreshed async');
     clearSessionEventConfig();
     _reload=true;
     eventConfig= await promiseOfSessionEventConfig(params.event_id, netlifyIdentity.currentUser());
     buildEventDetailsPage(eventConfig);
-    console.log('page refreshed');
+    // console.log('page refreshed');
     }
 
 subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
@@ -144,14 +145,16 @@ subscribeModalAll.addEventListener('hidden.bs.modal', function (event) {
         clearSessionEventConfig();
         // location.reload(true);
         // window.location="/event-details.html?event_id="+eventConfig._id;
-        console.log('will refreshed');
+        // console.log('will refreshed');
         silentRefreshPage();
     }
     
 })
 
 
-subscribeModalAll.addEventListener('shown.bs.modal', () => {
+// subscribeModalAll.addEventListener('shown.bs.modal', () => {
+$('#subscriptionsModal').on('show.bs.collapse', function () {
+
     _reload=true;
     if(allShootersDivisions===null){
         promiseOfGetShootersDivisions(eventConfig._id, null, MODAL_TABLE_ALL_SUBS_ID);
@@ -174,6 +177,12 @@ subscribeModalAll.addEventListener('shown.bs.modal', () => {
 
 subscribeModal.addEventListener('shown.bs.modal', () => {
 
+    
+    if(!params.inscription){
+        urlSearchParams.set("inscription", "0");
+        history.pushState(null, null, "?"+urlSearchParams.toString());
+    }
+    
     loggedUser= netlifyIdentity.currentUser();
 
     let _dbUser= getSessionDbUser();
@@ -217,7 +226,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             document.getElementById('select-subscribe-division').dispatchEvent(event);
         }
 
-        console.log('1');
+        // console.log('1');
         
         //-> if(params.docnum&&params.docnum!=='' && validaCPF(params.docnum)){ //editing inscription
         if(params.docnum&&params.docnum!=='' ){ //editing inscription
@@ -231,7 +240,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
             document.getElementById('subscribe-shooterId').value= params.shooterId;
             promiseOfGetShootersDivisions(eventConfig._id, params.shooterId, MODAL_TABLE_SUB_ID);
         }else{
-            console.log('shooterDivisions.lenght', shooterDivisions?shooterDivisions.length:'null');
+            // console.log('shooterDivisions.lenght', shooterDivisions?shooterDivisions.length:'null');
             if(shooterDivisions!==null && shooterDivisions.length>0){
                 popupSubscriptionModal(shooterDivisions[0]);
             }else if(params.selected_division===undefined){
@@ -246,6 +255,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 });
 
 const qrcode = new QRCode("qrcode");
+const qrcode2 = new QRCode("qrcode2");
 window.onload = async () => {
     // const sUrl= ""+window.location.toString();
 
@@ -273,10 +283,14 @@ window.onload = async () => {
 function myFunction() {
     // Get the text field
     var copyText = document.getElementById("eventShortURL");
+    var copyText2 = document.getElementById("eventShortURL2");
   
     // Select the text field
     copyText.select();
     copyText.setSelectionRange(0, 99999); // For mobile devices
+
+    copyText2.select();
+    copyText2.setSelectionRange(0, 99999); // For mobile devices
   
      // Copy the text inside the text field
     navigator.clipboard.writeText(copyText.value);
@@ -284,9 +298,11 @@ function myFunction() {
     // Alert the copied text
     // alert("Copied the text: " + copyText.value);
     document.getElementById("btn_copy").innerHTML= `Copiado! <i class="bi bi-clipboard-check-fill"></i>`;
+    document.getElementById("btn_copy2").innerHTML= `Copiado! <i class="bi bi-clipboard-check-fill"></i>`;
     new Promise(() => {
         window.setTimeout(() => {
             document.getElementById("btn_copy").innerHTML= `Copiar <i class="bi bi-clipboard"></i>`;
+            document.getElementById("btn_copy2").innerHTML= `Copiar <i class="bi bi-clipboard"></i>`;
         }, 3000);
     });
     // <button class="btn btn-secondary" id="btn_copy" onclick="myFunction()">Copiado! <i class="bi bi-clipboard-check-fill"></i></button>
@@ -299,11 +315,11 @@ async function loadPage(){
         loggedUser= netlifyIdentity.currentUser();
         
         applySpinners(true);
-        eventConfig= await promiseOfSessionEventConfig(null,loggedUser);
+        eventConfig= await promiseOfSessionEventConfig( params&&params.event_id?params.event_id:null ,loggedUser);
         let _userDb= getSessionDbUser();
-        gunList= await promiseOfGetGunList(_userDb?_userDb._id:null,null, '&hec=no');
+        gunList=  await promiseOfGetGunList(_userDb?_userDb._id:null,null, '&hec=no'); //await
         if(_userDb && _userDb._id)
-            acervoList= await promiseOfGunCollection(_userDb?_userDb._id:null,loggedUser);
+            acervoList=  promiseOfGunCollection(_userDb?_userDb._id:null,loggedUser); //await
         
         applySpinners(false);
         enableShooterFields();
@@ -644,7 +660,7 @@ function populateGunDropdown(shooterDivisions, _subs){
 // function getFullShooterDivision(eventConfig, userEmail){
 function popupSubscriptionModal(shooterDivisions){
 
-    console.log('popupSubscriptionModal 1');
+    // console.log('popupSubscriptionModal 1');
 
     document.getElementById('subscribe-shooterId').value= shooterDivisions.shooterId;
     document.getElementById('subscribe-email').value= shooterDivisions.email;
@@ -658,7 +674,7 @@ function popupSubscriptionModal(shooterDivisions){
     // document.getElementById("search-button-name").style.visibility="hidden";
 
     if(shooterDivisions.email.toLowerCase().trim()!==loggedUser.email.toLowerCase().trim()){
-        console.log('popupSubscriptionModal 2');
+        // console.log('popupSubscriptionModal 2');
         enableShooterFields();
 
         //-> if(shooterDivisions.name!==""){
@@ -679,7 +695,7 @@ function popupSubscriptionModal(shooterDivisions){
     document.getElementById('shooter-img').src= uri;
     document.getElementById('shooter-img2').src= uri2;
     
-    console.log('Before populateSubscriptionModalTable');
+    // console.log('Before populateSubscriptionModalTable');
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
     // new DataTable('#subscribe-table-subs-head');
 
@@ -719,7 +735,7 @@ function populateNewShooter(_docnum){
     shooterDivisions[0].shooterId= ""
     shooterDivisions[0].eventId= eventConfig._id;
     shooterDivisions[0].shooters_divisions= [];
-    console.log('will populateSubscriptionModalTable');
+    // console.log('will populateSubscriptionModalTable');
     populateSubscriptionModalTable(eventConfig, shooterDivisions,document.getElementById(MODAL_TABLE_SUB_ID));
 }
 
@@ -1055,9 +1071,13 @@ function buildEventDetailsPage(eventConfig){
     document.getElementById('nav-events').classList.add('active');
 
     
-    document.getElementById('event-name').innerHTML= eventConfig.name;
-    document.getElementById('masthead-event-name').innerHTML= eventConfig.name;
+    document.getElementById('event-name').innerHTML= eventConfig.name ;
+    document.getElementById('masthead-event-name').innerHTML= eventConfig.name +` - <span class="text-small"><i class="fa-regular fa-calendar"></i>&nbsp;${(new Date(eventConfig.date)).toLocaleDateString().substring(0,5)}</span>`;
     document.getElementById('event-name-subs').innerHTML= eventConfig.name;
+    
+    document.getElementById('event-img-body').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_400/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?";//+uuidv4();
+
+    document.getElementById('event-notes').innerText= eventConfig.note;
 
 
     if(eventConfig.dateDuel===null||eventConfig.dateDuel===undefined||eventConfig.dateDuel===''){
@@ -1071,6 +1091,43 @@ function buildEventDetailsPage(eventConfig){
     eventConfig.hour= eventConfig.date.toISOString().substring(11,16);
     eventConfig.dateDuel= new Date((new Date(eventConfig.dateDuel)).getTime() - (offset * 60000) );
     eventConfig.hourDuel= eventConfig.dateDuel.toISOString().substring(11,16);
+
+    //---------------
+    document.getElementById('clock-hour-subtitle').innerText = eventConfig.hour;
+    document.getElementById('duel-hour-subtitle').innerText = eventConfig.hourDuel;
+
+    if(!eventConfig.clock){
+        addClass(document.getElementById('clock-hour-tr'),'d-none');
+    }
+
+    if(!eventConfig.duel){
+        addClass(document.getElementById('duel-hour-tr'),'d-none');
+    }
+
+    els_vl_per_gun= document.getElementsByName("span-vl-per-gun");
+    els_vl_first_try= document.getElementsByName("td-vl-first-try");
+    els_vl_second_try= document.getElementsByName("td-vl-second-try");
+    els_vl_other_tries= document.getElementsByName("td-vl-other-tries");
+
+    for(let i=0;i<els_vl_per_gun.length;i++){
+        if(eventConfig.vl_per_gun && eventConfig.vl_per_gun===true)
+            els_vl_per_gun[i].innerText=' (por arma)';
+        else
+            els_vl_per_gun[i].innerText='';
+    }
+
+    for(let i=0;i<els_vl_first_try.length;i++){
+        els_vl_first_try[i].innerText='R$ '+eventConfig.vl_first_try+',00';
+    }
+    for(let i=0;i<els_vl_second_try.length;i++){
+        els_vl_second_try[i].innerText='R$ '+eventConfig.vl_second_try+',00';
+    }
+    for(let i=0;i<els_vl_other_tries.length;i++){
+        els_vl_other_tries[i].innerText='R$ '+eventConfig.vl_other_tries+',00';
+    }
+    
+    
+    //---------------
     
     if(eventConfig.dateDuel.toISOString().substring(0,10)!==eventConfig.date.toISOString().substring(0,10)){
         document.getElementById('event-date').innerHTML= `${eventConfig.date.toLocaleDateString().substring(0,5)} as ${eventConfig.hour}h (contra o relógio)`;
@@ -1081,9 +1138,9 @@ function buildEventDetailsPage(eventConfig){
         document.getElementById('event-date-duel').style.display='none';
     }
 
-    document.getElementById('event-divisions-summary').innerHTML= eventConfig.divisionsSummary;
+    document.getElementById('event-divisions-summary').innerHTML= eventConfig.divisionsSummary.replace(/,([^,]*)$/, ' e' + '$1')  ;
 
-    document.getElementById('event-local').innerHTML= eventConfig.address + " "+ eventConfig.city + "/"+ eventConfig.state;
+    document.getElementById('event-local').innerHTML= `<i class="fa-solid fa-location-dot"></i> `+eventConfig.address + " "+ eventConfig.city + "/"+ eventConfig.state;
     
     // document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/d_defaults:header-bg.jpg/header"+eventConfig._id+"img')" ;
     document.getElementById('event-bg-img').style.backgroundImage="url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/defaults/header-bg.jpg')" ;
@@ -1095,7 +1152,85 @@ function buildEventDetailsPage(eventConfig){
     let iHtmSubs ='';
     let iHtmTimes ='';
 
+
+    const division_tabel_summary= document.getElementById("division-tabel-summary");
+    division_tabel_summary.innerHTML="";
+
+    let hasSubscribes=false;
+    let hasTime=false;
     for(let i=0; i<eventConfig.divisions.length;i++){
+
+        let time= "N/A";
+        let penals= "";
+        if(eventConfig.divisions[i].best_score!==undefined){
+
+            if(eventConfig.divisions[i].best_score<1000){
+                time=eventConfig.divisions[i].best_score.toFixed(2);
+                penals="";
+            }else{
+                penals=" +"+eventConfig.divisions[i].best_score.toString().slice(0,1);
+                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1)).toFixed(2);
+            }
+            time= time.replaceAll(".",",")+"s";
+        }
+        //-------------------------
+
+        document.getElementById("event-addres-end").innerHTML=`
+        <strong>CT ${eventConfig.range[0].name}</strong> - <i class="fa-solid fa-location-dot"></i> ${eventConfig.address} ${eventConfig.city} / ${eventConfig.state}`;
+
+        if(eventConfig.divisions[i].subscribers)
+            hasSubscribes= true;
+        if(eventConfig.divisions[i].best_score)
+            hasTime= true
+
+        let advLimit= "";
+
+        if(eventConfig.divisions[i].categories.advance){
+            if (eventConfig.divisions[i].advanceLimit.topBestOf>0){
+                advLimit= eventConfig.divisions[i].advanceLimit.topBestOf+" melhores";
+            }
+            if (eventConfig.divisions[i].advanceLimit.passingScore>0){
+                advLimit= "&lt;"+eventConfig.divisions[i].advanceLimit.passingScore+" seg";
+            }
+        }
+
+        let displatCategory=`<span class="badge bg-warning rounded-pill " >
+                                Esporte
+                             </span>`;
+
+        if(eventConfig.divisions[i].categories.advance)                             
+            displatCategory+=` <span class="badge bg-dark rounded-pill " >
+                                Avançado
+                                <span class="text-small position-absolute translate-middle badge bg-secondary rounded-pill">
+                                    ${advLimit}
+                                </span></span>`;
+        if(eventConfig.divisions[i].categories.ladies)
+            displatCategory+=` <span class="badge bg-danger-subtle rounded-pill " >
+                                Damas
+                            </span>`;
+        if(eventConfig.divisions[i].categories.seniors)
+            displatCategory+=` <span class="badge bg-success rounded-pill " >
+                                Sénior
+                             </span>`;
+
+        if(eventConfig.divisions[i].categories.optics)
+            displatCategory+=` <span class="badge bg-danger rounded-pill " >
+                                Red dot
+                             </span>
+                            `;
+
+                            
+        division_tabel_summary.innerHTML+= `<tr>
+                <td class="align-middle">${eventConfig.divisions[i].name}</td>
+                <td>${displatCategory}</td>
+                <td name="subscribe-col">${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}</td>
+                <td name="best-time-col" class="text-small">
+                <span class="badge text-bg-warning" >${time}
+                    <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penals}</span>
+                </span>
+                </td>
+                </tr>`;
+        //-------------------------
         
         let divisionbadge=`<span class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
                             <span class="visually-hidden">Você ainda não está aqui</span>
@@ -1120,19 +1255,7 @@ function buildEventDetailsPage(eventConfig){
                 </p>`;
                 // </li>`;
         
-        let time= "N/A";
-        let penals= "";
-        if(eventConfig.divisions[i].best_score!==undefined){
-
-            if(eventConfig.divisions[i].best_score<1000){
-                time=eventConfig.divisions[i].best_score.toFixed(2);
-                penals="";
-            }else{
-                penals=" +"+eventConfig.divisions[i].best_score.toString().slice(0,1);
-                time=parseFloat(eventConfig.divisions[i].best_score.toString().slice(1)).toFixed(2);
-            }
-            time= time.replaceAll(".",",")+"s";
-        }
+        
 
         // iHtmTimes +=`<li class="list-group-item d-flex justify-content-between align-items-center">
         iHtmTimes +=`<p class="text-muted">
@@ -1144,6 +1267,24 @@ function buildEventDetailsPage(eventConfig){
             // </li>`;
     }
 
+    
+    const subscribeCols= document.getElementsByName("subscribe-col");
+    for(let i=0;i<subscribeCols.length;i++){
+        if(!hasSubscribes)
+            addClass(subscribeCols[i],'d-none');
+        else
+            removeClass(subscribeCols[i],'d-none');
+    }
+
+    const bestTimeCols= document.getElementsByName("best-time-col");
+    for(let i=0;i<bestTimeCols.length;i++){
+        if(!hasTime)
+            addClass(bestTimeCols[i],'d-none');
+        else
+            removeClass(bestTimeCols[i],'d-none');
+    }
+
+
     // iHtmSubs +="</ul>";
     // iHtmTimes +="</ul>";
 
@@ -1152,7 +1293,9 @@ function buildEventDetailsPage(eventConfig){
 
     const sUrl = 'https://'+window.location.host+'?'+eventConfig.short_id;
     document.getElementById('eventShortURL').value= sUrl;
+    document.getElementById('eventShortURL2').value= sUrl;
     qrcode.makeCode(sUrl);
+    qrcode2.makeCode(sUrl);
 
     if(eventConfig.owners!==undefined)
         document.getElementById('event-owners').value= eventConfig.owners.join("; ");

@@ -781,5 +781,5 @@ function goToSubscription(parms){
     if(parms!==undefined && parms!==''){
         parms= '&shooterId='+parms;
     }else parms='';
-       window.location="/event-details.html?inscription=clock&selected_division="+document.getElementById('selectDivision').value+parms+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):""); //->+getActiveCat();
+       window.location="/event-details.html?inscription=config&selected_division="+document.getElementById('selectDivision').value+parms+(_tb?'&tbord='+btoa(JSON.stringify(_tb.order())):""); //->+getActiveCat();
 }
