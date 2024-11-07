@@ -531,9 +531,9 @@ function buildPlayersTables(aPlayers, eventConfig, selectDivision){
                                 let _badgeCat='<span class="fst-italic text-small badge bg-warning-subtle text-warning-emphasis rounded-2 d-none d-sm-block text-start  " style="max-height: 15px; padding: 0px !important;"> esporte </span>';
                                 let _divis= getDivision(eventConfig.divisions, document.getElementById('selectDivision').value);
 
-                                if(aPlayers[i].category===cLadies){
+                                if(_divis.categories.ladies && aPlayers[i].category===cLadies){
                                     _badgeCat='<span class="fst-italic  text-small badge bg-danger-subtle text-danger-emphasis rounded-2 d-none d-sm-block text-start " style="max-height: 15px; padding: 0px !important;"> dama </span>';
-                                }else if(aPlayers[i].category===cSeniors){
+                                }else if(_divis.categories.seniors && aPlayers[i].category===cSeniors){
                                     _badgeCat='<span class=" fst-italic  text-small badge bg-success-subtle text-success-emphasis rounded-2 d-none d-sm-block text-start " style="max-height: 15px; padding: 0px !important;">senior</span>';
 
                                 }else if(_divis.categories.optics && aPlayers[i].optics){

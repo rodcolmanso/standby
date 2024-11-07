@@ -101,8 +101,8 @@ const subscribeModal = document.getElementById('exampleModal');
 const subscribeModalAll = document.getElementById('subscriptionsModal');
 const myInput = document.getElementById('myInput')
 let _reload=true;
-// subscribeModal.addEventListener('hidden.bs.modal', function (event) {
-$('#subscriptionsModal').on('hidden.bs.collapse', function () {
+subscribeModal.addEventListener('hidden.bs.modal', function (event) {
+// $('#subscriptionsModal').on('hidden.bs.collapse', function () {
     // loadPage();
 
     if(_reload&&params.inscription!==undefined && params.inscription==="clock"){
@@ -1243,7 +1243,7 @@ function buildEventDetailsPage(eventConfig){
                         ${eventConfig.divisions[i].subscribers===undefined?"0":eventConfig.divisions[i].subscribers}
                     </span>
                 </td>
-                <td name="best-time-col" class="text-center text-small">
+                <td name="best-time-col" class="text-center ">
                 <span class="badge text-bg-warning" >${time}
                     <span class="position-absolute translate-middle badge bg-danger rounded-pill">${penals}</span>
                 </span>
