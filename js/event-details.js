@@ -1177,7 +1177,8 @@ function buildEventDetailsPage(eventConfig){
 
         document.getElementById("event-addres-end").innerHTML=`
         <strong>CT ${eventConfig.range[0].name}</strong> - <i class="fa-solid fa-location-dot"></i> ${eventConfig.address} ${eventConfig.city} / ${eventConfig.state}`;
-        document.getElementById("table-event-range").innerHTML=`<i class="fa-solid fa-location-dot"></i> CT ${eventConfig.range[0].name}`;
+        document.getElementById("table-event-range").innerHTML=`<i class="fa-solid fa-location-dot"></i> CT ${eventConfig.range[0].name} `;
+        document.getElementById("table-event-range-date").innerHTML=`<i class="fa-regular fa-calendar"></i>&nbsp;${(new Date(eventConfig.date)).toLocaleDateString().substring(0,5)}`;
 
         if(eventConfig.divisions[i].subscribers)
             hasSubscribes= true;

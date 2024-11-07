@@ -191,11 +191,9 @@
   <div class="container-fluid mt-2">
     <div class="row">
       <div class="col-md-4 text-center justify-content-center">
-        <!-- Foto do Evento -->
-      
+        <!-- Arte/imagem do Evento -->
         <img class="rounded-2" id="event-img-body" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400/defaults/tmpyellow'" src="..."
-          class="img-fluid text-center justify-content-top" style="width: 100%;" alt="Responsive image" alt="example placeholder" />
-          
+          class="img-fluid text-center justify-content-top" style="width: 100%; margin-bottom: .75rem;" alt="Responsive image" alt="example placeholder" />
         <div class="text-start justify-content-center d-none d-xl-block">
           <p>&nbsp;</p>
           <div class="card " >
@@ -250,29 +248,22 @@
           <h5 class="section-subheading text-muted" id="event-date"></h5>
           <h5 class="section-subheading text-muted" id="event-date-duel"></h5>
         </div> 
-        <!-- <ul class="list-group">
-          <li class=" text-start"> -->
-          <ul class="list-group">
-            <li class="list-group-item text-start bg-body-tertiary">
-              <h5 id="event-notes"></h5>
-            </li>
-          </ul>
-        
         <div class="row">
           <div class="col-md-4">
             <table class="table table-dark borderless ">
               <thead class="text-center">
                 <th class="text-truncate text-start fs-5 text" colspan="2" id="table-event-range"></th>
+                <th class="text-truncate text-start"  id="table-event-range-date"></th>
               </thead>
               <tbody >
                 <tr id="clock-hour-tr" class="">
                   <!-- <td class="text-end w-10"><i class="fa-solid fa-stopwatch"></i> </td> -->
-                  <td class="text-start w-50" style="width: 145px;"><i class="fa-solid fa-stopwatch"></i> Contra o Relógio:</td>
-                  <td class="text-start w-10"><span id="clock-hour-subtitle"></span></td> <!--<i class="fa-regular fa-calendar "></i> -->
+                  <td class="text-start " colspan="2"><i class="fa-solid fa-stopwatch"></i> Contra o Relógio:</td>
+                  <td class="text-start "><span id="clock-hour-subtitle"></span></td> <!--<i class="fa-regular fa-calendar "></i> -->
                 </tr>
                 <tr class="" id="duel-hour-tr">
                   <!-- <td class="text-end "><i class="fa-solid fa-holly-berry"></i></td> -->
-                  <td class="text-start "><i class="fa-solid fa-holly-berry"></i> Duelos:</td>
+                  <td class="text-start " colspan="2"><i class="fa-solid fa-holly-berry"></i> Duelos:</td>
                   <td class="text-start "><span id="duel-hour-subtitle"></span></td>
                 </tr>
               </tbody>
@@ -292,6 +283,11 @@
             </table>
           </div>
         </div>
+        <ul class="list-group">
+          <li class="list-group-item text-start bg-body-tertiary">
+            <h5 id="event-notes"></h5>
+          </li>
+        </ul>
         <div class="row">
           <div class="col-md-12 text-start justify-content-center">
         
@@ -328,16 +324,6 @@
                 </div>
               </div>
             </div>
-
-
-
-            
-            <!-- <div class="card hideshooter" >
-              <h5 class="card-header">Inscritos</h5>
-              <div class="card-body" >                
-              </div>
-            </div> -->
-            
           </div>
         </div>
       </div>
