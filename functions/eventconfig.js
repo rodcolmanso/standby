@@ -123,6 +123,8 @@ const handler = async (event, context)=>{
               ,vl_second_try:event_config.vl_second_try
               ,vl_other_tries:event_config.vl_other_tries
               ,vl_per_gun: event_config.vl_per_gun
+              ,inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+              ,inserter_date: Date.now()
 
             });
         }else{

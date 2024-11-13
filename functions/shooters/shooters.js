@@ -199,14 +199,6 @@ const handler = async (event, context)=>{
 
         try{
 
-          //  console.log('userContext: '+userContext);
-          //  console.log('shooterData.email: '+shooterData.email);
-          //  console.log('userContext.email.toLowerCase().trim()): '+userContext.email.toLowerCase().trim());
-          //  console.log('shooterData.email.toLowerCase().trim(): '+shooterData.email.toLowerCase().trim());
-          //  console.log('userContext.app_metadata: '+userContext.app_metadata);
-          //  console.log('userContext.app_metadata.roles: '+userContext.app_metadata.roles)
-          //  console.log('userContext.app_metadata.roles.indexOf("admin")<0: '+userContext.app_metadata.roles.indexOf("admin")<0);
-
           if(!userContext|| !shooterData.email ||!userContext.app_metadata|| (userContext.email.toLowerCase().trim()!==shooterData.email.toLowerCase().trim())&&(userContext.app_metadata.roles.indexOf("admin")<0&&userContext.app_metadata.roles.indexOf("super")<0)){
               console.log(`Unauthorized, userContext not logged!`);
               console.log(`userContext.app_metadata.roles= ${userContext.app_metadata.roles}`);
@@ -224,6 +216,8 @@ const handler = async (event, context)=>{
               ,docnum: shooterData.docnum
               ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
               ,category: shooterData.category
+              ,inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+              ,inserter_date: Date.now()
               }
             );
 
@@ -237,6 +231,8 @@ const handler = async (event, context)=>{
                       ,docnum: shooterData.docnum
                       ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')
                       ,category: shooterData.category
+                      ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                      ,last_updater_date: Date.now()
                       }
               }
             );
@@ -276,6 +272,8 @@ const handler = async (event, context)=>{
                                               {'email':shooterData.docnum+'@tpmonline.com.br', 'docnum':shooterData.docnum}
                                               ,{ $set: { email : shooterData.email.toLowerCase().trim().replaceAll('"','').replaceAll("'","").replaceAll('`','')
                                                 ,name: shooterData.name.replaceAll('"','').replaceAll("'","").replaceAll('`','')}
+                                                ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                                                ,last_updater_date: Date.now()
                                               });
 
                    if(dbShooter.modifiedCount<1){

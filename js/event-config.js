@@ -581,22 +581,26 @@ function buildDivisionTable(eventConfig){
             <label class="btn btn-outline-success" for="btn-check-outlined_2_${eventConfig.divisions[i]._id}">Inscrever-se</label><br>
 -->
         </td>
-        <td  class="text-start">
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" ${ladiesChk} id="${eventConfig.divisions[i]._id}Check${cLadies}">
-            <label class="form-check-label" for="flexSwitchCheckDefault">Damas</label>
-          </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" ${seniorsChk} id="${eventConfig.divisions[i]._id}Check${cSeniors}">
-            <label class="form-check-label" for="flexSwitchCheckChecked">Seniors</label>
-          </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" role="switch" ${opticsChk} id="${eventConfig.divisions[i]._id}Check${cOptics}">
-            <label class="form-check-label" for="flexSwitchCheckDisabled">Optics</label>
+        <td  class="text-start ">
+            <div class="form-check form-switch">
+            <input class="form-check-input nodisable" disabled type="checkbox" role="switch" checked id="alwaysCheckOverall">
+            <label class="form-check-label" for="flexSwitchCheckDefault"><span class="badge text-dark bg-warning rounded-pill " >esporte</span></label>
           </div>
           <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" role="switch" ${advanceChk} id="${eventConfig.divisions[i]._id}Check${cAdvance}" value='${eventConfig.divisions[i]._id}' onclick="advanceClick(this)">
-            <label class="form-check-label" for="flexSwitchCheckDisabled">Avançado</label>
+            <label class="form-check-label" for="flexSwitchCheckDisabled"><span class="badge bg-dark text-white rounded-pill " >Avançado</span></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" ${ladiesChk} id="${eventConfig.divisions[i]._id}Check${cLadies}">
+            <label class="form-check-label" for="flexSwitchCheckDefault"><span class="badge bg-danger-subtle text-danger-emphasis rounded-pill " >Damas</span></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" ${seniorsChk} id="${eventConfig.divisions[i]._id}Check${cSeniors}">
+            <label class="form-check-label" for="flexSwitchCheckChecked"><span class="badge bg-success rounded-pill " >Seniors</span></label>
+          </div>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" ${opticsChk} id="${eventConfig.divisions[i]._id}Check${cOptics}">
+            <label class="form-check-label" for="flexSwitchCheckDisabled"><span class="badge bg-danger rounded-pill " >Optics</span></label>
           </div>
         </td>
         <td>

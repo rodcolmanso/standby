@@ -8,6 +8,31 @@ var ObjectId = require('mongodb').ObjectId;
 
 
 const handler = async (event, context)=>{
+
+  let userContext=null;
+  try{
+    console.log(`before get rawNetlifyContex`);
+    const rawNetlifyContext = context.clientContext.custom.netlify;
+    console.log(`rawNetlifyContex`);
+    const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+    const { identity, user } = JSON.parse(netlifyContext);
+    console.log(`got user`);
+    console.log(`got user:`, user);
+            if(!user || !user.email ){
+              console.log('Error getting user new method');
+              throw new Error('Error getting user new method');
+            }
+    console.log(`JSON.user:stringify`, JSON.stringify(user));
+    userContext= user;
+  }catch(e){
+    console.log(`got error getting rawNetlifyContex`);
+    userContext= context.clientContext.user;
+    console.log(`userContext:`, userContext);
+  }
+
+  let isAdmin= (userContext && userContext.app_metadata && userContext.app_metadata.roles&&userContext.app_metadata.roles!==""&&(userContext.app_metadata.roles.indexOf("admin")>=0));
+  let isSuper= (userContext && userContext.app_metadata && userContext.app_metadata.roles&&userContext.app_metadata.roles!==""&&(userContext.app_metadata.roles.indexOf("super")>=0));
+
   try {
 
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
@@ -399,7 +424,22 @@ const handler = async (event, context)=>{
 
         case 'POST':
 
+            // console.log('isAdmin='+isAdmin);
+            // console.log('isSuper='+isSuper);
+
+            if(!isAdmin && !isSuper){
+              // const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:userContext.email.toLowerCase().trim()}}).toArray();
+              // if( rangeAdm.length<=0){
+                return  {
+                  statusCode: 401,
+                    body: `Unauthorized, user ${userContext?userContext.email:null} cannot insert time records!`
+                  };
+              }
+
               let new_record= JSON.parse(event.body);
+
+              new_record.inserter= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
+              new_record.inserter_date; Date.now();
 
               new_record.datetime= new Date();
               console.log(`POSTING NEW TIME, JSON.stringify(new_record)=:${JSON.stringify(new_record,null,2)} `);
@@ -412,6 +452,15 @@ const handler = async (event, context)=>{
               };
 
           case 'DELETE':
+
+            if(!isAdmin && !isSuper){
+              // const rangeAdm= cRanges.find({_id: new ObjectId(event_config.rangeId), adm: {$eq:userContext.email.toLowerCase().trim()}}).toArray();
+              // if( rangeAdm.length<=0){
+                return  {
+                  statusCode: 401,
+                    body: `Unauthorized, user ${userContext?userContext.email:null} cannot delete time records!`
+                  };
+              }
 
           // var ObjectId = require('mongodb').ObjectId; const o_id = new ObjectId(id);
             const p_time_record_id= event.queryStringParameters.timeRecordId.toString();

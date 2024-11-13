@@ -275,8 +275,8 @@ header.masthead_duel {
 }
 
 header.masthead_session {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
   text-align: center;
   color: white;
   background-image: url('https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto/65bd6e808328263ca1d938c9.jpg');

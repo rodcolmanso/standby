@@ -249,6 +249,13 @@ function formatCpf(cpf, valid){
     .replace(/(-\d{2})\d+?$/, '$1'); // Impede entrada de mais de 11 dígitos
 }
 
+function isNumeric(str) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+           !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
+  
+
 function formattime(time, valid){
     let ret= time;
     if(valid)
@@ -508,7 +515,7 @@ function setSessionEventConfig(ec){
     
     stringifyEc= JSON.stringify(ec);
     b64ec= base64encode(stringifyEc);
-    setCookie(SESSION_EVENT_CONFIG, b64ec, 1);
+    setCookie(SESSION_EVENT_CONFIG, b64ec, 1); //(1/24/60)
 }
 function getSessionEventConfig(){
     let ec= getCookie(SESSION_EVENT_CONFIG);
@@ -941,7 +948,7 @@ function goToPage(page,oderParams){
         idP="?id="+params.id;
     }
 
-    window.location=`/${page}.html${idP}${oderParams}`;
+    window.location.href=`/${page}.html${idP}${oderParams}`;
 
 }
 

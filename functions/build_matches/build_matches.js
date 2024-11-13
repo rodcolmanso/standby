@@ -545,6 +545,26 @@ const handler = async (event, context)=>{
     let p_eventId= event.queryStringParameters.eventId?event.queryStringParameters.eventId.toString():null;
     let p_divisionId= event.queryStringParameters.divisionId?event.queryStringParameters.divisionId.toString():null;
     let p_categ= event.queryStringParameters.category?event.queryStringParameters.category.toString():null;
+
+    let userContext=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user`);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
+        throw new Error('Error getting user new method');
+      }
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
+      userContext= user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+      userContext= context.clientContext.user;
+    }
+
     
     switch (event.httpMethod){
         
@@ -690,6 +710,8 @@ const handler = async (event, context)=>{
                               ,divisionId: p_divisionId
                               ,ladyDoubleKOs: _ret.ladyDoubleKOs
                               ,lady_kos_type:p_kos_type
+                              ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                              ,last_updater_date: Date.now()
                               }
                         }
                         ,{ upsert: true });
@@ -729,6 +751,8 @@ const handler = async (event, context)=>{
                               ,divisionId: p_divisionId
                               ,seniorDoubleKOs: _ret.seniorDoubleKOs
                               ,senior_kos_type:p_kos_type
+                              ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                              ,last_updater_date: Date.now()
                               }
                         }
                         ,{ upsert: true });
@@ -767,6 +791,8 @@ const handler = async (event, context)=>{
                     ,divisionId: p_divisionId
                     ,opticDoubleKOs: _ret.opticDoubleKOs
                     ,optic_kos_type:p_kos_type
+                    ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                    ,last_updater_date: Date.now()
                     }
             }
             ,{ upsert: true });
@@ -804,6 +830,8 @@ const handler = async (event, context)=>{
                     ,divisionId: p_divisionId
                     ,overallDoubleKOs: _ret.overallDoubleKOs
                     ,overall_kos_type:p_kos_type
+                    ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                    ,last_updater_date: Date.now()
                     }
             }
             ,{ upsert: true });
@@ -840,6 +868,8 @@ const handler = async (event, context)=>{
                   ,divisionId: p_divisionId
                   ,advancedDoubleKOs: _ret.advancedDoubleKOs
                   ,advanced_kos_type:p_kos_type
+                  ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
+                  ,last_updater_date: Date.now()
                   }
             }
             ,{ upsert: true });
@@ -855,26 +885,7 @@ const handler = async (event, context)=>{
         // console.log('Entrou no PATCH dos KOs');
         let matchesBody= JSON.parse(event.body);
 
-        // let userContext= context.clientContext.user;
-        let userContext=null;
-        try{
-          console.log(`before get rawNetlifyContex`);
-          const rawNetlifyContext = context.clientContext.custom.netlify;
-          console.log(`rawNetlifyContex`);
-          const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-          const { identity, user } = JSON.parse(netlifyContext);
-          console.log(`got user`);
-          console.log(`got user:`, user);
-          if(!user || !user.email ){
-            throw new Error('Error getting user new method');
-          }
-          console.log(`JSON.user:stringify`, JSON.stringify(user));
-          userContext= user;
-        }catch(e){
-          console.log(`got error getting rawNetlifyContex`);
-          userContext= context.clientContext.user;
-        }
-
+        
           let isAdmin= (userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles.indexOf("admin")>=0);
             // let isEventAdmin= (userContext&&userContext.userContext_metadata&&userContext.userContext_metadata.admin_events&&userContext.userContext_metadata.admin_events!==""&&userContext.userContext_metadata.admin_events.indexOf(p_eventId)>-1);
           let isEventAdmin=false;
@@ -883,10 +894,6 @@ const handler = async (event, context)=>{
             //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(matchesBody.eventId)
-            // const _e= await cEvent.aggregate( [
-            //   {$match:{_id: f_id
-            //           , owners: userContext.email}}
-            // ]).toArray();
             const _e= await cEvent.aggregate( [
               { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}
               ,{$lookup:{
@@ -913,14 +920,17 @@ const handler = async (event, context)=>{
               };
           }
     
-        new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
+          matchesBody.last_updater= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
+          matchesBody.last_updater_date= Date.now();
+
+          new_record= await cKos.updateOne({ eventId: matchesBody.eventId 
                                           ,divisionId: matchesBody.divisionId}
                                         ,{ $set: matchesBody}
                                           ,{ upsert: true });
-        return  { 
-          statusCode: 201,  
-          body: JSON.stringify(new_record)
-        };
+          return  { 
+            statusCode: 201,  
+            body: JSON.stringify(new_record)
+          };
 
       case 'DELETE':
 
@@ -934,25 +944,6 @@ const handler = async (event, context)=>{
         if(eventId&&divisionId){ //&&categ
 // console.log("2");
           // let user= context.clientContext.user;
-          let userContext=null;
-          try{
-            console.log(`before get rawNetlifyContex`);
-            const rawNetlifyContext = context.clientContext.custom.netlify;
-            console.log(`rawNetlifyContex`);
-            const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-            const { identity, user } = JSON.parse(netlifyContext);
-            console.log(`got user`);
-            console.log(`got user:`, user);
-            if(!user || !user.email ){
-              console.log('Error getting user new method');
-              throw new Error('Error getting user new method');
-            }
-            console.log(`JSON.user:stringify`, JSON.stringify(user));
-            userContext= user;
-          }catch(e){
-            console.log(`got error getting rawNetlifyContex`);
-            userContext= context.clientContext.user;
-          }
 
           let isAdmin= (userContext&&userContext.app_metadata&&userContext.app_metadata.roles&&userContext.app_metadata.roles.indexOf("admin")>=0);
           let isEventAdmin=false;
@@ -962,12 +953,6 @@ const handler = async (event, context)=>{
             //check if the userContext is admin of the event:
             const cEvent= database.collection(process.env.MONGODB_COLLECTION_EVENTS);
             const f_id= new ObjectId(eventId);
-// console.log("5");
-
-            // const _e= await cEvent.aggregate( [
-            //   {$match:{_id: f_id
-            //           , owners: userContext.email}}
-            // ]).toArray();
 
             const _e= await cEvent.aggregate( [
               { $addFields: {"_rangeId": { $toObjectId: "$rangeId" }}}

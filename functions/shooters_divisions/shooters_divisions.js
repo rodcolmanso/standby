@@ -9,18 +9,31 @@ var ObjectId = require('mongodb').ObjectId;
 const handler = async (event, context)=>{
   try {
 
-
-    
-    // const p_divisionId= event.queryStringParameters.divisionId.toString();
-    // const p_shooterId= event.queryStringParameters.shooterId.toString();
-    
-    // console.log(`p_divisionId= ${p_divisionId}`);
-    // console.log(`p_shooterId= ${p_shooterId}`);
-
-
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     const cShooters_Divisions= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS_DIVISIONS);
+
+    // console.log('entrou');
+    // let userContext= context.clientContext.user;
+    let userContext=null;
+    try{
+      console.log(`before get rawNetlifyContex`);
+      const rawNetlifyContext = context.clientContext.custom.netlify;
+      console.log(`rawNetlifyContex`);
+      const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
+      const { identity, user } = JSON.parse(netlifyContext);
+      console.log(`got user`);
+      console.log(`got user:`, user);
+      if(!user || !user.email ){
+        console.log('Error getting user new method');
+        throw new Error('Error getting user new method');
+      }
+      console.log(`JSON.user:stringify`, JSON.stringify(user));
+      userContext= user;
+    }catch(e){
+      console.log(`got error getting rawNetlifyContex`);
+      userContext= context.clientContext.user;
+    }
 
     switch (event.httpMethod){
       case 'GET':
@@ -132,27 +145,6 @@ const handler = async (event, context)=>{
 
       case 'PATCH': // associates divisions with a shooter
         
-      // console.log('entrou');
-        // let userContext= context.clientContext.user;
-        let userContext=null;
-        try{
-          console.log(`before get rawNetlifyContex`);
-          const rawNetlifyContext = context.clientContext.custom.netlify;
-          console.log(`rawNetlifyContex`);
-          const netlifyContext = Buffer.from(rawNetlifyContext, 'base64').toString('utf-8');
-          const { identity, user } = JSON.parse(netlifyContext);
-          console.log(`got user`);
-          console.log(`got user:`, user);
-          if(!user || !user.email ){
-            console.log('Error getting user new method');
-            throw new Error('Error getting user new method');
-          }
-          console.log(`JSON.user:stringify`, JSON.stringify(user));
-          userContext= user;
-        }catch(e){
-          console.log(`got error getting rawNetlifyContex`);
-          userContext= context.clientContext.user;
-        }
 
         if(!userContext){
           console.log('userContext not logged');
@@ -181,16 +173,6 @@ const handler = async (event, context)=>{
               body: JSON.stringify({message: "Informe shooterDivisionId"})
             };  
         }
-
-        // console.log('_body= '+JSON.stringify(_body));
-
-        //=> if(!_body||!_body.shooterDivisionId || _body.order_aux===undefined || _body.order_aux==='' || _body.order_aux=== null){
-        //   console.log('ERROR 401= Informe shooterDivisionId and pauseResume value');
-        // return  {
-        //     statusCode: 401,
-        //     body: JSON.stringify({message: "Informe shooterDivisionId and pauseResume value."})
-        //   };
-        // }
 
         if(!isAdmin){
           // console.log('Will find shooter_division. _body.shooterDivisionId='+_body.shooterDivisionId);
@@ -245,14 +227,6 @@ const handler = async (event, context)=>{
 
         }
 
-        // console.log('Will update shooter_division');        
-        //=> await cShooters_Divisions.updateOne({_id:new ObjectId(_body.shooterDivisionId)}
-        //                                    ,{ $set: {
-        //                                     order_aux : _body.order_aux
-        //                                     ,subscribe_date: new Date()
-        //                                   }}
-        // );
-
         const _updateId= _body._id?_body._id :_body.shooterDivisionId;
         delete _body._id;
         delete _body.shooterDivisionId;
@@ -294,10 +268,12 @@ const handler = async (event, context)=>{
         delete shooter.registered;
         delete shooter.shooterId;
         delete shooter.event_id;
+
+        shooter.inserter= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
+        shooter.inserter_date= Date.now();
   
         if(shooterId===null||shooterId===""||shooterId===0){ // new shooter
 
-  
           new_record= await cShooters.insertOne(shooter);
 
           shooter.shooterId= new_record.insertedId.toString();
@@ -311,6 +287,8 @@ const handler = async (event, context)=>{
                                                    ,email: shooter.email.toLowerCase().trim() 
                                                    ,category: shooter.category 
                                                    ,eventId: shooter.eventId 
+                                                   ,last_updater: shooter.inserter
+                                                   ,last_updater_date: shooter.inserter_date
                                                   }
                                                  });
           // console.log(`Updated!: ${new_record.toString()}, Name: ${shooter.name}`);
@@ -328,7 +306,11 @@ const handler = async (event, context)=>{
           shooter_division.eventId=event_id;
           shooter_division.gun= registered[i].gun.replaceAll('"','').replaceAll("'","").replaceAll('`','');
           shooter_division.optics= registered[i].optics;
+          shooter_division.inserter= (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown';
+          shooter_division.inserter_date= Date.now();
+
           shooters_divisions.push(shooter_division);
+          
         }
         await cShooters_Divisions.deleteMany({"shooterId":shooterId});
 

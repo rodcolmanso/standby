@@ -942,10 +942,16 @@ function addTimeRecord(){
     let newRecord={'shooterId':idShooter,'divisionId':idDivision, 'eventId':eventConfig._id ,'sTime': vTime,'penalties': vPenalties, 'shooterDivisionId':idShooterDivision};
 
     applySpinners(true);
+    
+    let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+    const user= netlifyIdentity.currentUser();
+    if(user&&user.token&&user.token.access_token){
+        _headers.Authorization= `Bearer ${user.token.access_token}` ;
+    }
     fetch('/.netlify/functions/time-records', {
         method: "POST",
         body: JSON.stringify(newRecord),
-        headers: {"Content-type": "application/json; charset=UTF-8"}
+        headers: _headers
         })
         .then(response => response.json()) 
         .then(json => {
@@ -1057,13 +1063,16 @@ function deleteTime(idTimeRecord, idShooter, idDivision, idShooterDivision){
         return 0;
     }else if(confirm('Tem certeza que deseja remover essa passagem?')) {
 
+        let _headers= {"Content-type": "application/json; charset=UTF-8"} ;
+        const user= netlifyIdentity.currentUser();
+        if(user&&user.token&&user.token.access_token){
+            _headers.Authorization= `Bearer ${user.token.access_token}` ;
+        }
         applySpinners(true);
         fetch(`/.netlify/functions/time-records?timeRecordId=${idTimeRecord}`, {
             method: "DELETE",
-            // body: JSON.stringify(newRecord),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            headers: _headers
             })
-            // .then(response => response.json()) 
             .then(r => {
                 modalChanged=true;
                 document.getElementById('timeBestScore').innerText='';

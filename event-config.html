@@ -261,26 +261,32 @@
       </div>
       </div>
       
-
       <div  class="form-floating mb-3 col-md-4 d-flex justify-content-center">
-        <!-- <div class="d-flex justify-content-center"> -->
+        <div class="card " >
+          <h5 class="card-header text-small">Arte/Banner do evento</h5>
+          <div class="card-body" >
+            <!-- <div class="d-flex justify-content-center"> -->
             <div class="btn nodisable text-center justify-content-center">
               <label for="event-img">
                 <img class="nodisable" id="selectedImage" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_355/defaults/tmpyellow'" src="..."
                   class="img-fluid text-center justify-content-center" alt="example placeholder" />
-                  </label>
-                  <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                    alterar
+              </label>
+              <label class="overlay-text btn btn-bd-primary hideshooter" id="btn-alter-img" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                alterar
                 <input type="file" class="form-control d-none nodisable" id="event-img" onchange="displaySelectedImage(event, 'selectedImage')" />
-                  </label>
+              </label>
             </div>
-        <!-- </div> -->
+            <!-- </div> -->
+          </div>
+        </div>
       </div>
       
       <div class="form-floating mb-3 col-md-8">
-        <div class="input-group">
-          <span class="input-group-text">Descrição:</span>
-          <textarea class="form-control" required rows="10" id="event-note" aria-label="With textarea"></textarea>
+        <div class="card " >
+          <h5 class="card-header text-small">Descrição</h5>
+          <div class="card-body" >
+            <textarea class="form-control" required rows="10" id="event-note" aria-label="With textarea"></textarea>
+          </div>
         </div>
         <div id="div-address">
         </div>
@@ -383,7 +389,7 @@
           <!-- <input type="number" class="form-control nodisable" required id="vl_first_try">
           <label for="vl_first_try" >1ª Passada</label> -->
           <div class="input-group mb-3" style="margin-bottom:1px !important;">
-            <span class="input-group-text">1ª (Inscrição)</span>
+            <span class="input-group-text text-truncate">1ª <span class="text-small">(+Inscrição)</span></span>
             <input type="number" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_first_try">
             <span class="input-group-text">,00</span>
           </div>
@@ -392,7 +398,7 @@
           <div class="input-group mb-3" style="margin-bottom:1px !important;">
             <!-- <input type="number" class="form-control nodisable" required id="vl_second_try">
             <label for="vl_second_try" >2ª Passada R$</label> -->
-            <span class="input-group-text">2ª Passada</span>
+            <span class="input-group-text text-truncate">2ª Passada</span>
             <input type="number" size="10" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_second_try">
             <span class="input-group-text">,00</span>
           </div>
@@ -402,8 +408,8 @@
           <div class="input-group mb-3" style="margin-bottom:1px !important;">
             <!-- <input type="number" class="form-control nodisable" required id="vl_other_tries">
             <label for="vl_other_tries" >Demais Passada R$</label> -->
-            <span class="input-group-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demais</span>
-            <input type="number" class="form-control nodisable text-end" required aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
+            <span class="input-group-text text-truncate">Demais&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input type="number" class="form-control nodisable text-end" size="10" required aria-label="Valor da 1º passada (R$)" id="vl_other_tries">
             <span class="input-group-text">,00</span>     
           </div>
         </div>

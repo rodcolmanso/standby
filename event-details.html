@@ -192,8 +192,10 @@
     <div class="row">
       <div class="col-md-4 text-center justify-content-center">
         <!-- Arte/imagem do Evento -->
-        <img class="rounded-2" id="event-img-body" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400/defaults/tmpyellow'" src="..."
-          class="img-fluid text-center justify-content-top" style="width: 100%; margin-bottom: .75rem;" alt="Responsive image" alt="example placeholder" />
+
+        <img class="rounded-2 border" id="event-img-body" onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_400/defaults/tmpyellow'" src="..."
+        class="img-fluid text-center justify-content-top" style="width: 100%; " alt="Responsive image" alt="example placeholder" /> <!--margin-bottom: .75rem;-->
+
         <div class="text-start justify-content-center d-none d-xl-block">
           <p>&nbsp;</p>
           <div class="card " >
@@ -259,12 +261,12 @@
                 <tr id="clock-hour-tr" class="">
                   <!-- <td class="text-end w-10"><i class="fa-solid fa-stopwatch"></i> </td> -->
                   <td class="text-start " colspan="2"><i class="fa-solid fa-stopwatch"></i> Contra o Relógio:</td>
-                  <td class="text-start "><span id="clock-hour-subtitle"></span></td> <!--<i class="fa-regular fa-calendar "></i> -->
+                  <td class="text-start "><span id="clock-hour-subtitle"></span> h</td> <!--<i class="fa-regular fa-calendar "></i> -->
                 </tr>
                 <tr class="" id="duel-hour-tr">
                   <!-- <td class="text-end "><i class="fa-solid fa-holly-berry"></i></td> -->
                   <td class="text-start " colspan="2"><i class="fa-solid fa-holly-berry"></i> Duelos:</td>
-                  <td class="text-start "><span id="duel-hour-subtitle"></span></td>
+                  <td class="text-start "><span id="duel-hour-subtitle"></span><span class=""> h</span></td>
                 </tr>
               </tbody>
             </table>
@@ -289,6 +291,11 @@
             <p class="text-small">&nbsp;</p>
           </li>
         </ul>
+        <div class="row text-center">
+          <div class="col-md-12 text-center" id="event-addres-end">
+              <!-- The button used to copy the text -->
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-12 text-start justify-content-center">
             <p class="text-small">&nbsp;</p>
@@ -377,12 +384,7 @@
       <!-- <div class="btn col-md-4"> -->
     </div>
 
-    <div class="row text-center">
-      <div class="col-md-12 text-center" id="event-addres-end">
-          <!-- The button used to copy the text -->
-           Rua rudge ramos, 343 - Sao paulo sp
-      </div>
-    </div>
+    
 
   </div>
 <p>&nbsp;</p>

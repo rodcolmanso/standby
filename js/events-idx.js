@@ -49,6 +49,28 @@ const promiseOfRanges = (_rangeId, _identityUser)=>{
 
 window.onload = async () => {
 
+    const url= window.location.toString();
+    const args= url.substring(url.indexOf("?") + 1).split("&");
+    if(url.indexOf("?")>-1 && args.length===1 && isNumeric(args[0])){
+        //short event Id to redirect to Subscription form
+        _headers= {"Content-type": "application/json; charset=UTF-8"}
+        
+        applySpinners(true);
+
+        const subscriptURL = await fetch("/.netlify/functions/events?short_id="+args[0],
+            {method: "GET"
+            ,headers: _headers}
+        ).then(r=>r.json())
+            .then(data => {
+            if(data.length>0){
+                return "/event-details.html?event_id="+data[0]._id+ "&inscription=new";
+            
+            }
+        }).finally( applySpinners(false));
+        window.location.href = subscriptURL;
+        return false;
+    }
+
     try{
         user= netlifyIdentity.currentUser();
     }catch(error){
@@ -77,32 +99,6 @@ window.onload = async () => {
         ranges = await promiseOfRanges(null,user);
         applySpinners(false);
     }
-    
-    const url= window.location.toString();
-    const args= url.substring(url.indexOf("?") + 1).split("&");
-
-    if(url.indexOf("?")>-1 && args.length>0){
-        if(user!==null){
-            _headers= {"Content-type": "application/json; charset=UTF-8"
-                    ,"Authorization":`Bearer ${user.token.access_token}`}
-        }else{
-            _headers= {"Content-type": "application/json; charset=UTF-8"}
-        }
-
-        applySpinners(true);
-
-        fetch("/.netlify/functions/events?short_id="+args[0],
-            {method: "GET"
-            ,headers: _headers}
-        ).then(r=>r.json())
-            .then(data => {
-            // return data;
-            if(data.length>0){
-                window.location.href = window.location="/event-details.html?event_id="+data[0]._id+ "&inscription=new";
-            }
-        }).finally( applySpinners(false));
-    }
-
 
     document.getElementById('nav-events').classList.add('active');
 
@@ -170,7 +166,8 @@ function search() {
         })
         .catch((error)=>{
             console.log('error quering events. error=',error);
-            window.location.href = window.location="/";
+            window.location.href = "/";
+            return false;
         })
         .finally( applySpinners(false));
     //some other stuff...
@@ -310,7 +307,7 @@ function buildEventsTable(events){
 
 function newEvent(){
     if(netlifyIdentity.currentUser()){
-        window.location.href = window.location="/event-config.html?event_id=0";
+        window.location.href = "/event-config.html?event_id=0";
     }else{
         netlifyIdentity.open();
     }

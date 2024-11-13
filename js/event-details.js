@@ -262,10 +262,13 @@ window.onload = async () => {
     const ec= getSessionEventConfig();
     if(!params.event_id && ec && ec._id){
         urlSearchParams.set("event_id", ec._id);
-        history.pushState(null, null, "?"+urlSearchParams.toString());
+        history.pushState(null, null, "?" + urlSearchParams.toString());
+        urlSearchParams = new URLSearchParams(window.location.search);
+        params = Object.fromEntries(urlSearchParams.entries());
     }
 
     _reload=true;
+    clearSessionEventConfig();
     await loadPage();
     loadPageEvent(tab_info);
 

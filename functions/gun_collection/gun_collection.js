@@ -143,8 +143,8 @@ const handler = async (event, context)=>{
                     ,acerveFolder: gunData.acerveFolder
                     ,active: gunData.active
                     ,note: gunData.note
-                    ,last_updater: userContext.email
-                    ,last_updater_date: new Date()
+                    ,inserter: userContext.email
+                    ,inserter_date: new Date()
                     });
           }
 
