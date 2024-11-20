@@ -483,6 +483,7 @@ function changeSub(id, ldx ,idx, elem, _subs){
     _sD[ldx].shooters_divisions[idx].optics= document.getElementById("subscribe-optic-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].clock= document.getElementById("subscribe-check-clock-"+id+_subs).checked;
     _sD[ldx].shooters_divisions[idx].duel= document.getElementById("subscribe-check-duel-"+id+_subs).checked;
+    _sD[ldx].shooters_divisions[idx].fromRangeId= document.getElementById("fromRangeId-"+id+_subs).value;
 
     let uptShooterDiv= JSON.parse(JSON.stringify(_sD[ldx]));
     uptShooterDiv.shooters_divisions=[];
@@ -788,6 +789,12 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
 
     gunsOfShooterDivisions=[];
 
+    let showClub='';
+    
+    if(eventConfig.interclubs){
+        showClub= 'd-sm-block align-middle';
+    }
+
     for(let l=0;l<shooterDivisions.length;l++){
         for(let i=0;i<shooterDivisions[l].shooters_divisions.length;i++){
             // gunsOfShooterDivisions.push(shooterDivisions[l]._id+shooterDivisions[l].divisionId+shooterDivisions[l].shooters_divisions[i].gun.toLowerCase().replaceAll(" ","").replaceAll(".","").replaceAll("-","").replaceAll("_","").replaceAll(",","").replaceAll(";",""));
@@ -809,6 +816,8 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 classGunLarge='d-none d-xl-block';
                 hiddeGunsmall=`style="display:"`;
 
+                
+
                 _subs='-subs';
                 row+=
                 `
@@ -824,7 +833,16 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                         <small >${shooterDivisions[l].name}</small>
                     </a>
                   </div>
-                </div></td>`
+                </div>
+                <p><select id="fromRangeId-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" class="d-none ${showClub} form-select form-select-sm ${nodisableClass} aria-label="Informe clube"
+                value="${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')">
+                    <option value="${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}">${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}</option>
+                    <option value="Typhoon">Typhoon</option>
+                    <option value="Anvil">Anvil</option>
+                    <option value="Ops">Ops</option>
+                    <option value="Opsrange">Opsrange</option>
+                </select> <span class="d-none">CT ${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}.</span></p>
+                </td>`
             }
 
             // testing if neets to show other guns 
@@ -1178,8 +1196,9 @@ function buildEventDetailsPage(eventConfig){
         }
         //-------------------------
 
+        //<strong>CT ${eventConfig.range[0].name}</strong> - 
         document.getElementById("event-addres-end").innerHTML=`
-        <strong>CT ${eventConfig.range[0].name}</strong> - <i class="fa-solid fa-location-dot"></i> ${eventConfig.address} ${eventConfig.city} / ${eventConfig.state}`;
+        <i class="fa-solid fa-location-dot"></i> ${eventConfig.address} ${eventConfig.city} / ${eventConfig.state}`;
         document.getElementById("table-event-range").innerHTML=`<i class="fa-solid fa-location-dot"></i> CT ${eventConfig.range[0].name} `;
         document.getElementById("table-event-range-date").innerHTML=`<i class="fa-regular fa-calendar"></i>&nbsp;${(new Date(eventConfig.date)).toLocaleDateString().substring(0,5)}`;
 

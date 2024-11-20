@@ -383,10 +383,10 @@
                   <label for="timeRecordTime">Tempo</label>
 
                 </div>
-                <div class="w-25 col-sm form-floating form-control-sm hide">
+                <div class="w-25 col-sm form-floating form-control-sm hide text-truncate">
 
                   <input type="number" pattern="\d*" min="0" max="4" class="form-control" id="timeRecordPenalty" placeholder="0" value="0">
-                  <label for="timeRecordPenalty">Penalidade</label>
+                  <label class="text-truncate" for="timeRecordPenalty">Penalidade</label>
                 </div>
 
 
@@ -408,7 +408,7 @@
                 <th scope="col">#</th>
                 <th scope="col" class="w-25">Quando</th>
                 <th class="text-end w-25" scope="col">Tempo</th>
-                <th class="text-start w-25" scope="col" id="penalty">Penalidade</th>
+                <th class="text-start w-25 text-truncate" scope="col" id="penalty">Penalidade</th>
                 <th scope="col"></th>
               </tr>
             </thead>

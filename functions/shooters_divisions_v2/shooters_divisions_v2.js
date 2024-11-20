@@ -503,7 +503,10 @@ const handler = async (event, context)=>{
                       shooterDivisions.shooters_divisions[i]._id= shooterDivisions.shooterId;
                     
             }else{
-              
+              // console.log('-------------------------------------');
+              // console.log('shooterId=',shooterDivisions.shooters_divisions[i].shooterId);
+              // console.log('fromRangeId=',shooterDivisions.shooters_divisions[i].fromRangeId);
+              // console.log('-------------------------------------');
               new_record.updatedShooterDivisions.push(await cShooters_Divisions.updateOne(
                                                                 {_id: new ObjectId(shooterDivisions.shooters_divisions[i]._id)}
                                                             ,{$set:{ shooterId: shooterDivisions.shooters_divisions[i].shooterId
@@ -519,6 +522,7 @@ const handler = async (event, context)=>{
                                                                     ,subscribe_date: new Date()
                                                                     ,last_updater: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'
                                                                     ,last_updater_date: Date.now()
+                                                                    ,fromRangeId: shooterDivisions.shooters_divisions[i].fromRangeId&&shooterDivisions.shooters_divisions[i].fromRangeId!==""&&shooterDivisions.shooters_divisions[i].fromRangeId!==null ?shooterDivisions.shooters_divisions[i].fromRangeId:null
                                                                     }
                                                                 ,$setOnInsert: { 
                                                                   inserter: (userContext&&userContext.email)?userContext.email.toLowerCase().trim():'unknown'

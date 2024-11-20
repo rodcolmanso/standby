@@ -16,6 +16,7 @@ const cSeniors= 5;
 const cDuolDuels= 0;
 const cSingleDuels= 1;
 const cAllToAll= 2;
+const cInterclubs= 3;
 
 
 const shootersDiv = async(cShooters_divisions, p_eventId, p_divisionId)=>{
@@ -88,6 +89,8 @@ return _shooters_division;
 
 const buildMatches_all_w_all = (shooters)=>{
 
+  // return buildMatches_Interclubs(shooters);
+
   let mainMatches=[];
   let levelMatches=[];
   let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
@@ -111,6 +114,208 @@ const buildMatches_all_w_all = (shooters)=>{
   
 }//const buildMatches_all_w_all = (shooters)=>{
 
+let maxSize=0;
+const split_Interclubs = (shooters)=>{
+
+  const splitedShooters = new Map();
+  
+  //.groupBy(shooters, ({fromRangeId}) => fromRangeId);
+
+  for(let i=0;i<shooters.length;i++){
+    splitedShooters.set(shooters[i].fromRangeId,[]);
+    console.log('shooters[i].fromRangeId',shooters[i].fromRangeId);
+  }
+
+  for(let i=0;i<shooters.length;i++){
+    splitedShooters.get(shooters[i].fromRangeId).push(shooters[i]);
+  }
+
+  maxSize=0;
+  splitedShooters.forEach((value, key, map)=> {
+    maxSize= maxSize>value.length?maxSize:value.length;
+
+    for(let i=0;i<value.length;i++){
+      value[i].duelsCount=0;
+    }
+
+  });
+
+  // splitedShooters.forEach((value, key, map)=> {
+    
+  //   let auxI=0;
+  //   let saveVal= structuredClone(value);
+  //   for(let i=value.length; i<maxSize ; i++){
+      
+  //     // value[auxI].duelsCount=0;
+  //     // value[auxI].coringasS= structuredClone(value);
+      
+  //     value.push({id:'coringa'+i ,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false, coringa: true
+  //       ,coringasS: saveVal
+  //     });
+  //     auxI++;
+
+  //     if(auxI===value.length){
+  //       auxI= 0;
+  //     }
+
+  //   }
+  // });
+
+  //splitedShooters.forEach((value, key, map)=>console.log(`m[${key}] = ${JSON.stringify(value,null,2)}`));
+
+  return splitedShooters;
+  
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+const buildMatches_Interclubs = (shooters)=>{
+
+  //1 split shooters per club
+  const splitedShooters= split_Interclubs(shooters);
+
+  //2 push 1 match per player per club diferent than his
+  
+  // console.log('splitedShooters=', JSON.stringify(splitedShooters,null,2));
+
+  let mainMatches=[];
+  let levelMatches=[];
+  let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
+
+  const clubKeysArray = Array.from(splitedShooters.keys());
+  console.log(clubKeysArray);
+  console.log('maxSize:',maxSize);
+  for(let clubA=0; clubA<clubKeysArray.length-1; clubA++){
+
+    for(let clubB=clubA+1; clubB<clubKeysArray.length; clubB++){
+
+      for(let s=0; s<maxSize;s++){
+        console.log('New 6');
+          splitedShooters.get(clubKeysArray[clubA]).sort((a, b) => a.duelsCount - b.duelsCount);
+          console.log('New 7');
+          splitedShooters.get(clubKeysArray[clubB]).sort((a, b) => a.duelsCount - b.duelsCount);
+          console.log('New 8');
+          splitedShooters.get(clubKeysArray[clubA])[0].duelsCount++;
+          console.log('New 9');
+          splitedShooters.get(clubKeysArray[clubB])[0].duelsCount++;
+
+          console.log('New 10');
+          levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA: splitedShooters.get(clubKeysArray[clubA])[0], shooterB:splitedShooters.get(clubKeysArray[clubB])[0], v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });  
+
+          // console.log(`splitedShooters[${clubA}][${s}]`,JSON.stringify(splitedShooters[clubA][s]));
+      }
+    }
+  }
+
+  levelMatches= shuffle(levelMatches);
+  for(let i=0 ; i<levelMatches.length;i++){
+    levelMatches[i].id="m.0."+i;
+  }
+
+
+  mainMatches.push(levelMatches);
+  return [mainMatches,[]];
+  
+}//const buildMatches_Interclubs = (shooters)=>{
+  const buildMatches_InterclubsOld = (shooters)=>{
+
+    //1 split shooters per club
+    //2 push 1 match per player per club diferent than his
+    const splitedShooters= Array.from(split_Interclubs(shooters).values());
+  
+    // console.log('splitedShooters=', JSON.stringify(splitedShooters,null,2));
+  
+    let mainMatches=[];
+    let levelMatches=[];
+    let shootersTBD={id:null,name:"", victories: 0, defeats:0, gun:"", gunId:null, gunFactory:"", gunModel:"", gunCaliber:"", optics:false};
+  
+    for(let clubA=0; clubA<splitedShooters.length-1; clubA++){
+  
+      for(let clubB=clubA+1; clubB<splitedShooters.length; clubB++){
+  
+        for(let s=0; s<splitedShooters[clubA].length;s++){
+          console.log('1');
+            if(splitedShooters[clubA][s].coringasS){
+              console.log('2');
+  
+              // if(splitedShooters[clubA][s].coringasS[0].duelsCount)
+                splitedShooters[clubA][s].coringasS.sort((a, b) => a.duelsCount - b.duelsCount);
+  
+              console.log('2.5');
+              // splitedShooters[clubA][s].coringasS[0].duelsCount++;
+              // splitedShooters[clubA][s].coringasS[0].duelsCount?splitedShooters[clubA][s].coringasS[0].duelsCount++:splitedShooters[clubA][s].coringasS[0].duelsCount=0;
+              splitedShooters[clubA][s].coringasS[0].duelsCount++;
+              // console.log('CORINGO ClubA, Shooter:',JSON.stringify(splitedShooters[clubA][s].coringasS[0]) );
+              console.log('3');
+              console.log('====3.1==================================================');
+              console.log('splitedShooters[clubA][s].coringasS[0]',JSON.stringify((splitedShooters[clubA][s].coringasS[0])));
+              console.log('splitedShooters[clubA][s].coringasS[1]',JSON.stringify((splitedShooters[clubA][s].coringasS[1])));
+              console.log('splitedShooters[clubA][s].coringasS[2]',JSON.stringify((splitedShooters[clubA][s].coringasS[2])));
+              console.log('splitedShooters[clubA][s].coringasS.length',((splitedShooters[clubA][s].coringasS.length)));
+              console.log('======================================================');
+              splitedShooters[clubA][s]=structuredClone(splitedShooters[clubA][s].coringasS[getRandomInt(splitedShooters[clubA][s].coringasS.length-1)]);
+              console.log('4');
+            }
+            
+            if(splitedShooters[clubB][s].coringasS){
+              console.log('5');
+  
+              if(splitedShooters[clubB][s].coringasS[0].duelsCount!==undefined){
+                console.log('5.1');
+                console.log('5.2', splitedShooters[clubB][s].coringasS[0].duelsCount);
+                splitedShooters[clubB][s].coringasS.sort((a, b) => a.duelsCount - b.duelsCount);
+  
+                
+              }else console.log('splitedShooters[clubB][s].coringasS[0].duelsCount!==undefined');
+              
+              
+              console.log('6');
+              if(splitedShooters[clubB][s].coringasS[0].duelsCount>=0){
+                console.log('6.11');
+                splitedShooters[clubB][s].coringasS[0].duelsCount++;
+                console.log('6 12', splitedShooters[clubB][s].coringasS[0].duelsCount);
+              }else{
+                console.log('6.21   ERRRRRRRRR');
+                splitedShooters[clubB][s].coringasS[0].duelsCount=0;
+                console.log('6 duelsCount undefined');
+              }
+              console.log('7');
+              console.log('======================================================');
+              console.log('splitedShooters[clubB][s].coringasS[0]',JSON.stringify((splitedShooters[clubB][s].coringasS[0])));
+              console.log('splitedShooters[clubB][s].coringasS[1]',JSON.stringify((splitedShooters[clubB][s].coringasS[1])));
+              console.log('splitedShooters[clubB][s].coringasS[2]',JSON.stringify((splitedShooters[clubB][s].coringasS[2])));
+              console.log('splitedShooters[clubB][s].coringasS.lenght',JSON.stringify((splitedShooters[clubB][s].coringasS.length)));
+              console.log('======================================================');
+  
+  
+              // console.log('CORINGO ClubB, Shooter:',JSON.stringify(splitedShooters[clubB][s].coringasS[0]) );
+              
+              splitedShooters[clubB][s]= structuredClone(splitedShooters[clubB][s].coringasS[getRandomInt(splitedShooters[clubB][s].coringasS.length-1)]);
+              console.log('8');
+            }
+              
+            console.log('9');
+            levelMatches.push({id:"m."+mainMatches.length+"."+levelMatches.length, shooterA: splitedShooters[clubA][s], shooterB:(splitedShooters[clubB][s]), v:shootersTBD, d:shootersTBD, parentA:"root", parentB:"root" });  
+            console.log('10');
+  
+            // console.log(`splitedShooters[${clubA}][${s}]`,JSON.stringify(splitedShooters[clubA][s]));
+        }
+      }
+    }
+  
+    levelMatches= shuffle(levelMatches);
+    for(let i=0 ; i<levelMatches.length;i++){
+      levelMatches[i].id="m.0."+i;
+    }
+  
+  
+    mainMatches.push(levelMatches);
+    return [mainMatches,[]];
+    
+  }//const buildMatches_Interclubs_old = (shooters)=>{
+  
 const buildMatches = (shooters, kos_type)=>{
   
   // console.log(`------------------------------------------------`);
@@ -384,6 +589,8 @@ const shuffle = (array) => {
 
   let currentIndex = array.length;
 
+  console.log('Got into shuffle 1');
+
   // While there remain elements to shuffle...
   while (currentIndex != 0) {
 
@@ -395,6 +602,8 @@ const shuffle = (array) => {
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
+
+  console.log('Got into shuffle 2');
 
   return array;
 }
@@ -443,11 +652,15 @@ const flatPlayesDivisions = (players, sort, light)=>{
         // , 'shooterDivisionId': players[i].shooterDivisionId
         // , "eventId": players[i].eventId
         ,'shooterId':players[i].shooterId
+        ,'fromRangeId' :players[i].fromRangeId
+        ,'duelsCount':0
       };
     }else{
       aRow= {'division':players[i].divisionId,'category':players[i].category,'name':players[i].name,'email':players[i].email.toLowerCase().trim(),'id':players[i].shooterDivisionId
         ,'gun': gun_rd, 'gunId':players[i].gunId, 'gunModel':players[i].gunModel, 'gunFactory':players[i].gunFactory, 'gunCaliber':players[i].gunCaliber, 'optics':players[i].optics,'score':players[i].score,'tries':players[i].tries, 'sort_idx':sort_idx , 'shooterDivisionId': players[i].shooterDivisionId, "eventId": players[i].eventId ,'shooterId':players[i].shooterId
-        ,'gunRegNum': players[i].gunRegNum};
+        ,'gunRegNum': players[i].gunRegNum
+        ,'fromRangeId' :players[i].fromRangeId
+        ,'duelsCount':0};
     }
     rP.push(aRow);  
   }
@@ -587,6 +800,8 @@ const handler = async (event, context)=>{
             if(players.length>0){
 
               if(p_categ!==null){
+                
+                console.log('Before returning A');
 
                 return{
                   statusCode: 200
@@ -602,6 +817,7 @@ const handler = async (event, context)=>{
 
               } else{
 
+                console.log('Before returning B');
                 return{
                   statusCode: 200
                   ,body: JSON.stringify(players)
@@ -646,6 +862,7 @@ const handler = async (event, context)=>{
           }
         
           if(_ret!==null){
+            console.log('Before returning C');
             return{
               statusCode: 200
               ,body: JSON.stringify(_ret)
@@ -697,8 +914,8 @@ const handler = async (event, context)=>{
             console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
           if(p_kos_type.toString()===cAllToAll.toString()){
             ladyDoubleKOs= buildMatches_all_w_all(shootersAux, p_kos_type);
-          // }else if(p_kos_type.toString()===cSingleDuels.toString()){
-          //   ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
+          }else if(p_kos_type.toString()===cInterclubs.toString()){
+            ladyDoubleKOs= buildMatches_Interclubs(shootersAux, p_kos_type);
           }else
             ladyDoubleKOs= buildMatches(shootersAux, p_kos_type);
           
@@ -736,8 +953,8 @@ const handler = async (event, context)=>{
             console.log(`if(p_kos_type.toString()===cAllToAll.toString()){= if(${p_kos_type.toString()}===${cAllToAll.toString()}){`);
             if(p_kos_type.toString()===cAllToAll.toString()){
               seniorDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
-            //   seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cInterclubs.toString()){
+              seniorDoubleKOs= buildMatches_Interclubs(shootersAux,p_kos_type);
             }else{
               seniorDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }
@@ -776,8 +993,8 @@ const handler = async (event, context)=>{
 
             if(p_kos_type.toString()===cAllToAll.toString()){
               opticDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
-            //   opticDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cInterclubs.toString()){
+              opticDoubleKOs= buildMatches_Interclubs(shootersAux,p_kos_type);
             }else{
               opticDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }
@@ -815,8 +1032,8 @@ const handler = async (event, context)=>{
             
             if(p_kos_type.toString()===cAllToAll.toString()){
               overallDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
-            //   overallDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cInterclubs.toString()){
+              overallDoubleKOs= buildMatches_Interclubs(shootersAux,p_kos_type);
             }else{
               overallDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }
@@ -854,8 +1071,8 @@ const handler = async (event, context)=>{
 
             if(p_kos_type.toString()===cAllToAll.toString()){
               advancedDoubleKOs= buildMatches_all_w_all(shootersAux,p_kos_type);
-            // }else if(p_kos_type.toString()===cSingleDuels.toString()){
-            //   advancedDoubleKOs= buildMatches(shootersAux,p_kos_type);
+            }else if(p_kos_type.toString()===cInterclubs.toString()){
+              advancedDoubleKOs= buildMatches_Interclubs(shootersAux,p_kos_type);
             }else{
               advancedDoubleKOs= buildMatches(shootersAux,p_kos_type);
             }
@@ -875,6 +1092,7 @@ const handler = async (event, context)=>{
             ,{ upsert: true });
         }
 
+        console.log('Before returning D');
         return  {
           statusCode: 201,
           body: JSON.stringify(_ret)
@@ -927,6 +1145,8 @@ const handler = async (event, context)=>{
                                           ,divisionId: matchesBody.divisionId}
                                         ,{ $set: matchesBody}
                                           ,{ upsert: true });
+
+          console.log('Before returning E');
           return  { 
             statusCode: 201,  
             body: JSON.stringify(new_record)
@@ -1015,7 +1235,7 @@ const handler = async (event, context)=>{
             };
           }
 
-
+          console.log('Before returning F');
           return  { 
             statusCode: 201,  
             body: JSON.stringify(r_delete_shooter)
@@ -1029,6 +1249,7 @@ const handler = async (event, context)=>{
       }
 
       default:
+        console.log('Before returning G');
         return  {
           statusCode: 400,
           body: JSON.stringify({message: "Route not found"})

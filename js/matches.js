@@ -477,8 +477,15 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
     for(let round=0;round<mainMatches.length;round++){
         
+
+        let lTitle= 'Todos contra todos';
+
+        if(eventConfig.interclubs){
+            lTitle= 'Confrontos diretos interclubes'
+        }
+
         if(mainMatches.length===1){
-            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>Todos Contra Todos</b></div>`;
+            matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()"><b>${lTitle}</b></div>`;
         }else if(has4play>1 && round===0){
             matches+=`<div class="row no-gutters justify-content-md-center text-center" onclick="hideVrSpace()" ><b>Preliminares</b></div>`;
         }else if (mainMatches.length-round===1){
@@ -546,21 +553,22 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 roundNum=`<div class="col-md-1">${match+1}</div>`;
             }
 
+
             matches+= space[0]+`
         <div class="ps-8" ></div>
         <div class="dropdown">
             <div  class="${allToAllRow} nodisable" data-bs-toggle="dropdown" aria-expanded="false">
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" 
+                    <!--<li><a class="dropdown-item" 
                     onclick="compareShooters('${mainMatches[round][match].shooterA.shooterId}', '${mainMatches[round][match].shooterA.name}', '${mainMatches[round][match].shooterB.shooterId}', '${mainMatches[round][match].shooterB.name}', '')"
                     ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
         <path d="M8 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H5.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708zM10 8a.5.5 0 0 1 .5-.5h3.793l-1.147-1.146a.5.5 0 0 1 .708-.708l2 2a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708-.708L14.293 8.5H10.5A.5.5 0 0 1 10 8"/>
         </svg> ${mainMatches[round][match].shooterA.name.substring(0,mainMatches[round][match].shooterA.name.indexOf(" "))} vs ${mainMatches[round][match].shooterB.name.substring(0,mainMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
-                    
+                    -->
         <li><i class="bi bi-pencil-fill"></i> Alterar arma de:</li>
                 <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${mainMatches[round][match].shooterA.shooterDivisionId}|${mainMatches[round][match].shooterA.gunId}-${mainMatches[round][match].shooterA.gunRegNum?mainMatches[round][match].shooterA.gunRegNum:""}|${mainMatches[round][match].shooterA.shooterId}|${mainMatches[round][match].shooterA.name}|${mainMatches[round][match].shooterA.optics}|${mainMatches[round][match].shooterA.gun}|${mainMatches[round][match].shooterA.division_name}">
-                     - ${mainMatches[round][match].shooterA.name}</a></li> <!--onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')"-->
-                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${mainMatches[round][match].shooterB.shooterDivisionId}|${mainMatches[round][match].shooterB.gunId}-${mainMatches[round][match].shooterB.gunRegNum?mainMatches[round][match].shooterB.gunRegNum:""}|${mainMatches[round][match].shooterB.shooterId}|${mainMatches[round][match].shooterB.name}|${mainMatches[round][match].shooterB.optics}|${mainMatches[round][match].shooterB.gun}|${mainMatches[round][match].shooterB.division_name}"> -${mainMatches[round][match].shooterB.name}</a></li>
+                     &#8226; ${mainMatches[round][match].shooterA.name}</a></li> <!--onClick="goToSubscription('${mainMatches[round][match].shooterA.shooterId}')"-->
+                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdropShooterGun" data-bs-whatever="${mainMatches[round][match].shooterB.shooterDivisionId}|${mainMatches[round][match].shooterB.gunId}-${mainMatches[round][match].shooterB.gunRegNum?mainMatches[round][match].shooterB.gunRegNum:""}|${mainMatches[round][match].shooterB.shooterId}|${mainMatches[round][match].shooterB.name}|${mainMatches[round][match].shooterB.optics}|${mainMatches[round][match].shooterB.gun}|${mainMatches[round][match].shooterB.division_name}"> &#8226; ${mainMatches[round][match].shooterB.name}</a></li>
                 </ul>
                 ${roundNum}
                 <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
@@ -569,9 +577,21 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         <div class="col-md-4 small-avatar-pic" >
                                 <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </div>
-                        <div class="col-md-6 col-card-match text-truncate">
+                        <div class="col-md-8 col-card-match text-truncate">
                             <div class="card-header-2">
-                            <h10 class="card-title text-truncate"><b>  ${mainMatches[round][match].shooterA.name} </b></h10>
+                            <h10 class="card-title text-truncate"><b>
+                            `;
+                        
+            if(eventConfig.interclubs && mainMatches[round][match].shooterA.fromRangeId){
+                matches+= `<img 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][match].shooterA.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            `;
+                            
+            }
+            matches+= ` ${mainMatches[round][match].shooterA.name} </b></h10> 
+                    `;
+
+                    matches+= `
                             <p class="card-text" id="card-text-${mainMatches[round][match].id}-A">
                                 <span class="badge text-bg-secondary d-inline-block text-truncate">${mainMatches[round][match].shooterA.gun}
                                 ${_rd}</span></p>
@@ -621,12 +641,19 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         <img  ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.B" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
-                    <div class="col-md-6 col-card-match text-truncate">
+                    <div class="col-md-8 col-card-match text-truncate">
                         <div class="card-header-2" >
                             <h10 class="card-title text-truncate"><b> `;
                         
+            if(eventConfig.interclubs && mainMatches[round][iB].shooterB.fromRangeId){
+                matches+= `<img 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][iB].shooterB.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            `;
+                            
+            }
             matches+= ` ${mainMatches[round][iB].shooterB.name} `;
-            matches+=  `    </b></h10>
+            matches+=  `    </b></h10>`;
+            matches+= `
                             <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${mainMatches[round][iB].shooterB.gun}${_rd}</span> </p>
                         </div>
                     </div> `;
@@ -664,8 +691,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
     if(mainMatches.length===1){ //Todos contra todos. Exibe tabela de jogadores
 
         let dbPlayersCat=[];
-
+        
         for(let p=0;p<dbPlayers.length;p++){
+
+            if(eventConfig.interclubs && dbPlayers[p].category===cAdvance &&mainMatches[0][0].shooterA.category===cOverall ){
+                dbPlayers[p].category= cOverall;
+            }
 
             if(dbPlayers[p].category===mainMatches[0][0].shooterA.category){
                 dbPlayers[p].vics= 0;
@@ -728,15 +759,35 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
         dbPlayersCat.sort((a, b) => a.vics - b.vics || a.directM - b.directM || a.defs - b.defs || a.duels - b.duels);
 
-          
+         //-----------------clubes --------------------------------
+         if(eventConfig.interclubs){
+            
+            let mapClubsCat= new Map();
+
+            for(let p=0;p<dbPlayersCat.length;p++){
+                mapClubsCat.set(dbPlayersCat[p].fromRangeId,{fromRangeId:dbPlayersCat[p].fromRangeId, vics:0, duels:0, defs:0, duelsTotal:0, directM:0 });
+            }
+    
+            for(let p=0;p<dbPlayersCat.length;p++){
+                mapClubsCat.get(dbPlayersCat[p].fromRangeId).vics+= dbPlayersCat[p].vics;
+                mapClubsCat.get(dbPlayersCat[p].fromRangeId).duels+= dbPlayersCat[p].duels;
+                mapClubsCat.get(dbPlayersCat[p].fromRangeId).defs+= dbPlayersCat[p].defs;
+                mapClubsCat.get(dbPlayersCat[p].fromRangeId).duelsTotal+= dbPlayersCat[p].duelsTotal;
+                mapClubsCat.get(dbPlayersCat[p].fromRangeId).directM+= dbPlayersCat[p].directM;
+            }
+                
+            let clubRanking= Array.from(mapClubsCat.values());  
+            
+            clubRanking.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels);
+
+
+             matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Clubes</b></div>`;
         
-        matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Ranking</b></div><br><br><br>`;
-        
-        matches+= `<table class="table">
+            matches+= `<table class="table">
               <thead>
                 <tr>
-                  <th class="text-start">#</th>
-                  <th class="text-start w-40">Atirador</th>
+                  <th class="text-start w-5">#</th>
+                  <th class="text-start w-50">Clube</th>
                   <th class="text-end text-muted">Duelos</th>
                   <th class="text-end text-muted">Derrotas</th>
                   <th class="text-end">Vitórias</th>
@@ -745,14 +796,76 @@ function addMainMatches(mainMatches, recapMatches, categ){
               </thead>
               <tbody id="table-ranking">`;
              
-              let pos=0;
+              let posClub=0;
+              for(let i=0;i<clubRanking.length;i++){
+                matches+=`  <tr>
+                        <td class="text-start">${++posClub}º</td>
+                        <td class="text-start text-truncate">
+                        
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_44,w_44/ranges/${clubRanking[i].fromRangeId}" class="img-fluid rounded" alt="..."/>
+                        
+                        `;
+                        
+            matches+= `${clubRanking[i].fromRangeId}
+                        `;
+                    matches+=`
+                        </td>
+                        <td class="text-end text-muted"> ${clubRanking[i].duels}/${clubRanking[i].duelsTotal} </td>
+                        <td class="text-end text-muted"> ${clubRanking[i].defs} </td>
+                        <td class="text-end"> ${clubRanking[i].vics*-1}${clubRanking[i].directM!==0?'*':''} </td>
+                        <!--<td class="text-end"> ${clubRanking[i].directM*-1} </td>-->
+                    </tr>`;
+                // }
+            }
+              matches+=`</tbody>
+            </table><br>`;
+        document.getElementById(categ+'LevelL0').innerHTML= matches; 
+
+
+        }
+        //-------------------fim clubes --------------------------
+        
+        matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Atiradores</b></div>`;
+        
+        matches+= `<table class="table" id="shooterRankTable">
+              <thead>
+                <tr>
+                  <th class="text-start w-5">#</th>
+                  <th class="text-start w-50">Atirador</th>
+                  <th class="text-end text-muted">Duelos</th>
+                  <th class="text-end text-muted">Derrotas</th>
+                  <th class="text-end">Vitórias</th>
+                  <!--<th class="text-end text-muted">C. D.</th>-->
+                </tr>
+              </thead>
+              <tbody id="table-ranking">`;
+             
+            let pos=0;
               for(let i=0;i<dbPlayersCat.length;i++){
                 _rd= dbPlayersCat[i].optics?`<span class="text-danger"> ⦿</span>`:"";
                 // if(dbPlayersCat[i].category===mainMatches[0][0].shooterA.category){
                     matches+=`  <tr>
                         <td class="text-start">${++pos}º</td>
-                        <td class="text-start text-truncate">${dbPlayersCat[i].name}
+                        <td class="text-start text-truncate">
+                        <div class="row">
+                            <div class="col-2">
+                        <img  src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${dbPlayersCat[i].shooterId}.jpg?" class="img-fluid rounded-start small-avatar-pic" alt="...">
+                        </div>
+                        <div class="col-8">
+                        `;
+                        
+            if(eventConfig.interclubs && dbPlayersCat[i].fromRangeId){
+                matches+= `<img 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${dbPlayersCat[i].fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            <span class="d-none">CT ${dbPlayersCat[i].fromRangeId}.</span>
+                            `;
+                            
+            }
+            matches+= `${dbPlayersCat[i].name}
                             <p class="card-text"><span class="badge text-bg-secondary d-inline-block text-truncate">${dbPlayersCat[i].gun}${_rd}</span> </p>
+                            </div>
+                            </div>`;
+                    matches+=`
                         </td>
                         <td class="text-end text-muted"> ${dbPlayersCat[i].duels}/${dbPlayersCat[i].duelsTotal} </td>
                         <td class="text-end text-muted"> ${dbPlayersCat[i].defs} </td>
@@ -764,7 +877,14 @@ function addMainMatches(mainMatches, recapMatches, categ){
               matches+=`</tbody>
             </table>`;
         document.getElementById(categ+'LevelL0').innerHTML= matches;
-    }
+
+        _tb= new DataTable('#shooterRankTable', 
+            { paging: false
+            ,responsive: false
+            ,oLanguage: {sSearch: "Buscar:"}
+            });
+        _tb.draw(false);
+    } // fim if(mainMatches.length===1){ //Todos contra todos. Exibe tabela de jogadores
 
     // levelSpace.push(space);
     let ls=0;
@@ -815,7 +935,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+= `
             <div class="dropdown">
                 <div  class=" nodisable" data-bs-toggle="dropdown" aria-expanded="false">
-                    <ul class="dropdown-menu">
+                    <!--<ul class="dropdown-menu">
                         <li><a class="dropdown-item" 
                         onclick="compareShooters('${recapMatches[round][match].shooterA.shooterId}', '${recapMatches[round][match].shooterA.name}', '${recapMatches[round][match].shooterB.shooterId}', '${recapMatches[round][match].shooterB.name}', '')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-expand-vertical" viewBox="0 0 16 16">
@@ -823,9 +943,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         </svg> ${recapMatches[round][match].shooterA.name.substring(0,recapMatches[round][match].shooterA.name.indexOf(" "))} vs ${recapMatches[round][match].shooterB.name.substring(0,recapMatches[round][match].shooterB.name.indexOf(" "))}</a></li>
                         <li><a class="dropdown-item" onClick="goToSubscription('${recapMatches[round][match].shooterA.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${recapMatches[round][match].shooterA.name}</a></li>
                         <li><a class="dropdown-item" onClick="goToSubscription('${recapMatches[round][match].shooterB.shooterId}')" ><i class="bi bi-pencil-fill"></i> Editar ${recapMatches[round][match].shooterB.name}</a></li>
-                        <!--<li><a class="dropdown-item" onClick="goShot()" ><i class="bi bi-fire"></i> Atira</a></li>
-                        <li><a class="dropdown-item" onClick="goPrepare()" ><i class="bi bi-fast-forward-fill"></i></i> Prepara</a></li>-->
-                    </ul>
+                        
+                    </ul>-->
                     
             <div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.A" >
             
@@ -840,9 +959,17 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                         <img  ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
-                    <div class="col-md-6 col-card-match text-truncate">
+                    <div class="col-md-8 col-card-match text-truncate">
                         <div class="card-header-2" >
-                            <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterA.name}</b></h10>
+                            <h10 class="card-title text-truncate"><b>
+                            `;
+            if(eventConfig.interclubs && recapMatches[round][match].shooterA.fromRangeId){
+                matches+= `<img 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterA.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            `;
+                            
+            }
+            matches+= `${recapMatches[round][match].shooterA.name}</b></h10>
                             <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterA.gun} ${_rdA}</span></p>
                         </div>
                     </div>
@@ -868,9 +995,15 @@ function addMainMatches(mainMatches, recapMatches, categ){
                     <div class="col-md-4 small-avatar-pic" >
                         <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
-                    <div class="col-md-6 col-card-match text-truncate">
+                    <div class="col-md-8 col-card-match text-truncate">
                         <div class="card-header-2" >
-                            <h10 class="card-title text-truncate"><b>${recapMatches[round][match].shooterB.name}</b></h10>
+                            <h10 class="card-title text-truncate"><b>`;
+            if(eventConfig.interclubs && recapMatches[round][match].shooterB.fromRangeId){
+                matches+= `<img 
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterB.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            `;     
+            }
+            matches+= `${recapMatches[round][match].shooterB.name}</b></h10>
                             <p class="card-text"><span class="badge text-bg-secondary  d-inline-block text-truncate">${recapMatches[round][match].shooterB.gun} ${_rdB}</span></p>
                         </div>
                     </div>
@@ -963,6 +1096,8 @@ function generateKos(){
         kos_type= 2;
     }else if(document.getElementById('radioSingleEliminiation').checked){
         kos_type= 1;
+    }else if(document.getElementById('radioAllToAllInterclubs').checked){
+        kos_type= 3;
     }
     
     fetch(`/.netlify/functions/build_matches?eventId=${eventConfig._id}&divisionId=${selectDivisions}&category=${categ}&kos_type=${kos_type}`, {
@@ -1185,6 +1320,15 @@ function getDuels(selectDivision){
                                 Todos contra todos:<li> ${qtdDuesAllbyAll} duelos.</li><p></p>
                             </label>
                             </div>`;
+                            if(eventConfig.interclubs){
+                                document.getElementById('duel-gen-body').innerHTML+= `<div class="form-check">
+                            <input class="form-check-input nodisable" type="radio" name="flexRadioKosType" id="radioAllToAllInterclubs" valeu=3 >
+                            <label class="form-check-label" for="radioAllToAllInterclubs">
+                                Confrontos diretos interclubes:<li> </li><p></p>
+                            </label>
+                            </div>`;
+                            }
+
                     }else{
                         document.getElementById('duel-gen-body').innerHTML=
                             `<h6>Aguarde o Supervisor de prova gerar os duelos...</h6>`;

@@ -1528,7 +1528,8 @@ db.ranges.insertMany(clubs);
 db.ranges.insertOne({ name: 'Opsrange',address: 'Av. Pedro Bueno, 690 - Aeroporto Congonhas',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com','rmanso@outlook.com'], active:true});
 
 db.ranges.insertOne({ name: 'CT 3 Porcento',address: 'R. Prof. João Machado, 84 - Nossa Sra. do O',city: 'São Paulo',state: 'SP', adm: ['pris.rocha@gmail.com','rmanso@outlook.com', 'gcfragnator@gmail.com'], active:true});
-clubedetiro3porcento
+
+db.ranges.insertOne({ name: 'Anvil',address: 'Rod. Lix da Cunha, s/n - Km 8 - Três Vendas',city: ', Campinas',state: 'SP', adm: ['jpozeli2@gmail.com','robersontome@hotmail.com', 'pris.rocha@gmail.com'], active:true});
 
 db.events.aggregate([
     {$group:{_id:{local:'$local', address:'$address', city:'$city', state:'$state'} }}
@@ -3415,3 +3416,8 @@ db.shooters.aggregate([
     }
     ,{$match:{"_shooterId": "66ee2e865bd600de9529449f"}}
   ]);
+
+
+  db.shooters_divisions.updateMany({eventId: '672bec6278205f99b9daf833', divisionId:'0000000078205f99b9daf834', fromRangeId:'CT Uberlan'}, 
+    {$set:{fromRangeId:'Anvil'}}
+  )
