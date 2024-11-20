@@ -694,7 +694,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
         
         for(let p=0;p<dbPlayers.length;p++){
 
-            if(eventConfig.interclubs && dbPlayers[p].category===cAdvance &&mainMatches[0][0].shooterA.category===cOverall ){
+            if(eventConfig.interclubs && dbPlayers[p].category===cAdvance ){ //&&mainMatches[0][0].shooterA.category===cOverall 
                 dbPlayers[p].category= cOverall;
             }
 
