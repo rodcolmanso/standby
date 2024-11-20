@@ -735,7 +735,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }     
 
         }
-        dbPlayersCat.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels);
+        dbPlayersCat.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+          });
+        dbPlayersCat.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels|| a.name - b.name);
         
         for(let i=0; i<dbPlayersCat.length-1;i++){
             for(let j=0; j< mainMatches[0].length; j++){
@@ -756,8 +761,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
             
         }
-
-        dbPlayersCat.sort((a, b) => a.vics - b.vics || a.directM - b.directM || a.defs - b.defs || a.duels - b.duels);
+        dbPlayersCat.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+          });
+        dbPlayersCat.sort((a, b) => a.vics - b.vics || a.directM - b.directM || a.defs - b.defs || a.duels - b.duels|| a.name - b.name);
 
          //-----------------clubes --------------------------------
          if(eventConfig.interclubs){
@@ -777,8 +786,12 @@ function addMainMatches(mainMatches, recapMatches, categ){
             }
                 
             let clubRanking= Array.from(mapClubsCat.values());  
-            
-            clubRanking.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels);
+            clubRanking.sort((a, b) => {
+                if (a.fromRangeId < b.fromRangeId) {
+                  return -1;
+                }
+              });
+            clubRanking.sort((a, b) => a.vics - b.vics || a.defs - b.defs || a.duels - b.duels|| a.name - b.name);
 
 
              matches+=`<div class="row no-gutters justify-content-md-center text-center"><b>Clubes</b></div>`;
