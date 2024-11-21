@@ -220,17 +220,27 @@ table {
 }
 
 .col-card-match{
-  max-width: 180px !important;
-  padding-left: 1px;
-  padding-right: 1px;
+  max-width: 150px !important;
+  padding-left: 1px !important;
+  padding-right: 1px !important;
 }
 
+.col-pz{
+  padding: 0px !important;
+  max-width: 220px !important;
+}
+
+/* .form-check{
+  padding-left: 1px;
+} */
+
 .col-card-check{
-  width:45px !important; 
+  width:33px !important; 
 }
 
 .col-card-check-B{
-  width:45px !important; 
+  width:33px !important;
+  padding: 0px !important;
 }
 
 .col-matches{
@@ -337,7 +347,7 @@ table {
 
 .card-header-2 {
   margin-top: 0px !important;
-  margin-left: 2px !important;
+  margin-left: 0px !important;
   /* position: 0; */
   /* top: 0; */
   /* left: 0; */

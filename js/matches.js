@@ -549,8 +549,8 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
             if(mainMatches.length===1){
                 allToAllRow='row';
-                allToAllCol='col';
-                roundNum=`<div class="col-md-1">${match+1}</div>`;
+                allToAllCol='col col-pz';
+                roundNum=`<div class="col-md-2">${match+1}</div>`;
             }
 
 
@@ -572,9 +572,9 @@ function addMainMatches(mainMatches, recapMatches, categ){
                 </ul>
                 ${roundNum}
                 <div class="${allToAllCol} card mb-3 card-block ${droppable}" id="div-${categ}-${mainMatches[round][match].id}.A">
-                    <div class="row align-items-center" style="padding-left:3px; ">
+                    <div class="row align-items-center" >
                     <hr class="hiVRde" style="width:8px; padding-left:0px; padding-right:0px; height:0px; margin-bottom:3px; ">
-                        <div class="col-md-4 small-avatar-pic" >
+                        <div class="col-md-2 small-avatar-pic" >
                                 <img ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.A" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterA.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                         </div>
                         <div class="col-md-8 col-card-match text-truncate">
@@ -597,7 +597,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                                 ${_rd}</span></p>
                             </div>
                         </div>
-                        <div class="row align-items-center col-card-check-B">
+                        <div class="col-md-2 align-items-center col-card-check-B">
                             <div class="form-check">
                             <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${mainMatches[round][match].id}" value="${mainMatches[round][match].shooterA.id}"    onClick="javascript:updateMatch('${mainMatches[round][match].id}', this.value,  '${categ}')" >
                             </div>
@@ -627,7 +627,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
                     matches+=  `
                     <!-----radioooooo---------->
-                    <div class="row align-items-center col-card-check-B">
+                    <div class="col-md-2 align-items-center col-card-check-B">
                         <div class="form-check">
                             <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[round][iB].id}" value="${mainMatches[round][iB].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[round][iB].id}', this.value, '${categ}')" >
                         </div>
@@ -637,7 +637,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
                 matches+= `
                     
-                    <div class="col-md-4 small-avatar-pic" >
+                    <div class="col-md-2 small-avatar-pic" >
                         <img  ${droppable}" id="img-${categ}-${mainMatches[round][match].id}.B" style="height:50px" 
                             src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${mainMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
@@ -662,7 +662,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
 
                 matches+=  `
                 <!-----radioooooo---------->
-                <div class="row align-items-center col-card-check-B">
+                <div class="col-md-2 align-items-center col-card-check-B">
                     <div class="form-check">
                         <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${mainMatches[round][iB].id}" value="${mainMatches[round][iB].shooterB.id}"  onClick="javascript:updateMatch('${mainMatches[round][iB].id}', this.value, '${categ}')" >
                     </div>
@@ -963,7 +963,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
             
                 <div class="row " >
                     
-                    <div class="row align-items-center col-card-check-B">
+                    <div class="col-md-2 align-items-center col-card-check-B">
                         <div class="form-check">
                         <input class="form-check-input big-checkbox" type="radio" ${checkedA} name="${categ}flexRadioMatch${recapMatches[round][match].id}" value="${recapMatches[round][match].shooterA.id}"  onClick="javascript:updateMatch('${recapMatches[round][match].id}', this.value, '${categ}')" >
                         </div>
@@ -999,13 +999,13 @@ function addMainMatches(mainMatches, recapMatches, categ){
             matches+= `<div class="card mb-3 card-block ${droppable}" id="div-${categ}-${recapMatches[round][match].id}.B">
                 <div class="row" >
 
-                    <div class="row align-items-center col-card-check-B">
+                    <div class="col-md-2 align-items-center col-card-check-B">
                         <div class="form-check">
                         <input class="form-check-input big-checkbox" type="radio" ${checkedB} name="${categ}flexRadioMatch${recapMatches[round][match].id}" value="${recapMatches[round][match].shooterB.id}"  onClick="javascript:updateMatch('${recapMatches[round][match].id}', this.value, '${categ}')" >
                         </div>
                     </div>
 
-                    <div class="col-md-4 small-avatar-pic" >
+                    <div class="col-md-2 small-avatar-pic" >
                         <img ${droppable}" id="img-${categ}-${recapMatches[round][match].id}.B" style="height:50px" src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/d_defaults:generic_avatar.jpg/profile/${recapMatches[round][match].shooterB.shooterId}.jpg?${getCodeImg()}" class="img-fluid rounded-start small-avatar-pic" alt="...">
                     </div>
                     <div class="col-md-8 col-card-match text-truncate">
@@ -1109,7 +1109,7 @@ function generateKos(){
         kos_type= 2;
     }else if(document.getElementById('radioSingleEliminiation').checked){
         kos_type= 1;
-    }else if(document.getElementById('radioAllToAllInterclubs').checked){
+    }else if(document.getElementById('radioAllToAllInterclubs')&& document.getElementById('radioAllToAllInterclubs').checked){
         kos_type= 3;
     }
     
