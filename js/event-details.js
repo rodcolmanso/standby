@@ -163,20 +163,19 @@ $('#subscriptionsModal').on('show.bs.collapse', function () {
         populateSubscriptionModalTable(eventConfig, allShootersDivisions, document.getElementById(MODAL_TABLE_ALL_SUBS_ID));
         // promiseOfGetGunList("");
     }
-});
 
+});
 
  document.getElementById('subscribe-docnum').addEventListener('input', function(e) {
     var value = e.target.value;
     // var cpfPattern = formatCpf(value,true);
-    var cpfPattern = value; 
+    var cpfPattern = value;
     if(cpfPattern.length>10)
         cpfPattern= cpfPattern.substring(0,11);
     e.target.value = cpfPattern;
     });
 
 subscribeModal.addEventListener('shown.bs.modal', () => {
-
     
     if(!params.inscription){
         urlSearchParams.set("inscription", "0");
@@ -254,6 +253,7 @@ subscribeModal.addEventListener('shown.bs.modal', () => {
 
 });
 
+let ranges= [];
 const qrcode = new QRCode("qrcode");
 const qrcode2 = new QRCode("qrcode2");
 window.onload = async () => {
@@ -271,6 +271,9 @@ window.onload = async () => {
     clearSessionEventConfig();
     await loadPage();
     loadPageEvent(tab_info);
+
+    if(eventConfig.interclubs)
+        ranges = await promiseOfRanges(eventConfig.rangeId?eventConfig.rangeId:null,loggedUser);
 
     // if(params.inscription!==undefined && params.inscription==="clock"){
     if(params.inscription!==undefined ){
@@ -837,11 +840,13 @@ function populateSubscriptionModalTable(eventConfig, shooterDivisions, tb){
                 <p><select id="fromRangeId-${shooterDivisions[l].shooters_divisions[i]._id}${_subs}" class="d-none ${showClub} form-select form-select-sm ${nodisableClass} aria-label="Informe clube"
                 value="${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}" onChange="changeSub('${shooterDivisions[l].shooters_divisions[i]._id}', ${l}, ${i}, this,'${_subs}')">
                     <option value="${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}">${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}</option>
-                    <option value="Typhoon">Typhoon</option>
-                    <option value="Anvil">Anvil</option>
-                    <option value="Ops">Ops</option>
-                    <option value="Opsrange">Opsrange</option>
-                </select> <span class="d-none">CT ${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}.</span></p>
+                    <option value=""></option>`;
+                    
+                    for(let r=0;r<ranges.length;r++){
+                        row+= `<option value="${ranges[r].name}">${ranges[r].name}</option> `;
+                    }
+                    
+                    row+= ` </select> <span class="d-none">CT ${shooterDivisions[l].shooters_divisions[i].fromRangeId?shooterDivisions[l].shooters_divisions[i].fromRangeId:''}.</span></p>
                 </td>`
             }
 
@@ -1096,7 +1101,7 @@ function buildEventDetailsPage(eventConfig){
     document.getElementById('masthead-event-name').innerHTML= eventConfig.name +` - <span class="text-small"><i class="fa-regular fa-calendar"></i>&nbsp;${(new Date(eventConfig.date)).toLocaleDateString().substring(0,5)}</span>`;
     document.getElementById('event-name-subs').innerHTML= eventConfig.name;
     
-    document.getElementById('event-img-body').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_400/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?";//+uuidv4();
+    document.getElementById('event-img-body').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_400/d_ranges:'+eventConfig.range[0].name+'_logo.png/'+eventConfig._id+".png?"+uuidv4();
 
     document.getElementById('event-notes').innerText= eventConfig.note;
 

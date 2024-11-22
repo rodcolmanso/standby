@@ -240,25 +240,51 @@
       
       <div class="mb-3 col-md-3 ">
         <div class="input-group">
-        <div class="form-floating">
-          <div class="form-check form-switch">
-            <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
-            <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
+          <div class="form-floating">
+            <div class="form-check form-switch">
+              <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-clock" checked onchange="checkClock(this);">
+              <label class="form-check-label" for="check-clock"><small class="text-muted">Relógio</small></label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
+              <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
+            </div>
           </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input nodisable" type="checkbox" role="switch" id="check-duel" style="background-color: goldenrod;" checked onchange="checkDuel(this);" > 
-            <label class="form-check-label" for="check-duel"><small class="text-muted">Duelo</small></label>
+
+          <div class="form-floating">
+            <div class="form-check">
+              <input class="form-check-input nodisable" type="checkbox" value="" id="event-public" checked>
+              <label class="form-check-label" for="event-public">
+                Public
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input nodisable" type="checkbox" value="" id="event-interclubs">
+              <label class="form-check-label" for="event-interclubs">
+                <span class="text-muted">Interclubes</span>
+              </label>
+            </div>
           </div>
+        
+          <!--
+          <div class="form-floating">
+            <div class="form-check">
+              <input class="form-check-input  nodisable" type="checkbox" id="event-public" checked>
+              <label class="form-check-label" for="event-public">
+                Público
+              </label>
+            </div>
+          </div>
+          <div class="form-floating">
+            <div class="form-check">
+              <input class="form-check-input  nodisable" type="checkbox" id="event-interclubs" checked>
+              <label class="form-check-label" for="event-interclubs">
+                Interclubes
+              </label>
+            </div>
+          </div>-->
+
         </div>
-        <div class="form-floating">
-          <div class="form-check">
-            <input class="form-check-input  nodisable" type="checkbox" id="event-public" checked>
-            <label class="form-check-label" for="event-public">
-              Público
-            </label>
-          </div>
-        </div>
-      </div>
       </div>
       
       <div  class="form-floating mb-3 col-md-4 d-flex justify-content-center">

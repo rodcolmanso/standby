@@ -28,24 +28,24 @@ netlifyIdentity.on('close', () => {
     search();
 });
 
-const promiseOfRanges = (_rangeId, _identityUser)=>{
-    _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
+// const promiseOfRanges = (_rangeId, _identityUser)=>{
+//     _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
         
-    let _headers;
-    if(_identityUser!==null){
-        _headers= {"Content-type": "application/json; charset=UTF-8"
-                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
-    }else{
-        _headers= {"Content-type": "application/json; charset=UTF-8"}
-    }
-    return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
-        method: "GET",
-        // body: JSON.stringify(eventConfig),
-        headers: _headers}).then(r=>r.json())
-        .then(data => {
-                return data
-        })
-};
+//     let _headers;
+//     if(_identityUser!==null){
+//         _headers= {"Content-type": "application/json; charset=UTF-8"
+//                 ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
+//     }else{
+//         _headers= {"Content-type": "application/json; charset=UTF-8"}
+//     }
+//     return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
+//         method: "GET",
+//         // body: JSON.stringify(eventConfig),
+//         headers: _headers}).then(r=>r.json())
+//         .then(data => {
+//                 return data
+//         })
+// };
 
 window.onload = async () => {
 
@@ -267,7 +267,7 @@ function buildEventsTable(events){
         <div class="card h-100" >
             <div class="dropup-center dropup">
             <a href="./event-details.html?event_id=${events[i]._id}" >  <!-- data-toggle="modal" data-target="#exampleModal" data-bs-toggle="dropdown" -->
-            <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_pad,h_388,w_517/d_defaults:tmpyellow.jpg/${events[i]._id}.jpg?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"></a>
+                <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_pad,h_388,w_517/d_ranges:${events[i].range[0].name}_logo.webp/${events[i]._id}.webp?${uuidv4()}" class="card-img-top" alt="..." onerror="this.onerror=null;this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_fill,g_auto,h_210,w_280/defaults/tmpyellow'"/>
             </a>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="./event-details.html?event_id=${events[i]._id}"><i class="bi bi-ticket-detailed-fill"></i> Detalhe</a></li>

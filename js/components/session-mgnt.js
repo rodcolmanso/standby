@@ -1076,7 +1076,9 @@ async function loadPageEvent(tab){
         }
     }
 
-    document.getElementById('imgHeaderEvent').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_75/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?";
+    // document.getElementById('imgHeaderEvent').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_75/d_defaults:tmpyellow.jpg/'+eventConfig._id;
+    document.getElementById('imgHeaderEvent').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_75/d_defaults:tmpyellow.jpg/ranges/'+eventConfig.range[0].name+'_logo';
+    // document.getElementById('imgHeaderEvent').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,h_75/d_ranges:'+eventConfig.range[0].name+'_logo/'+eventConfig._id;
     eventTitles= document.getElementsByName('eventTitle');
     for(let i=0;i< eventTitles.length;i++){
         eventTitles[i].innerHTML=eventConfig.name;
@@ -1413,3 +1415,22 @@ function disableShooterFields(updater){
     });
 
 }
+
+const promiseOfRanges = (_rangeId, _identityUser)=>{
+    _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
+        
+    let _headers;
+    if(_identityUser!==null){
+        _headers= {"Content-type": "application/json; charset=UTF-8"
+                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
+    }else{
+        _headers= {"Content-type": "application/json; charset=UTF-8"}
+    }
+    return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
+        method: "GET",
+        // body: JSON.stringify(eventConfig),
+        headers: _headers}).then(r=>r.json())
+        .then(data => {
+                return data
+        })
+};

@@ -584,7 +584,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         
             if(eventConfig.interclubs && mainMatches[round][match].shooterA.fromRangeId){
                 matches+= `<img 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][match].shooterA.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][match].shooterA.fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                             `;
                             
             }
@@ -647,7 +647,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         
             if(eventConfig.interclubs && mainMatches[round][iB].shooterB.fromRangeId){
                 matches+= `<img 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][iB].shooterB.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${mainMatches[round][iB].shooterB.fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                             `;
                             
             }
@@ -815,7 +815,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         <td class="text-start">${++posClub}º</td>
                         <td class="text-start text-truncate">
                         
-                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_44,w_44/ranges/${clubRanking[i].fromRangeId}" class="img-fluid rounded" alt="..."/>
+                        <img src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_44,w_44/ranges/${clubRanking[i].fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                         
                         `;
                         
@@ -869,7 +869,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                         
             if(eventConfig.interclubs && dbPlayersCat[i].fromRangeId){
                 matches+= `<img 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${dbPlayersCat[i].fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${dbPlayersCat[i].fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                             <span class="d-none">CT ${dbPlayersCat[i].fromRangeId}.</span>
                             `;
                             
@@ -978,7 +978,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                             `;
             if(eventConfig.interclubs && recapMatches[round][match].shooterA.fromRangeId){
                 matches+= `<img 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterA.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterA.fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                             `;
                             
             }
@@ -1013,7 +1013,7 @@ function addMainMatches(mainMatches, recapMatches, categ){
                             <h10 class="card-title text-truncate"><b>`;
             if(eventConfig.interclubs && recapMatches[round][match].shooterB.fromRangeId){
                 matches+= `<img 
-                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterB.fromRangeId}" class="img-fluid rounded" alt="..."/>
+                            src="https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,c_fit,h_30,w_30/ranges/${recapMatches[round][match].shooterB.fromRangeId}_logo" class="img-fluid rounded" alt="..."/>
                             `;     
             }
             matches+= `${recapMatches[round][match].shooterB.name}</b></h10>
@@ -1252,6 +1252,21 @@ function changeDivision(selectDivision){
     window.location.href = window.location="/matches.html?event_id="+eventConfig._id+"&selected_division="+document.getElementById('selectDivision').value+"&category="+getActiveCatNum();
 }
 
+const splitInterClubs = (shooters)=>{
+
+    const splitedShooters = new Map();
+  
+    for(let i=0;i<shooters.length;i++){
+      splitedShooters.set(shooters[i].fromRangeId,[]);
+    }
+  
+    for(let i=0;i<shooters.length;i++){
+      splitedShooters.get(shooters[i].fromRangeId).push(shooters[i]);
+    }
+    return splitedShooters;
+  }
+  
+
 function getDuels(selectDivision){    
     applySpinners(true);
     const idDivision= selectDivision.value;
@@ -1270,6 +1285,8 @@ function getDuels(selectDivision){
                     if(isAdmin){
 
                         let qtdShooters=0;
+                        let qtdMaxShootersPerClub=0;
+                        let qtdClub=0;
                         
                         let dbPlayersCat=[];
                         for(let i=0;i<dbPlayers.length;i++){
@@ -1278,8 +1295,24 @@ function getDuels(selectDivision){
                             }
                         }
 
-
                         qtdShooters= dbPlayersCat.length;
+
+                        let qtdDuesInterclubs=0;
+
+                        if(eventConfig.interclubs){
+                            const splitedShooters = splitInterClubs(dbPlayersCat);
+                            splitedShooters.forEach((value, key, map)=> {
+                                qtdMaxShootersPerClub= qtdMaxShootersPerClub>value.length?qtdMaxShootersPerClub:value.length;
+                                qtdClub++;
+                            });
+
+                            let multiplicador=0;
+                            for(let i=qtdClub-1;i>0;i--){
+                                multiplicador+= i;
+                            }
+                            qtdDuesInterclubs= qtdMaxShootersPerClub*multiplicador;
+
+                        }
 
                         dbPlayersCat= dbPlayersCat.sort((a, b) => {
                             if (a.shooterId < b.shooterId) {
@@ -1337,7 +1370,7 @@ function getDuels(selectDivision){
                                 document.getElementById('duel-gen-body').innerHTML+= `<div class="form-check">
                             <input class="form-check-input nodisable" type="radio" name="flexRadioKosType" id="radioAllToAllInterclubs" valeu=3 >
                             <label class="form-check-label" for="radioAllToAllInterclubs">
-                                Confrontos diretos interclubes:<li> </li><p></p>
+                                Confrontos diretos interclubes:<li>  ${qtdDuesInterclubs} duelos</li><p></p>
                             </label>
                             </div>`;
                             }

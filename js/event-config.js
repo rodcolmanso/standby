@@ -16,24 +16,6 @@ function hrefMatches(){
     if(eventConfig._id!=0)
         window.location.href = window.location="/matches.html?event_id="+eventConfig._id;
 }
-const promiseOfRanges = (_rangeId, _identityUser)=>{
-    _rangeId= _rangeId!==null?'&rangeId='+_rangeId:"";
-        
-    let _headers;
-    if(_identityUser!==null){
-        _headers= {"Content-type": "application/json; charset=UTF-8"
-                ,"Authorization":`Bearer ${_identityUser.token.access_token}`}
-    }else{
-        _headers= {"Content-type": "application/json; charset=UTF-8"}
-    }
-    return fetch("/.netlify/functions/range?updater=1"+_rangeId, {
-        method: "GET",
-        // body: JSON.stringify(eventConfig),
-        headers: _headers}).then(r=>r.json())
-        .then(data => {
-                return data
-        })
-};
 
 document.getElementById("event-local").addEventListener('change', function (ev) {
     
@@ -55,6 +37,13 @@ document.getElementById("event-local").addEventListener('change', function (ev) 
         }
     }
 
+    if(ev.target.value!==''&& (!eventConfig || !eventConfig._id || eventConfig._id==='')){
+        let genRangeLogo= ''+ev.target.selectedOptions[0].innerText;//.normalize('NFD'); //.replace(/[\u0300-\u036f]/g, "");
+        document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_377/d_defaults:tmpyellow/ranges/'+genRangeLogo+"_logo";
+        // eventConfig.imgChanged=true;
+        // eventConfig.img= document.getElementById('selectedImage').src;
+    }
+
   });
 
 async function loadPage(eId){
@@ -70,7 +59,7 @@ async function loadPage(eId){
 
     if(eventConfig==null){ // New event
         eventConfig= {"_id":"","name":"","date":new Date().toISOString() ,"dateDuel":new Date().toISOString(), "rangeId":null
-        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked" , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0, "vl_per_gun":false};
+        ,"img":"","local":"","note":"","address":"","city":"", "state":"","public":"checked", "interclubs":false , "divisions":[], "clock":true ,"duel": true, "imgChanged": false, "randomDuel":true, "vl_first_try":0, "vl_second_try":0, "vl_other_tries":0, "vl_per_gun":false};
     }
 
     ranges = await promiseOfRanges(eventConfig.rangeId?eventConfig.rangeId:null,loggedUser);
@@ -127,9 +116,12 @@ async function loadPage(eId){
     // document.getElementById('event-local').value= eventConfig.local;
     document.getElementById('event-local').value= eventConfig.rangeId;
     
-    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_377/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
+    // document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_377/d_defaults:tmpyellow.jpg/'+eventConfig._id+".jpg?"+uuidv4();
+    document.getElementById('selectedImage').src= 'https://res.cloudinary.com/duk7tmek7/image/upload/c_limit,w_377/d_ranges:'+eventConfig.range[0].name+'_logo.png/'+eventConfig._id+".png?"+uuidv4();
+
     
     document.getElementById('event-public').checked= eventConfig.public;
+    document.getElementById('event-interclubs').checked= eventConfig.interclubs;
 
     document.getElementById('event-note').value= eventConfig.note;
 
@@ -392,6 +384,7 @@ function updateEventConfig(){
     eventConfig.city= document.getElementById('event-city').value;
     eventConfig.state= document.getElementById('event-state').value;
     eventConfig.public= document.getElementById('event-public').checked;
+    eventConfig.interclubs= document.getElementById('event-interclubs').checked;
     eventConfig.randomDuel= document.getElementById('event-random-duel1').checked;
 
     eventConfig.vl_first_try= document.getElementById('vl_first_try').value;
