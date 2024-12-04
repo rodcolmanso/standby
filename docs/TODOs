@@ -14,8 +14,9 @@ Melhorar a experiencia de cadastro e login
     
 Admin
     [ ] Cadastro de Clubes
-    [ ] Cadastro de Armas
+    [x] Cadastro de Armas(Acervo)
     [ ] Cadastro de Supers
+
 
 
 Ranking
@@ -35,6 +36,9 @@ Supers
 
 Home/Inicio
     [ ] Tela Home/Inicio
+
+Interclubs
+    [ ] Permisão para editar clube aos adms de evento
 
 Regulamentos
     [ ] Tela Regulamentos

@@ -993,9 +993,14 @@ async function loadPageProfile(tab){
     removeClass(document.getElementById("nav-link_3"), "active");
     removeClass(document.getElementById("nav-link_3"), "active_sub");
 
+    removeClass(document.getElementById("nav-item_tab_"+tab), "hixdeAll");
+    removeClass(document.getElementById("nav-item_tab_"+tab), "d-none");
+
     addClass(document.getElementById("nav-item_tab_"+tab), "border-secondary");
     addClass(document.getElementById("nav-link_"+tab), "active");
     addClass(document.getElementById("nav-link_"+tab), "active_sub")
+
+    
 
     if(!params.id){
         urlSearchParams.set("id", shooterData._id);
