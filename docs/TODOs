@@ -43,8 +43,20 @@ Interclubs
 Regulamentos
     [ ] Tela Regulamentos
   
+Filiação
+    [ ] Excluir pagamento
+    [ ] Exibir pagamento
+    [ ] Gerar BR Code
+    [ ] Gerar BR Code Copia e cola
+    [ ] Criar API de webhook
+        [ ] Registrar webhook via postman
+        [ ] criar function de callback com a URL do do webhook
+        [ ] testar pagamento
+        [ ] Da para colocar certificado digital no Netlify?
 
-  
+Contra o relógio
+    [ ] Refres a cada 20s sem topar a pagina
+    
 - Carrocel em lista de eventos
     - Pesquisa por clube ou cidade
      ou estado

@@ -3421,3 +3421,69 @@ db.shooters.aggregate([
   db.shooters_divisions.updateMany({eventId: '672bec6278205f99b9daf833', divisionId:'0000000078205f99b9daf834', fromRangeId:'CT Uberlan'}, 
     {$set:{fromRangeId:'Anvil'}}
   )
+
+
+  '661be2184277ae7378717fe3'
+
+  db.membership_payments.insertOne(
+    { shooterId: '669eb0bd1e6f6b481b2929f6'
+     ,rangeId: null
+     ,referringTo: 'membership'
+     ,termIni: new Date('2025-01-01')
+     ,termEnd: new Date('2025-12-31')
+     ,issueDate: new Date('2024-06-10')
+     ,paymentDate: new Date('2024-06-11')
+     ,dueDate: new Date('2024-06-10')
+     ,bankTxId:''
+     ,value: 200
+     ,status: 0  });
+
+
+
+db.shooters.aggregate([
+          { $addFields: {"_shooterId": { "$toString": "$_id" }}}
+          ,{$lookup:{
+              from: "membership_payments"
+              ,localField: "_shooterId"
+              ,foreignField: "shooterId"
+              ,as: "payments"
+              ,pipeline:[
+                  { $sort : { termIni : 1 }}
+                ]
+              }
+          }
+
+          ,{$lookup:{
+            from: "time_records"
+            ,localField: "_shooterId"
+            ,foreignField: "shooterId"
+            ,as: "time_records"
+            ,pipeline:[
+              {$addFields: {
+                    "truncDate": { "$dateToString": { "format": "%Y-%m-%d", "date": "$datetime" } }
+                }
+              },
+            { $match:{$expr:{$gt:[
+                                  "$datetime",
+                                   {
+                                      $dateSubtract:
+                                         {
+                                            startDate: "$$NOW",
+                                            unit: "month",
+                                            amount: 12
+                                         }
+                                   }
+                               ]}}
+                },
+                {$group: {
+                    _id: {truncDate:"$truncDate", shooterDivisionId: "$shooterDivisionId"}
+                    ,y: {$first:"$datetime"}
+                }
+              },
+                { $sort : { y : 1 }}
+              ]
+            }
+        }
+
+          ,{$match:{_shooterId:'661be2184277ae7378717fe3'}}
+        ]).toArray();

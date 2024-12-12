@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+
+  <script src="assets/js/color-modes.js"></script>
+  <script src="js/components/header.js" type="text/javascript" defer></script>
+  <script src="js/components/header-profile.js" type="text/javascript" defer></script>
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Rodman">
+  <meta name="generator" content="Pris">
+  <title>T.P.M.</title>
+  <link rel="icon" href="/assets/brand/tpm-navbar-logo2.png" type="mage/x-icon">
+  <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
+  <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    .text-bg-purple{
+      /* background-color :purple !important; */
+      background-color: rgba(84, 33, 187, 0.5) !important;
+      /* color: yellow; */
+    } 
+
+    .profile-avatar{
+      height:60px !important;
+      max-width: 60px !important;
+      /* margin-bottom: 1px !important; */
+      z-index: 10;
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+
+    /* @media screen and (min-width: 768px) {
+    body { padding-top: 100px; }
+} */
+
+    .b-example-divider {
+      width: 100%;
+      height: 3rem;
+      background-color: rgba(0, 0, 0, .1);
+      border: solid rgba(0, 0, 0, .15);
+      border-width: 1px 0;
+      box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+    }
+
+    .b-example-vr {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 100vh;
+    }
+
+    .bi {
+      vertical-align: -.125em;
+      fill: currentColor;
+    }
+
+    .nav-scroller {
+      position: relative;
+      z-index: 2;
+      height: 2.75rem;
+      overflow-y: hidden;
+    }
+
+    .nav-scroller .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding-bottom: 1rem;
+      margin-top: -1px;
+      overflow-x: auto;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .btn-bd-purpe {
+      --bd-violet-bg: #712cf9;
+      --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+      --bs-btn-font-weight: 600;
+      --bs-btn-color: var(--bs-white);
+      --bs-btn-bg: var(--bd-violet-bg);
+      --bs-btn-border-color: var(--bd-violet-bg);
+      --bs-btn-hover-color: var(--bs-white);
+      --bs-btn-hover-bg: #6528e0;
+      --bs-btn-hover-border-color: #6528e0;
+      --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+      --bs-btn-active-color: var(--bs-btn-hover-color);
+      --bs-btn-active-bg: #5a23c8;
+      --bs-btn-active-border-color: #5a23c8;
+    }
+
+    .bd-mode-toggle {
+      z-index: 1500;
+    }
+
+    .bd-mode-toggle .dropdown-menu .active .bi {
+      display: block !important;
+    }
+
+
+    .image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.overlay-text {
+  position: absolute;
+  top: 80%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  /* background-color: #000000;  */
+  /* color: #fff;  */
+  padding: 2px 5px; 
+  /* font-size: 20px;  */
+  text-align: center;
+}
+
+.qrcode{
+  margin: 5px;
+}
+  </style>
+
+
+  <!-- Custom styles for this template -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="/css/dashboard.css" rel="stylesheet">
+</head>
+<body>
+  <header-component></header-component>
+  <div class="">
+    <header-profile-component></dheader-profile-component>
+  </div>
+  <form action="javascript:saveShooter();">
+  <div class="container-fluid mt-2">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h3>CONFEDERACAO BRASILEIRA DE TIRO AO PRATO METALICO</h3>
+      </div>
+    </div>
+    <div class="row d-flex align-items-center">
+      <div class="col-md-4 text-center">
+        <img id="tpm-pic"  alt="Foto de Perfil" class="img-fluid mb-3" src="https://res.cloudinary.com/duk7tmek7/image/upload/ar_1.0,c_fill,w_250/r_max/co_black,e_outline/co_gray,e_shadow,x_5,y_8/f_auto/defaults/CBTPM.png" />
+      </div>
+      <div class="col-md-6">
+        <div class="row ">
+          <div class="col text-center d-flex" >
+            <img id="shooter-pic" class="profile-avatar " alt="..." onerror="this.src='https://res.cloudinary.com/duk7tmek7/image/upload/c_crop,g_face/defaults/generic_avatar_old'" src="...">  
+            &nbsp;
+            <h5 id="shooterName"></h5>
+            <!-- <small>CR.:23423.2344323</small> -->
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col col-sm-2 text-start" >
+            CR.:
+          </div>
+          <div class="col text-start">
+            <span id="shooterCr"></span>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col col-sm-2 text-start" >
+            Nº Filiação:
+          </div>
+          <div class="col text-start">
+            <span id="membershipNumber"></span>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col col-sm-2 text-start">
+            Vigência:
+          </div>
+          <div class="col text-start">
+            <span id="membershipStart"></span> - <span id="membershipEnd"></span>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col col-sm-2 text-start">
+            Situação:
+          </div>
+          <div class="col text-start">
+            <span class="badge " id="membershipStatus"></span> <!-- bg-success -->
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col">
+            <p></p>
+          </div>
+        </div>
+        <div class="row ">
+          <div class="col col-sm-6 text-center">
+            <p>&nbsp;</p>
+            <!-- <button type="button" >
+              Estender Filiação Anual
+            </button> -->
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2 text-center ">
+        <p>&nbsp;</p>
+        <p><button type="button" class="btn btn-bd-purpe align-middle btn-sm nodisable"><i class="fa-solid fa-certificate"></i><br> Certificado<br> de Filiação</button></p>
+        <p></p>
+      </div>
+      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">Conheça a modalidade</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">R$0<small class="d-none text-body-secondary fw-light"></small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Participe de provas regionais</li>
+                <li>Ranking local (do evento)</li>
+                <li>1 Troca de foto de perfil /mês</li>
+                <li>Historio de participações em provas (não confederado)</li>
+                <li>&nbsp;</li>
+              </ul>
+              <button type="button" id="freeRegistration" class="w-100 btn btn-lg btn-outline-primary nodisable" onclick="netlifyIdentity.open('signup')" >Cadastre-se Gratis</button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm">
+            <div class="card-header py-3">
+              <h4 class="my-0 fw-normal">Filiação anual</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">R$100,00<small class="text-body-secondary fw-light"></small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Participe de provas nacionais</li>
+                <li>Filiação à Entidade de Tiro</li>
+                <li>Participação em Competição Nacional (nível III)</li>
+                <li>Ranking nacional</li>
+                <li>Suporte técnico por e-mail</li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-primary nodisable " id="btn-new-membershipOne" >
+                Filie-se por 1 ano <small class="d-none">(<i class="fa-brands fa-pix"></i> Pix)</small>
+              </button>
+
+              <button type="button" class="d-none w-100 btn btn-lg btn-primary nodisable " id="btn-open-modal" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Filie-se por 1 ano <small class="d-none">(<i class="fa-brands fa-pix"></i> Pix)</small>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-4 rounded-3 shadow-sm border-primary">
+            <div class="card-header py-3 text-bg-primary border-primary">
+              <h4 class="my-0 fw-normal">Fiação por 2 anos</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">R$180,00<small class="text-body-secondary fw-light"></small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>Participe de provas nacionais</li>
+                <li>Filiação à Entidade de Tiro</li>
+                <li>Participação em Competição Nacional (nível III)</li>
+                <li>Ranking nacional</li>
+                <li>Suporte técnico por email e whatzap</li>
+              </ul>
+              <button type="button" class="w-100 btn btn-lg btn-primary nodisable" id="btn-new-membershipTwo" >
+                Filie-se por 2 ano <small class="d-none">(<i class="fa-brands fa-pix"></i> Pix)</small></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card  text-center" >
+          <h5 class="card-header">Pagamentos</h5>
+          <div class="card-body" >
+            <table class="table table-hover align-middle text-small" >
+              <thead>
+                <tr>
+                  <th scope="col" class="item-align-middle text-start">Descrição</th>
+                  <th scope="col" class="d-none  d-lg-table-cell" >Pagar até</th>
+                  <th scope="col" class="d-none  d-lg-table-cell" >Valor</th>
+                  <th scope="col" class="" >Situação</th>
+                  <th scope="col" class="" >ação</th>
+                </tr>
+              </thead>
+              <tbody id="payment-table">
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+        <div>&nbsp;</div>
+        <div class=" text-center">
+          <button type="button" class="btn btn-secondary nodisable" value="Fechar" onclick="history.back()">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>Voltar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </form>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+<script src="./js/components/session-mgnt.js" type="text/javascript" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="./js/shooter-membership.js" type="text/javascript" defer></script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="lableModalMembership" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header text-bg-primary">
+        <div class="container text-center">
+        <h1 class="modal-title fs-5 align-items-center text-center" id="lableModalMembership">Filiação</h1>
+      </div>
+        <button type="button" class="btn-close nodisable" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <!-- <h6>Início da sua filiação: 31/12/2026</h6> -->
+        
+        <div class="input-group input-group-lg">
+          <div class="form-floating mb-3">
+            <input type="date" class="form-control nodisable" aria-label="Início da vigência desse pagamento" id="newMembershipStart" min="2023-05-15" required value="2024-05-15" >
+            <label for="newMembershipStart">Início:</label>
+          </div>
+        
+          <div class="form-floating mb-3 ">
+            <input type="date" class="form-control nodisable" disabled aria-label="Início da vigência desse pagamento" id="newMembershipEnd" required value="2025-05-15" >
+            <label for="newMembershipEnd">Fim:</label>
+          </div>
+        </div>
+        <p id="obsHabit" class="d-none"><small><em>(Você já teria <b id="passedHabitualityCount">4</b> habitualidades desde <b id="passedHabitualityDate"></b>.
+          Só será possível emitir as habitualidades realizadas dentro do período de vigência da filiação.)</em></small></p>
+        <div class="container text-center">
+          <div class="card  text-center" id="cardPix" >
+            <h5 class="card-header"><i class="fa-brands fa-pix"></i> Pix</h5>
+            <div class="card-body" >
+
+              <div class="row ">
+                <div class="col text-center ">
+                  <b>Vencimento:</b>
+                  <span id="newMembershipExpirationDate">01/01/2025</span>
+                </div>
+              </div>
+              <input type="hidden" id="issueDate" value=""/>
+              <input type="hidden" id="membership_payments_id" value=""/>
+              <input type="hidden" id="shooterId" value=""/>
+              <input type="hidden" id="bankTxId" value=""/>
+              <input type="hidden" id="pixqrcode" value=""/>
+              <input type="hidden" id="mDays" value=""/>
+              <div class="row ">
+                <div class="col text-center">
+                  <b>Valor:</b>
+                  <span id="newMembershipValue">R$100,00</span>
+                </div>
+              </div>
+              
+              <div class="row ">
+                <div class="col-sm-2">
+                  <p>&nbsp;</p>
+                </div>
+                <div class="col">
+                  <div class="row qrcode" id="qrcode"></div>
+                </div>
+                <div class="col-sm-2">
+                  <p>&nbsp;</p>
+                </div>
+              </div>
+
+              <div class="row ">
+                <div class="col text-small" >
+                  <span id="pixcode"></span>
+                  <br><button type="button" class="btn btn-sm btn-secondary nodisable" id="btnCopyPixCode" value="QQFEWFFEOfwefweofewfoewfewvef fe ewfefew" onclick="myFunction(this)" >Copiar código Pix</button>                  
+                </div>
+              </div>
+              <p>&nbsp;</p>
+              <div class="row ">
+                <div class="col text-center">
+                  Situação:
+                  <!--<span class="badge bg-warning text-dark text-truncate" id="newMembershipStatus">aguardando pagamento</span>  -->
+                  <div id="newMembershipStatus"></div>
+                </div>
+              </div>
+
+              <div class="row ">
+                <div class="col text-center text-small">
+                  Pagamento:
+                <span id="newMembershipPgtoDate">01/01/2025</span>
+              </div>
+            </div>
+          </div>        
+        </div>
+        <p class="text-small">&nbsp;</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary nodisable" id="btn-close-modal" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary nodisable">Atualizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

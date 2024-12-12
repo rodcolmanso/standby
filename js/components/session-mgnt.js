@@ -539,6 +539,13 @@ function getSessionEventConfig(){
     }
 }
 
+function addDays(date, days) {
+    const newDate = new Date(date);
+    date= newDate;
+    newDate.setDate(date.getDate() + days);
+    return newDate;
+}
+
 function uuidv4() {
     try{
         return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
