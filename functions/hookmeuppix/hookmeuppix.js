@@ -45,10 +45,10 @@ const handler = async (event, context)=>{
         let paymentData= JSON.parse(event.body);
 
         console.log('===================WEBHOOK POST =================');  
-        console.log('==== context=',context);
-        console.log('==== event.body=',paymentData);
-        console.log('==== event=',event);
-        console.log('=================================================');
+        // console.log('==== context=',context);
+        // console.log('==== event.body=',paymentData);
+        // console.log('==== event=',event);
+        // console.log('=================================================');
 
         
         for(let i=0; i< paymentData.pix.length;i++){
@@ -56,6 +56,8 @@ const handler = async (event, context)=>{
             let filterPayment= {bankTxId: paymentData.pix[i].txid
               ,pixKey: paymentData.pix[i].chave
               ,value: paymentData.pix[i].valor}
+
+            console.log('filterPayment=',filterPayment);
 
             const paymentTb= await cPayments.aggregate([
               { $addFields: {"_shooterId": { $toObjectId: "$shooterId" }}}
@@ -69,6 +71,8 @@ const handler = async (event, context)=>{
               }
               ]            
             ).toArray();
+
+            console.log('paymentTb=', paymentTb);
 
             let updatePaymentPayload= {};
             let updateShooterPayload= {};
@@ -84,9 +88,14 @@ const handler = async (event, context)=>{
 
                 // let _ObjPayId = new ObjectId(paymentTb[0]._id);
                 let _ObjPayId = paymentTb[0]._id;
-                await cPayments.updateOne({_id: _ObjPayId },{
+
+                console.log('_ObjPayId=',_ObjPayId);
+
+                const payUpdateRet= await cPayments.updateOne({_id: _ObjPayId },{
                   $set: updatePaymentPayload
                 });
+
+                console.log('payUpdateRet=',payUpdateRet);
 
                 // add membershipNum if it does not exist
                 if(!paymentTb[0].shooter[0].membershipNumber){
@@ -121,9 +130,13 @@ const handler = async (event, context)=>{
                   ,membershipStatus: 0
                 }
 
-                await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
+                console.log('updateShooterPayload=',updateShooterPayload);
+
+                let shooterUpdateRet= await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
                   $set: updateShooterPayload
                 });
+
+                console.log('shooterUpdateRet=',shooterUpdateRet);
 
                 paymentData.pix[i].shooterId= paymentTb[0].shooter[0]._id;
                 paymentData.pix[i].shooter_payment_id= paymentTb[0]._id;
@@ -135,6 +148,8 @@ const handler = async (event, context)=>{
                     
             paymentData.pix[i].headers           = event.headers;
             paymentData.pix[i].multiValueHeaders = event.multiValueHeaders;
+
+            console.log('paymentData.pix[i]=',paymentData.pix[i]);
 
             cBankPaymentHistory.insertOne(
               paymentData.pix[i]
