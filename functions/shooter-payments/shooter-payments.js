@@ -12,7 +12,7 @@ const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
 
-const options = {
+let options = {
   cert: `-----BEGIN CERTIFICATE-----
 ${process.env.BANK_CERTIFICATE}
 -----END CERTIFICATE-----
@@ -25,9 +25,13 @@ ${process.env.BANK_PKEY}
   keepAlive: false, // switch to true if you're making a lot of calls from this client
 };
 // we're creating a new Agent that will now use the certs we have configured
-const sslConfiguredAgent = new https.Agent(options);
 
 const getBearerToken= async(cBankToken)=> {
+
+  // console.log('options.cert=',options.cert);
+  // console.log('*****************************');
+  // console.log('options.key= ',options.key);
+  const sslConfiguredAgent = new https.Agent(options);
 
   const headers = {
     Accept: 'application/json',
@@ -87,6 +91,11 @@ const getBearerToken= async(cBankToken)=> {
 
 
 const createPix= async(paymentData, bearerToken)=> {
+
+  // console.log('options.cert=',options.cert);
+  // console.log('*****************************');
+  // console.log('options.key= ',options.key);
+  const sslConfiguredAgent = new https.Agent(options);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -422,6 +431,19 @@ const handler = async (event, context)=>{
           }else{
 
             console.log('------------ PIX CRIATION ------------------');
+
+            const finterToken= {env:process.env.BANK_DB_ENV_TOKEN_ID};
+
+            console.log('------------ 00000000000000 ------------------');
+
+            let bankToken= await cBankToken.find(finterToken).toArray();
+
+            console.log('AAAAAAAAAAAAAAAAAAAA');
+
+            options.cert= bankToken[0].cert;
+
+            options.key= bankToken[0].priKey;
+
             let a_token= await getBearerToken(cBankToken);
             console.log('a_token=',a_token);
             paymentData= await createPix(paymentData, a_token );
