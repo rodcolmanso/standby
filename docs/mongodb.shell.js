@@ -3487,3 +3487,28 @@ db.shooters.aggregate([
 
           ,{$match:{_shooterId:'661be2184277ae7378717fe3'}}
         ]).toArray();
+
+
+db.bank_bearer_token.insertOne(
+    {   env: 'DEV'
+        ,token: "ttttttt"
+        ,experationDate: Date()
+        ,scope:""
+    }
+);
+
+db.bank_bearer_token.insertOne(
+    {   env: 'PRD'
+        ,token: "ttttttt"
+        ,experationDate: Date()
+        ,scope:""
+    }
+);
+
+db.membership_num_counter.insertOne({seq_value: 10000});
+
+
+db.createCollection("membership_num");
+
+
+db.membership_num.insertOne({shooterId:'test 3', createdAt:Date()});

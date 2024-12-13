@@ -1,17 +1,173 @@
 const {MongoClient} = require ("mongodb");
+
+// const https = require('node:https');
+const https = require('https');
+const fetch = require('node-fetch');
+const { Console } = require("console");
+const { throws } = require("assert");
+
 require('dotenv').config();
 
 const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
 
+const options = {
+  cert: `-----BEGIN CERTIFICATE-----
+${process.env.BANK_CERTIFICATE}
+-----END CERTIFICATE-----
+`,
+key: `-----BEGIN PRIVATE KEY-----
+${process.env.BANK_PKEY}
+-----END PRIVATE KEY-----
+`,
+  rejectUnauthorized: false,
+  keepAlive: false, // switch to true if you're making a lot of calls from this client
+};
+// we're creating a new Agent that will now use the certs we have configured
+const sslConfiguredAgent = new https.Agent(options);
+
+const getBearerToken= async(cBankToken)=> {
+
+  const headers = {
+    Accept: 'application/json',
+    // add what you need like you would normally
+  };
+
+  const finterToken= {env:process.env.BANK_DB_ENV_TOKEN_ID};
+
+  let bankToken= await cBankToken.find(finterToken).toArray();
+
+  if(bankToken.length===0 || bankToken[0].experationDate.getTime()< new Date().getTime() ){
+    // refresh token
+
+    let responseBody={};
+    
+    try {
+      // make the request just as you would normally ...
+      const response = await fetch(process.env.BANK_BASE_URL+'/oauth/v2/token', {
+        headers: headers, // ... pass everything just as you usually would
+        agent: sslConfiguredAgent, // ... but add the agent we initialised
+        method: 'POST',
+        body: new URLSearchParams({client_id: process.env.BANK_CLIENT_ID
+          ,client_secret: process.env.BANK_CLIENT_SECRET
+          ,scope: process.env.BANK_SCOPE
+          ,grant_type:"client_credentials"})
+      });
+  
+      responseBody = await response.json();
+  
+      // handle the response as you would see fit
+      console.log(responseBody);
+    } catch (error) {
+      console.log(error);
+    }
+    let nnow = new Date();
+    let t = new Date();
+    t.setSeconds(t.getSeconds()+ responseBody.expires_in - 10);
+
+    const retBankToken= await cBankToken.updateOne(finterToken
+      ,{ $set: 
+          {env: finterToken.env
+          ,token: responseBody.access_token
+          ,createdAt: nnow
+          ,experationDate: t
+          ,scope:responseBody.scope}
+      }
+      ,{ upsert: true });
+
+      console.log('retBankToken', retBankToken);
+      return responseBody.access_token;
+
+  }else{
+    return bankToken[0].token;
+  }
+
+}
+
+
+const createPix= async(paymentData, bearerToken)=> {
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + bearerToken,
+    // add what you need like you would normally
+  };
+
+  const _agora= new Date();
+  let _expiracao= Math.round(86400+(paymentData.dueDate.getTime()/1000)- (_agora.getTime()/1000)-60+(3*60*60));
+  console.log('**********************************************************');
+  console.log('*   paymentData.dueDate              = ',paymentData.dueDate);
+  console.log('*   paymentData.dueDate.getSeconds() = ',paymentData.dueDate.getSeconds());
+  console.log('*   _agora                           = ',_agora);
+  console.log('*   _agora.getSeconds()              = ',_agora.getSeconds());
+  console.log('*   _expiracao                       = ',_expiracao);      
+  console.log('**********************************************************');
+  
+
+  let pixBody={
+    "chave": process.env.BANK_PIX_KEY,
+    "solicitacaoPagador": "Filiação CBTPM",
+    "devedor": {
+        "cpf": paymentData.shooterDocnum,
+        "nome": paymentData.shooterName
+    },
+    "valor": {
+        "original": paymentData.value,
+        "modalidadeAlteracao": 0
+    },
+    "calendario": {
+        "expiracao": _expiracao
+    },
+    "infoAdicionais": [
+      {
+      "nome": "Filiação a CBTPM",
+      "valor": "Confedração Brasileira de Tiro ao Prato Metálico ("+process.env.CONFEDERATION_DOCNUM+")"
+      },
+      {
+      "nome": "Tipo da filiação",
+      "valor": paymentData.membershipTier
+      }
+      ]
+  };
+
+  console.log('pixBody=', pixBody);
+
+  
+  try {
+    // make the request just as you would normally ...
+    const response = await fetch(process.env.BANK_BASE_URL+'/pix/v2/cob', {
+      headers: headers, // ... pass everything just as you usually would
+      agent: sslConfiguredAgent, // ... but add the agent we initialised
+      method: 'POST',
+      body: JSON.stringify(pixBody)
+    });
+
+    let pixResponseBody = await response.json();
+
+    // handle the response as you would see fit
+    console.log('pixResponseBody=',pixResponseBody);
+
+    paymentData.pixCreatedAd    = new Date(pixResponseBody.calendario.criacao);
+    paymentData.pixExpirationSec= pixResponseBody.calendario.expiracao;
+    paymentData.bankTxId        = pixResponseBody.txid;
+    paymentData.pixcode       = pixResponseBody.pixCopiaECola;
+    paymentData.pixKey          = pixResponseBody.chave;
+
+    return paymentData;
+  } catch (error) {
+    console.log(error);
+    throw e;
+  }
+
+}
 
 const handler = async (event, context)=>{
   try {
 
     const database = (await clientPromise).db(process.env.MONGODB_DATABASE_STANDBY);
-    const cCollectionGun= database.collection(process.env.MONGODB_COLLECTION_GUN_COLLECTION);
-    const cPayments= database.collection(process.env.MONGODB_COLLECTION_MEMBERSHIP_PAYMENTS);
+    const cBankToken= database.collection(process.env.MONGODB_COLLECTION_BANK_BEARER_TOKEN);
+    const cPayments= database.collection(process.env.MONGODB_COLLECTION_SHOOTER_PAYMENTS);
     const cShooters= database.collection(process.env.MONGODB_COLLECTION_SHOOTERS);
     
     let userContext=null;
@@ -99,7 +255,7 @@ const handler = async (event, context)=>{
         let userPayments= await cShooters.aggregate([
           { $addFields: {"_shooterId": { "$toString": "$_id" }}}
           ,{$lookup:{
-              from: "membership_payments"
+              from: process.env.MONGODB_COLLECTION_SHOOTER_PAYMENTS
               ,localField: "_shooterId"
               ,foreignField: "shooterId"
               ,as: "payments"
@@ -228,7 +384,7 @@ const handler = async (event, context)=>{
             filter.value= paymentData.value;
           }
 
-
+          //-----------_>
           let paymentRet;
           
           if(paymentData._id && paymentData._id!==null && paymentData._id!=="" && paymentData._id!=="0"){
@@ -238,11 +394,10 @@ const handler = async (event, context)=>{
 
             delete paymentData._id;
             // paymentData._id= new ObjectId(paymentData._id);
-console.log('==================================');
-console.log('filter=',filter);
-console.log('paymentData=',paymentData);
+            console.log('==================================');
+            console.log('filter=',filter);
+            console.log('paymentData=',paymentData);
 
-console.log('==================================');
             paymentRet= await cPayments.updateOne(filter
               ,{ $set: 
                   paymentData
@@ -265,6 +420,15 @@ console.log('==================================');
               }
               ,{ upsert: false });
           }else{
+
+            console.log('------------ PIX CRIATION ------------------');
+            let a_token= await getBearerToken(cBankToken);
+            console.log('a_token=',a_token);
+            paymentData= await createPix(paymentData, a_token );
+            console.log('paymentData=',paymentData);
+            console.log('---------------------------------------------');
+
+            console.log('==================================');
 
             paymentData.inserter= userContext.email;
             paymentData.inserter_date= new Date();
@@ -292,26 +456,26 @@ console.log('==================================');
                     );
           }
 
-        if(paymentRet && ( (paymentRet.modifiedCount && paymentRet.modifiedCount>0) || paymentRet.insertedId  ) ){
+          if(paymentRet && ( (paymentRet.modifiedCount && paymentRet.modifiedCount>0) || paymentRet.insertedId  ) ){
 
-          if(paymentRet.insertedId){
-            paymentData._id= paymentRet.insertedId.toString();
-            console.log('GOT paymentData._id:', paymentData._id);
-          }else {
-            paymentData._id= filter._id;
-          }
+            if(paymentRet.insertedId){
+              paymentData._id= paymentRet.insertedId.toString();
+              console.log('GOT paymentData._id:', paymentData._id);
+            }else {
+              paymentData._id= filter._id;
+            }
 
-          return  {
-            statusCode: 201,
-            body: JSON.stringify(paymentData)
-          };
-        }else{
-          return{
-            statusCode: 404
-            // ,body: JSON.stringify(deleteEvent)
-            ,body: JSON.stringify({message: "Payment not found"})  
+            return  {
+              statusCode: 201,
+              body: JSON.stringify(paymentData)
+            };
+          }else{
+            return{
+              statusCode: 404
+              // ,body: JSON.stringify(deleteEvent)
+              ,body: JSON.stringify({message: "Payment not found"})  
+            }
           }
-        }
         
         case 'DELETE':
 

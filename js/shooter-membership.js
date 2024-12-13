@@ -38,9 +38,10 @@ function listPayments(shooter){
         bgStatus= 'bg-danger';
     }
 
-    row+= `<tr>
+    row+= `<tr class="clickable-row" onClick="showPayment(${i});">
             <th scope="col" class="item-align-middle text-start">${shooter[0].payments[i].referringTo} ${(new Date(shooter[0].payments[i].termIni)).toLocaleDateString()} - ${(new Date(shooter[0].payments[i].termEnd)).toLocaleDateString()}</th>
             <td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>
+            <!--<td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>-->
             <td scope="col" class="d-none  d-lg-table-cell" >${formatter.format(shooter[0].payments[i].value)}</td>
             <td scope="col" class="" ><span class="badge ${bgStatus}">${descPayStatus[shooter[0].payments[i].status]}</span></td>
             <td scope="col" class="" ><i class=" btn fa-solid fa-qrcode"></i>${shooter[0].payments[i].bankTxId}</td>
@@ -69,6 +70,94 @@ function listPayments(shooter){
 
 }
 
+function showPayment(idx){
+    
+    document.getElementById("membershipTier").value=shooterPayments[0].payments[idx].membershipTier;
+
+    if(shooterPayments[0].payments[idx].membershipTier==="anual"){
+        document.getElementById("mDays").value= 366
+    }else if(shooterPayments[0].payments[idx].membershipTier==="2 anos"){
+        document.getElementById("mDays").value= 731
+    }else{
+        document.getElementById("mDays").value= 0;
+    }
+
+    document.getElementById("lableModalMembership").innerText= 'Filiação '+shooterPayments[0].payments[idx].membershipTier;
+
+    let valueNewMembershipStart= "";
+    let minNewMembershipStart= "";
+    let maxNewMembershipStart= "";
+    let hoje= new Date();
+    let hojePusString= addDays(hoje,3).toISOString().split('T')[0];
+    let hojeMinString= addDays(hoje,-30).toISOString().split('T')[0];
+
+    if(!shooterPayments[0].membershipEnd || shooterPayments[0].membershipEnd===null){ //not a member yet
+    
+        if(shooterPayments[0].time_records.length>0){ //has habitualidades
+
+            valueNewMembershipStart= shooterPayments[0].time_records[0].y.split('T')[0];
+            maxNewMembershipStart= hojePusString;
+            minNewMembershipStart= valueNewMembershipStart;
+
+            document.getElementById("passedHabitualityCount").innerText= shooterPayments[0].time_records.length;
+            document.getElementById("passedHabitualityDate").innerText= new Date(shooterPayments[0].time_records[0].y).toLocaleDateString();
+            removeClass(document.getElementById("obsHabit"),"d-none");
+
+        }else{ //does not have abitualidate
+            valueNewMembershipStart= hoje.toISOString().split('T')[0];
+            maxNewMembershipStart= hojePusString;
+            minNewMembershipStart= hojeMinString;
+        }
+
+    }else{  // it is a member alredy - extend
+        valueNewMembershipStart= shooterPayments[0].membershipEnd.split('T')[0];
+        minNewMembershipStart= shooterPayments[0].membershipEnd.split('T')[0];
+
+        maxNewMembershipStart= (new Date(shooterPayments[0].membershipEnd)).getTime() > hoje.getTime()?
+                //payments[0].membershipEnd.split('T')[0]:
+                addDays(new Date(shooterPayments[0].membershipEnd),2).toISOString().split('T')[0]:
+                hojePusString;
+    }
+    
+    //TODO: Criar QRCode com o Banco ou criar Webhook com o banco
+
+    document.getElementById("newMembershipStart").min= minNewMembershipStart;
+    document.getElementById("newMembershipStart").value= new Date(shooterPayments[0].payments[idx].termIni).toISOString().split('T')[0];
+    document.getElementById("newMembershipStart").max= maxNewMembershipStart;
+
+    document.getElementById("newMembershipStart").disabled= true;
+    addClass(document.getElementById("obsHabit"),"d-none");
+
+    document.getElementById("newMembershipExpirationDate").innerText=  new Date(shooterPayments[0].payments[idx].dueDate).toLocaleDateString();
+    document.getElementById("newMembershipValue").innerText= 'R$'+formatter.format(shooterPayments[0].payments[idx].value);
+    
+    let _dtHj= new Date(hoje.toISOString().split('T')[0]);
+    
+    let bgStatusPgto='';
+
+    if(shooterPayments[0].payments[idx].status<1){
+        bgStatusPgto= `<span class="badge bg-success text-truncate" id="newMembershipStatus">pago</span>`;
+    }else{
+        if(_dtHj.getTime()>new Date(shooterPayments[0].payments[idx].dueDate).getTime()){
+            bgStatusPgto= `<span class="badge bg-danger text-truncate" id="newMembershipStatus">vencido</span>`;
+        }else{
+            bgStatusPgto= `<span class="badge bg-warning text-dark text-truncate" id="newMembershipStatus">aguardando pagamento</span>`;
+        }
+    }
+    
+    document.getElementById("newMembershipStatus").innerHTML= bgStatusPgto;
+    document.getElementById("newMembershipPgtoDate").innerText= shooterPayments[0].payments[idx].paymentDate?shooterPayments[0].payments[idx].paymentDate.toLocaleDateString():"";
+
+    document.getElementById("newMembershipEnd").value= new Date(shooterPayments[0].payments[idx].termEnd).toISOString().split('T')[0];
+
+    qrcode.clear();
+    qrcode.makeCode(shooterPayments[0].payments[idx].pixcode);
+    document.getElementById("pixcode").innerText= shooterPayments[0].payments[idx].pixcode;
+    document.getElementById("btnCopyPixCode").value= shooterPayments[0].payments[idx].pixcode;
+    document.getElementById("membership_payments_id").value= shooterPayments[0].payments[idx]._id;
+    
+    document.getElementById("btn-open-modal").click();
+}
 
 window.onload = async () => {
 
@@ -161,7 +250,7 @@ document.getElementById("newMembershipStart").addEventListener('change', functio
 
     let paymentData={};
     paymentData._id                 = document.getElementById("membership_payments_id").value;
-    // paymentData.shooterId           = shooterPayments[0]._id;
+    // paymentData.shooterId           = shooterData[0]._id;
     // paymentData.rangeId             = '';
     // paymentData.referringTo         = 'membership';
     paymentData.termIni             = new Date(document.getElementById("newMembershipStart").value);
@@ -172,10 +261,9 @@ document.getElementById("newMembershipStart").addEventListener('change', functio
     // paymentData.bankTxId            = document.getElementById("bankTxId").value;
     // paymentData.bankTxId            = uuidv4();
     // paymentData.status              = 1;
-    paymentData.value               = parseFloat(document.getElementById("newMembershipValue").innerText.replaceAll('R$','').replaceAll(' ','').replaceAll(',','.')).toFixed(2);
-    paymentData.pixqrcode           = 'QRCODE QRCODE QRCODE '+paymentData.bankTxId+ ' QRCODE QRCODE';
-    paymentData.pixcode             = 'PIXCODE PIXCODE PIXCODE '+paymentData.bankTxId+ ' PIXCODE PIXCODE';
-
+    // paymentData.value               = parseFloat(document.getElementById("newMembershipValue").innerText.replaceAll('R$','').replaceAll(' ','').replaceAll(',','.')).toFixed(2);
+    // paymentData.pixcode           = '00020101021226930014BR.GOV.BCB.PIX2571spi-qrcode.bancointer.com.br/spi/pj/v2/13bebf1b25f946fe899080831b1de03252040000530398654040.115802BR5901*6013SANTANA DE PA61080651948062070503***630484DE';
+    
     submitPayment(paymentData);
 
 });
@@ -193,7 +281,7 @@ function submitPayment(paymentData){
     
     addClass(document.getElementById('cardPix'),'d-none');
     applySpinners(true);
-    fetch('/.netlify/functions/membership-payments', {
+    fetch('/.netlify/functions/shooter-payments', {
         method: "POST",
         body: JSON.stringify(paymentData),
         headers: {
@@ -219,7 +307,7 @@ function submitPayment(paymentData){
 
 
             qrcode.clear();
-            qrcode.makeCode(json.pixqrcode);
+            qrcode.makeCode(json.pixcode);
             document.getElementById("pixcode").innerText= json.pixcode;
             document.getElementById("btnCopyPixCode").value= json.pixcode;
             document.getElementById("membership_payments_id").value= json._id;
@@ -240,7 +328,7 @@ function deletePayment(idx){
     }
 
     applySpinners(true);
-    fetch('/.netlify/functions/membership-payments', {
+    fetch('/.netlify/functions/shooter-payments', {
         method: "DELETE",
         body: JSON.stringify(shooterPayments[idx]),
         headers: {
@@ -284,7 +372,7 @@ const promiseGetMembershipPayments = (_shooterId, _identityUser)=>{
     }else{
         return []; //_headers= {"Content-type": "application/json; charset=UTF-8"}
     }
-    return fetch("/.netlify/functions/membership-payments?shooterId="+_shooterId , { //+ '&termDate=2024-05-20'
+    return fetch("/.netlify/functions/shooter-payments?shooterId="+_shooterId , { //+ '&termDate=2024-05-20'
     method: "GET",
     headers: _headers})
     .then(r=>r.json())
@@ -318,10 +406,11 @@ function myFunction(elem) {
   }
 
   document.getElementById("btn-new-membershipOne").addEventListener('click', function(e) {
-
+    document.getElementById("newMembershipStart").disabled=false;
     if(!netlifyIdentity.currentUser()){
         netlifyIdentity.open('signup')
     }else{
+        document.getElementById("membershipTier").value="anual";
         addMembershipPayment("anual", 366, 102.17);
         document.getElementById("btn-open-modal").click();
     }
@@ -329,9 +418,11 @@ function myFunction(elem) {
   });
 
   document.getElementById("btn-new-membershipTwo").addEventListener('click', function(e) {
+    document.getElementById("newMembershipStart").disabled=false;
     if(!netlifyIdentity.currentUser()){
         netlifyIdentity.open('signup')
     }else{
+        document.getElementById("membershipTier").value="2 anos";
         addMembershipPayment("2 anos", 731, 193.71);
         document.getElementById("btn-open-modal").click();
     }
@@ -398,19 +489,22 @@ function myFunction(elem) {
     // paymentData._id                 = document.getElementById("membership_payments_id").value;
     // paymentData._id                 = '';
     paymentData.shooterId           = shooterPayments[0]._id;
+    paymentData.shooterName         = shooterPayments[0].name;
+    paymentData.shooterDocnum       = shooterPayments[0].docnum;
+    paymentData.membershipTier      = document.getElementById("membershipTier").value;
     paymentData.rangeId             = '';
     paymentData.referringTo         = 'membership';
     paymentData.termIni             = new Date(document.getElementById("newMembershipStart").value);
     paymentData.termEnd             = new Date(document.getElementById("newMembershipEnd").value);
     paymentData.issueDate           = new Date((new Date()).toDateString());
-    paymentData.dueDate             = addDays(new Date(),3);
+    
+    paymentData.dueDate             = addDays(new Date(),3).toISOString().split('T')[0];
     
     // paymentData.bankTxId            = document.getElementById("bankTxId").value;
-    paymentData.bankTxId            = uuidv4();
+    // paymentData.bankTxId            = uuidv4();
     paymentData.status              = 1;
     paymentData.value               = parseFloat(document.getElementById("newMembershipValue").innerText.replaceAll('R$','').replaceAll(' ','').replaceAll(',','.')).toFixed(2);
-    paymentData.pixqrcode           = 'QRCODE QRCODE QRCODE '+paymentData.bankTxId+ ' QRCODE QRCODE';
-    paymentData.pixcode             = 'PIXCODE PIXCODE PIXCODE '+paymentData.bankTxId+ ' PIXCODE PIXCODE';
+    // paymentData.pixcode           = '00020101021226930014BR.GOV.BCB.PIX2571spi-qrcode.bancointer.com.br/spi/pj/v2/13bebf1b25f946fe899080831b1de03252040000530398654040.115802BR5901*6013SANTANA DE PA61080651948062070503***630484DE';
 
     submitPayment(paymentData);
     
@@ -418,7 +512,10 @@ function myFunction(elem) {
 
   }
 
-  const qrcode = new QRCode("qrcode");
+//   const qrcode = new QRCode("qrcode");
+  const qrcode = new QRCode(document.getElementById("qrcode"), {
+    correctLevel : QRCode.CorrectLevel.L
+});
 
 
   document.getElementById('staticBackdrop').addEventListener('hidden.bs.modal', function (event) {

@@ -44,15 +44,20 @@ Regulamentos
     [ ] Tela Regulamentos
   
 Filiação
-    [ ] Excluir pagamento
-    [ ] Exibir pagamento
-    [ ] Gerar BR Code
-    [ ] Gerar BR Code Copia e cola
+    [ ] Refresh em pagamentos para checar se já está pago.
+    [ ] Não permitir criar novo pagamento caso já exista algum não vencido.
     [ ] Criar API de webhook
-        [ ] Registrar webhook via postman
+        [x] Registrar webhook via postman
+        [x] testar pagamento
         [ ] criar function de callback com a URL do do webhook
-        [ ] testar pagamento
-        [ ] Da para colocar certificado digital no Netlify?
+    [x] criar env vars com certificados e chaves
+    [x] testar get token com dev env vars
+    [x] criar API de getBearToken (recria se expiderd)
+    [x] chamar API Criar Papamento
+    [x] Exibir pagamento
+    [ ] Update database com todas as matriculas do shooting house ceacc
+    [ ] Excluir pagamento ou não exibir vencidos
+    
 
 Contra o relógio
     [ ] Refres a cada 20s sem topar a pagina
