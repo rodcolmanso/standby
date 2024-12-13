@@ -55,7 +55,7 @@ const handler = async (event, context)=>{
 
             let filterPayment= {bankTxId: paymentData.pix[i].txid
               ,pixKey: paymentData.pix[i].chave
-              ,value: paymentData.pix[i].valor}
+              ,value: parseFloat(paymentData.pix[i].valor)}
 
             console.log('filterPayment=',filterPayment);
 
