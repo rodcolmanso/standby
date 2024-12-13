@@ -44,6 +44,15 @@ const handler = async (event, context)=>{
 
         let paymentData= JSON.parse(event.body);
 
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+        console.log(' ');
+
         console.log('===================WEBHOOK POST =================');  
         // console.log('==== context=',context);
         // console.log('==== event.body=',paymentData);
@@ -109,7 +118,13 @@ const handler = async (event, context)=>{
 
                   console.log('membershipRet= ', membershipRet);
 
-                  paymentTb[0].shooter[0].membershipNumber= cMembershipNum.find({_id: membershipRet.insertedId}).toArray()[0].membershipNumber;
+                  let _filterMemb= {_id: membershipRet.insertedId};
+                  console.log('_filterMemb=',_filterMemb);
+
+                  let newMembershipNumberC= await cMembershipNum.find(_filterMemb).toArray();
+                  console.log('newMembershipNumberC=',newMembershipNumberC);
+
+                  paymentTb[0].shooter[0].membershipNumber= newMembershipNumberC[0].membershipNumber;
                   console.log('paymentTb[0].shooter[0].membershipNumber=', paymentTb[0].shooter[0].membershipNumber);
                   
                 }
