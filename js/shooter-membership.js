@@ -41,6 +41,7 @@ function listPayments(shooter){
         let _dueDArr= new Date(shooter[0].payments[i].dueDate).toLocaleDateString().substring(0,10).split('/');
         let _dueD= new Date(_dueDArr[2]+'-'+_dueDArr[1]+'-'+_dueDArr[0]);
 
+        let actionLabel= '<i class="fa-solid fa-eye"></i> Det';
         
         if(shooter[0].payments[i].status===0){
             bgStatus= 'bg-success'
@@ -49,6 +50,8 @@ function listPayments(shooter){
             shooter[0].payments[i].status=2;
         }else{
             bgStatus= 'text-dark bg-warning';
+            // actionLabel= '<i class=" btn fa-solid fa-qrcode"></i> pagar';
+            actionLabel= '<i class="fa-brands fa-pix"></i> Pix';
             hasPendingPayments= true;
             if(shooter[0].payments[i].membershipTier==="anual")
                 idxPendingPaymentOneYear= i;
@@ -57,13 +60,15 @@ function listPayments(shooter){
             }
         }
 
+        
+
         row+= `<tr class="clickable-row" onClick="showPayment(${i});">
                 <th scope="col" class="item-align-middle text-start">${shooter[0].payments[i].referringTo} ${(new Date(shooter[0].payments[i].termIni)).toLocaleDateString()} - ${(new Date(shooter[0].payments[i].termEnd)).toLocaleDateString()}</th>
                 <td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>
                 <!--<td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>-->
                 <td scope="col" class="d-none  d-lg-table-cell" >${formatter.format(shooter[0].payments[i].value)}</td>
                 <td scope="col" class="" ><span class="badge ${bgStatus}">${descPayStatus[shooter[0].payments[i].status]}</span></td>
-                <td scope="col" class="" ><i class=" btn fa-solid fa-qrcode"></i>${shooter[0].payments[i].bankTxId}</td>
+                <td scope="col" class="" >${actionLabel}</td>
             </tr>`;
     }
 
