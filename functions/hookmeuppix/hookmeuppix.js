@@ -150,11 +150,15 @@ const handler = async (event, context)=>{
 
                 console.log('updateShooterPayload=',updateShooterPayload);
 
-                let shooterUpdateRet= await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
-                  $set: updateShooterPayload
-                });
+                if(paymentTb[0].shooter[0].membershipNumber && paymentTb[0].shooter[0].membershipNumber!==null){
+                  let shooterUpdateRet= await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
+                    $set: updateShooterPayload
+                  });
 
-                console.log('shooterUpdateRet=',shooterUpdateRet);
+                  console.log('shooterUpdateRet=',shooterUpdateRet);
+                }else{
+                  console.log('COULD NOT GET MembershipNumber. more.');
+                }
 
                 paymentData.pix[i].shooterId= paymentTb[0].shooter[0]._id;
                 paymentData.pix[i].shooter_payment_id= paymentTb[0]._id;
