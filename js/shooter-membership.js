@@ -29,26 +29,53 @@ function listPayments(shooter){
     let row='';
     let bgStatus= 'bg-success'
 
+    let hasPendingPayments=false;
+    idxPendingPaymentOneYear= null;
+    idxPendingPaymentTwoYears= null;
 
     for(let i=0; i<shooter[0].payments.length;i++){
-    bgStatus= 'bg-success'
-    if(shooter[0].payments[i].status===1){
-        bgStatus= 'text-dark bg-warning';
-    }else if (shooter[0].payments[i].status===2){
-        bgStatus= 'bg-danger';
-    }
 
-    row+= `<tr class="clickable-row" onClick="showPayment(${i});">
-            <th scope="col" class="item-align-middle text-start">${shooter[0].payments[i].referringTo} ${(new Date(shooter[0].payments[i].termIni)).toLocaleDateString()} - ${(new Date(shooter[0].payments[i].termEnd)).toLocaleDateString()}</th>
-            <td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>
-            <!--<td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>-->
-            <td scope="col" class="d-none  d-lg-table-cell" >${formatter.format(shooter[0].payments[i].value)}</td>
-            <td scope="col" class="" ><span class="badge ${bgStatus}">${descPayStatus[shooter[0].payments[i].status]}</span></td>
-            <td scope="col" class="" ><i class=" btn fa-solid fa-qrcode"></i>${shooter[0].payments[i].bankTxId}</td>
-           </tr>`;
+        let _dArr= new Date().toLocaleDateString().substring(0,10).split('/');
+        let _d= new Date(_dArr[2]+'-'+_dArr[1]+'-'+_dArr[0]);
+
+        let _dueDArr= new Date(shooter[0].payments[i].dueDate).toLocaleDateString().substring(0,10).split('/');
+        let _dueD= new Date(_dueDArr[2]+'-'+_dueDArr[1]+'-'+_dueDArr[0]);
+
+        
+        if(shooter[0].payments[i].status===0){
+            bgStatus= 'bg-success'
+        }else if (shooter[0].payments[i].status===2 || _dueD.getTime() < _d.getTime() ){
+            bgStatus= 'bg-danger';
+            shooter[0].payments[i].status=2;
+        }else{
+            bgStatus= 'text-dark bg-warning';
+            hasPendingPayments= true;
+            if(shooter[0].payments[i].membershipTier==="anual")
+                idxPendingPaymentOneYear= i;
+            else{
+                idxPendingPaymentTwoYears= i;
+            }
+        }
+
+        row+= `<tr class="clickable-row" onClick="showPayment(${i});">
+                <th scope="col" class="item-align-middle text-start">${shooter[0].payments[i].referringTo} ${(new Date(shooter[0].payments[i].termIni)).toLocaleDateString()} - ${(new Date(shooter[0].payments[i].termEnd)).toLocaleDateString()}</th>
+                <td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>
+                <!--<td scope="col" class="d-none  d-lg-table-cell" >${(new Date(shooter[0].payments[i].dueDate)).toLocaleDateString()}</td>-->
+                <td scope="col" class="d-none  d-lg-table-cell" >${formatter.format(shooter[0].payments[i].value)}</td>
+                <td scope="col" class="" ><span class="badge ${bgStatus}">${descPayStatus[shooter[0].payments[i].status]}</span></td>
+                <td scope="col" class="" ><i class=" btn fa-solid fa-qrcode"></i>${shooter[0].payments[i].bankTxId}</td>
+            </tr>`;
     }
 
     document.getElementById("payment-table").innerHTML= row;
+
+    if(hasPendingPayments&&!loopPaymentOn){
+        checkNewPaymentList = setInterval(myTimerRefreshPaymentList, 10000);
+        loopPaymentOn= true; 
+    }else if(!hasPendingPayments&&loopPaymentOn){
+        clearInterval(checkNewPaymentList);
+        loopPaymentOn=false;
+    }
 
     document.getElementById("membershipStart").innerText= shooter[0].membershipStart? (new Date(shooter[0].membershipStart)).toLocaleDateString():'';
     document.getElementById("membershipEnd").innerText= shooter[0].membershipEnd?(new Date(shooter[0].membershipEnd)).toLocaleDateString():"";
@@ -73,6 +100,7 @@ function listPayments(shooter){
 function showPayment(idx){
     
     document.getElementById("membershipTier").value=shooterPayments[0].payments[idx].membershipTier;
+    document.getElementById("bankTxId").value= shooterPayments[0].payments[idx].bankTxId;
 
     if(shooterPayments[0].payments[idx].membershipTier==="anual"){
         document.getElementById("mDays").value= 366
@@ -131,22 +159,26 @@ function showPayment(idx){
     document.getElementById("newMembershipExpirationDate").innerText=  new Date(shooterPayments[0].payments[idx].dueDate).toLocaleDateString();
     document.getElementById("newMembershipValue").innerText= 'R$'+formatter.format(shooterPayments[0].payments[idx].value);
     
-    let _dtHj= new Date(hoje.toISOString().split('T')[0]);
     
-    let bgStatusPgto='';
+    let _dArr= new Date().toLocaleDateString().substring(0,10).split('/');
+    let _dtHj= new Date(_dArr[2]+'-'+_dArr[1]+'-'+_dArr[0]);
 
-    if(shooterPayments[0].payments[idx].status<1){
+    let _dueDArr= new Date(shooterPayments[0].payments[idx].dueDate).toLocaleDateString().substring(0,10).split('/');
+    let _dueD= new Date(_dueDArr[2]+'-'+_dueDArr[1]+'-'+_dueDArr[0]);
+
+    let bgStatusPgto='';
+        
+    if(shooterPayments[0].payments[idx].status===0){
         bgStatusPgto= `<span class="badge bg-success text-truncate" id="newMembershipStatus">pago</span>`;
+    }else if (shooterPayments[0].payments[idx].status===2 || _dueD.getTime() < _dtHj.getTime() ){
+        bgStatusPgto= `<span class="badge bg-danger text-truncate" id="newMembershipStatus">vencido</span>`;
     }else{
-        if(_dtHj.getTime()>new Date(shooterPayments[0].payments[idx].dueDate).getTime()){
-            bgStatusPgto= `<span class="badge bg-danger text-truncate" id="newMembershipStatus">vencido</span>`;
-        }else{
-            bgStatusPgto= `<span class="badge bg-warning text-dark text-truncate" id="newMembershipStatus">aguardando pagamento</span>`;
-        }
+        bgStatusPgto= `<span class="badge bg-warning text-dark text-truncate" id="newMembershipStatus">aguardando pagamento</span>`;
+        checkPaymentInterval = setInterval(myTimer, 2000);
     }
     
     document.getElementById("newMembershipStatus").innerHTML= bgStatusPgto;
-    document.getElementById("newMembershipPgtoDate").innerText= shooterPayments[0].payments[idx].paymentDate?shooterPayments[0].payments[idx].paymentDate.toLocaleDateString():"";
+    document.getElementById("newMembershipPgtoDate").innerText= shooterPayments[0].payments[idx].paymentDate?new Date(shooterPayments[0].payments[idx].paymentDate).toLocaleDateString():"";
 
     document.getElementById("newMembershipEnd").value= new Date(shooterPayments[0].payments[idx].termEnd).toISOString().split('T')[0];
 
@@ -157,6 +189,50 @@ function showPayment(idx){
     document.getElementById("membership_payments_id").value= shooterPayments[0].payments[idx]._id;
     
     document.getElementById("btn-open-modal").click();
+}
+
+
+let checkNewPaymentList;
+function myTimerRefreshPaymentList() {
+    console.log('======looping refresh payment table =============');
+    promiseGetMembershipPayments(shooterPayments[0]._id, netlifyIdentity.currentUser());
+}
+
+let checkPaymentInterval;
+function myTimer() {
+    console.log('======looping refresh payment modal =============');
+    let idx= null;
+
+    for(let i=0;i<shooterPayments[0].payments.length;i++){
+        if(document.getElementById("bankTxId").value===shooterPayments[0].payments[i].bankTxId){
+            idx=i;
+            break;
+        }
+    }
+
+    // console.log(' Modal Interval. idx=',idx);
+
+    if(idx!==null){
+        let _dArr= new Date().toLocaleDateString().substring(0,10).split('/');
+        let _dtHj= new Date(_dArr[2]+'-'+_dArr[1]+'-'+_dArr[0]);
+
+        let _dueDArr= new Date(shooterPayments[0].payments[idx].dueDate).toLocaleDateString().substring(0,10).split('/');
+        let _dueD= new Date(_dueDArr[2]+'-'+_dueDArr[1]+'-'+_dueDArr[0]);
+
+        let bgStatusPgto='';
+            
+        if(shooterPayments[0].payments[idx].status===0){
+            bgStatusPgto= `<span class="badge bg-success text-truncate" id="newMembershipStatus">pago</span>`;
+        }else if (shooterPayments[0].payments[idx].status===2 || _dueD.getTime() < _dtHj.getTime() ){
+            bgStatusPgto= `<span class="badge bg-danger text-truncate" id="newMembershipStatus">vencido</span>`;
+        }else{
+            bgStatusPgto= `<span class="badge bg-warning text-dark text-truncate" id="newMembershipStatus">aguardando pagamento</span>`;
+        }
+        
+        document.getElementById("newMembershipStatus").innerHTML= bgStatusPgto;
+        document.getElementById("newMembershipPgtoDate").innerText= shooterPayments[0].payments[idx].paymentDate?new Date(shooterPayments[0].payments[idx].paymentDate).toLocaleDateString():"";
+    }
+
 }
 
 window.onload = async () => {
@@ -226,7 +302,6 @@ window.onload = async () => {
     if(user && shooterData && shooterData.docnum && shooterData.docnum!==null){
         // applySpinners(true);
         promiseGetMembershipPayments(_shooterId, user);
-
     }
 
     //================================================
@@ -279,7 +354,7 @@ function submitPayment(paymentData){
     
 //Save payment
     
-    addClass(document.getElementById('cardPix'),'d-none');
+    // addClass(document.getElementById('cardPix'),'d-none');
     applySpinners(true);
     fetch('/.netlify/functions/shooter-payments', {
         method: "POST",
@@ -312,6 +387,9 @@ function submitPayment(paymentData){
             document.getElementById("btnCopyPixCode").value= json.pixcode;
             document.getElementById("membership_payments_id").value= json._id;
             removeClass(document.getElementById('cardPix'),'d-none');
+
+            document.getElementById("bankTxId").value= json.bankTxId;
+            checkPaymentInterval = setInterval(myTimer, 2000);
 
             
         })
@@ -362,7 +440,7 @@ function deletePayment(idx){
     
 }
 
-
+let loopPaymentOn= false;
 const promiseGetMembershipPayments = (_shooterId, _identityUser)=>{
 
     let _headers;
@@ -372,21 +450,29 @@ const promiseGetMembershipPayments = (_shooterId, _identityUser)=>{
     }else{
         return []; //_headers= {"Content-type": "application/json; charset=UTF-8"}
     }
-    return fetch("/.netlify/functions/shooter-payments?shooterId="+_shooterId , { //+ '&termDate=2024-05-20'
-    method: "GET",
-    headers: _headers})
-    .then(r=>r.json())
-    .then(data => {
+    
+        // var counter = 0;
+    // var i = setInterval(async function () {
 
-        shooterPayments= data;
-        listPayments(shooterPayments);
-
-        return shooterPayments;
-    }).finally(()=>{
-        applySpinners(false);
-        disableShooterFields(updater);
-    });
-
+            console.log('==========fetching on promise==========');
+            
+            fetch("/.netlify/functions/shooter-payments?shooterId="+_shooterId , { //+ '&termDate=2024-05-20'
+                method: "GET",
+                headers: _headers})
+                .then(r=>r.json())
+                .then(data => {
+        
+                    shooterPayments= data;
+                    listPayments(shooterPayments);
+        
+                    return shooterPayments;
+                }).finally(()=>{
+                    applySpinners(false);
+                    disableShooterFields(updater);
+                });
+            
+    // }, 2 * 10000);    
+    
 };
 
 function myFunction(elem) {
@@ -405,26 +491,46 @@ function myFunction(elem) {
 
   }
 
+  let idxPendingPaymentOneYear=null;
   document.getElementById("btn-new-membershipOne").addEventListener('click', function(e) {
-    document.getElementById("newMembershipStart").disabled=false;
-    if(!netlifyIdentity.currentUser()){
-        netlifyIdentity.open('signup')
+    
+    if(idxPendingPaymentOneYear!==null){
+        showPayment(idxPendingPaymentOneYear);
     }else{
-        document.getElementById("membershipTier").value="anual";
-        addMembershipPayment("anual", 366, 102.17);
-        document.getElementById("btn-open-modal").click();
+    
+        document.getElementById("newMembershipStart").disabled=false;
+        if(!netlifyIdentity.currentUser()){
+            netlifyIdentity.open('signup')
+        }else{
+            document.getElementById("membershipTier").value="anual";
+            addMembershipPayment("anual", 366, 102.17);
+            if(!loopPaymentOn){
+                checkNewPaymentList = setInterval(myTimerRefreshPaymentList, 10000);
+                loopPaymentOn= true; 
+            }
+            document.getElementById("btn-open-modal").click();
+        }
     }
-
   });
 
+  let idxPendingPaymentTwoYears=null;
   document.getElementById("btn-new-membershipTwo").addEventListener('click', function(e) {
-    document.getElementById("newMembershipStart").disabled=false;
-    if(!netlifyIdentity.currentUser()){
-        netlifyIdentity.open('signup')
+
+    if(idxPendingPaymentTwoYears!==null){
+        showPayment(idxPendingPaymentTwoYears);
     }else{
-        document.getElementById("membershipTier").value="2 anos";
-        addMembershipPayment("2 anos", 731, 193.71);
-        document.getElementById("btn-open-modal").click();
+        document.getElementById("newMembershipStart").disabled=false;
+        if(!netlifyIdentity.currentUser()){
+            netlifyIdentity.open('signup')
+        }else{
+            document.getElementById("membershipTier").value="2 anos";
+            addMembershipPayment("2 anos", 731, 193.71);
+            if(!loopPaymentOn){
+                checkNewPaymentList = setInterval(myTimerRefreshPaymentList, 10000);
+                loopPaymentOn= true; 
+            }
+            document.getElementById("btn-open-modal").click();
+        }
     }
   });
 
@@ -517,10 +623,8 @@ function myFunction(elem) {
     correctLevel : QRCode.CorrectLevel.L
 });
 
-
-  document.getElementById('staticBackdrop').addEventListener('hidden.bs.modal', function (event) {
-
+document.getElementById('staticBackdrop').addEventListener('hidden.bs.modal', function (event) {
+    clearInterval(checkPaymentInterval);
     promiseGetMembershipPayments(shooterPayments[0]._id, netlifyIdentity.currentUser());
+});
 
-    ///reload list of payments
-  });

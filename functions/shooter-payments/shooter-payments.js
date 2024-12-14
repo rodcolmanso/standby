@@ -390,7 +390,7 @@ const handler = async (event, context)=>{
             let today= new Date();
             // let tomorrow= today.getDate() + 1;
             filter.dueDate= {$gte: new Date(today.toDateString())};
-            filter.value= paymentData.value;
+            // filter.value= paymentData.value;
           }
 
           //-----------_>

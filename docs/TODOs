@@ -14,7 +14,7 @@ Melhorar a experiencia de cadastro e login
     
 Admin
     [ ] Cadastro de Clubes
-    [x] Cadastro de Armas(Acervo)
+    [ ] Cadastro de Armas(Acervo)
     [ ] Cadastro de Supers
 
 
@@ -44,12 +44,12 @@ Regulamentos
     [ ] Tela Regulamentos
   
 Filiação
-    [ ] Refresh em pagamentos para checar se já está pago.
-    [ ] Não permitir criar novo pagamento caso já exista algum não vencido.
-    [ ] Criar API de webhook
+    [x] Refresh em pagamentos para checar se já está pago.
+    [x] Não permitir criar novo pagamento caso já exista algum não vencido.
+    [x] Criar API de webhook
         [x] Registrar webhook via postman
         [x] testar pagamento
-        [ ] criar function de callback com a URL do do webhook
+        [x] criar function de callback com a URL do webhook
     [x] criar env vars com certificados e chaves
     [x] testar get token com dev env vars
     [x] criar API de getBearToken (recria se expiderd)

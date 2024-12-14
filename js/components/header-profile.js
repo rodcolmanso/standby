@@ -77,14 +77,14 @@ class HeaderProfile extends HTMLElement {
           <div class="input-group">
             <div class="form-floating " > <!--col-md-2-->
               <input type="hidden" id="mondalShooterDivisionId" /> 
-              <select id="mondalShooterGun" class="form-select form-control form-select-sm nodisable" required id="select-subscribe-gun" aria-label="Floating label select example">
+              <select id="mondalShooterGun" class="form-select form-control form-select-sm nodisable" required xid="select-subscribe-gun" aria-label="Floating label select example">
                 
               </select>
-              <label for="select-subscribe-gun">Arma</label>
+              <label for="mondalShooterGun">Arma</label>
             </div>
             <div class="p-2" style="width: 70px; padding-right: 1px !important;">
               <div>
-                <label for="subscribe-optic"><small class="d-none d-xl-block text-muted">Red dot?</small><small class="d-xl-none text-muted">Red dot?</small></label>
+                <label ><small class="d-none d-xl-block text-muted">Red dot?</small><small class="d-xl-none text-muted">Red dot?</small></label>
               </div>
               
               <div class="form-check form-check-inline text-wrap" style="margin-right: 1px !important;">
