@@ -5,6 +5,7 @@ const mongoClient= new MongoClient(process.env.MONGODB_URI);
 const clientPromise= mongoClient.connect();
 var ObjectId = require('mongodb').ObjectId; 
 
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 const handler = async (event, context)=>{
   try {
@@ -115,6 +116,8 @@ const handler = async (event, context)=>{
                     ,inserter: 'webhook'
                     ,inserter_date: new Date()
                   });
+
+                  await sleep(500);
 
                   console.log('membershipRet= ', membershipRet);
 
