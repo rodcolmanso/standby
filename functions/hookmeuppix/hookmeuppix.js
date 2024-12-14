@@ -118,7 +118,7 @@ const handler = async (event, context)=>{
                   });
 
                   console.log('befere sleep',new Date());
-                  await sleep(300);
+                  await sleep(1000);
                   console.log('after sleep',new Date());
 
                   console.log('membershipRet= ', membershipRet);
