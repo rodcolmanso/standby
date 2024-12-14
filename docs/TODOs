@@ -55,6 +55,8 @@ Filiação
     [x] criar API de getBearToken (recria se expiderd)
     [x] chamar API Criar Papamento
     [x] Exibir pagamento
+    [x] Atualizar IDs
+    [ ] Atualizar CERTIs
     [ ] Update database com todas as matriculas do shooting house ceacc
     [ ] Excluir pagamento ou não exibir vencidos
     

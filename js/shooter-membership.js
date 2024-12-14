@@ -503,7 +503,7 @@ function myFunction(elem) {
             netlifyIdentity.open('signup')
         }else{
             document.getElementById("membershipTier").value="anual";
-            addMembershipPayment("anual", 366, 102.17);
+            addMembershipPayment("anual", 366, 1.02);
             if(!loopPaymentOn){
                 checkNewPaymentList = setInterval(myTimerRefreshPaymentList, 10000);
                 loopPaymentOn= true; 
@@ -524,7 +524,7 @@ function myFunction(elem) {
             netlifyIdentity.open('signup')
         }else{
             document.getElementById("membershipTier").value="2 anos";
-            addMembershipPayment("2 anos", 731, 193.71);
+            addMembershipPayment("2 anos", 731, 2.03);
             if(!loopPaymentOn){
                 checkNewPaymentList = setInterval(myTimerRefreshPaymentList, 10000);
                 loopPaymentOn= true; 
