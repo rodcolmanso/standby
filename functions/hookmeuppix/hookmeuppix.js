@@ -118,7 +118,7 @@ const handler = async (event, context)=>{
                   });
 
                   console.log('befere sleep',new Date());
-                  await sleep(1000);
+                  await sleep(800);
                   console.log('after sleep',new Date());
 
                   console.log('membershipRet= ', membershipRet);
@@ -139,7 +139,7 @@ const handler = async (event, context)=>{
                 }
 
                 if(!paymentTb[0].shooter[0].membershipEnd || paymentTb[0].shooter[0].membershipEnd.getTime()<paymentTb[0].termEnd.getTime()){
-                  paymentTb[0].shooter[0].membershipStart= paymentTb[0].termEnd;
+                  paymentTb[0].shooter[0].membershipEnd= paymentTb[0].termEnd;
                 }
 
                 //update user with membership
@@ -148,19 +148,30 @@ const handler = async (event, context)=>{
                   ,membershipStart: paymentTb[0].shooter[0].membershipStart
                   ,membershipEnd: paymentTb[0].shooter[0].membershipEnd
                   ,membershipStatus: 0
+                  ,last_updater: 'webhook'
+                  ,last_updater_date: new Date()
                 }
 
                 console.log('updateShooterPayload=',updateShooterPayload);
 
-                if(paymentTb[0].shooter[0].membershipNumber && paymentTb[0].shooter[0].membershipNumber!==null){
-                  let shooterUpdateRet= await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
-                    $set: updateShooterPayload
-                  });
+                if(!paymentTb[0].shooter[0].membershipNumber || paymentTb[0].shooter[0].membershipNumber===null){
+                    console.log('COULD NOT GET MembershipNumber. more.');
 
-                  console.log('shooterUpdateRet=',shooterUpdateRet);
-                }else{
-                  console.log('COULD NOT GET MembershipNumber. more.');
+                    const cMembershipNumCounter    = database.collection("membership_num_counter");
+
+                    const cMembershipNumCounterColl= await cMembershipNumCounter.find().toArray();
+                    seq_value= cMembershipNumCounterColl[0].seq_value+1;
+                    paymentTb[0].shooter[0].membershipNumber= seq_value;
+                    updateShooterPayload.membershipNumber= seq_value;
+                  
                 }
+                  
+                let shooterUpdateRet= await cShooters.updateOne({_id: paymentTb[0].shooter[0]._id},{
+                  $set: updateShooterPayload
+                });
+
+                console.log('shooterUpdateRet=',shooterUpdateRet);
+                
 
                 paymentData.pix[i].shooterId= paymentTb[0].shooter[0]._id;
                 paymentData.pix[i].shooter_payment_id= paymentTb[0]._id;

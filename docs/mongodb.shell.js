@@ -3528,3 +3528,16 @@ db.bank_bearer_token.insertOne({
 db.shooters.aggregate([
     { $project: { maxMembershipNumber: { $max: "$membershipNumber"} } }
  ])
+
+
+ db.shooters.aggregate(
+    [
+      {
+        $group:
+          {
+            _id: null,
+            maxMembershipNumber: { $max: "$membershipNumber" }
+          }
+      }
+    ]
+ )
